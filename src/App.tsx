@@ -10,6 +10,7 @@ import { lazy, Suspense } from 'react';
 import Loader from './pages/Loader/Loader';
 const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
+const Register = lazy(() => import('./features/Authentication/Register'));
 
 // ##################################
 function App() {
@@ -20,6 +21,7 @@ function App() {
                     {/* Public Route */}
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
+                    <Route path="/register" element={<Register />} />
 
                     {/* Protected Route */}
                 </Routes>

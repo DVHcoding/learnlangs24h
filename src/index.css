@@ -45,6 +45,12 @@ html {
   scroll-behavior: smooth;
 }
 
+body {
+  font-family: "QuickSand", "sans-serif";
+  color: #000;
+  font-weight: 500;
+}
+
 .light {
   --text-custom: rgb(30 41 59);
   --text-sidebar: #575757;

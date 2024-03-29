@@ -17,7 +17,6 @@ const Home = () => {
             />
 
             <h1 className="text-red-400">Home</h1>
-            <p>{import.meta.env.VITE_BASE_URL}</p>
         </div>
     );
 };
