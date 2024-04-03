@@ -14,7 +14,10 @@
         "@emotion/styled": "^11.11.0",
         "@mui/icons-material": "^5.15.12",
         "@mui/material": "^5.15.12",
+        "@reduxjs/toolkit": "^2.2.2",
         "@tippyjs/react": "^4.0.0-alpha.1",
+        "axios": "^1.6.8",
+        "firebase": "^10.10.0",
         "froala-editor": "^4.1.4",
         "html-react-parser": "^5.1.8",
         "lucide-react": "^0.354.0",
@@ -23,6 +26,7 @@
         "react-helmet-async": "^2.0.4",
         "react-player": "^2.15.1",
         "react-quill": "^2.0.0",
+        "react-redux": "^9.1.0",
         "react-router-dom": "^6.22.2",
         "react-toastify": "^10.0.4",
         "rsuite": "^5.55.1"

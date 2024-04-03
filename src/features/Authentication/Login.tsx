@@ -1,18 +1,62 @@
+import { useState } from 'react';
 // ##################################
 // #       IMPORT Components
 // ##################################
 import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 import GoogleIcon from '@assets/icons/google.png';
 import FacebookIcon from '@assets/icons/facebook.png';
+import { removeScriptTag } from '@utils/Helpers';
+import { auth } from '../../firebase';
+import { useLoginUserMutation } from '@store/api/userApi';
 
 // ##################################
 // #       IMPORT Npm
 // ##################################
 import { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
+import { Bounce, ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ##################################
-const Login = () => {
+const Login: React.FC = () => {
+    const [loginUser, { isLoading }] = useLoginUserMutation();
+
+    const [email, setEmail] = useState<string>('');
+    const [password, setPassword] = useState<string>('');
+    const [userDataResponse, setUserDataResponse] = useState<any>(null);
+    const loginWithEmail = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+        e.preventDefault();
+
+        try {
+            // all the login mutation
+            const { data: dataUser }: any = await loginUser({ email, password });
+            setUserDataResponse(dataUser);
+        } catch (error) {
+            toast.error('Error!', {
+                position: 'top-right',
+                autoClose: 1500,
+                hideProgressBar: true,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                theme: 'light',
+                transition: Bounce,
+            });
+        }
+    };
+
+    const loginWithGoogle: () => Promise<void> = async () => {
+        try {
+            const provider = new GoogleAuthProvider();
+
+            const { user } = await signInWithPopup(auth, provider);
+            console.log(user);
+        } catch (error) {
+            throw error;
+        }
+    };
+
     return (
         <Fragment>
             {/* Helmet */}
@@ -30,7 +74,10 @@ const Login = () => {
                     </h2>
 
                     <div className="mb-4 flex flex-wrap items-center justify-center gap-4">
-                        <button className="flex items-center gap-2 rounded-lg border border-slate-200 px-8 py-2 hover:bg-[#f3f4f6]">
+                        <button
+                            onClick={loginWithGoogle}
+                            className="flex items-center gap-2 rounded-lg border border-slate-200 px-8 py-2 hover:bg-[#f3f4f6]"
+                        >
                             <img src={GoogleIcon} alt="Google Icon" className="w-5" />
                             <span className="font-body font-semibold text-black">
                                 Login with Google
@@ -53,36 +100,64 @@ const Login = () => {
                     </div>
 
                     {/* Form email */}
-                    <form className="mb-4">
+                    <form onSubmit={loginWithEmail}>
                         <div className="mb-4">
-                            <span className="mb-2 block font-semibold">Email</span>
-                            <input
-                                type="text"
-                                placeholder="Enter your Email"
-                                className="w-full rounded-md border bg-[#f9fafb] p-2 focus:border-2 focus:border-blue-500"
-                                required
-                            />
+                            <div className="mb-4">
+                                <span className="mb-2 block font-semibold">Email</span>
+                                <input
+                                    type="text"
+                                    placeholder="Enter your Email"
+                                    className="w-full rounded-md border bg-[#f9fafb] p-2 focus:border-2 focus:border-blue-500"
+                                    onChange={(e) => setEmail(removeScriptTag(e.target.value))}
+                                    onInput={() => setUserDataResponse(null)}
+                                    required
+                                />
+                            </div>
+
+                            <div>
+                                <span className="mb-2 block font-semibold">Password</span>
+                                <input
+                                    type="password"
+                                    placeholder="••••••••"
+                                    className="w-full rounded-md border bg-[#f9fafb] p-2 placeholder:tracking-widest focus:border-2 focus:border-blue-500"
+                                    onChange={(e) => setPassword(removeScriptTag(e.target.value))}
+                                    onInput={() => setUserDataResponse(null)}
+                                    required
+                                />
+                            </div>
                         </div>
 
-                        <div>
-                            <span className="mb-2 block font-semibold">Password</span>
-                            <input
-                                type="password"
-                                placeholder="••••••••"
-                                className="w-full rounded-md border bg-[#f9fafb] p-2 placeholder:tracking-widest  focus:border-2 focus:border-blue-500"
-                                required
-                            />
-                        </div>
+                        {/* Handler error | success text */}
+                        <span
+                            className={`mb-2 text-sm text-red-500 ${
+                                userDataResponse?.success === false ? 'block' : 'hidden'
+                            }`}
+                        >
+                            Tài khoản hoặc mật khẩu không chính xác!
+                        </span>
+
+                        <span
+                            className={`mb-2 text-sm text-green-500 ${
+                                userDataResponse?.success ? 'block' : 'hidden'
+                            }`}
+                        >
+                            Đăng nhập thành công!
+                        </span>
+
+                        <Link to={'/forgot'} className="text-sm font-semibold text-blue-700">
+                            Forgot Password
+                        </Link>
+
+                        <button
+                            type="submit"
+                            disabled={isLoading}
+                            className="mt-4 w-full rounded-md bg-blue-500 p-2 font-semibold text-white hover:bg-blue-600"
+                        >
+                            Login to your account
+                        </button>
                     </form>
 
-                    <Link to={'/forgot'} className="text-sm font-semibold text-blue-700">
-                        Forgot Password
-                    </Link>
-
-                    <button className="mt-4 w-full rounded-md bg-blue-500 p-2 font-semibold text-white hover:bg-blue-600">
-                        Login to your account
-                    </button>
-
+                    {/* Redirect Register */}
                     <div className="mt-4">
                         <span className="font-sm text-slate-500">Don’t have an account yet?</span>
 
@@ -92,6 +167,8 @@ const Login = () => {
                     </div>
                 </div>
             </div>
+
+            <ToastContainer />
         </Fragment>
     );
 };
