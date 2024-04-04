@@ -9,19 +9,23 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 interface APIResponse {
     success: boolean;
-    user: {
-        username: string;
-        email: string;
-        createAt: string;
-        _id: string;
-    };
     message?: string;
-    error?: string;
+    user: RegisterUserType;
 }
 
-interface UserType {
+interface LoginUserType {
     email: string;
     password: string;
+}
+
+interface RegisterUserType {
+    username: string;
+    email: string;
+    password: string;
+    photo: {
+        public_id: string;
+        url: string;
+    };
 }
 
 export const userApi = createApi({
@@ -34,7 +38,17 @@ export const userApi = createApi({
     }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
-        loginUser: builder.mutation<APIResponse | any, UserType>({
+        registerUser: builder.mutation<APIResponse, RegisterUserType>({
+            query: (registerUserInfo) => ({
+                url: 'register',
+                method: 'POST',
+                body: registerUserInfo,
+            }),
+            invalidatesTags: ['User'],
+        }),
+
+        // LoginUser
+        loginUser: builder.mutation<APIResponse, LoginUserType>({
             query: (userInfo) => ({
                 url: 'login',
                 method: 'POST',
@@ -45,4 +59,4 @@ export const userApi = createApi({
     }),
 });
 
-export const { useLoginUserMutation } = userApi;
+export const { useRegisterUserMutation, useLoginUserMutation } = userApi;

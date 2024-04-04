@@ -8,32 +8,49 @@ import FacebookIcon from '@assets/icons/facebook.png';
 import { removeScriptTag } from '@utils/Helpers';
 import { auth } from '../../firebase';
 import { useLoginUserMutation } from '@store/api/userApi';
+import { toastError } from '@components/Toast/Toasts';
 
 // ##################################
 // #       IMPORT Npm
 // ##################################
 import { Fragment } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // ##################################
 const Login: React.FC = () => {
+    const navigate = useNavigate();
+
     const [loginUser, { isLoading }] = useLoginUserMutation();
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [userDataResponse, setUserDataResponse] = useState<any>(null);
+
+    // login submit
     const loginWithEmail = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
         try {
-            // all the login mutation
-            const { data: dataUser }: any = await loginUser({ email, password });
-            setUserDataResponse(dataUser);
+            const response = await loginUser({ email, password });
+
+            if ('error' in response) {
+                toastError(`${response.error}`);
+            } else {
+                if (response.data.success) {
+                    setUserDataResponse(response.data);
+
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 1500);
+                } else {
+                    setUserDataResponse(response.data);
+                }
+            }
         } catch (error) {
-            toast.error('Error!', {
+            toast.error(`${error}`, {
                 position: 'top-right',
                 autoClose: 1500,
                 hideProgressBar: true,
