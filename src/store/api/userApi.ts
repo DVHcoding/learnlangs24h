@@ -38,6 +38,13 @@ export const userApi = createApi({
     }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
+        // UserDetails
+        userDetails: builder.query<APIResponse, void>({
+            query: () => 'me',
+            providesTags: ['User'],
+        }),
+
+        // Register User
         registerUser: builder.mutation<APIResponse, RegisterUserType>({
             query: (registerUserInfo) => ({
                 url: 'register',
@@ -47,7 +54,7 @@ export const userApi = createApi({
             invalidatesTags: ['User'],
         }),
 
-        // LoginUser
+        // Login User
         loginUser: builder.mutation<APIResponse, LoginUserType>({
             query: (userInfo) => ({
                 url: 'login',
@@ -59,4 +66,4 @@ export const userApi = createApi({
     }),
 });
 
-export const { useRegisterUserMutation, useLoginUserMutation } = userApi;
+export const { useUserDetailsQuery, useRegisterUserMutation, useLoginUserMutation } = userApi;

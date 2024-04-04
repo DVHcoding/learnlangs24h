@@ -7,7 +7,7 @@ import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 // #       IMPORT Npm
 // ##################################
 
-const Home = () => {
+const Home: React.FC = () => {
     return (
         <div>
             <HelmetWrapper
