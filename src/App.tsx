@@ -15,6 +15,8 @@ import { useUserDetailsQuery } from '@store/api/userApi';
 const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
+const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
+
 const Grammar = lazy(() => import('./components/Courses/Grammar'));
 
 // ##################################
@@ -29,6 +31,7 @@ function App() {
                     <Route path="/" element={<Home />} />
                     <Route path="/login" element={<Login />} />
                     <Route path="/register" element={<Register />} />
+                    <Route path="/forgot" element={<ForgotPassword />} />
 
                     {/* Protected Route */}
                     <Route

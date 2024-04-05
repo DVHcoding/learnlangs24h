@@ -35,6 +35,7 @@ export const userApi = createApi({
         headers: {
             'Content-type': 'application/json',
         },
+        credentials: 'include',
     }),
     tagTypes: ['User'],
     endpoints: (builder) => ({
