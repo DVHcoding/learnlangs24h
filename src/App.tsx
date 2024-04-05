@@ -16,7 +16,6 @@ const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
 const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
-const Navbar = lazy(() => import('./pages/Header/Navbar'));
 const Grammar = lazy(() => import('./components/Courses/Grammar'));
 
 // ##################################
