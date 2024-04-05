@@ -1,14 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 // ##################################
 // #       IMPORT Components
 // ##################################
 import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 import GoogleIcon from '@assets/icons/google.png';
 import FacebookIcon from '@assets/icons/facebook.png';
+
 import { removeScriptTag } from '@utils/Helpers';
 import { auth } from '../../firebase';
-import { useLoginUserMutation } from '@store/api/userApi';
-import { toastError } from '@components/Toast/Toasts';
+import { useLoginGoogleMutation, useLoginUserMutation } from '@store/api/userApi';
+import { toastError, toastSuccess } from '@components/Toast/Toasts';
 
 // ##################################
 // #       IMPORT Npm
@@ -18,18 +19,23 @@ import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
 import { Bounce, ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import { Loader } from 'rsuite';
 
 // ##################################
-const Login: React.FC = () => {
+const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefined }> = ({
+    isLogin,
+    loading,
+}) => {
     const navigate = useNavigate();
 
-    const [loginUser, { isLoading }] = useLoginUserMutation();
+    const [loginUser, { isLoading: isLoadingEmail }] = useLoginUserMutation();
+    const [loginGoogle] = useLoginGoogleMutation();
 
     const [email, setEmail] = useState<string>('');
     const [password, setPassword] = useState<string>('');
     const [userDataResponse, setUserDataResponse] = useState<any>(null);
 
-    // login submit
+    // Login With Email
     const loginWithEmail = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
         e.preventDefault();
 
@@ -63,16 +69,48 @@ const Login: React.FC = () => {
         }
     };
 
+    // Login With Google
     const loginWithGoogle: () => Promise<void> = async () => {
         try {
             const provider = new GoogleAuthProvider();
 
+            // Không tự động đăng nhập lại account trước (người dùng tự chọn tài khoản)
+            provider.setCustomParameters({
+                prompt: 'select_account',
+            });
+
+            // data received from firebase
             const { user } = await signInWithPopup(auth, provider);
-            console.log(user);
+
+            // if received data from google then...
+            if (user) {
+                const { data }: any = await loginGoogle({
+                    username: user.displayName,
+                    email: user.email,
+                    photo: { public_id: '', url: user.photoURL },
+                    googleId: user.uid,
+                });
+
+                if (data.success === false) {
+                    toastError(`${data.message}`);
+                } else {
+                    toastSuccess('Đăng nhập thành công!');
+
+                    setTimeout(() => {
+                        navigate('/');
+                    }, 1500);
+                }
+            }
         } catch (error) {
-            throw error;
+            toastError('Bạn đã đóng popup? Hãy đăng nhập lại');
         }
     };
+
+    useEffect(() => {
+        if (isLogin && !loading) {
+            navigate('/');
+        }
+    }, [isLogin]);
 
     return (
         <Fragment>
@@ -167,7 +205,7 @@ const Login: React.FC = () => {
 
                         <button
                             type="submit"
-                            disabled={isLoading}
+                            disabled={isLoadingEmail}
                             className="mt-4 w-full rounded-md bg-blue-500 p-2 font-semibold text-white hover:bg-blue-600"
                         >
                             Login to your account
@@ -184,6 +222,17 @@ const Login: React.FC = () => {
                     </div>
                 </div>
             </div>
+
+            {isLoadingEmail && (
+                <div className="fixed  inset-0 z-50 flex items-center justify-center ">
+                    <Loader
+                        size={'md'}
+                        className="flex h-full w-full items-center justify-center "
+                        style={{ backgroundColor: 'rgba(0, 0, 0, 0.05)' }}
+                    />
+                </div>
+            )}
+
             <ToastContainer />
         </Fragment>
     );

@@ -1,0 +1,362 @@
+import { useState, useEffect, ReactNode } from 'react';
+// ##################################
+// #       IMPORT Components
+// ##################################
+import Logo from '@assets/logo.png';
+
+// ##################################
+// #       IMPORT Npm
+// ##################################
+import { Sidenav, Nav } from 'rsuite';
+import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
+import {
+    SquareLibrary,
+    Medal,
+    Headphones,
+    Shell,
+    ContactRound,
+    CircleDollarSign,
+    BookOpenText,
+} from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+
+const Sidebar = () => {
+    // Redirect with React Router Dom v6
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Style sidebar
+    const panelStyles: React.CSSProperties = {
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        marginLeft: '20px',
+        marginTop: '20px',
+    };
+
+    // fixed when screen smaller 470px
+    const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 470);
+
+    // Set active page
+    const [activePage, setActivePage] = useState<string>('');
+
+    // Navigation when clicking on link
+    const redirect = (path: string) => {
+        navigate(path);
+    };
+
+    // Get pathname with useLocation hooks (example: /grammar)
+    useEffect(() => {
+        const pathname = location.pathname;
+        setActivePage(pathname);
+    }, [location.pathname]);
+
+    // Handle resize when expand to the sidebar
+    useEffect(() => {
+        const handleResize = () => {
+            setExpanded(window.innerWidth > 470);
+        };
+        window.addEventListener('resize', handleResize);
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+        };
+    }, []);
+
+    return (
+        <div
+            className={`scrollbar h-full w-[220px] min-w-max max-w-max overflow-auto border-bdCustom 
+        sm:min-w-max sm:max-w-max sm:overflow-x-hidden sm:rounded-none sm:border-r
+        md:border-r lg:border-2 xl:rounded-l-2xl ${expanded ? 'phone:fixed phone:z-10' : ''} `}
+        >
+            <Sidenav
+                defaultOpenKeys={['3', '4']}
+                expanded={expanded}
+                className="h-full bg-bgCustom"
+            >
+                <Sidenav.Body>
+                    <Nav activeKey="1">
+                        <img
+                            src={Logo}
+                            alt="logo"
+                            className={`mb-8 ml-4 mt-6 w-16 select-none ${
+                                !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
+                            } 
+                                sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
+                        />
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            eventKey="1"
+                            panel
+                            style={panelStyles}
+                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
+                        >
+                            Top Features
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            onClick={() => redirect('/')}
+                            eventKey="2"
+                            className={`bg-bgCustom before:absolute ${
+                                activePage === '/' ? 'before:h-8' : 'before:h-0'
+                            } before:bottom-2 
+                            before:left-0 before:w-[3px] before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                            icon={<DashboardIcon />}
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Dashboard</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Menu
+                            className="bg-bgCustom"
+                            onClick={() => setExpanded(true)}
+                            eventKey="3"
+                            title="Courses"
+                            icon={
+                                <BookOpenText
+                                    className="absolute left-5 text-textSidebar"
+                                    strokeWidth={1.5}
+                                    size={17}
+                                />
+                            }
+                        >
+                            <Nav.Item
+                                onClick={() => redirect('/grammar?id=1')}
+                                eventKey="3-1"
+                                className={`before:absolute ${
+                                    activePage === '/grammar' ? 'before:h-8' : 'before:h-0'
+                                } before:bottom-2 before:left-0 before:w-[3px]
+                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                            >
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                    Grammar
+                                </span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="3-2"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
+                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                    Listening
+                                </span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="3-3"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                    Reading
+                                </span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="3-4"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                    Writing
+                                </span>
+                            </Nav.Item>
+                        </Nav.Menu>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="4"
+                            icon={
+                                <GroupsOutlinedIcon
+                                    color="action"
+                                    fontSize="small"
+                                    className="absolute left-5 text-textSidebar"
+                                />
+                            }
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Group Chat</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                            before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="5"
+                            icon={
+                                <StyleOutlinedIcon
+                                    color="action"
+                                    fontSize="small"
+                                    className="absolute left-5 text-textSidebar"
+                                />
+                            }
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Vocabulary</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                            before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="6"
+                            icon={
+                                <SquareLibrary
+                                    className="absolute left-5"
+                                    strokeWidth={1.5}
+                                    size={19}
+                                />
+                            }
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Books</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <div className="h-[1px] w-full bg-slate-200"></div>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            panel
+                            style={panelStyles}
+                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
+                        >
+                            Advanced
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Menu
+                            onClick={() => setExpanded(true)}
+                            eventKey="7"
+                            title="Certificates"
+                            icon={<Medal className="absolute left-5" strokeWidth={1.5} size={19} />}
+                        >
+                            <Nav.Item
+                                eventKey="7-1"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="transition-all hover:text-[#8bbf64] ">IELTS</span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="7-2"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="transition-all hover:text-[#8bbf64]">TOEIC</span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="7-3"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="transition-all hover:text-[#8bbf64]">TOEFL</span>
+                            </Nav.Item>
+                        </Nav.Menu>
+
+                        {/*=========================================*/}
+                        <Nav.Menu
+                            onClick={() => setExpanded(true)}
+                            eventKey="8"
+                            title="Listen & Type"
+                            icon={
+                                <Headphones
+                                    className="absolute left-5"
+                                    strokeWidth={1.5}
+                                    size={19}
+                                />
+                            }
+                        >
+                            <Nav.Item
+                                eventKey="8-1"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="transition-all hover:text-[#8bbf64] ">
+                                    All Topic
+                                </span>
+                            </Nav.Item>
+
+                            <Nav.Item
+                                eventKey="8-2"
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            >
+                                <span className="transition-all hover:text-[#8bbf64]">
+                                    Type & Music
+                                </span>
+                            </Nav.Item>
+                        </Nav.Menu>
+
+                        {/*=========================================*/}
+                        <div className="h-[1px] w-full bg-slate-200"></div>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            panel
+                            style={panelStyles}
+                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
+                        >
+                            Articles
+                        </Nav.Item>
+
+                        <Nav.Item
+                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                            before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="9"
+                            icon={<Shell className="absolute left-5" strokeWidth={1.5} size={19} />}
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Blog</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                            before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="10"
+                            icon={
+                                <ContactRound
+                                    className="absolute left-5"
+                                    strokeWidth={1.5}
+                                    size={19}
+                                />
+                            }
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Contact</span>
+                        </Nav.Item>
+
+                        {/*=========================================*/}
+                        <Nav.Item
+                            className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            eventKey="11"
+                            icon={
+                                <CircleDollarSign
+                                    className="absolute left-5"
+                                    strokeWidth={1.5}
+                                    size={19}
+                                />
+                            }
+                        >
+                            <span className="transition-all hover:text-[#8bbf64]">Donate❤️</span>
+                        </Nav.Item>
+                    </Nav>
+                </Sidenav.Body>
+
+                <div className="bg-bgCustom">
+                    <Sidenav.Toggle
+                        expanded={expanded}
+                        onToggle={(expanded) => setExpanded(expanded)}
+                    />
+                </div>
+            </Sidenav>
+        </div>
+    );
+};
+
+export default Sidebar;

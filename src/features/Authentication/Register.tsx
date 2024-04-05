@@ -106,7 +106,7 @@ const Register = () => {
                 }
             }
         } catch (error) {
-            toastError(`${error}`);
+            toastError('Có lỗi xảy ra vui lòng thử lại!');
         }
     };
 

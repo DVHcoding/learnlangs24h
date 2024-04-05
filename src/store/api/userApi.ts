@@ -28,6 +28,16 @@ interface RegisterUserType {
     };
 }
 
+interface LoginGoogleType {
+    username: string | null;
+    email: string | null;
+    photo: {
+        public_id: string | null;
+        url: string | null;
+    };
+    googleId: string | null;
+}
+
 export const userApi = createApi({
     reducerPath: 'userApi',
     baseQuery: fetchBaseQuery({
@@ -64,7 +74,22 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        // Login User With Google
+        loginGoogle: builder.mutation<APIResponse, LoginGoogleType>({
+            query: (userInfo) => ({
+                url: 'login-google',
+                method: 'POST',
+                body: userInfo,
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
-export const { useUserDetailsQuery, useRegisterUserMutation, useLoginUserMutation } = userApi;
+export const {
+    useUserDetailsQuery,
+    useRegisterUserMutation,
+    useLoginUserMutation,
+    useLoginGoogleMutation,
+} = userApi;
