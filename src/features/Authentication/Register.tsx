@@ -120,7 +120,7 @@ const Register = () => {
             />
 
             {/* Main */}
-            <div className="scrollbar flex h-screen items-center justify-center bg-[#f9fafb] phone:overflow-y-auto">
+            <div className="scrollbar flex h-screen items-center justify-center bg-gradient-to-r from-green-100 via-indigo-200 to-purple-100 phone:overflow-y-auto">
                 <form
                     onSubmit={registerSubmit}
                     className="w-[31rem] rounded-lg bg-white p-8 shadow phone:min-h-full phone:w-full"

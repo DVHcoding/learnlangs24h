@@ -84,7 +84,7 @@ const Login: React.FC = () => {
             />
 
             {/* Main */}
-            <div className="flex h-screen items-center justify-center bg-[#f9fafb]">
+            <div className="flex h-screen items-center justify-center bg-gradient-to-r from-green-100 via-indigo-200 to-purple-100">
                 <div className="h-[80%] rounded-lg bg-white p-8 shadow phone:h-full phone:w-full">
                     <h2 className="mb-4 font-body text-2xl font-bold text-black phone:text-xl">
                         Welcome Back
@@ -184,7 +184,6 @@ const Login: React.FC = () => {
                     </div>
                 </div>
             </div>
-
             <ToastContainer />
         </Fragment>
     );
