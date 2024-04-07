@@ -116,9 +116,9 @@ function Media(props: MediaProps) {
                                         </div>
 
                                         <div>
-                                            <h4 className="font-body text-sm font-bold text-textCustomName">
+                                            <h5 className="font-body text-sm font-bold text-textCustomName">
                                                 {item.name}
-                                            </h4>
+                                            </h5>
                                             <p className="font-body text-[12px] font-bold text-textCustomGray phone:text-xs">
                                                 {item.description}
                                             </p>

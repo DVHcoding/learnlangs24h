@@ -66,9 +66,9 @@ const Sidebar = () => {
 
     return (
         <div
-            className={`scrollbar h-full w-[220px] min-w-max max-w-max overflow-auto border-bdCustom 
-        sm:min-w-max sm:max-w-max sm:overflow-x-hidden sm:rounded-none sm:border-r
-        md:border-r lg:border-2 xl:rounded-l-2xl ${expanded ? 'phone:fixed phone:z-10' : ''} `}
+            className={`scrollbar duration-50 h-full w-[240px] max-w-max 
+            overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
+            ${expanded ? 'phone:fixed phone:z-10' : ''}`}
         >
             <Sidenav
                 defaultOpenKeys={['3', '4']}
@@ -77,16 +77,21 @@ const Sidebar = () => {
             >
                 <Sidenav.Body>
                     <Nav activeKey="1">
-                        <img
-                            src={Logo}
-                            alt="logo"
-                            className={`mb-8 ml-4 mt-6 w-16 select-none ${
-                                !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
-                            } 
+                        <li>
+                            <img
+                                width={16}
+                                height={16}
+                                src={Logo}
+                                alt="logo"
+                                className={`mb-8 ml-4 mt-6 w-16 select-none ${
+                                    !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
+                                } 
                                 sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
-                        />
+                            />
+                        </li>
 
                         {/*=========================================*/}
+
                         <Nav.Item
                             eventKey="1"
                             panel
@@ -97,6 +102,7 @@ const Sidebar = () => {
                         </Nav.Item>
 
                         {/*=========================================*/}
+
                         <Nav.Item
                             onClick={() => redirect('/')}
                             eventKey="2"
@@ -349,10 +355,7 @@ const Sidebar = () => {
                 </Sidenav.Body>
 
                 <div className="bg-bgCustom">
-                    <Sidenav.Toggle
-                        expanded={expanded}
-                        onToggle={(expanded) => setExpanded(expanded)}
-                    />
+                    <Sidenav.Toggle onToggle={(expanded) => setExpanded(expanded)} />
                 </div>
             </Sidenav>
         </div>

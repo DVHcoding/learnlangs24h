@@ -123,12 +123,12 @@ function Media(props: MediaProps) {
 
     return (
         <div
-            className="flex items-start justify-center gap-4 sm:w-full sm:flex-col md:w-full
-            md:flex-row md:gap-4 lg:w-[50%] lg:flex-col"
+            className="flex max-h-max items-start justify-between gap-4 sm:w-full
+            sm:flex-col md:w-full md:flex-row md:pb-5 lg:w-[50%] lg:flex-col"
         >
-            <div className="mx-auto">
+            <div className="mx-auto w-full">
                 <h2
-                    className="mb-2 max-w-max text-start font-body text-base
+                    className="mb-4 max-w-max text-start font-body text-base
                    font-bold text-textCustom phone:mb-1"
                 >
                     Group chat
@@ -202,7 +202,7 @@ function Media(props: MediaProps) {
 
             <div className="mx-auto sm:w-[60%] phone:w-full pm:w-full">
                 <h2
-                    className="mt-[0.3rem] max-w-max font-body text-base font-bold
+                    className="mb-4 max-w-max font-body text-base font-bold
                      text-textCustom phone:mb-2"
                 >
                     New Books
@@ -210,7 +210,8 @@ function Media(props: MediaProps) {
 
                 <ul className="mt-1 w-full rounded-lg xl:mt-5">
                     <Carousel
-                        className="mx-auto h-[8.6rem] rounded-lg bg-[#9aabab47] phone:h-full phone:w-full pm:h-full pm:w-[15rem]"
+                        className="mx-auto rounded-lg bg-[#9aabab47] md:h-[17rem] lg:h-[8.6rem] phone:h-full 
+                        phone:w-full pm:h-full pm:w-[15rem]"
                         shape="bar"
                         autoplay={true}
                         autoplayInterval={5000}
@@ -220,11 +221,13 @@ function Media(props: MediaProps) {
                             className="object-contain sm:object-cover"
                             alt="books"
                         />
+
                         <img
                             src="https://online.pubhtml5.com/ulgj/wnif/files/large/1.jpg?1601886053"
                             className="object-contain sm:object-cover"
                             alt="book"
                         />
+
                         <img
                             src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTJoPvA--FFhfnfwl6mGC2S97La3YQMARhB6Q&usqp=CAU"
                             className="object-contain sm:object-cover"

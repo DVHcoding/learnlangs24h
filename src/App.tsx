@@ -8,6 +8,7 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 // #       IMPORT Components
 // ##################################
 import Loader from './pages/Loader/Loader';
+import NotFound from '@pages/NotFound/NotFound';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import { useUserDetailsQuery } from '@store/api/userApi';
 
@@ -16,7 +17,7 @@ const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
 const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
-const Grammar = lazy(() => import('./components/Courses/Grammar'));
+const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -56,20 +57,22 @@ function App() {
             <Suspense fallback={<Loader />}>
                 <Routes>
                     {/* Public Route */}
+                    <Route path="*" element={<NotFound />} />
                     <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
                     <Route
                         path="/login"
-                        element={<Login isLogin={data?.success} loading={isLoading} />}
+                        element={<Login isAuthenticated={data?.success} isLoading={isLoading} />}
                     />
                     <Route path="/register" element={<Register />} />
-                    <Route path="/forgot" element={<ForgotPassword />} />
                     <Route path="/forgot" element={<ForgotPassword />} />
 
                     {/* Protected Route */}
                     <Route
-                        element={<ProtectedRoute isLogin={data?.success} isLoading={isLoading} />}
+                        element={
+                            <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />
+                        }
                     >
-                        <Route path="/grammar" element={<Grammar />} />
+                        <Route path="/grammar" element={<Grammar toggleTheme={toggleTheme} />} />
                     </Route>
                 </Routes>
             </Suspense>

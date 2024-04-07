@@ -1,42 +1,18 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+    MessageResponse,
+    APIResponse,
+    LoginGoogleType,
+    LoginUserType,
+    RegisterUserType,
+} from 'types/api-types';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-
-interface APIResponse {
-    success: boolean;
-    message?: string;
-    user: RegisterUserType;
-}
-
-interface LoginUserType {
-    email: string;
-    password: string;
-}
-
-interface RegisterUserType {
-    username: string;
-    email: string;
-    password: string;
-    photo: {
-        public_id: string;
-        url: string;
-    };
-}
-
-interface LoginGoogleType {
-    username: string | null;
-    email: string | null;
-    photo: {
-        public_id: string | null;
-        url: string | null;
-    };
-    googleId: string | null;
-}
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const userApi = createApi({
     reducerPath: 'userApi',
@@ -84,6 +60,15 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        // Logout User
+        logoutUser: builder.mutation<MessageResponse, void>({
+            query: () => ({
+                url: 'logout',
+                method: 'GET',
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -92,4 +77,5 @@ export const {
     useRegisterUserMutation,
     useLoginUserMutation,
     useLoginGoogleMutation,
+    useLogoutUserMutation,
 } = userApi;

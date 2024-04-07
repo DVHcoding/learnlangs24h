@@ -1,0 +1,369 @@
+{
+    "lessons": [
+        {
+            "title": "1. Thì (Tenses)",
+            "process": "1/24",
+            "totalTime": "1:00:30",
+            "lessonItems": [
+                {
+                    "id": "1",
+                    "title": "1. Thì hiện tại đơn",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "2",
+                    "title": "2. Thực hành thì hiện tại đơn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "3",
+                    "title": "3. Thì hiện tại tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "4",
+                    "title": "4. Thực hành thì hiện tại tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "5",
+                    "title": "5. Thì hiện tại hoàn thành",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "6",
+                    "title": "6. Thực hành thì hiện tại hoàn thành",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "7",
+                    "title": "7. Thì hiện tại hoàn thành tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "8",
+                    "title": "8. Thực hành thì hiện tại hoàn thành tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "9",
+                    "title": "9. Thì quá khứ đơn",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "10",
+                    "title": "10. Thực hành thì quá khứ đơn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "11",
+                    "title": "11. Thì quá khứ tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "12",
+                    "title": "12. Thực hành thì quá khứ tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "13",
+                    "title": "13. Thì quá khứ hoàn thành",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "14",
+                    "title": "14. Thực hành thì quá khứ hoàn thành",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "15",
+                    "title": "15. Thì quá khứ hoàn thành tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "16",
+                    "title": "16. Thực hành thì quá khứ hoàn thành tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "17",
+                    "title": "17. Thì tương lai đơn",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "18",
+                    "title": "18. Thực hành thì tương lai đơn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "19",
+                    "title": "19. Thì tương lai tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "20",
+                    "title": "20. Thực hành thì tương lai tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "21",
+                    "title": "21. Thì tương lai hoàn thành",
+                    "time": "10:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "22",
+                    "title": "22. Thực hành thì tương lai hoàn thành",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "23",
+                    "title": "23. Thì tương lai hoàn thành tiếp diễn",
+                    "time": "12:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "24",
+                    "title": "24. Thực hành thì tương lai hoàn thành tiếp diễn",
+                    "time": "05:13",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                }
+            ]
+        },
+        {
+            "title": "2. Câu điều kiện",
+            "process": "2/8",
+            "totalTime": "2:10:30",
+            "lessonItems": [
+                {
+                    "id": "25",
+                    "title": "1. Câu điều kiện loại 0",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "26",
+                    "title": "2. Thực hành câu điều kiện loại 0",
+                    "time": "05:30",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "27",
+                    "title": "3. Câu điều kiện loại 1",
+                    "time": "22:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "28",
+                    "title": "4. Thực hành câu điều kiện loại 1",
+                    "time": "05:30",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "29",
+                    "title": "5. Câu điều kiện loại 2",
+                    "time": "22:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "30",
+                    "title": "6. Thực hành câu điều kiện loại 2",
+                    "time": "05:30",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "31",
+                    "title": "7. Câu điều kiện loại 3",
+                    "time": "22:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "32",
+                    "title": "8. Thực hành câu điều kiện loại 3",
+                    "time": "05:30",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                }
+            ]
+        },
+        {
+            "title": "3. Câu giả định (Subjunctive)",
+            "process": "2/11",
+            "totalTime": "45:30",
+            "lessonItems": [
+                {
+                    "id": "33",
+                    "title": "1. Câu giả định với WOULD RATHER THAT",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "34",
+                    "title": "2. Cấu trúc giả định với 'would rather' ở hiện tại hoặc tương lai",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "35",
+                    "title": "3. Thực hành Cấu trúc giả định với 'would rather' ở hiện tại hoặc tương lai",
+                    "time": "10:12",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "36",
+                    "title": "4. Cấu trúc giả định với 'would rather' ở quá khứ",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "37",
+                    "title": "5. Thực hành Cấu trúc giả định với 'would rather' ở quá khứ",
+                    "time": "03:12",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "38",
+                    "title": "6. Câu giả định với các động từ",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "39",
+                    "title": "7. Thực hành Câu giả định với các động từ",
+                    "time": "03:12",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "40",
+                    "title": "8. Câu giả định với các tính từ",
+                    "time": "30:30",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "41",
+                    "title": "9. Thực hành Câu giả định với các tính từ",
+                    "time": "03:12",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "42",
+                    "title": "10. Câu giả định dùng với IT IS TIME",
+                    "time": "48:12",
+                    "icon": "PlayCircleFilledIcon",
+                    "lessonCategory": "lectureVideo",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                },
+                {
+                    "id": "43",
+                    "title": "11. Thực hành Câu giả định dùng với IT IS TIME",
+                    "time": "03:12",
+                    "icon": "CreateIcon",
+                    "lessonCategory": "blankQuestions",
+                    "dateCreated": "Cập nhật tháng 3 năm 2024"
+                }
+            ]
+        }
+    ]
+}

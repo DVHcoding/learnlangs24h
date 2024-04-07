@@ -8,7 +8,7 @@ module.exports = {
                 body: ['QuickSand', 'sans-serif'],
             },
             screens: {
-                sm: { max: '769px' },
+                sm: { max: '768px' },
                 phone: { max: '470px' },
                 pm: { min: '471px', max: '639px' },
             },

@@ -22,9 +22,9 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Loader } from 'rsuite';
 
 // ##################################
-const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefined }> = ({
-    isLogin,
-    loading,
+const Login: React.FC<{ isAuthenticated: boolean | undefined; isLoading: boolean | undefined }> = ({
+    isAuthenticated,
+    isLoading,
 }) => {
     const navigate = useNavigate();
 
@@ -107,10 +107,10 @@ const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefin
     };
 
     useEffect(() => {
-        if (isLogin && !loading) {
+        if (isAuthenticated && !isLoading) {
             navigate('/');
         }
-    }, [isLogin]);
+    }, [isAuthenticated]);
 
     return (
         <Fragment>

@@ -48,7 +48,7 @@ const Register = () => {
         confirmPassword: '',
         photo: {
             public_id: '',
-            url: 'https://cdn.pixabay.com/photo/2023/05/02/10/35/avatar-7964945_960_720.png',
+            url: 'https://img.freepik.com/free-vector/illustration-user-avatar-icon_53876-5907.jpg?w=740',
         },
     });
     const [isValid, setIsValid] = useState<ValidateType>({
