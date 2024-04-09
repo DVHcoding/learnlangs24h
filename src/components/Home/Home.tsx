@@ -1,8 +1,11 @@
 // ##################################
+// #       IMPORT Npm
+// ##################################
+
+// ##################################
 // #       IMPORT Components
 // ##################################
 import Video from '@assets/videos/videoAuthen.mp4';
-
 import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 import Navbar from '@pages/Header/Navbar';
 import Sidebar from '@pages/Sidebar/Sidebar';
@@ -12,10 +15,6 @@ import TopUsers from './TopUsers';
 import Features from './Features';
 import Certificates from './Certificates';
 import Process from './Process';
-
-// ##################################
-// #       IMPORT Npm
-// ##################################
 
 // ##################################
 const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {

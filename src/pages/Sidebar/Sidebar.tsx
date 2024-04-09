@@ -36,7 +36,7 @@ const Sidebar = () => {
     };
 
     // fixed when screen smaller 470px
-    const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 470);
+    const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 1000);
 
     // Set active page
     const [activePage, setActivePage] = useState<string>('');
@@ -55,7 +55,7 @@ const Sidebar = () => {
     // Handle resize when expand to the sidebar
     useEffect(() => {
         const handleResize = () => {
-            setExpanded(window.innerWidth > 470);
+            setExpanded(window.innerWidth > 1000);
         };
         window.addEventListener('resize', handleResize);
 
@@ -68,7 +68,7 @@ const Sidebar = () => {
         <div
             className={`scrollbar duration-50 h-full w-[240px] max-w-max 
             overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
-            ${expanded ? 'phone:fixed phone:z-10' : ''}`}
+            ${expanded ? 'phone:fixed phone:z-10 pm:fixed pm:z-10 tablet:fixed tablet:z-10' : ''}`}
         >
             <Sidenav
                 defaultOpenKeys={['3', '4']}

@@ -216,3 +216,8 @@ button {
 .rs-icon {
   color: var(--text-custom);
 }
+
+
+.draggable-element {
+  touch-action: none;
+}

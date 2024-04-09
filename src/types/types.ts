@@ -7,6 +7,7 @@ export interface UserType {
 }
 
 export interface LessonsType {
+    id: number;
     title: string;
     process: string;
     totalTime: string;

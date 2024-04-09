@@ -11,6 +11,7 @@ module.exports = {
                 sm: { max: '768px' },
                 phone: { max: '470px' },
                 pm: { min: '471px', max: '639px' },
+                tablet: { min: '575px', max: '768px' },
             },
             colors: {
                 bgCustom: 'var(--bg-custom)',

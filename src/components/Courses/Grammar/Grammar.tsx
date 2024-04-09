@@ -58,20 +58,19 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
             className="scrollbar h-screen overflow-auto bg-bgCustom sm:px-0 sm:py-0 md:p-0 
             xl:px-8 xl:py-4 "
         >
-            <div className="flex h-full w-full overflow-hidden rounded-2xl shadow-md sm:rounded-none">
+            <div className="flex h-full w-full overflow-hidden rounded-md border-2 border-bdCustom sm:rounded-none">
                 {/* SIDE-BAR */}
                 <Sidebar />
 
                 {/* CONTENT */}
                 <div
-                    className={`h-full w-full bg-bgCustom xl:rounded-r-2xl xl:border-2 
-                    xl:border-bdCustom ${expanded ? 'phone:z-0' : ''} scrollbar border-2
-                    sm:min-w-[70%] phone:overflow-x-auto pm:min-w-[60%]`}
+                    className={`scrollbar w-full overflow-auto bg-bgCustom 
+                        ${expanded ? 'phone:z-0' : ''} `}
                 >
                     {/* Navbar */}
                     <Navbar toggleTheme={toggleTheme} />
 
-                    <div className="h-[85%] px-4 phone:p-1 ">
+                    <div className="h-[85%] pl-4 phone:p-1 ">
                         <div className="flex justify-between">
                             <Breadcrumbs />
 

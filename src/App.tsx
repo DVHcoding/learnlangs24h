@@ -7,17 +7,22 @@ import { lazy, Suspense, useEffect, useState } from 'react';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import Loader from './pages/Loader/Loader';
-import NotFound from '@pages/NotFound/NotFound';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
+import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
 import { useUserDetailsQuery } from '@store/api/userApi';
 
 // ##################################
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+const Loader = lazy(() => import('./pages/Loader/Loader'));
 const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
 const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
 const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
+
+// Admin Components
+const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
+const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -56,23 +61,54 @@ function App() {
         <Router>
             <Suspense fallback={<Loader />}>
                 <Routes>
-                    {/* Public Route */}
+                    {/*#################################
+                       #          PUBLIC ROUTE         #
+                       #################################*/}
                     <Route path="*" element={<NotFound />} />
                     <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
-                    <Route
-                        path="/login"
-                        element={<Login isAuthenticated={data?.success} isLoading={isLoading} />}
-                    />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/forgot" element={<ForgotPassword />} />
 
-                    {/* Protected Route */}
+                    {/*#######################################
+                       # REDIRECT TO HOME WHEN AUTHENTICATED #
+                       #######################################*/}
+                    <Route
+                        element={
+                            <RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />
+                        }
+                    >
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/forgot" element={<ForgotPassword />} />
+                    </Route>
+
+                    {/*#################################
+                       # AUTHENTICATED PROTECTED ROUTE #
+                       #################################*/}
                     <Route
                         element={
                             <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />
                         }
                     >
                         <Route path="/grammar" element={<Grammar toggleTheme={toggleTheme} />} />
+                    </Route>
+
+                    {/*#################################
+                       #          ADMIN ROUTE          #
+                       #################################*/}
+                    <Route
+                        element={
+                            <ProtectedRoute
+                                isAuthenticated={data?.success}
+                                isLoading={isLoading}
+                                isAdmin={true}
+                                role={data?.user?.roles}
+                            />
+                        }
+                    >
+                        <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
+                        <Route
+                            path="/admin/courses"
+                            element={<CoursesList toggleTheme={toggleTheme} />}
+                        />
                     </Route>
                 </Routes>
             </Suspense>

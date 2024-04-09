@@ -22,6 +22,7 @@ export interface RegisterUserType {
         public_id: string;
         url: string;
     };
+    roles?: string;
 }
 
 export interface LoginGoogleType {
@@ -32,4 +33,5 @@ export interface LoginGoogleType {
         url: string | null;
     };
     googleId: string | null;
+    roles?: string;
 }
