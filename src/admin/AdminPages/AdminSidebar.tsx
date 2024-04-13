@@ -102,9 +102,7 @@ const AdminSidebar = () => {
                             before:left-0 before:w-[3px] before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             icon={<Home className="absolute left-5" strokeWidth={1.5} size={17} />}
                         >
-                            <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                Dashboard
-                            </span>
+                            <span className="transition-all hover:text-[#8bbf64]">Dashboard</span>
                         </Nav.Item>
 
                         {/*=========================================*/}
@@ -162,7 +160,7 @@ const AdminSidebar = () => {
                             className="bg-bgCustom"
                             onClick={() => setExpanded(true)}
                             eventKey="4"
-                            title="Courses Manager"
+                            title="Courses"
                             icon={
                                 <FolderKanban
                                     className="absolute left-5 text-textSidebar"
@@ -173,7 +171,7 @@ const AdminSidebar = () => {
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
-                                eventKey="3-1"
+                                eventKey="4-1"
                                 className={`before:absolute ${
                                     activePage === '/admin/courses' ? 'before:h-8' : 'before:h-0'
                                 } before:bottom-2 before:left-0 before:w-[3px]
@@ -185,7 +183,7 @@ const AdminSidebar = () => {
                             </Nav.Item>
 
                             <Nav.Item
-                                eventKey="3-2"
+                                eventKey="4-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
@@ -211,7 +209,7 @@ const AdminSidebar = () => {
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
-                                eventKey="3-1"
+                                eventKey="5-1"
                                 className={`before:absolute ${
                                     activePage === '/admin/courses' ? 'before:h-8' : 'before:h-0'
                                 } before:bottom-2 before:left-0 before:w-[3px]
@@ -223,7 +221,7 @@ const AdminSidebar = () => {
                             </Nav.Item>
 
                             <Nav.Item
-                                eventKey="3-2"
+                                eventKey="5-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
@@ -249,7 +247,7 @@ const AdminSidebar = () => {
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
-                                eventKey="3-1"
+                                eventKey="6-1"
                                 className={`before:absolute ${
                                     activePage === '/admin/courses' ? 'before:h-8' : 'before:h-0'
                                 } before:bottom-2 before:left-0 before:w-[3px]
@@ -261,7 +259,7 @@ const AdminSidebar = () => {
                             </Nav.Item>
 
                             <Nav.Item
-                                eventKey="3-2"
+                                eventKey="6-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
@@ -287,7 +285,7 @@ const AdminSidebar = () => {
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
-                                eventKey="3-1"
+                                eventKey="7-1"
                                 className={`before:absolute ${
                                     activePage === '/admin/courses' ? 'before:h-8' : 'before:h-0'
                                 } before:bottom-2 before:left-0 before:w-[3px]
@@ -299,7 +297,7 @@ const AdminSidebar = () => {
                             </Nav.Item>
 
                             <Nav.Item
-                                eventKey="3-2"
+                                eventKey="7-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >

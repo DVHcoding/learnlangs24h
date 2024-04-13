@@ -2,7 +2,7 @@
 // #       IMPORT Npm
 // ##################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 
 // ##################################
 // #       IMPORT Components
@@ -23,6 +23,7 @@ const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
 // Admin Components
 const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
 const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
+const GrammarItem = lazy(() => import('@admin/AdminComponents/CoursesManager/Grammar/GrammarItem'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -45,9 +46,9 @@ function App() {
     });
 
     /* The function that is handle change theme when click on toggle*/
-    const toggleTheme = () => {
+    const toggleTheme = useCallback(() => {
         setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-    };
+    }, []);
 
     useEffect(() => {
         document.body.classList.add(theme);
@@ -108,6 +109,11 @@ function App() {
                         <Route
                             path="/admin/courses"
                             element={<CoursesList toggleTheme={toggleTheme} />}
+                        />
+
+                        <Route
+                            path="/admin/grammar"
+                            element={<GrammarItem toggleTheme={toggleTheme} />}
                         />
                     </Route>
                 </Routes>

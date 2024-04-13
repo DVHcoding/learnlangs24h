@@ -114,4 +114,4 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     );
 };
 
-export default Navbar;
+export default React.memo(Navbar);

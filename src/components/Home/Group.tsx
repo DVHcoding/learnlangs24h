@@ -168,7 +168,7 @@ function Media(props: MediaProps) {
 
                                         <button
                                             className="border-borderCustom rounded-md border-2 p-1 font-body font-semibold
-                                        text-textCustom transition-all duration-300 hover:bg-bgCustomProcess"
+                                            text-textCustom transition-all duration-300 hover:bg-bgCustomProcess"
                                         >
                                             Join Now
                                         </button>
@@ -182,16 +182,21 @@ function Media(props: MediaProps) {
                                 </>
                             ) : (
                                 <>
-                                    <div className="mb-2 flex flex-wrap items-center justify-between gap-4">
-                                        <Skeleton variant="circular" width={30} height={30} />
-                                        <Skeleton variant="circular" width={30} height={30} />
-                                        <Skeleton variant="circular" width={30} height={30} />
+                                    <div className="flex flex-wrap items-center justify-between gap-2">
+                                        <div className="mb-1 flex items-center gap-2">
+                                            <Skeleton variant="circular" width={30} height={30} />
+                                            <Skeleton variant="circular" width={30} height={30} />
+                                            <Skeleton variant="circular" width={30} height={30} />
+                                            <Skeleton variant="circular" width={30} height={30} />
+                                        </div>
 
-                                        <Skeleton width={50} height={40} />
+                                        <div>
+                                            <Skeleton width={60} height={40} />
+                                        </div>
                                     </div>
 
                                     <div>
-                                        <Skeleton width={220} />
+                                        <Skeleton width={'100%'} />
                                     </div>
                                 </>
                             )}

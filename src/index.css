@@ -221,3 +221,39 @@ button {
 .draggable-element {
   touch-action: none;
 }
+
+
+.css-o9k5xi-MuiInputBase-root-MuiOutlinedInput-root {
+  color: var(--text-custom);
+  border: 1px solid var(--border-custom)
+}
+
+.css-1jy569b-MuiFormLabel-root-MuiInputLabel-root {
+  color: var(--text-custom);
+  background-color: var(--bg-custom);
+}
+
+.css-11u53oe-MuiSelect-select-MuiInputBase-input-MuiOutlinedInput-input.MuiSelect-select {
+  color: var(--text-custom);
+}
+
+.css-1yk1gt9-MuiInputBase-root-MuiOutlinedInput-root-MuiSelect-root {
+  border: 1px solid var(--border-custom)
+}
+
+.css-6hp17o-MuiList-root-MuiMenu-list {
+  background-color: var(--bg-custom);
+  color: var(--text-custom)
+}
+
+.css-hfutr2-MuiSvgIcon-root-MuiSelect-icon path {
+  color: var(--text-custom);
+}
+
+.tox-statusbar__branding {
+  display: none;
+}
+
+.css-heg063-MuiTabs-flexContainer {
+  border-bottom: 1px solid var(--border-custom);
+}

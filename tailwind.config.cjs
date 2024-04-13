@@ -6,6 +6,7 @@ module.exports = {
             fontFamily: {
                 title: ['Montserrat', 'sans-serif'],
                 body: ['QuickSand', 'sans-serif'],
+                segoe: ['Segoe UI', 'sans-serif'],
             },
             screens: {
                 sm: { max: '768px' },

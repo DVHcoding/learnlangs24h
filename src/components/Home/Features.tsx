@@ -83,7 +83,11 @@ function Media(props: MediaProps) {
                                 </>
                             ) : (
                                 <>
-                                    <Skeleton variant="rectangular" height={120} />
+                                    <Skeleton
+                                        variant="rectangular"
+                                        height={120}
+                                        animation={'wave'}
+                                    />
                                     <Skeleton width="70%" height={10} />
                                 </>
                             )}

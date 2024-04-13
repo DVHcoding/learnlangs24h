@@ -13,7 +13,7 @@ import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 import Navbar from '@pages/Header/Navbar';
 import Sidebar from '@admin/AdminPages/AdminSidebar';
 import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
-import GrammarLessonCard from '@admin/AdminComponents/CoursesManager/GrammarLessonCard';
+import GrammarLessonCard from '@admin/AdminComponents/CoursesManager/Grammar/GrammarLessonCard';
 
 // ##################################
 const CoursesList: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
@@ -317,11 +317,12 @@ const CoursesList: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
                                 open={openWithHeader}
                                 onClose={() => setOpenWithHeader(false)}
                                 size="sm"
+                                className="md:max-w-[30rem] phone:max-w-full pm:max-w-[80%] tablet:max-w-[30rem]"
                             >
-                                <Drawer.Header>
+                                <Drawer.Header className="bg-bgCustom">
                                     <InlineEdit
                                         defaultValue="Grammar Course"
-                                        className="font-semibold"
+                                        className="font-semibold text-textCustom"
                                     />
 
                                     <Drawer.Actions>
@@ -337,7 +338,7 @@ const CoursesList: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
                                     </Drawer.Actions>
                                 </Drawer.Header>
 
-                                <Drawer.Body>
+                                <Drawer.Body className="bg-bgCustom">
                                     <GrammarLessonCard />
                                 </Drawer.Body>
                             </Drawer>

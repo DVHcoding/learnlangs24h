@@ -5,7 +5,7 @@
             "questions": [
                 {
                     "sentence": "1. She ______ (be) a teacher.",
-                    "correctAnswers": ["is"],
+                    "correctAnswers":["is"],
                     "otherAnswers": ["is"]
                 },
                 {

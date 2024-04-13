@@ -15,11 +15,23 @@ import TopUsers from './TopUsers';
 import Features from './Features';
 import Certificates from './Certificates';
 import Process from './Process';
+import { useEffect, useState } from 'react';
+import VideoBannerSkeleton from '@components/Skeleton/VideoBannerSkeleton';
 
 // ##################################
 const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const expanded: boolean = window.innerWidth > 390;
     let loading: boolean = false;
+
+    const [loadingBanner, setLoadingBanner] = useState(true);
+
+    useEffect(() => {
+        const timeoutId = setTimeout(() => {
+            setLoadingBanner(false);
+        }, 1000);
+
+        return () => clearTimeout(timeoutId);
+    }, []);
 
     return (
         <div>
@@ -49,40 +61,48 @@ const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                         {/* BODY HEAD */}
                         <div className="flex gap-4 px-4 sm:flex-wrap">
                             {/* Banner */}
-                            <div
-                                className="relative h-52 shrink-0 basis-[50%] overflow-hidden rounded-xl bg-bgHoverGrayDark 
-                                sm:grow phone:w-full"
-                            >
-                                <video
-                                    src={Video}
-                                    autoPlay
-                                    muted
-                                    loop
-                                    className="absolute h-full w-full object-cover"
-                                >
-                                    <track kind="captions" srcLang="en" label="English Captions" />
-                                </video>
-
+                            {!loadingBanner ? (
                                 <div
-                                    className="absolute left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] px-2
-                                    text-center text-white"
+                                    className="relative h-52 shrink-0 basis-[50%] overflow-hidden rounded-xl bg-bgHoverGrayDark 
+                                    sm:grow phone:w-full"
                                 >
-                                    <h1
-                                        className="mb-2 text-nowrap font-body text-2xl font-bold sm:text-wrap md:text-wrap 
-                                        md:text-lg lg:text-3xl phone:text-wrap phone:text-lg"
+                                    <video
+                                        src={Video}
+                                        autoPlay
+                                        muted
+                                        loop
+                                        className="absolute h-full w-full object-cover"
                                     >
-                                        Explore many exciting courses
-                                    </h1>
+                                        <track
+                                            kind="captions"
+                                            srcLang="en"
+                                            label="English Captions"
+                                        />
+                                    </video>
 
-                                    <p className="mb-[10%] text-base sm:text-wrap md:text-wrap md:text-sm lg:text-lg phone:text-left phone:text-sm">
-                                        Free English skills development platform. You can access
-                                        necessary features in the sidebar
-                                    </p>
+                                    <div
+                                        className="absolute left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] px-2
+                                        text-center text-white"
+                                    >
+                                        <h1
+                                            className="mb-2 text-nowrap font-body text-2xl font-bold sm:text-wrap md:text-wrap 
+                                        md:text-lg lg:text-3xl phone:text-wrap phone:text-lg"
+                                        >
+                                            Explore many exciting courses
+                                        </h1>
+
+                                        <p className="mb-[10%] text-base sm:text-wrap md:text-wrap md:text-sm lg:text-lg phone:text-left phone:text-sm">
+                                            Free English skills development platform. You can access
+                                            necessary features in the sidebar
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
+                            ) : (
+                                <VideoBannerSkeleton />
+                            )}
 
                             {/* My process */}
-                            <Process />
+                            <Process loading={loading} />
                         </div>
 
                         {/* BODY CENTER */}
