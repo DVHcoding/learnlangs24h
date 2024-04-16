@@ -3,47 +3,95 @@ import { useState, useEffect } from 'react';
 // #       IMPORT Components
 // ##################################
 import Logo from '@assets/logo.png';
+import { createNewCourse } from '@store/reducer/courseReducer';
+import { RootState, AppDispatch } from '@store/store';
+import { toastError } from '@components/Toast/Toasts';
 
 // ##################################
 // #       IMPORT Npm
 // ##################################
 import { Link } from 'react-router-dom';
-import { Sidenav, Nav } from 'rsuite';
+import { Sidenav, Nav, Modal, Button, Input, Loader } from 'rsuite';
 import { Home, FolderKanban, Blocks, MessageCirclePlus, Layers, SquareLibrary } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
+// ##################################
 const AdminSidebar = () => {
     // Redirect with React Router Dom v6
     const navigate = useNavigate();
     const location = useLocation();
+    const dispatch: AppDispatch = useDispatch();
 
-    // Style sidebar
-    const panelStyles: React.CSSProperties = {
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        marginLeft: '20px',
-        marginTop: '20px',
-    };
+    // ##########################
+    // #      STATE MANAGER     #
+    // ##########################
+    const { loading } = useSelector((state: RootState) => state.newCourse);
 
     // fixed when screen smaller 470px
     const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 1000);
-
     // Set active page
     const [activePage, setActivePage] = useState<string>('');
+    const [open, setOpen] = useState<boolean>(false);
+    const [unitName, setUnitName] = useState<string>('');
+    const [courseImage, setCourseImage] = useState<File | null>(null);
 
+    // ##########################
+    // #    FUNCTION MANAGER    #
+    // ##########################
     // Navigation when clicking on link
     const redirect = (path: string) => {
         navigate(path);
     };
 
-    // Get pathname with useLocation hooks (example: /grammar)
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
+    const handleSubmitNewCourse = async () => {
+        if (unitName === '') {
+            return toastError('Vui Lòng Nhập Unit Name!');
+        }
+
+        if (!courseImage) {
+            return toastError('Vui lòng chọn ảnh!');
+        }
+
+        try {
+            await dispatch(createNewCourse({ unitName, courseImage }));
+            setUnitName('');
+            setOpen(false);
+        } catch (error) {
+            toastError(`${error}`);
+        }
+    };
+
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        const fileName = e.target.files?.[0]?.name;
+        const extension = fileName?.split('.').pop();
+
+        if (file) {
+            if (extension === 'png' || extension === 'jpg' || extension === 'jpeg') {
+                setCourseImage(file);
+            } else {
+                alert('Vui lòng chọn ảnh!');
+                setCourseImage(null);
+            }
+        } else {
+            setCourseImage(null);
+        }
+    };
+
+    // ##########################
+    // #    HOOKS MANAGER    #
+    // ##########################
+
     useEffect(() => {
+        // Set active page based on pathname
         const pathname = location.pathname;
         setActivePage(pathname);
-    }, [location.pathname]);
 
-    // Handle resize when expand to the sidebar
-    useEffect(() => {
+        // Handle resize when expanding the sidebar
         const handleResize = () => {
             setExpanded(window.innerWidth > 1000);
         };
@@ -52,7 +100,15 @@ const AdminSidebar = () => {
         return () => {
             window.removeEventListener('resize', handleResize);
         };
-    }, []);
+    }, [location.pathname]);
+
+    // Style sidebar
+    const panelStyles: React.CSSProperties = {
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        marginLeft: '20px',
+        marginTop: '20px',
+    };
 
     return (
         <div
@@ -81,11 +137,15 @@ const AdminSidebar = () => {
                         </Link>
 
                         {/*=========================================*/}
-
                         <Nav.Item
                             eventKey="1"
                             panel
-                            style={panelStyles}
+                            style={{
+                                textTransform: 'uppercase',
+                                fontWeight: 'bold',
+                                marginLeft: '20px',
+                                marginTop: '20px',
+                            }}
                             className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
                         >
                             General
@@ -183,6 +243,7 @@ const AdminSidebar = () => {
                             </Nav.Item>
 
                             <Nav.Item
+                                onClick={handleOpen}
                                 eventKey="4-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
@@ -325,6 +386,59 @@ const AdminSidebar = () => {
                     <Sidenav.Toggle onToggle={(expanded) => setExpanded(expanded)} />
                 </div>
             </Sidenav>
+
+            <Modal open={open} onClose={handleClose}>
+                <Modal.Header>
+                    <Modal.Title>Create New Course</Modal.Title>
+                </Modal.Header>
+
+                <Modal.Body>
+                    <div className="mb-4">
+                        <label
+                            aria-label="Unit Name"
+                            className=" text-base font-semibold text-textCustom"
+                        >
+                            Unit Name
+                        </label>
+                        <Input
+                            size="lg"
+                            placeholder="Unit Name"
+                            value={unitName}
+                            onChange={(value) => setUnitName(value)}
+                            className="mt-2 border-bdCustom bg-bgCustom"
+                        />
+                    </div>
+
+                    <div>
+                        <input
+                            type="file"
+                            id="courseImage"
+                            accept=".png, .jpg, .jpeg"
+                            onChange={handleImageChange}
+                            className="max-w-max text-textCustom"
+                        />
+                    </div>
+
+                    {loading && <Loader content="Loading..." className="mt-4" />}
+                </Modal.Body>
+
+                <Modal.Footer>
+                    <Button
+                        disabled={loading}
+                        onClick={() => handleSubmitNewCourse()}
+                        appearance="primary"
+                    >
+                        Ok
+                    </Button>
+                    <Button
+                        onClick={handleClose}
+                        appearance="subtle"
+                        className="bg-bgCustom text-textCustom"
+                    >
+                        Cancel
+                    </Button>
+                </Modal.Footer>
+            </Modal>
         </div>
     );
 };

@@ -1,6 +1,7 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
+import { useEffect, useState } from 'react';
 
 // ##################################
 // #       IMPORT Components
@@ -15,14 +16,12 @@ import TopUsers from './TopUsers';
 import Features from './Features';
 import Certificates from './Certificates';
 import Process from './Process';
-import { useEffect, useState } from 'react';
 import VideoBannerSkeleton from '@components/Skeleton/VideoBannerSkeleton';
 
 // ##################################
 const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const expanded: boolean = window.innerWidth > 390;
     let loading: boolean = false;
-
     const [loadingBanner, setLoadingBanner] = useState(true);
 
     useEffect(() => {
@@ -109,7 +108,7 @@ const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                         <div className="grid grid-cols-2 gap-4 px-4 py-6 sm:grid-cols-1">
                             <div>
                                 {/* Features */}
-                                <Features loading={loading} />
+                                <Features />
 
                                 {/* Certificates */}
                                 <Certificates />

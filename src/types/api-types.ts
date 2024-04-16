@@ -35,3 +35,29 @@ export interface LoginGoogleType {
     googleId: string | null;
     roles?: string;
 }
+
+export interface NewCoursePayloadType {
+    unitName: string;
+    courseImage: File;
+}
+
+export interface NewCourseStateType {
+    loading: boolean;
+    error: string | null;
+    data: MessageResponse | null;
+}
+
+export interface AllCoursesResponseType {
+    success: boolean;
+    courses: CourseType[];
+}
+
+export interface CourseType {
+    _id: string;
+    name: string;
+    image: {
+        url: string;
+    };
+    createAt: Date;
+    rating: number;
+}

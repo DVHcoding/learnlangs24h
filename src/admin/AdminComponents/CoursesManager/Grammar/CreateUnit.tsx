@@ -36,6 +36,7 @@ const CreateUnit: React.FC = () => {
     const [lectureType, setLectureType] = useState<string>('');
     const [exerciseType, setExerciseType] = useState<string>('');
     const [questions, setQuestions] = useState<QuestionType[]>([]);
+    const [lessonTitle, setLessonTitle] = useState<string>('');
 
     const [timeValue, setTimeValue] = useState<dayjs.Dayjs | null>(dayjs('2022-04-17T15:30'));
 
@@ -66,6 +67,10 @@ const CreateUnit: React.FC = () => {
         setLectureType(event.target.value as string);
     };
 
+    const handleChangeLessonTitle = (event: SelectChangeEvent) => {
+        setLessonTitle(event.target.value as string);
+    };
+
     const handleChangeQuestionType = (event: SelectChangeEvent) => {
         setExerciseType(event.target.value as string);
     };
@@ -92,9 +97,9 @@ const CreateUnit: React.FC = () => {
                         <Select
                             labelId="select lesson title"
                             id="select-lesson-title"
-                            value={lectureType}
                             label="Lesson Title"
-                            onChange={handleChangeLectureType}
+                            onChange={handleChangeLessonTitle}
+                            value={lessonTitle}
                         >
                             <MenuItem value={'Thì hiện tại đơn'}>Thì hiện tại đơn</MenuItem>
                             <MenuItem value={'Cau dieu kien'}>Cau dieu kien</MenuItem>

@@ -1,10 +1,9 @@
 // ##################################
 // #       IMPORT Components
 // ##################################
-import Grammar from '@assets/backgrounds/Grammar.png';
-import Listening from '@assets/backgrounds/Listening.png';
-import Reading from '@assets/backgrounds/Reading.png';
-import Writing from '@assets/backgrounds/Writing.png';
+
+import { useGetAllCoursesQuery } from '@store/api/courseApi';
+import { CourseType } from 'types/api-types';
 
 // ##################################
 // #       IMPORT Npm
@@ -12,32 +11,20 @@ import Writing from '@assets/backgrounds/Writing.png';
 import { ArrowRight } from 'lucide-react';
 import Box from '@mui/material/Box';
 import Skeleton from '@mui/material/Skeleton';
-
-const data = [
-    {
-        src: Grammar,
-        title: 'Grammar',
-    },
-    {
-        src: Listening,
-        title: 'Listening',
-    },
-    {
-        src: Reading,
-        title: 'Reading',
-    },
-    {
-        src: Writing,
-        title: 'Writing',
-    },
-];
+import { useNavigate } from 'react-router-dom';
 
 interface MediaProps {
     loading?: boolean;
+    data?: CourseType[];
 }
 
 function Media(props: MediaProps) {
-    const { loading = false } = props;
+    const { loading = false, data } = props;
+    const navigate = useNavigate();
+
+    const handleRedirect: (path: string) => void = (path) => {
+        navigate(path);
+    };
 
     return (
         <>
@@ -51,8 +38,8 @@ function Media(props: MediaProps) {
                     <div className="flex items-center gap-1">
                         <p
                             className="cursor-pointer select-none font-body text-sm 
-                                        font-medium text-textCustom transition-all duration-200 
-                                        hover:text-textCustomProcess"
+                            font-medium text-textCustom transition-all duration-200 
+                            hover:text-textCustomProcess"
                         >
                             See All
                         </p>
@@ -66,43 +53,53 @@ function Media(props: MediaProps) {
 
                 {/* bottom */}
                 <ul className="flex flex-wrap items-center justify-center gap-4">
-                    {(loading ? Array.from(new Array(data.length)) : data).map((item, index) => (
-                        <li
-                            key={index}
-                            className="w-[7.9rem] rounded-lg bg-[#9aabab47] p-2 phone:grow"
-                        >
-                            {item ? (
-                                <>
-                                    <img src={item.src} alt="course" className="mx-auto w-40" />
-                                    <h2
-                                        className="select-none text-center font-body text-sm font-semibold
-                                        text-textCustomFeatures phone:text-base"
-                                    >
-                                        {item.title}
-                                    </h2>
-                                </>
-                            ) : (
-                                <>
-                                    <Skeleton
-                                        variant="rectangular"
-                                        height={120}
-                                        animation={'wave'}
-                                    />
+                    {!loading ? (
+                        data?.map((course) => (
+                            <li
+                                key={course?._id}
+                                className="w-[7.9rem] cursor-pointer rounded-lg bg-[#9aabab47] p-2 phone:grow"
+                                onClick={() =>
+                                    handleRedirect(`/${course?.name.toLowerCase()}?id=1`)
+                                }
+                            >
+                                <img
+                                    src={course?.image?.url}
+                                    alt={course?.name}
+                                    className="mx-auto w-40"
+                                />
+                                <h2
+                                    className="select-none text-center font-body text-sm font-semibold
+                                         text-textCustomFeatures phone:text-base"
+                                >
+                                    {course?.name}
+                                </h2>
+                            </li>
+                        ))
+                    ) : (
+                        <>
+                            {Array.from(new Array(4)).map((_, index) => (
+                                <li
+                                    className="w-[7.9rem] rounded-lg bg-[#9aabab47] p-2 phone:grow"
+                                    key={index}
+                                >
+                                    <Skeleton variant="rectangular" height={120} />
                                     <Skeleton width="70%" height={10} />
-                                </>
-                            )}
-                        </li>
-                    ))}
+                                </li>
+                            ))}
+                        </>
+                    )}
                 </ul>
             </div>
         </>
     );
 }
 
-const Features: React.FC<{ loading: boolean }> = ({ loading }) => {
+const Features: React.FC = () => {
+    const { data, isLoading: getAllCoursesLoading } = useGetAllCoursesQuery();
+
     return (
         <Box sx={{ overflow: 'hidden' }}>
-            <Media loading={loading} />
+            <Media loading={getAllCoursesLoading} data={data?.courses} />
         </Box>
     );
 };

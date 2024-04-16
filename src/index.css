@@ -257,3 +257,7 @@ button {
 .css-heg063-MuiTabs-flexContainer {
   border-bottom: 1px solid var(--border-custom);
 }
+
+.rs-modal-content {
+  background-color: var(--bg-custom);
+}
