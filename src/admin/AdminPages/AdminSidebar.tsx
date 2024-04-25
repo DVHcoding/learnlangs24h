@@ -249,7 +249,7 @@ const AdminSidebar = () => {
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
                                 <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Create New
+                                    New Course
                                 </span>
                             </Nav.Item>
                         </Nav.Menu>

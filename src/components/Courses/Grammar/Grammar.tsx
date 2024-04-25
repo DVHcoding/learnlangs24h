@@ -2,60 +2,48 @@ import React, { useState } from 'react';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import SocialContact from '@pages/Contact/SocialContact';
 import Sidebar from '@pages/Sidebar/Sidebar';
 import Navbar from '@pages/Header/Navbar';
 import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs';
-import GrammarData from './Grammar.json';
-import LessonGrammarCard from './LessonGrammarCard';
-import LectureVideoCard from './LectureVideoCard';
-import BlankQuestionCard from './BlankQuestionCard';
-import { LessonItemsType, LessonsType } from 'types/types';
+import VideoLectureCard from './VideoLectureCard';
+import GrammarLessonCard from './GrammarLessonCard';
+import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 
 // ##################################
 // #       IMPORT Npm
 // ##################################
 import HelpIcon from '@mui/icons-material/Help';
 import { ChevronsLeft } from 'lucide-react';
-import { useSearchParams, Navigate } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
-    // stored state to expand the sidebar
+    const [searchParams] = useSearchParams();
+    let id = searchParams.get('id');
+    if (!id) {
+        id = '662407c34c6fc5e5d110835d';
+    }
+
+    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(
+        id || ''
+    );
+
+    // ##########################
+    // #    STATE MANAGEMENT    #
+    // ##########################
+    const [open, setOpen] = useState<boolean>(false);
     const expanded: boolean = window.innerWidth > 390;
 
-    // get lectureId from url
-    const [searchParams] = useSearchParams();
-    const id = searchParams.get('id');
-
-    // stored state to expend the lesion
-    const [open, setOpen] = useState<boolean>(false);
-
-    // The function to use toggle lecture sidebar
+    // ##########################
+    // #  FUNCTION MANAGEMENT   #
+    // ##########################
     const handleToggleLesson = () => {
         setOpen(!open);
     };
 
     // ############################################
-    const lessonWithId = GrammarData.lessons.find((lesson: LessonsType) => {
-        return lesson.lessonItems.find((lessonItem: LessonItemsType) => {
-            return lessonItem.id === id;
-        });
-    });
-
-    if (lessonWithId === undefined) {
-        return <Navigate to="/notfound" />;
-    }
-
-    const lessonItem = lessonWithId.lessonItems.find((lesson: LessonItemsType) => {
-        return lesson.id === id;
-    });
-
-    const lessonCategory = lessonItem?.lessonCategory;
-
-    // ############################################
     return (
         <div
-            className="scrollbar h-screen overflow-auto bg-bgCustom sm:px-0 sm:py-0 md:p-0 
+            className="h-screen bg-bgCustom sm:px-0 sm:py-0 md:p-0 
             xl:px-8 xl:py-4 "
         >
             <div className="flex h-full w-full overflow-hidden rounded-md border-2 border-bdCustom sm:rounded-none">
@@ -88,33 +76,26 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             </button>
                         </div>
 
-                        <div className="relative mt-2 flex h-full ">
-                            <div className="scrollbar h-full grow overflow-auto rounded-lg">
-                                {lessonCategory === 'blankQuestions' && <BlankQuestionCard />}
+                        <div className="mt-2 flex h-full ">
+                            <div
+                                className="scrollbar relative h-full  overflow-auto rounded-lg"
+                                style={{ scrollbarWidth: 'none' }}
+                            >
+                                {/* {lessonCategory === 'blankQuestions' && <BlankQuestionCard />} */}
 
-                                {lessonCategory === 'lectureVideo' && (
-                                    <>
-                                        <LectureVideoCard />
-
-                                        <div className="my-4">
-                                            <h1 className="font-title text-2xl font-bold text-textCustom phone:text-lg pm:text-xl">
-                                                {lessonItem?.title}
-                                            </h1>
-                                            <p className="font-body font-medium text-textCustom phone:text-xs">
-                                                {lessonItem?.dateCreated}
-                                            </p>
-                                            <p className="my-4 font-body text-base font-semibold text-textCustom phone:text-[0.8rem] pm:text-sm">
-                                                Tham gia các cộng đồng để cùng học hỏi, chia sẻ và
-                                                "thám thính" xem LearnLang24h sắp có gì mới nhé!
-                                            </p>
-                                            <SocialContact />
-                                        </div>
-                                    </>
+                                {!unitLessonByIdLoading &&
+                                unitLessonData?.unitLesson &&
+                                unitLessonData.unitLesson.lectureType === 'videoLecture' ? (
+                                    <VideoLectureCard
+                                        unitLessonId={unitLessonData.unitLesson._id}
+                                    />
+                                ) : (
+                                    ''
                                 )}
 
                                 <div
-                                    className="absolute bottom-4 left-[64%] flex cursor-pointer items-center gap-2 rounded-lg
-                                    bg-slate-100 p-2 shadow-md sm:left-[70%] md:left-[82%] lg:left-[65%] phone:left-[60%] "
+                                    className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center gap-2 rounded-lg
+                                    bg-slate-100 p-2 shadow-md"
                                 >
                                     <HelpIcon className="text-orange-400" />
                                     <p className="text-title text-nowrap font-bold">Hỏi đáp</p>
@@ -122,7 +103,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             </div>
 
                             <div
-                                className={`basis-72 lg:static ${
+                                className={`basis-96 lg:static ${
                                     open
                                         ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                                         : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
@@ -130,8 +111,8 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 scrollbar overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0 sm:top-24  
                                 sm:h-[85%] sm:rounded-md md:fixed md:right-0 md:top-24 md:h-[85%] lg:block lg:max-w-full lg:translate-x-0 xl:h-full`}
                             >
-                                <div className="scrollbar h-full w-full overflow-auto">
-                                    <LessonGrammarCard handleToggleLesson={handleToggleLesson} />
+                                <div className="scrollbar h-full w-full overflow-auto ">
+                                    <GrammarLessonCard handleToggleLesson={handleToggleLesson} />
                                 </div>
                             </div>
                         </div>

@@ -41,6 +41,26 @@ export interface NewCoursePayloadType {
     courseImage: File;
 }
 
+export interface NewLessonPayloadType {
+    name: string;
+    courseId: string;
+}
+
+export interface NewUnitLessonPayloadType {
+    title: string;
+    time: string;
+    icon: string;
+    lectureType: string;
+    lesson: string;
+    course: string;
+}
+
+export interface NewContentUnitLessonPayloadType {
+    videoUrl: string;
+    description: string;
+    unitLesson: string;
+}
+
 export interface NewCourseStateType {
     loading: boolean;
     error: string | null;
@@ -50,6 +70,49 @@ export interface NewCourseStateType {
 export interface AllCoursesResponseType {
     success: boolean;
     courses: CourseType[];
+}
+
+export interface LessonType {
+    _id: string;
+    name: string;
+    createAt: Date;
+    course: string;
+}
+
+export interface AllLessonsResponseType {
+    success: boolean;
+    lessons: LessonType[];
+}
+
+export interface UnitLessonType {
+    _id: string;
+    title: string;
+    time: string;
+    icon: string;
+    lectureType: string;
+    createAt: Date;
+    lesson: string;
+    course: string;
+}
+
+export interface AllUnitLessonsResponseType {
+    success: boolean;
+    unitLessons: UnitLessonType[];
+}
+
+export interface UnitLessonResponseType {
+    success: boolean;
+    unitLesson: UnitLessonType;
+}
+
+export interface VideoLectureContentResponseType {
+    success: true;
+    videoLectureContent: {
+        _id: string;
+        videoUrl: string;
+        description: string;
+        unitLesson: string;
+    };
 }
 
 export interface CourseType {

@@ -61,7 +61,7 @@ const SocialContact: React.FC = () => {
                 </li>
             </ul>
 
-            <p className="text-center font-body text-sm">Made by DVHcoding ❤️</p>
+            <p className="text-center font-body text-sm text-textCustom">Made by DVHcoding ❤️</p>
         </>
     );
 };

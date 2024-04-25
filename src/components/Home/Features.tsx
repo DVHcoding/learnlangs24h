@@ -1,7 +1,6 @@
 // ##################################
 // #       IMPORT Components
 // ##################################
-
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType } from 'types/api-types';
 
@@ -59,7 +58,7 @@ function Media(props: MediaProps) {
                                 key={course?._id}
                                 className="w-[7.9rem] cursor-pointer rounded-lg bg-[#9aabab47] p-2 phone:grow"
                                 onClick={() =>
-                                    handleRedirect(`/${course?.name.toLowerCase()}?id=1`)
+                                    handleRedirect(`/${course?.name.toLowerCase()}/${course._id}`)
                                 }
                             >
                                 <img

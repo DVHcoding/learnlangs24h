@@ -6,23 +6,27 @@ import { useState } from 'react';
 import { UsersRound, Clock8, LibraryBig, CalendarDays, Trophy } from 'lucide-react';
 import StarIcon from '@mui/icons-material/Star';
 
+import dayjs from 'dayjs';
+import { Link } from 'react-router-dom';
+
 // ##################################
 // #       IMPORT Components
 // ##################################
-import HelmetWrapper from '@components/Helmet/HelmetWrapper';
 import Navbar from '@pages/Header/Navbar';
 import Sidebar from '@admin/AdminPages/AdminSidebar';
 import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
 import GrammarLessonCard from '@admin/AdminComponents/CoursesManager/Grammar/GrammarLessonCard';
+import { CourseType } from 'types/api-types';
+
+import { useGetAllCoursesQuery } from '@store/api/courseApi';
 
 // ##################################
 const CoursesList: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const [openWithHeader, setOpenWithHeader] = useState<boolean>(false);
+    const { data, isLoading } = useGetAllCoursesQuery();
 
     return (
         <div>
-            <HelmetWrapper title="Admin Page" description="Admin Page" canonical="/admin" />
-
             {/* CONTAINER */}
             <div
                 className="scrollbar h-screen overflow-auto bg-bgCustom sm:px-0 sm:py-0 md:p-0 
@@ -42,274 +46,95 @@ const CoursesList: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
                         <div className="h-full px-4">
                             {/* BreadCrumbs */}
                             <div>
-                                <AdminBreadcrumbs
-                                    pathNext="Courses Manager"
-                                    pathEnd="Courses List"
-                                />
+                                <AdminBreadcrumbs pathNext="Courses" pathEnd="Courses List" />
                             </div>
 
                             <div>
                                 <ul className="flex flex-wrap items-center  gap-4">
-                                    <li className="basis-[20rem] rounded-md bg-[#9aabab47] p-4  sm:mx-auto">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <h3 className="font-semibold text-textCustom">
-                                                Grammar Course
-                                            </h3>
-                                            <button
-                                                onClick={() => setOpenWithHeader(true)}
-                                                aria-label="btn_view_grammar_courses"
-                                                className="btn-primary"
+                                    {!isLoading &&
+                                        data?.courses.map((course: CourseType) => (
+                                            <li
+                                                className="basis-[20rem] rounded-md bg-[#9aabab47] p-4  sm:mx-auto"
+                                                key={course._id}
                                             >
-                                                View Details
-                                            </button>
-                                        </div>
+                                                <div className="flex items-center justify-between gap-2">
+                                                    <h3 className="font-semibold text-textCustom">
+                                                        {course.name}
+                                                    </h3>
+                                                    <button
+                                                        onClick={() => setOpenWithHeader(true)}
+                                                        aria-label="btn_view_grammar_courses"
+                                                        className="btn-primary"
+                                                    >
+                                                        View Details
+                                                    </button>
+                                                </div>
 
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <LibraryBig
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">73 Lesson</p>
-                                        </div>
+                                                <Link
+                                                    to={`/admin/course/${course._id}`}
+                                                    className="mb-1 flex max-w-max cursor-pointer items-center gap-2 hover:no-underline"
+                                                >
+                                                    <LibraryBig
+                                                        size={18}
+                                                        strokeWidth="1.5"
+                                                        className="text-textCustom"
+                                                    />
+                                                    <p className="text-base text-textCustom transition-all hover:text-green-600">
+                                                        73 Lesson
+                                                    </p>
+                                                </Link>
 
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <Clock8
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base  text-textCustom">
-                                                8:05:64 hours
-                                            </p>
-                                        </div>
+                                                <div className="mb-1 flex items-center gap-2">
+                                                    <Clock8
+                                                        size={18}
+                                                        strokeWidth="1.5"
+                                                        className="text-textCustom"
+                                                    />
+                                                    <p className="text-base  text-textCustom">
+                                                        8:05:64 hours
+                                                    </p>
+                                                </div>
 
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <CalendarDays
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">24/02/2024</p>
-                                        </div>
+                                                <div className="mb-1 flex items-center gap-2">
+                                                    <CalendarDays
+                                                        size={18}
+                                                        strokeWidth="1.5"
+                                                        className="text-textCustom"
+                                                    />
+                                                    <p className="text-base text-textCustom">
+                                                        {dayjs(course.createAt).format(
+                                                            'DD-MM-YYYY'
+                                                        )}
+                                                    </p>
+                                                </div>
 
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <UsersRound
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">521 people</p>
-                                        </div>
+                                                <div className="mb-1 flex items-center gap-2">
+                                                    <UsersRound
+                                                        size={18}
+                                                        strokeWidth="1.5"
+                                                        className="text-textCustom"
+                                                    />
+                                                    <p className="text-base text-textCustom">
+                                                        521 people
+                                                    </p>
+                                                </div>
 
-                                        <div className="flex items-center gap-2">
-                                            <Trophy
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">4.2</p>
-                                            <StarIcon
-                                                className="text-yellow-400"
-                                                fontSize="small"
-                                            />
-                                        </div>
-                                    </li>
-
-                                    <li className="basis-[20rem] rounded-md bg-[#9aabab47] p-4  sm:mx-auto">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <h3 className="font-semibold text-textCustom">
-                                                Listening Course
-                                            </h3>
-                                            <button
-                                                aria-label="btn_view_grammar_courses"
-                                                className="btn-primary"
-                                            >
-                                                View Details
-                                            </button>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <LibraryBig
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">57 Lesson</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <Clock8
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base  text-textCustom">
-                                                12:05:64 hours
-                                            </p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <CalendarDays
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">04/02/2024</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <UsersRound
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">121 people</p>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Trophy
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">5.0</p>
-                                            <StarIcon
-                                                className="text-yellow-400"
-                                                fontSize="small"
-                                            />
-                                        </div>
-                                    </li>
-
-                                    <li className="basis-[20rem] rounded-md bg-[#9aabab47] p-4  sm:mx-auto">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <h3 className="font-semibold text-textCustom">
-                                                Reading Course
-                                            </h3>
-                                            <button
-                                                aria-label="btn_view_grammar_courses"
-                                                className="btn-primary"
-                                            >
-                                                View Details
-                                            </button>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <LibraryBig
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">73 Lesson</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <Clock8
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base  text-textCustom">
-                                                8:05:64 hours
-                                            </p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <CalendarDays
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">24/02/2024</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <UsersRound
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">521 people</p>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Trophy
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">4.2</p>
-                                            <StarIcon
-                                                className="text-yellow-400"
-                                                fontSize="small"
-                                            />
-                                        </div>
-                                    </li>
-
-                                    <li className="basis-[20rem] rounded-md bg-[#9aabab47] p-4  sm:mx-auto">
-                                        <div className="flex items-center justify-between gap-2">
-                                            <h3 className="font-semibold text-textCustom">
-                                                Writing Course
-                                            </h3>
-                                            <button
-                                                aria-label="btn_view_grammar_courses"
-                                                className="btn-primary"
-                                            >
-                                                View Details
-                                            </button>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <LibraryBig
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">73 Lesson</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <Clock8
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base  text-textCustom">
-                                                8:05:64 hours
-                                            </p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <CalendarDays
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">24/02/2024</p>
-                                        </div>
-
-                                        <div className="mb-1 flex items-center gap-2">
-                                            <UsersRound
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">521 people</p>
-                                        </div>
-
-                                        <div className="flex items-center gap-2">
-                                            <Trophy
-                                                size={18}
-                                                strokeWidth="1.5"
-                                                className="text-textCustom"
-                                            />
-                                            <p className="text-base text-textCustom">4.2</p>
-                                            <StarIcon
-                                                className="text-yellow-400"
-                                                fontSize="small"
-                                            />
-                                        </div>
-                                    </li>
+                                                <div className="flex items-center gap-2">
+                                                    <Trophy
+                                                        size={18}
+                                                        strokeWidth="1.5"
+                                                        className="text-textCustom"
+                                                    />
+                                                    <p className="text-base text-textCustom">
+                                                        {course.rating}
+                                                    </p>
+                                                    <StarIcon
+                                                        className="text-yellow-400"
+                                                        fontSize="small"
+                                                    />
+                                                </div>
+                                            </li>
+                                        ))}
                                 </ul>
                             </div>
 

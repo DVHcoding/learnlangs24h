@@ -4,7 +4,12 @@
 import { configureStore } from '@reduxjs/toolkit';
 import { userApi } from './api/userApi';
 import { courseApi } from './api/courseApi';
-import { courseReducer } from './reducer/courseReducer';
+import {
+    newCourseReducer,
+    newLessonReducer,
+    newContentUnitLessonReducer,
+    newUnitLessonReducer,
+} from './reducer/courseReducer';
 
 // ##########################
 // #    IMPORT Components   #
@@ -15,7 +20,10 @@ export const store = configureStore({
     reducer: {
         [userApi.reducerPath]: userApi.reducer,
         [courseApi.reducerPath]: courseApi.reducer,
-        newCourse: courseReducer,
+        newCourse: newCourseReducer,
+        newLesson: newLessonReducer,
+        newUnitLesson: newUnitLessonReducer,
+        newContentUnitLesson: newContentUnitLessonReducer,
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),

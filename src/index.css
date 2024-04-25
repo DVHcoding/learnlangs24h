@@ -23,6 +23,27 @@
   }
 }
 
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+blockquote {
+  border-left: 0.1rem solid #8bbf64;
+  padding-inline: 0.5rem;
+  padding-block: 0.3rem;
+  margin-left: 1.3rem;
+  background-color: var(--bg-blockquote);
+}
+
+tr,
+td {
+  border: 1px solid #443b3b;
+  padding: 0.5rem;
+}
+
+
 h1 {
   font-size: 2em;
 }
@@ -70,15 +91,22 @@ body {
   --bg-btnPrimary: #0d73d4;
   --bg-btnDisabled: #e0e0e0;
   --bg-btnSuccess: rgb(46, 125, 50);
+  --bg-blockquote: #f6f6f6;
 
 
   /* ######################## */
   --bg-btnPrimaryHover: rgb(21, 101, 192);
   --bg-btnSuccessHover: rgb(27, 94, 32);
 
+  /* Table Antd */
+  --bg-table-hover: #fafafa;
+  --bg-table-active: #bae0ff;
+  --bg-table-thead: #fafafa;
 
   /* ######################## */
   --border-custom: rgb(241 245 249);
+
+
 }
 
 .dark {
@@ -101,9 +129,15 @@ body {
   --bg-btnPrimary: rgb(144, 202, 249);
   --bg-btnDisabled: #2e3237;
   --bg-btnSuccess: rgb(102, 187, 106);
+  --bg-blockquote: #2f4c60;
 
   --bg-btnPrimaryHover: rgb(66, 165, 245);
   --bg-btnSuccessHover: rgb(56, 142, 60);
+
+  /* Table ant */
+  --bg-table-hover: #617184;
+  --bg-table-active: #254558;
+  --bg-table-thead: #14233b;
 
   /* ####################### */
   --border-custom: rgb(100 116 139);
@@ -133,6 +167,14 @@ body {
   padding: 0.5rem;
   background-color: var(--bg-btnSuccess);
   color: var(--text-btnSuccess);
+  border-radius: 5px;
+  transition: 0.25s ease;
+}
+
+.btn-error {
+  padding: 0.5rem;
+  background-color: #dc3545;
+  color: #fff;
   border-radius: 5px;
   transition: 0.25s ease;
 }
@@ -260,4 +302,85 @@ button {
 
 .rs-modal-content {
   background-color: var(--bg-custom);
+}
+
+label#select-lesson-title,
+label#demo-simple-select-label,
+svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiSelect-icon.MuiSelect-iconOutlined.MuiSelect-iconOpen.css-bpeome-MuiSvgIcon-root-MuiSelect-icon,
+label#video-url-label,
+.css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input,
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+  color: var(--text-custom);
+}
+
+label[data-shrink=false]+.MuiInputBase-formControl .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input {
+  background-color: var(--bg-custom);
+}
+
+.css-1d3z3hw-MuiOutlinedInput-notchedOutline {
+  border-color: var(--border-custom);
+}
+
+
+
+
+/* Table Antd */
+.ant-table-content {
+  background-color: var(--bg-custom) !important;
+  border: 1px solid var(--border-custom);
+}
+
+.ant-table .ant-table-container .ant-table-content table thead.ant-table-thead .ant-table-cell {
+  background-color: var(--bg-table-thead);
+  border-radius: 0px;
+}
+
+.ant-table-cell {
+  color: var(--text-custom) !important;
+}
+
+.ant-table-tbody>tr>td {
+  background-color: var(--bg-custom);
+}
+
+.ant-table-tbody td {
+  border: none;
+}
+
+
+
+.ant-table-cell-row-hover {
+  background-color: var(--bg-table-hover) !important;
+}
+
+
+:where(.css-dev-only-do-not-override-usln0u).ant-table-wrapper .ant-table-tbody .ant-table-row.ant-table-row-selected>.ant-table-cell {
+  background: var(--bg-table-active) !important;
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-table-wrapper .ant-table-tbody>tr>th,
+:where(.css-dev-only-do-not-override-usln0u).ant-table-wrapper .ant-table-tbody>tr>td {
+  border-bottom: 1px solid var(--border-custom);
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-table-wrapper .ant-table-thead>tr>th,
+:where(.css-dev-only-do-not-override-usln0u).ant-table-wrapper .ant-table-thead>tr>td {
+  border-bottom: 1px solid var(--border-custom);
+}
+
+.anticon>svg {
+  color: var(--text-custom) !important;
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  background-color: var(--bg-custom);
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-select-single.ant-select-lg .ant-select-selector .ant-select-selection-item,
+:where(.css-dev-only-do-not-override-usln0u).ant-select-single.ant-select-lg .ant-select-selector .ant-select-selection-placeholder {
+  color: var(--text-custom);
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-select-outlined:not(.ant-select-customize-input) .ant-select-selector {
+  border-color: var(--border-custom)
 }

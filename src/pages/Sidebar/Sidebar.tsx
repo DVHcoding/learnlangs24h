@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 // #       IMPORT Components
 // ##################################
 import Logo from '@assets/logo.png';
+import { useGetAllCoursesQuery } from '@store/api/courseApi';
+import { CourseType } from 'types/api-types';
 
 // ##################################
 // #       IMPORT Npm
@@ -26,6 +28,7 @@ const Sidebar = () => {
     // Redirect with React Router Dom v6
     const navigate = useNavigate();
     const location = useLocation();
+    const { data, isLoading } = useGetAllCoursesQuery();
 
     // Style sidebar
     const panelStyles: React.CSSProperties = {
@@ -129,48 +132,27 @@ const Sidebar = () => {
                                 />
                             }
                         >
-                            <Nav.Item
-                                onClick={() => redirect('/grammar?id=1')}
-                                eventKey="3-1"
-                                className={`before:absolute ${
-                                    activePage === '/grammar' ? 'before:h-8' : 'before:h-0'
-                                } before:bottom-2 before:left-0 before:w-[3px]
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Grammar
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-2"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Listening
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-3"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Reading
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-4"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Writing
-                                </span>
-                            </Nav.Item>
+                            {!isLoading &&
+                                data?.courses.map((course: CourseType, courseIndex: number) => (
+                                    <Nav.Item
+                                        key={course._id}
+                                        onClick={() =>
+                                            redirect(`/${course.name.toLowerCase()}/${course._id}`)
+                                        }
+                                        eventKey={`3-${courseIndex + 1}`}
+                                        className={`before:absolute ${
+                                            activePage ===
+                                            `/${course.name.toLocaleLowerCase()}/${course._id}`
+                                                ? 'before:h-8'
+                                                : 'before:h-0'
+                                        } before:bottom-2 before:left-0 before:w-[3px]
+                                        before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                                    >
+                                        <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                            {course.name}
+                                        </span>
+                                    </Nav.Item>
+                                ))}
                         </Nav.Menu>
 
                         {/*=========================================*/}

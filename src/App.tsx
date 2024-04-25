@@ -23,7 +23,8 @@ const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
 // Admin Components
 const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
 const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
-const GrammarItem = lazy(() => import('@admin/AdminComponents/CoursesManager/Grammar/GrammarItem'));
+const LessonTable = lazy(() => import('@admin/AdminComponents/CoursesManager/LessonTable'));
+const UnitLesson = lazy(() => import('@admin/AdminComponents/CoursesManager/UnitLesson'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -89,7 +90,10 @@ function App() {
                             <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />
                         }
                     >
-                        <Route path="/grammar" element={<Grammar toggleTheme={toggleTheme} />} />
+                        <Route
+                            path="/grammar/:id"
+                            element={<Grammar toggleTheme={toggleTheme} />}
+                        />
                     </Route>
 
                     {/*#################################
@@ -110,10 +114,17 @@ function App() {
                             path="/admin/courses"
                             element={<CoursesList toggleTheme={toggleTheme} />}
                         />
-
                         <Route
-                            path="/admin/grammar"
-                            element={<GrammarItem toggleTheme={toggleTheme} />}
+                            path="/admin/course/:id"
+                            element={<LessonTable toggleTheme={toggleTheme} />}
+                        />
+                        <Route
+                            path="/admin/lesson/:id"
+                            element={<UnitLesson toggleTheme={toggleTheme} />}
+                        />
+                        <Route
+                            path="/admin/unitlesson/:id"
+                            element={<UnitLesson toggleTheme={toggleTheme} />}
                         />
                     </Route>
                 </Routes>

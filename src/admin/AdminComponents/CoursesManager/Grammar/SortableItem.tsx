@@ -9,8 +9,7 @@ import { LessonItemsType, LessonsType } from 'types/types';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { Accordion } from 'rsuite';
-import { useNavigate, useSearchParams } from 'react-router-dom';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import { useSearchParams } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
@@ -54,13 +53,8 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
         transition,
     };
 
-    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id');
-
-    const handleRedirect = (lessonItemIndex: string) => {
-        navigate(`/admin/grammar?id=${lessonItemIndex}`);
-    };
 
     return (
         <div ref={setNodeRef} style={style} className="flex items-start justify-between">
@@ -76,14 +70,12 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
                     {props.lesson.lessonItems.map(
                         (lessonItem: LessonItemsType, lessonItemIndex: number) => (
                             <li
-                                className={`flex items-center justify-between 
-                                    ${lessonItem.id === id ? 'bg-bgHoverGrayDark' : ''} 
+                                className={`${lessonItem.id === id ? 'bg-bgHoverGrayDark' : ''} 
                                     cursor-pointer rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
                                 key={lessonItemIndex}
-                                onClick={() => handleRedirect(lessonItem.id)}
                             >
                                 <div>
-                                    <h4 className="mb-2 text-sm font-semibold text-textCustom">
+                                    <h4 className="mb-2 select-none text-sm font-semibold text-textCustom">
                                         {lessonItem.title}
                                     </h4>
                                     <div className="flex items-center gap-2">
@@ -92,11 +84,11 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
                                         ) : (
                                             <CreateIcon className="text-xs text-orange-400" />
                                         )}
-                                        <p className="text-xs text-textCustom">{lessonItem.time}</p>
+                                        <p className="select-none text-xs text-textCustom">
+                                            {lessonItem.time}
+                                        </p>
                                     </div>
                                 </div>
-
-                                {<CheckCircleIcon className="text-sm text-green-500" />}
                             </li>
                         )
                     )}
