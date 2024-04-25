@@ -65,10 +65,11 @@ const CreateUnit: React.FC<{
     const [courseId, setCourseId] = useState<string>('');
     const [lessonId, setLessonId] = useState<string>('');
 
-    const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [editorContent, setEditorContent] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
     const [unitLessonValue, setUnitLessonValue] = useState<string>('');
+
+    const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [exerciseType, setExerciseType] = useState<string>('');
 
     const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(
@@ -313,7 +314,6 @@ const CreateUnit: React.FC<{
                     {loading && <Loader content="Loading..." />}
                 </div>
 
-                {/* <div className="tracking-wide text-textCustom"></div> */}
                 <ul className="mt-2 flex flex-col gap-4">
                     <li className="">
                         {/* Lecture Type */}

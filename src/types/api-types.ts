@@ -115,6 +115,24 @@ export interface VideoLectureContentResponseType {
     };
 }
 
+export interface FillBlankExerciseResponseType {
+    success: boolean;
+    fillBlankExercise: FillBlankExercise;
+}
+
+export interface FillBlankExercise {
+    _id: string;
+    unitLesson: string;
+    questions: QuestionType[];
+}
+
+export interface QuestionType {
+    sentence: string;
+    correctAnswer: string;
+    otherAnswer: string;
+    _id: string;
+}
+
 export interface CourseType {
     _id: string;
     name: string;

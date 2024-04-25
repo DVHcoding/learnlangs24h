@@ -5,6 +5,7 @@ import {
     AllCoursesResponseType,
     AllLessonsResponseType,
     AllUnitLessonsResponseType,
+    FillBlankExerciseResponseType,
     UnitLessonResponseType,
     VideoLectureContentResponseType,
 } from 'types/api-types';
@@ -54,6 +55,11 @@ export const courseApi = createApi({
             query: (id: string) => `videoLectureContent/${id}`,
             providesTags: ['Course'],
         }),
+        // get Fill Blank Exercise
+        getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string>({
+            query: (id: string) => `fillBlankExercise/${id}`,
+            providesTags: ['Course'],
+        }),
     }),
 });
 
@@ -64,4 +70,5 @@ export const {
     useGetAllUnitLessonsByLessonIdQuery,
     useGetUnitLessonByIdQuery,
     useGetVideoLectureContentQuery,
+    useGetFillBlankExerciseQuery,
 } = courseApi;
