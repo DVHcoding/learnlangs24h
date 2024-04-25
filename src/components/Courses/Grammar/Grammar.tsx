@@ -15,6 +15,7 @@ import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 import HelpIcon from '@mui/icons-material/Help';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
+import FillBlankExerciseCard from './FillBlankExerciseCard';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const [searchParams] = useSearchParams();
@@ -78,10 +79,16 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                         <div className="mt-2 flex h-full ">
                             <div
-                                className="scrollbar relative h-full  overflow-auto rounded-lg"
+                                className="scrollbar relative h-full grow overflow-auto rounded-lg"
                                 style={{ scrollbarWidth: 'none' }}
                             >
-                                {/* {lessonCategory === 'blankQuestions' && <BlankQuestionCard />} */}
+                                {!unitLessonByIdLoading &&
+                                unitLessonData?.unitLesson &&
+                                unitLessonData.unitLesson.lectureType === 'exercise' ? (
+                                    <FillBlankExerciseCard />
+                                ) : (
+                                    ''
+                                )}
 
                                 {!unitLessonByIdLoading &&
                                 unitLessonData?.unitLesson &&

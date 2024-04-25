@@ -309,7 +309,8 @@ label#demo-simple-select-label,
 svg.MuiSvgIcon-root.MuiSvgIcon-fontSizeMedium.MuiSelect-icon.MuiSelect-iconOutlined.MuiSelect-iconOpen.css-bpeome-MuiSvgIcon-root-MuiSelect-icon,
 label#video-url-label,
 .css-1t8l2tu-MuiInputBase-input-MuiOutlinedInput-input,
-.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root {
+.css-14s5rfu-MuiFormLabel-root-MuiInputLabel-root,
+.css-nxo287-MuiInputBase-input-MuiOutlinedInput-input {
   color: var(--text-custom);
 }
 
