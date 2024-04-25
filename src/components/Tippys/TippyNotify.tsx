@@ -24,6 +24,7 @@ const TippyNotify: React.FC = () => {
                 placement="bottom-end"
                 interactive={true}
                 onClickOutside={hide}
+                appendTo={document.body}
                 render={(attrs) => (
                     <div tabIndex={-1} {...attrs}>
                         <div className="rounded-md border border-bdCustom bg-bgCustom shadow">
@@ -88,9 +89,16 @@ const TippyNotify: React.FC = () => {
                 <Badge
                     onClick={() => setVisible(!visible)}
                     content={5}
+                    role="button" // Adding role attribute to indicate clickable element
+                    aria-label="Toggle visibility" // Adding aria-label for accessibility
                     className="cursor-pointer select-none"
                 >
-                    <BellRing size={22} strokeWidth={1.6} className="text-textCustom" />
+                    <BellRing
+                        size={22}
+                        strokeWidth={1.6}
+                        className="text-textCustom"
+                        aria-hidden="true" // Adding aria-hidden to hide from accessibility tree as it's decorative
+                    />
                 </Badge>
             </Tippy>
         </>

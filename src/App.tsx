@@ -2,21 +2,29 @@
 // #       IMPORT Npm
 // ##################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { lazy, Suspense, useEffect, useState } from 'react';
+import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
-import Loader from './pages/Loader/Loader';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
+import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
 import { useUserDetailsQuery } from '@store/api/userApi';
 
 // ##################################
+const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
+const Loader = lazy(() => import('./pages/Loader/Loader'));
 const Login = lazy(() => import('./features/Authentication/Login'));
 const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
 const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
-const Grammar = lazy(() => import('./components/Courses/Grammar'));
+const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
+
+// Admin Components
+const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
+const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
+const LessonTable = lazy(() => import('@admin/AdminComponents/CoursesManager/LessonTable'));
+const UnitLesson = lazy(() => import('@admin/AdminComponents/CoursesManager/UnitLesson'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -39,9 +47,9 @@ function App() {
     });
 
     /* The function that is handle change theme when click on toggle*/
-    const toggleTheme = () => {
+    const toggleTheme = useCallback(() => {
         setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-    };
+    }, []);
 
     useEffect(() => {
         document.body.classList.add(theme);
@@ -55,21 +63,69 @@ function App() {
         <Router>
             <Suspense fallback={<Loader />}>
                 <Routes>
-                    {/* Public Route */}
+                    {/*#################################
+                       #          PUBLIC ROUTE         #
+                       #################################*/}
+                    <Route path="*" element={<NotFound />} />
                     <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
-                    <Route
-                        path="/login"
-                        element={<Login isLogin={data?.success} loading={isLoading} />}
-                    />
-                    <Route path="/register" element={<Register />} />
-                    <Route path="/forgot" element={<ForgotPassword />} />
-                    <Route path="/forgot" element={<ForgotPassword />} />
 
-                    {/* Protected Route */}
+                    {/*#######################################
+                       # REDIRECT TO HOME WHEN AUTHENTICATED #
+                       #######################################*/}
                     <Route
-                        element={<ProtectedRoute isLogin={data?.success} isLoading={isLoading} />}
+                        element={
+                            <RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />
+                        }
                     >
-                        <Route path="/grammar" element={<Grammar />} />
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/forgot" element={<ForgotPassword />} />
+                    </Route>
+
+                    {/*#################################
+                       # AUTHENTICATED PROTECTED ROUTE #
+                       #################################*/}
+                    <Route
+                        element={
+                            <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />
+                        }
+                    >
+                        <Route
+                            path="/grammar/:id"
+                            element={<Grammar toggleTheme={toggleTheme} />}
+                        />
+                    </Route>
+
+                    {/*#################################
+                       #          ADMIN ROUTE          #
+                       #################################*/}
+                    <Route
+                        element={
+                            <ProtectedRoute
+                                isAuthenticated={data?.success}
+                                isLoading={isLoading}
+                                isAdmin={true}
+                                role={data?.user?.roles}
+                            />
+                        }
+                    >
+                        <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
+                        <Route
+                            path="/admin/courses"
+                            element={<CoursesList toggleTheme={toggleTheme} />}
+                        />
+                        <Route
+                            path="/admin/course/:id"
+                            element={<LessonTable toggleTheme={toggleTheme} />}
+                        />
+                        <Route
+                            path="/admin/lesson/:id"
+                            element={<UnitLesson toggleTheme={toggleTheme} />}
+                        />
+                        <Route
+                            path="/admin/unitlesson/:id"
+                            element={<UnitLesson toggleTheme={toggleTheme} />}
+                        />
                     </Route>
                 </Routes>
             </Suspense>

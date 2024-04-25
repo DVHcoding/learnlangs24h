@@ -7,12 +7,27 @@ import { Outlet, Navigate } from 'react-router-dom';
 // #    IMPORT Components   #
 // ##########################
 
-const ProtectedRoute: React.FC<{ isLogin: boolean | undefined; isLoading: boolean }> = ({
-    isLogin,
+interface AuthorizationType {
+    isAuthenticated: boolean | undefined;
+    isLoading: boolean;
+    isAdmin?: boolean;
+    role?: string;
+}
+
+const ProtectedRoute: React.FC<AuthorizationType> = ({
+    isAuthenticated,
     isLoading,
+    isAdmin,
+    role,
 }) => {
-    if (!isLogin && !isLoading) {
-        return <Navigate to={'/login'} />;
+    if (isLoading === false) {
+        if (isAdmin && role !== 'admin') {
+            return <Navigate to="/" />;
+        }
+
+        if (!isAuthenticated) {
+            return <Navigate to="/login" />;
+        }
     }
 
     return <Outlet />;

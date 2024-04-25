@@ -36,7 +36,10 @@ const Certificates = () => {
             </div>
 
             {/* bottom */}
-            <div className="flex items-center justify-between gap-4 sm:flex-nowrap md:flex-wrap lg:flex-nowrap pm:flex-wrap">
+            <div
+                className="flex items-center justify-between gap-4 sm:flex-nowrap md:flex-wrap 
+                lg:flex-nowrap phone:flex-wrap pm:flex-wrap"
+            >
                 <Link to="/ielts">
                     <img
                         src={Ielts}

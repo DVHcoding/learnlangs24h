@@ -3,6 +3,8 @@ import { useState, useEffect } from 'react';
 // #       IMPORT Components
 // ##################################
 import Logo from '@assets/logo.png';
+import { useGetAllCoursesQuery } from '@store/api/courseApi';
+import { CourseType } from 'types/api-types';
 
 // ##################################
 // #       IMPORT Npm
@@ -26,6 +28,7 @@ const Sidebar = () => {
     // Redirect with React Router Dom v6
     const navigate = useNavigate();
     const location = useLocation();
+    const { data, isLoading } = useGetAllCoursesQuery();
 
     // Style sidebar
     const panelStyles: React.CSSProperties = {
@@ -36,7 +39,7 @@ const Sidebar = () => {
     };
 
     // fixed when screen smaller 470px
-    const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 470);
+    const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 1000);
 
     // Set active page
     const [activePage, setActivePage] = useState<string>('');
@@ -55,7 +58,7 @@ const Sidebar = () => {
     // Handle resize when expand to the sidebar
     useEffect(() => {
         const handleResize = () => {
-            setExpanded(window.innerWidth > 470);
+            setExpanded(window.innerWidth > 1000);
         };
         window.addEventListener('resize', handleResize);
 
@@ -66,9 +69,9 @@ const Sidebar = () => {
 
     return (
         <div
-            className={`scrollbar h-full w-[220px] min-w-max max-w-max overflow-auto border-bdCustom 
-        sm:min-w-max sm:max-w-max sm:overflow-x-hidden sm:rounded-none sm:border-r
-        md:border-r lg:border-2 xl:rounded-l-2xl ${expanded ? 'phone:fixed phone:z-10' : ''} `}
+            className={`scrollbar duration-50 h-full w-[240px] max-w-max 
+            overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
+            ${expanded ? 'phone:fixed phone:z-10 pm:fixed pm:z-10 tablet:fixed tablet:z-10' : ''}`}
         >
             <Sidenav
                 defaultOpenKeys={['3', '4']}
@@ -77,16 +80,21 @@ const Sidebar = () => {
             >
                 <Sidenav.Body>
                     <Nav activeKey="1">
-                        <img
-                            src={Logo}
-                            alt="logo"
-                            className={`mb-8 ml-4 mt-6 w-16 select-none ${
-                                !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
-                            } 
+                        <li>
+                            <img
+                                width={16}
+                                height={16}
+                                src={Logo}
+                                alt="logo"
+                                className={`mb-8 ml-4 mt-6 w-16 select-none ${
+                                    !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
+                                } 
                                 sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
-                        />
+                            />
+                        </li>
 
                         {/*=========================================*/}
+
                         <Nav.Item
                             eventKey="1"
                             panel
@@ -97,6 +105,7 @@ const Sidebar = () => {
                         </Nav.Item>
 
                         {/*=========================================*/}
+
                         <Nav.Item
                             onClick={() => redirect('/')}
                             eventKey="2"
@@ -123,48 +132,27 @@ const Sidebar = () => {
                                 />
                             }
                         >
-                            <Nav.Item
-                                onClick={() => redirect('/grammar?id=1')}
-                                eventKey="3-1"
-                                className={`before:absolute ${
-                                    activePage === '/grammar' ? 'before:h-8' : 'before:h-0'
-                                } before:bottom-2 before:left-0 before:w-[3px]
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Grammar
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-2"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Listening
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-3"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Reading
-                                </span>
-                            </Nav.Item>
-
-                            <Nav.Item
-                                eventKey="3-4"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
-                            >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Writing
-                                </span>
-                            </Nav.Item>
+                            {!isLoading &&
+                                data?.courses.map((course: CourseType, courseIndex: number) => (
+                                    <Nav.Item
+                                        key={course._id}
+                                        onClick={() =>
+                                            redirect(`/${course.name.toLowerCase()}/${course._id}`)
+                                        }
+                                        eventKey={`3-${courseIndex + 1}`}
+                                        className={`before:absolute ${
+                                            activePage ===
+                                            `/${course.name.toLocaleLowerCase()}/${course._id}`
+                                                ? 'before:h-8'
+                                                : 'before:h-0'
+                                        } before:bottom-2 before:left-0 before:w-[3px]
+                                        before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                                    >
+                                        <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
+                                            {course.name}
+                                        </span>
+                                    </Nav.Item>
+                                ))}
                         </Nav.Menu>
 
                         {/*=========================================*/}
@@ -349,10 +337,7 @@ const Sidebar = () => {
                 </Sidenav.Body>
 
                 <div className="bg-bgCustom">
-                    <Sidenav.Toggle
-                        expanded={expanded}
-                        onToggle={(expanded) => setExpanded(expanded)}
-                    />
+                    <Sidenav.Toggle onToggle={(expanded) => setExpanded(expanded)} />
                 </div>
             </Sidenav>
         </div>

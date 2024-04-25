@@ -96,6 +96,7 @@ function Media(props: MediaProps) {
                 <ul
                     className="scrollbar flex h-80 flex-col gap-4 overflow-auto sm:h-auto sm:pr-0 md:pr-2 
                     xl:h-[22rem] phone:h-auto phone:pr-0"
+                    style={{ scrollbarWidth: 'none' }}
                 >
                     {(loading ? Array.from(new Array(6)) : data).map((item: DataType, index) => (
                         <li
@@ -116,9 +117,9 @@ function Media(props: MediaProps) {
                                         </div>
 
                                         <div>
-                                            <h4 className="font-body text-sm font-bold text-textCustomName">
+                                            <h5 className="font-body text-sm font-bold text-textCustomName">
                                                 {item.name}
-                                            </h4>
+                                            </h5>
                                             <p className="font-body text-[12px] font-bold text-textCustomGray phone:text-xs">
                                                 {item.description}
                                             </p>

@@ -5,73 +5,125 @@ import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
 import { Avatar } from 'rsuite';
 import { Link } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
+import DefaultAvatar from '@assets/profiles/defautlAvatar.png';
+import { useUserDetailsQuery, useLogoutUserMutation } from '@store/api/userApi';
+import { toastError, toastSuccess } from '@components/Toast/Toasts';
 
+// ##########################
 const TippyProfile: React.FC = () => {
+    const { data } = useUserDetailsQuery();
+    const [logoutUser, { isLoading }] = useLogoutUserMutation();
+
+    const logoutHandler = async (): Promise<void> => {
+        try {
+            const { data: dataLogoutResponse }: any = await logoutUser();
+
+            if (dataLogoutResponse?.success) {
+                toastSuccess(`${dataLogoutResponse.message}`);
+            } else {
+                toastError(`${dataLogoutResponse?.message}`);
+            }
+        } catch (error) {
+            toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+        }
+    };
+
     return (
         <>
             <Tippy
+                appendTo={document.body}
                 interactive={true}
                 render={(attrs) => (
                     <div tabIndex={-1} {...attrs}>
-                        <div className="rounded-md border border-bdCustom bg-bgCustom p-4 shadow">
+                        <div className="min-w-44 rounded-md border border-bdCustom bg-bgCustom p-4 shadow">
                             <div className="flex items-center gap-2">
                                 <Avatar
                                     size="sm"
                                     circle
-                                    src="https://avatars.githubusercontent.com/u/12592949"
+                                    src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar}
                                     alt="@superman66"
                                 />
                                 <div>
-                                    <p className="font-body font-bold text-textCustom">Do Hung</p>
+                                    <p className="font-body font-bold text-textCustom">
+                                        {data?.user?.username}
+
+                                        {!data?.success && 'Anonymous'}
+                                    </p>
                                     <p className="m-0 font-body text-xs text-textCustom">
-                                        dohung@gmail.com
+                                        {data?.user?.email}
                                     </p>
                                 </div>
                             </div>
 
                             <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
 
-                            <Link
-                                to="/profile"
-                                className="text-textCustom transition-all 
+                            {data?.success && (
+                                <div>
+                                    <Link
+                                        to="/profile"
+                                        className="text-textCustom transition-all 
                                     duration-200 hover:text-orange-400 hover:text-textCustom"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <button className="font-body">Trang cá nhân</button>
-                            </Link>
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <button aria-label="btn_profile" className="font-body">
+                                            Trang cá nhân
+                                        </button>
+                                    </Link>
 
-                            <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+                                    <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
 
-                            <Link
-                                to="/blog"
-                                className="text-textCustom transition-all 
+                                    <Link
+                                        to="/blog"
+                                        className="text-textCustom transition-all 
                                     duration-200 hover:text-orange-400 hover:text-textCustom"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <button className="font-body">Viết blog</button>
-                            </Link>
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <button aria-label="btn_writeBlog" className="font-body">
+                                            Viết blog
+                                        </button>
+                                    </Link>
 
-                            <Link
-                                to="/myPost"
-                                className="text-textCustom transition-all 
+                                    <Link
+                                        to="/myPost"
+                                        className="text-textCustom transition-all 
                                     duration-200 hover:text-orange-400 hover:text-textCustom"
-                                style={{ textDecoration: 'none' }}
-                            >
-                                <button className="mt-2 font-body">Bài viết của tôi</button>
-                            </Link>
+                                        style={{ textDecoration: 'none' }}
+                                    >
+                                        <button aria-label="btn_myBlog" className="mt-2 font-body">
+                                            Bài viết của tôi
+                                        </button>
+                                    </Link>
 
-                            <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+                                    <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+                                </div>
+                            )}
 
-                            <button
-                                className="font-body font-normal text-textCustom 
-                                transition-all duration-200 hover:text-red-500"
-                            >
-                                Đăng xuất
-                            </button>
+                            {data?.success ? (
+                                <button
+                                    disabled={isLoading}
+                                    onClick={logoutHandler}
+                                    aria-label="btn_logout"
+                                    className="font-body font-normal text-textCustom 
+                                    transition-all duration-200 hover:text-red-500"
+                                >
+                                    Đăng xuất
+                                </button>
+                            ) : (
+                                <Link
+                                    to="/login"
+                                    className="font-body font-normal text-textCustom 
+                                    transition-all duration-200 hover:text-green-500"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    Đăng nhập
+                                </Link>
+                            )}
                         </div>
                     </div>
                 )}
@@ -79,10 +131,14 @@ const TippyProfile: React.FC = () => {
                 <Avatar
                     className="singleElement h-10 w-10 cursor-pointer select-none sm:h-8 sm:w-8"
                     circle
-                    src="https://avatars.githubusercontent.com/u/12592949"
-                    alt="@superman66"
+                    src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar}
+                    alt="superman66"
+                    role="img" // Adding role="img" to indicate that it represents an image
+                    aria-label="Superman 66's Avatar" // Adding an aria-label to describe the purpose of the avatar
                 />
             </Tippy>
+
+            <ToastContainer />
         </>
     );
 };

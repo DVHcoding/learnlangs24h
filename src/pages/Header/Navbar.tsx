@@ -61,14 +61,13 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
             className="scrollbar flex items-center justify-between overflow-auto px-4 
             py-3 sm:justify-around sm:border sm:border-bdCustom"
         >
-            {/* Logo */}
             <h1 className="font-body text-lg font-bold text-textCustom sm:hidden">LearnLangs24h</h1>
 
             {/* Search */}
             <div className="sm:hidden">
                 <InputGroup inside>
                     <AutoComplete data={data} placeholder="Search Here" />
-                    <InputGroup.Button tabIndex={-1}>
+                    <InputGroup.Button tabIndex={-1} aria-label="search_btn">
                         <SearchIcon />
                     </InputGroup.Button>
                 </InputGroup>
@@ -97,7 +96,7 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                 </div>
 
                 {/* Message */}
-                <Link to="/message">
+                <Link to="/message" aria-label="Messages">
                     <MessageCircleMore
                         strokeWidth={1.6}
                         size={22}
@@ -115,4 +114,4 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     );
 };
 
-export default Navbar;
+export default React.memo(Navbar);

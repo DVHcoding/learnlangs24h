@@ -6,11 +6,13 @@ module.exports = {
             fontFamily: {
                 title: ['Montserrat', 'sans-serif'],
                 body: ['QuickSand', 'sans-serif'],
+                segoe: ['Segoe UI', 'sans-serif'],
             },
             screens: {
-                sm: { max: '769px' },
+                sm: { max: '768px' },
                 phone: { max: '470px' },
                 pm: { min: '471px', max: '639px' },
+                tablet: { min: '575px', max: '768px' },
             },
             colors: {
                 bgCustom: 'var(--bg-custom)',

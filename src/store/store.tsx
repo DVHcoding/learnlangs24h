@@ -3,6 +3,13 @@
 // ##########################
 import { configureStore } from '@reduxjs/toolkit';
 import { userApi } from './api/userApi';
+import { courseApi } from './api/courseApi';
+import {
+    newCourseReducer,
+    newLessonReducer,
+    newContentUnitLessonReducer,
+    newUnitLessonReducer,
+} from './reducer/courseReducer';
 
 // ##########################
 // #    IMPORT Components   #
@@ -12,8 +19,15 @@ import { userApi } from './api/userApi';
 export const store = configureStore({
     reducer: {
         [userApi.reducerPath]: userApi.reducer,
+        [courseApi.reducerPath]: courseApi.reducer,
+        newCourse: newCourseReducer,
+        newLesson: newLessonReducer,
+        newUnitLesson: newUnitLessonReducer,
+        newContentUnitLesson: newContentUnitLessonReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware),
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
+export type AppDispatch = typeof store.dispatch;

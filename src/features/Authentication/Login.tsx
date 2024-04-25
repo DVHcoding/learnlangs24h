@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 // ##################################
 // #       IMPORT Components
 // ##################################
@@ -22,10 +22,7 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Loader } from 'rsuite';
 
 // ##################################
-const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefined }> = ({
-    isLogin,
-    loading,
-}) => {
+const Login: React.FC = () => {
     const navigate = useNavigate();
 
     const [loginUser, { isLoading: isLoadingEmail }] = useLoginUserMutation();
@@ -105,12 +102,6 @@ const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefin
             toastError('Bạn đã đóng popup? Hãy đăng nhập lại');
         }
     };
-
-    useEffect(() => {
-        if (isLogin && !loading) {
-            navigate('/');
-        }
-    }, [isLogin]);
 
     return (
         <Fragment>
@@ -213,13 +204,17 @@ const Login: React.FC<{ isLogin: boolean | undefined; loading: boolean | undefin
                     </form>
 
                     {/* Redirect Register */}
-                    <div className="mt-4">
+                    <div className="mb-2 mt-4">
                         <span className="font-sm text-slate-500">Don’t have an account yet?</span>
 
                         <Link to={'/register'} className="ml-2 text-sm font-semibold text-blue-700">
                             Sign up here
                         </Link>
                     </div>
+
+                    <Link to="/" className="font-title text-blue-600">
+                        Trang chủ
+                    </Link>
                 </div>
             </div>
 
