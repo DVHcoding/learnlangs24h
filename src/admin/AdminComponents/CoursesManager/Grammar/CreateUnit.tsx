@@ -28,12 +28,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // #       IMPORT Components
 // ##################################
 import { RootState, AppDispatch } from '@store/store';
-import {
-    AllUnitLessonsResponseType,
-    CourseType,
-    LessonType,
-    UnitLessonType,
-} from 'types/api-types';
+import { AllUnitLessonsResponseType, CourseType, LessonType, UnitLessonType } from 'types/api-types';
 import { createNewUnitLesson, createNewContentUnitLesson } from '@store/reducer/courseReducer';
 import { useGetAllCoursesQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
 
@@ -51,9 +46,7 @@ const CreateUnit: React.FC<{
 
     const dispatch: AppDispatch = useDispatch();
     const { loading } = useSelector((state: RootState) => state.newContentUnitLesson);
-    const { loading: newUnitLessonLoading } = useSelector(
-        (state: RootState) => state.newUnitLesson
-    );
+    const { loading: newUnitLessonLoading } = useSelector((state: RootState) => state.newUnitLesson);
 
     // ##########################
     // #      STATE MANAGER     #
@@ -72,9 +65,7 @@ const CreateUnit: React.FC<{
     const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [exerciseType, setExerciseType] = useState<string>('');
 
-    const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(
-        courseId || null
-    );
+    const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || null);
 
     // #############################
     // #      FUNCTION MANAGER     #
@@ -146,9 +137,7 @@ const CreateUnit: React.FC<{
 
     if (data) {
         if (unitLessonValue) {
-            getLectureType = data.unitLessons.find(
-                (unitLesson: UnitLessonType) => unitLesson._id === unitLessonValue
-            )?.lectureType;
+            getLectureType = data.unitLessons.find((unitLesson: UnitLessonType) => unitLesson._id === unitLessonValue)?.lectureType;
         }
     }
 
@@ -324,9 +313,7 @@ const CreateUnit: React.FC<{
                                 labelId="demo-simple-select-label"
                                 id="demo-simple-select"
                                 label="Unit Lesson"
-                                onChange={(e) =>
-                                    setUnitLessonValue((e.target.value as string) || '')
-                                }
+                                onChange={(e) => setUnitLessonValue((e.target.value as string) || '')}
                             >
                                 {!isLoading &&
                                     data?.unitLessons?.map((unitLesson: UnitLessonType) => (
@@ -341,13 +328,8 @@ const CreateUnit: React.FC<{
                     <li className="flex flex-wrap items-center gap-4">
                         {getLectureType && getLectureType === 'exercise' ? (
                             <div className="flex items-center gap-2">
-                                <FormControl
-                                    style={{ width: '15rem', marginTop: '0.5rem' }}
-                                    required
-                                >
-                                    <InputLabel id="demo-simple-select-label">
-                                        Exercise Type
-                                    </InputLabel>
+                                <FormControl style={{ width: '15rem', marginTop: '0.5rem' }} required>
+                                    <InputLabel id="demo-simple-select-label">Exercise Type</InputLabel>
                                     <Select
                                         labelId="demo-simple-select-label"
                                         id="demo-simple-select"
@@ -356,9 +338,7 @@ const CreateUnit: React.FC<{
                                         onChange={(e) => setExerciseType(e.target.value as string)}
                                     >
                                         <MenuItem value={'fillBlank'}>Fill Blank</MenuItem>
-                                        <MenuItem value={'multipleChoice'}>
-                                            Multiple Choice
-                                        </MenuItem>
+                                        <MenuItem value={'multipleChoice'}>Multiple Choice</MenuItem>
                                     </Select>
                                 </FormControl>
 
@@ -429,8 +409,7 @@ const CreateUnit: React.FC<{
                                         'removeformat | fontsize | lineheight | help |',
                                     content_style:
                                         'body { font-family:QuickSand,Arial,sans-serif; font-size:14px; font-weight: 500; line-height: 1.5;}',
-                                    font_size_formats:
-                                        '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
+                                    font_size_formats: '8pt 10pt 12pt 14pt 16pt 18pt 24pt 36pt 48pt',
                                 }}
                             />
                         </div>
@@ -449,18 +428,8 @@ const CreateUnit: React.FC<{
                                 onClick={() => removeQuestion(index)}
                             />
                             <div className="flex flex-wrap items-center gap-4">
-                                <TextField
-                                    id={`outlined-basic-${index}`}
-                                    label="Question"
-                                    variant="outlined"
-                                    style={{ width: '20rem' }}
-                                />
-                                <TextField
-                                    id={`outlined-basic-${index}`}
-                                    label="Answers"
-                                    variant="outlined"
-                                    style={{ width: '20rem' }}
-                                />
+                                <TextField id={`outlined-basic-${index}`} label="Question" variant="outlined" style={{ width: '20rem' }} />
+                                <TextField id={`outlined-basic-${index}`} label="Answers" variant="outlined" style={{ width: '20rem' }} />
                                 <TextField
                                     id={`outlined-basic-${index}`}
                                     label="Others Answers"
