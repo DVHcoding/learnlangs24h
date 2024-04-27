@@ -24,9 +24,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
         id = '662407c34c6fc5e5d110835d';
     }
 
-    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(
-        id || ''
-    );
+    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || '');
 
     // ##########################
     // #    STATE MANAGEMENT    #
@@ -69,9 +67,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 className="rounded-md bg-bgHoverGrayDark p-[4px] lg:hidden"
                             >
                                 <ChevronsLeft
-                                    className={`text-textCustom ${
-                                        open ? 'rotate-[-180deg]' : 'rotate-0'
-                                    } transition-all duration-300`}
+                                    className={`text-textCustom ${open ? 'rotate-[-180deg]' : 'rotate-0'} transition-all duration-300`}
                                     size={20}
                                 />
                             </button>
@@ -79,7 +75,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                         <div className="mt-2 flex h-full ">
                             <div
-                                className="scrollbar relative h-full grow overflow-auto rounded-lg"
+                                className="scrollbar relative h-full overflow-auto rounded-lg xl:min-w-[54.4rem]"
                                 style={{ scrollbarWidth: 'none' }}
                             >
                                 {!unitLessonByIdLoading &&
@@ -93,9 +89,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 {!unitLessonByIdLoading &&
                                 unitLessonData?.unitLesson &&
                                 unitLessonData.unitLesson.lectureType === 'videoLecture' ? (
-                                    <VideoLectureCard
-                                        unitLessonId={unitLessonData.unitLesson._id}
-                                    />
+                                    <VideoLectureCard unitLessonId={unitLessonData.unitLesson._id} />
                                 ) : (
                                     ''
                                 )}
