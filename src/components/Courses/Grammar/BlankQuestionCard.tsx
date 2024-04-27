@@ -33,11 +33,7 @@ const BlankQuestionCard: React.FC = () => {
     const [allCorrect, setAllCorrect] = useState<boolean>(false);
 
     // Hàm này được gọi khi người dùng nhập câu trả lời, nó cập nhật giá trị của `answers`
-    const getValueAnswer = (
-        e: React.ChangeEvent<HTMLInputElement>,
-        index: number,
-        questionIndex: number
-    ) => {
+    const getValueAnswer = (e: React.ChangeEvent<HTMLInputElement>, index: number, questionIndex: number) => {
         const inputValue = e.target.value.trim(); // Remove leading and trailing spaces
 
         if (inputValue !== '') {
@@ -59,14 +55,10 @@ const BlankQuestionCard: React.FC = () => {
         const correct = lectureId?.questions.every(
             (question: Question, questionIndex: number) =>
                 question.correctAnswers.some(
-                    (correctAnswer: string) =>
-                        correctAnswer.toLowerCase() ===
-                        (answers[questionIndex] as string)?.[0].toLowerCase()
+                    (correctAnswer: string) => correctAnswer.toLowerCase() === (answers[questionIndex] as string)?.[0].toLowerCase()
                 ) ||
                 question.otherAnswers?.some(
-                    (otherAnswer) =>
-                        otherAnswer.toLowerCase() ===
-                        (answers[questionIndex] as string)?.[0].toLowerCase()
+                    (otherAnswer) => otherAnswer.toLowerCase() === (answers[questionIndex] as string)?.[0].toLowerCase()
                 )
         );
 
@@ -88,13 +80,11 @@ const BlankQuestionCard: React.FC = () => {
         });
 
         // Tìm index của lessonItem tương ứng với indexLesson ở trên và gán cho biến indexLessonItem
-        Grammar.lessons[indexLesson].lessonItems.forEach(
-            (lesson: LessonItemsType, index: number) => {
-                if (lesson.id === id) {
-                    indexLessonItem = index;
-                }
+        Grammar.lessons[indexLesson].lessonItems.forEach((lesson: LessonItemsType, index: number) => {
+            if (lesson.id === id) {
+                indexLessonItem = index;
             }
-        );
+        });
 
         // Lấy chiều dài của lessonItems
         const getLengthLessonItem = Grammar.lessons[indexLesson].lessonItems.length;
@@ -129,28 +119,20 @@ const BlankQuestionCard: React.FC = () => {
                     <div className="mb-2 flex flex-wrap justify-start gap-2" key={questionIndex}>
                         {question.sentence.split('______').map((part: string, index: number) => (
                             <Fragment key={index}>
-                                <p className="font-body text-base font-medium text-textCustom">
-                                    {part}
-                                </p>
+                                <p className="font-body text-base font-medium text-textCustom">{part}</p>
                                 {index !== question.sentence.split('______').length - 1 && (
                                     <Fragment>
                                         <input
                                             className={`w-32 rounded border border-slate-400 bg-bgCustom pl-1 font-body font-bold text-textCustom focus:border-blue-400`}
                                             type="text"
-                                            onChange={(e) =>
-                                                getValueAnswer(e, index, questionIndex)
-                                            }
+                                            onChange={(e) => getValueAnswer(e, index, questionIndex)}
                                         />
 
                                         {results ? (
                                             question.correctAnswers[index]?.toLowerCase() ===
-                                                (answers[questionIndex] as string)?.[
-                                                    index
-                                                ]?.toLowerCase() ||
+                                                (answers[questionIndex] as string)?.[index]?.toLowerCase() ||
                                             question.otherAnswers?.[index]?.toLowerCase() ===
-                                                (answers[questionIndex] as string)?.[
-                                                    index
-                                                ]?.toLowerCase() ? (
+                                                (answers[questionIndex] as string)?.[index]?.toLowerCase() ? (
                                                 <Check className="text-green-500" size={18} />
                                             ) : (
                                                 <X className="text-red-500" size={18} />
@@ -173,9 +155,7 @@ const BlankQuestionCard: React.FC = () => {
 
                 <button
                     onClick={() => nextLessonItem()}
-                    className={`${
-                        allCorrect ? 'btn-success' : 'btn-disabled'
-                    } font-body font-medium`}
+                    className={`${allCorrect ? 'btn-success' : 'btn-disabled'} font-body font-medium`}
                     disabled={allCorrect ? false : true}
                 >
                     Bài tiếp theo
