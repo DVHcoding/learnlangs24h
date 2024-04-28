@@ -4,6 +4,7 @@
 import { useSearchParams } from 'react-router-dom';
 import { useState, Fragment } from 'react';
 import { X, Check } from 'lucide-react';
+import { Empty } from 'antd';
 
 // ##########################
 // #    IMPORT Components   #
@@ -117,13 +118,17 @@ const FillBlankExerciseCard: React.FC = () => {
                   ))
                 : ''}
 
-            <div className="mt-4 flex items-center justify-center gap-2">
-                <button onClick={handleChecking} className="btn-primary font-body font-medium">
-                    Kiểm tra
-                </button>
+            {!fillBlankExerciseLoading && fillBlankExerciseData?.success ? (
+                <div className="mt-4 flex items-center justify-center gap-2">
+                    <button onClick={handleChecking} className="btn-primary font-body font-medium">
+                        Kiểm tra
+                    </button>
 
-                <button className={`${allCorrect ? 'btn-success' : 'btn-disabled'} font-body font-medium`}>Bài tiếp theo</button>
-            </div>
+                    <button className={`${allCorrect ? 'btn-success' : 'btn-disabled'} font-body font-medium`}>Bài tiếp theo</button>
+                </div>
+            ) : (
+                <Empty className="mt-4" />
+            )}
         </div>
     );
 };
