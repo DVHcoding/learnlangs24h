@@ -9,11 +9,11 @@ import ReactPlayer from 'react-player';
 import { useGetVideoLectureContentQuery } from '@store/api/courseApi';
 import parse from 'html-react-parser';
 import { Fragment } from 'react/jsx-runtime';
+import { Empty } from 'antd';
 
 // ##################################
 const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) => {
-    const { data: videoLectureContentData, isLoading: videoLectureContentLoading } =
-        useGetVideoLectureContentQuery(unitLessonId || '');
+    const { data: videoLectureContentData, isLoading: videoLectureContentLoading } = useGetVideoLectureContentQuery(unitLessonId || '');
 
     return (
         <div className="w-full rounded-lg pb-2">
@@ -27,12 +27,10 @@ const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) 
                             url={videoLectureContentData?.videoLectureContent?.videoUrl}
                         />
                     </div>
-                    <div className="tracking-wide text-textCustom">
-                        {parse(videoLectureContentData.videoLectureContent.description)}
-                    </div>
+                    <div className="tracking-wide text-textCustom">{parse(videoLectureContentData.videoLectureContent.description)}</div>
                 </Fragment>
             ) : (
-                ''
+                <Empty className="mt-4" />
             )}
         </div>
     );
