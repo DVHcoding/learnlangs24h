@@ -75,7 +75,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                         <div className="mt-2 flex h-full ">
                             <div
-                                className="scrollbar relative h-full overflow-auto rounded-lg xl:min-w-[54.4rem]"
+                                className="scrollbar relative h-full overflow-auto rounded-lg xl:min-w-[54.4rem] xl:max-w-[54.4rem]"
                                 style={{ scrollbarWidth: 'none' }}
                             >
                                 {!unitLessonByIdLoading &&

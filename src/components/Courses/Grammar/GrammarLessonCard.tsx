@@ -51,8 +51,8 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     const handleGetProcess = (lessonId: string) => {
         let process = 0;
 
-        if (dataUnitLesson) {
-            dataUnitLesson.unitLessons.forEach((unitLesson: UnitLessonType) => {
+        if (dataUnitLesson?.unitLessons) {
+            dataUnitLesson?.unitLessons.forEach((unitLesson: UnitLessonType) => {
                 if (unitLesson.lesson === lessonId) {
                     process += 1;
                 }
@@ -110,7 +110,7 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     return (
         <Accordion>
             {!isLoading &&
-                data?.lessons.map((lesson: LessonType) => (
+                data?.lessons?.map((lesson: LessonType) => (
                     <Accordion.Panel
                         header={headerSidebar({
                             title: lesson.name,
