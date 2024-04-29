@@ -72,11 +72,7 @@ function App() {
                     {/*#######################################
                        # REDIRECT TO HOME WHEN AUTHENTICATED #
                        #######################################*/}
-                    <Route
-                        element={
-                            <RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />
-                        }
-                    >
+                    <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
                         <Route path="/login" element={<Login />} />
                         <Route path="/register" element={<Register />} />
                         <Route path="/forgot" element={<ForgotPassword />} />
@@ -85,15 +81,8 @@ function App() {
                     {/*#################################
                        # AUTHENTICATED PROTECTED ROUTE #
                        #################################*/}
-                    <Route
-                        element={
-                            <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />
-                        }
-                    >
-                        <Route
-                            path="/grammar/:id"
-                            element={<Grammar toggleTheme={toggleTheme} />}
-                        />
+                    <Route element={<ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />}>
+                        <Route path="/grammar/:id" element={<Grammar toggleTheme={toggleTheme} />} />
                     </Route>
 
                     {/*#################################
@@ -101,31 +90,14 @@ function App() {
                        #################################*/}
                     <Route
                         element={
-                            <ProtectedRoute
-                                isAuthenticated={data?.success}
-                                isLoading={isLoading}
-                                isAdmin={true}
-                                role={data?.user?.roles}
-                            />
+                            <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} isAdmin={true} role={data?.user?.roles} />
                         }
                     >
                         <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
-                        <Route
-                            path="/admin/courses"
-                            element={<CoursesList toggleTheme={toggleTheme} />}
-                        />
-                        <Route
-                            path="/admin/course/:id"
-                            element={<LessonTable toggleTheme={toggleTheme} />}
-                        />
-                        <Route
-                            path="/admin/lesson/:id"
-                            element={<UnitLesson toggleTheme={toggleTheme} />}
-                        />
-                        <Route
-                            path="/admin/unitlesson/:id"
-                            element={<UnitLesson toggleTheme={toggleTheme} />}
-                        />
+                        <Route path="/admin/courses" element={<CoursesList toggleTheme={toggleTheme} />} />
+                        <Route path="/admin/course/:id" element={<LessonTable toggleTheme={toggleTheme} />} />
+                        <Route path="/admin/lesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
+                        <Route path="/admin/unitlesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
                     </Route>
                 </Routes>
             </Suspense>

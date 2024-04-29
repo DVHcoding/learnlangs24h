@@ -3,6 +3,7 @@
 // ##################################
 import { useEffect, useState } from 'react';
 import loadable from '@loadable/component';
+import { Spin } from 'antd';
 
 // ##################################
 // #       IMPORT Components
@@ -11,7 +12,7 @@ import Video from '@assets/videos/videoAuthen.mp4';
 const HelmetWrapper = loadable(() => import('@components/Helmet/HelmetWrapper'));
 const Navbar = loadable(() => import('@pages/Header/Navbar'));
 const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
-    fallback: <div>Loading...</div>,
+    fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
 });
 
 const TeamGroup = loadable(() => import('./Group'));

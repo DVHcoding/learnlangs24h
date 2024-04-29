@@ -6,11 +6,15 @@ import HelpIcon from '@mui/icons-material/Help';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
+import { Spin } from 'antd';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
-const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'));
+// const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'));
+const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
+    fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
+});
 const Navbar = loadable(() => import('@pages/Header/Navbar'));
 const Breadcrumbs = loadable(() => import('@components/Breadcrumbs/Breadcrumbs'));
 const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
