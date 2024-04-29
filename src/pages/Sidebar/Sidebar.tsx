@@ -13,18 +13,10 @@ import { Sidenav, Nav } from 'rsuite';
 import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
-import {
-    SquareLibrary,
-    Medal,
-    Headphones,
-    Shell,
-    ContactRound,
-    CircleDollarSign,
-    BookOpenText,
-} from 'lucide-react';
+import { SquareLibrary, Medal, Headphones, Shell, ContactRound, CircleDollarSign, BookOpenText } from 'lucide-react';
 import { useNavigate, useLocation } from 'react-router-dom';
 
-const Sidebar = () => {
+const Sidebar: React.FC = () => {
     // Redirect with React Router Dom v6
     const navigate = useNavigate();
     const location = useLocation();
@@ -73,11 +65,7 @@ const Sidebar = () => {
             overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
             ${expanded ? 'phone:fixed phone:z-10 pm:fixed pm:z-10 tablet:fixed tablet:z-10' : ''}`}
         >
-            <Sidenav
-                defaultOpenKeys={['3', '4']}
-                expanded={expanded}
-                className="h-full bg-bgCustom"
-            >
+            <Sidenav defaultOpenKeys={['3', '4']} expanded={expanded} className="h-full bg-bgCustom">
                 <Sidenav.Body>
                     <Nav activeKey="1">
                         <li>
@@ -86,9 +74,7 @@ const Sidebar = () => {
                                 height={16}
                                 src={Logo}
                                 alt="logo"
-                                className={`mb-8 ml-4 mt-6 w-16 select-none ${
-                                    !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
-                                } 
+                                className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''} 
                                 sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
                             />
                         </li>
@@ -109,9 +95,7 @@ const Sidebar = () => {
                         <Nav.Item
                             onClick={() => redirect('/')}
                             eventKey="2"
-                            className={`bg-bgCustom before:absolute ${
-                                activePage === '/' ? 'before:h-8' : 'before:h-0'
-                            } before:bottom-2 
+                            className={`bg-bgCustom before:absolute ${activePage === '/' ? 'before:h-8' : 'before:h-0'} before:bottom-2 
                             before:left-0 before:w-[3px] before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             icon={<DashboardIcon />}
                         >
@@ -124,33 +108,20 @@ const Sidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="3"
                             title="Courses"
-                            icon={
-                                <BookOpenText
-                                    className="absolute left-5 text-textSidebar"
-                                    strokeWidth={1.5}
-                                    size={17}
-                                />
-                            }
+                            icon={<BookOpenText className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             {!isLoading &&
                                 data?.courses.map((course: CourseType, courseIndex: number) => (
                                     <Nav.Item
                                         key={course._id}
-                                        onClick={() =>
-                                            redirect(`/${course.name.toLowerCase()}/${course._id}`)
-                                        }
+                                        onClick={() => redirect(`/${course.name.toLowerCase()}/${course._id}`)}
                                         eventKey={`3-${courseIndex + 1}`}
                                         className={`before:absolute ${
-                                            activePage ===
-                                            `/${course.name.toLocaleLowerCase()}/${course._id}`
-                                                ? 'before:h-8'
-                                                : 'before:h-0'
+                                            activePage === `/${course.name.toLocaleLowerCase()}/${course._id}` ? 'before:h-8' : 'before:h-0'
                                         } before:bottom-2 before:left-0 before:w-[3px]
                                         before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                                     >
-                                        <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                            {course.name}
-                                        </span>
+                                        <span className="text-textSidebar transition-all hover:text-[#8bbf64]">{course.name}</span>
                                     </Nav.Item>
                                 ))}
                         </Nav.Menu>
@@ -160,13 +131,7 @@ const Sidebar = () => {
                             className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                                     before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             eventKey="4"
-                            icon={
-                                <GroupsOutlinedIcon
-                                    color="action"
-                                    fontSize="small"
-                                    className="absolute left-5 text-textSidebar"
-                                />
-                            }
+                            icon={<GroupsOutlinedIcon color="action" fontSize="small" className="absolute left-5 text-textSidebar" />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Group Chat</span>
                         </Nav.Item>
@@ -176,13 +141,7 @@ const Sidebar = () => {
                             className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                             before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             eventKey="5"
-                            icon={
-                                <StyleOutlinedIcon
-                                    color="action"
-                                    fontSize="small"
-                                    className="absolute left-5 text-textSidebar"
-                                />
-                            }
+                            icon={<StyleOutlinedIcon color="action" fontSize="small" className="absolute left-5 text-textSidebar" />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Vocabulary</span>
                         </Nav.Item>
@@ -192,13 +151,7 @@ const Sidebar = () => {
                             className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                             before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             eventKey="6"
-                            icon={
-                                <SquareLibrary
-                                    className="absolute left-5"
-                                    strokeWidth={1.5}
-                                    size={19}
-                                />
-                            }
+                            icon={<SquareLibrary className="absolute left-5" strokeWidth={1.5} size={19} />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Books</span>
                         </Nav.Item>
@@ -207,11 +160,7 @@ const Sidebar = () => {
                         <div className="h-[1px] w-full bg-slate-200"></div>
 
                         {/*=========================================*/}
-                        <Nav.Item
-                            panel
-                            style={panelStyles}
-                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
-                        >
+                        <Nav.Item panel style={panelStyles} className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}>
                             Advanced
                         </Nav.Item>
 
@@ -252,22 +201,14 @@ const Sidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="8"
                             title="Listen & Type"
-                            icon={
-                                <Headphones
-                                    className="absolute left-5"
-                                    strokeWidth={1.5}
-                                    size={19}
-                                />
-                            }
+                            icon={<Headphones className="absolute left-5" strokeWidth={1.5} size={19} />}
                         >
                             <Nav.Item
                                 eventKey="8-1"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                                     before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="transition-all hover:text-[#8bbf64] ">
-                                    All Topic
-                                </span>
+                                <span className="transition-all hover:text-[#8bbf64] ">All Topic</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -275,9 +216,7 @@ const Sidebar = () => {
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                     before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="transition-all hover:text-[#8bbf64]">
-                                    Type & Music
-                                </span>
+                                <span className="transition-all hover:text-[#8bbf64]">Type & Music</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -285,11 +224,7 @@ const Sidebar = () => {
                         <div className="h-[1px] w-full bg-slate-200"></div>
 
                         {/*=========================================*/}
-                        <Nav.Item
-                            panel
-                            style={panelStyles}
-                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
-                        >
+                        <Nav.Item panel style={panelStyles} className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}>
                             Articles
                         </Nav.Item>
 
@@ -307,13 +242,7 @@ const Sidebar = () => {
                             className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                             before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             eventKey="10"
-                            icon={
-                                <ContactRound
-                                    className="absolute left-5"
-                                    strokeWidth={1.5}
-                                    size={19}
-                                />
-                            }
+                            icon={<ContactRound className="absolute left-5" strokeWidth={1.5} size={19} />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Contact</span>
                         </Nav.Item>
@@ -323,13 +252,7 @@ const Sidebar = () => {
                             className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                                     before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             eventKey="11"
-                            icon={
-                                <CircleDollarSign
-                                    className="absolute left-5"
-                                    strokeWidth={1.5}
-                                    size={19}
-                                />
-                            }
+                            icon={<CircleDollarSign className="absolute left-5" strokeWidth={1.5} size={19} />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Donate❤️</span>
                         </Nav.Item>

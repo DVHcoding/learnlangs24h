@@ -2,21 +2,24 @@
 // #       IMPORT Npm
 // ##################################
 import { useEffect, useState } from 'react';
+import loadable from '@loadable/component';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
 import Video from '@assets/videos/videoAuthen.mp4';
-import HelmetWrapper from '@components/Helmet/HelmetWrapper';
-import Navbar from '@pages/Header/Navbar';
-import Sidebar from '@pages/Sidebar/Sidebar';
+const HelmetWrapper = loadable(() => import('@components/Helmet/HelmetWrapper'));
+const Navbar = loadable(() => import('@pages/Header/Navbar'));
+const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
+    fallback: <div>Loading...</div>,
+});
 
-import TeamGroup from './Group';
-import TopUsers from './TopUsers';
-import Features from './Features';
-import Certificates from './Certificates';
-import Process from './Process';
-import VideoBannerSkeleton from '@components/Skeleton/VideoBannerSkeleton';
+const TeamGroup = loadable(() => import('./Group'));
+const TopUsers = loadable(() => import('./TopUsers'));
+const Features = loadable(() => import('./Features'));
+const Certificates = loadable(() => import('./Certificates'));
+const Process = loadable(() => import('./Process'));
+const VideoBannerSkeleton = loadable(() => import('@components/Skeleton/VideoBannerSkeleton'));
 
 // ##################################
 const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
@@ -65,18 +68,8 @@ const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                     className="relative h-52 shrink-0 basis-[50%] overflow-hidden rounded-xl bg-bgHoverGrayDark 
                                     sm:grow phone:w-full"
                                 >
-                                    <video
-                                        src={Video}
-                                        autoPlay
-                                        muted
-                                        loop
-                                        className="absolute h-full w-full object-cover"
-                                    >
-                                        <track
-                                            kind="captions"
-                                            srcLang="en"
-                                            label="English Captions"
-                                        />
+                                    <video src={Video} autoPlay muted loop className="absolute h-full w-full object-cover">
+                                        <track kind="captions" srcLang="en" label="English Captions" />
                                     </video>
 
                                     <div
@@ -91,8 +84,7 @@ const Home: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                         </h1>
 
                                         <p className="mb-[10%] text-base sm:text-wrap md:text-wrap md:text-sm lg:text-lg phone:text-left phone:text-sm">
-                                            Free English skills development platform. You can access
-                                            necessary features in the sidebar
+                                            Free English skills development platform. You can access necessary features in the sidebar
                                         </p>
                                     </div>
                                 </div>
