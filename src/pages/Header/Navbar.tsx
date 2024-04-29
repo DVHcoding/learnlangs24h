@@ -97,11 +97,7 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                 {/* Message */}
                 <Link to="/message" aria-label="Messages">
-                    <MessageCircleMore
-                        strokeWidth={1.6}
-                        size={22}
-                        className="cursor-pointer text-textCustom"
-                    />
+                    <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
                 </Link>
 
                 {/* Notification */}

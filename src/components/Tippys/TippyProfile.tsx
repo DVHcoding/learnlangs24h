@@ -3,7 +3,8 @@
 // ##########################
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-import { Avatar } from 'rsuite';
+// import { Avatar } from 'rsuite';
+import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -43,21 +44,14 @@ const TippyProfile: React.FC = () => {
                     <div tabIndex={-1} {...attrs}>
                         <div className="min-w-44 rounded-md border border-bdCustom bg-bgCustom p-4 shadow">
                             <div className="flex items-center gap-2">
-                                <Avatar
-                                    size="sm"
-                                    circle
-                                    src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar}
-                                    alt="@superman66"
-                                />
+                                <Avatar src={<img src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar} alt="avatar" />} />
                                 <div>
                                     <p className="font-body font-bold text-textCustom">
                                         {data?.user?.username}
 
                                         {!data?.success && 'Anonymous'}
                                     </p>
-                                    <p className="m-0 font-body text-xs text-textCustom">
-                                        {data?.user?.email}
-                                    </p>
+                                    <p className="m-0 font-body text-xs text-textCustom">{data?.user?.email}</p>
                                 </div>
                             </div>
 
@@ -128,14 +122,7 @@ const TippyProfile: React.FC = () => {
                     </div>
                 )}
             >
-                <Avatar
-                    className="singleElement h-10 w-10 cursor-pointer select-none sm:h-8 sm:w-8"
-                    circle
-                    src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar}
-                    alt="superman66"
-                    role="img" // Adding role="img" to indicate that it represents an image
-                    aria-label="Superman 66's Avatar" // Adding an aria-label to describe the purpose of the avatar
-                />
+                <Avatar size={35} src={<img src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar} alt="avatar" />} />
             </Tippy>
 
             <ToastContainer />
