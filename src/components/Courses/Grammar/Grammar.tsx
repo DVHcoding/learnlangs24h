@@ -1,21 +1,22 @@
 import React, { useState } from 'react';
 // ##################################
-// #       IMPORT Components
-// ##################################
-import Sidebar from '@pages/Sidebar/Sidebar';
-import Navbar from '@pages/Header/Navbar';
-import Breadcrumbs from '@components/Breadcrumbs/Breadcrumbs';
-import VideoLectureCard from './VideoLectureCard';
-import GrammarLessonCard from './GrammarLessonCard';
-import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
-
-// ##################################
 // #       IMPORT Npm
 // ##################################
 import HelpIcon from '@mui/icons-material/Help';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
-import FillBlankExerciseCard from './FillBlankExerciseCard';
+import loadable from '@loadable/component';
+
+// ##################################
+// #       IMPORT Components
+// ##################################
+const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'));
+const Navbar = loadable(() => import('@pages/Header/Navbar'));
+const Breadcrumbs = loadable(() => import('@components/Breadcrumbs/Breadcrumbs'));
+const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
+const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
+const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
+import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const [searchParams] = useSearchParams();
