@@ -7,6 +7,8 @@ import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Spin } from 'antd';
+import { Breadcrumb } from 'antd';
+import { Link, useParams } from 'react-router-dom';
 
 // ##################################
 // #       IMPORT Components
@@ -16,7 +18,6 @@ const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
     fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
 });
 const Navbar = loadable(() => import('@pages/Header/Navbar'));
-const Breadcrumbs = loadable(() => import('@components/Breadcrumbs/Breadcrumbs'));
 const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
 const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
 const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
@@ -24,6 +25,7 @@ import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const [searchParams] = useSearchParams();
+    const { id: courseId } = useParams();
     let id = searchParams.get('id');
     if (!id) {
         id = '662407c34c6fc5e5d110835d';
@@ -64,7 +66,19 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                     <div className="h-[85%] pl-4 phone:p-1 ">
                         <div className="flex justify-between">
-                            <Breadcrumbs />
+                            <Breadcrumb
+                                items={[
+                                    {
+                                        title: <Link to="/">Home</Link>,
+                                    },
+                                    {
+                                        title: <Link to={`/grammar/${courseId}`}>Grammar</Link>,
+                                    },
+                                    {
+                                        title: unitLessonData?.unitLesson?.title,
+                                    },
+                                ]}
+                            />
 
                             <button
                                 aria-label="expandButton"

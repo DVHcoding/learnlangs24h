@@ -323,6 +323,19 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-1t8l2tu-MuiInputBase-inp
 }
 
 
+.ant-breadcrumb-link a,
+:where(.css-dev-only-do-not-override-usln0u).ant-breadcrumb .ant-breadcrumb-separator,
+.ant-breadcrumb-link {
+  color: var(--text-custom);
+  transition: 0.25s ease;
+  user-select: none;
+}
+
+.ant-breadcrumb-link a:hover {
+  background-color: var(--bgHover-gray-dark);
+  color: var(--text-custom);
+}
+
 
 
 /* Table Antd */
