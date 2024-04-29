@@ -2,7 +2,7 @@
 // #      IMPORT NPM        #
 // ##########################
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
-import { useState, Fragment, useEffect } from 'react';
+import { useState, Fragment } from 'react';
 import { X, Check } from 'lucide-react';
 import { Empty } from 'antd';
 import dayjs from 'dayjs';
@@ -14,9 +14,10 @@ import {
     useGetAllLessonsByCourseIdQuery,
     useGetFillBlankExerciseQuery,
     useGetUnitLessonByIdQuery,
-    useGetAllUnitLessonsByLessonIdQuery,
+    useGetAllUnitLessonsByCourseIdQuery,
 } from '@store/api/courseApi';
-import { QuestionType, UnitLessonType } from 'types/api-types';
+import { LessonType, QuestionType, UnitLessonType } from 'types/api-types';
+import { toastError } from '@components/Toast/Toasts';
 
 const FillBlankExerciseCard: React.FC = () => {
     const navigate = useNavigate();
@@ -26,6 +27,7 @@ const FillBlankExerciseCard: React.FC = () => {
     const { data: fillBlankExerciseData, isLoading: fillBlankExerciseLoading } = useGetFillBlankExerciseQuery(id || '');
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || '');
     const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || '');
+    const { data: unitLessons, isLoading: getUnitLessonsByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || '');
 
     // ##########################
     // #    STATE MANAGEMENT    #
@@ -34,12 +36,9 @@ const FillBlankExerciseCard: React.FC = () => {
     const [results, setResults] = useState<boolean>(false);
     const [allCorrect, setAllCorrect] = useState<boolean>(false);
 
-    const [lessonId, setLessonId] = useState<string>('');
     // ##########################
     // #  FUNCTION MANAGEMENT   #
     // ##########################
-
-    const { data: unitLessons, isLoading: unitLessonsLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(lessonId || '');
 
     // # Hàm lấy các giá trị người dùng nhập vào và kiểm tra xem đúng không
     const handleSetFillBlankAnswers: (e: React.ChangeEvent<HTMLInputElement>, index: number, questionIndex: number) => void = (
@@ -93,37 +92,44 @@ const FillBlankExerciseCard: React.FC = () => {
     // # Hàm chuyển sang bài học tiếp theo
     const handleNextUnitLesson: () => void = () => {
         if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
-            if (unitLessons?.success && !unitLessonsLoading) {
-                const getUnitLessonIndex = unitLessons.unitLessons.findIndex((unitLesson: UnitLessonType) => {
+            if (unitLessons?.success && !getUnitLessonsByCourseIdLoading) {
+                // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
+                const currentUnitLessonIndex = unitLessons.unitLessons.findIndex((unitLesson: UnitLessonType) => {
                     return unitLesson._id === id;
                 });
 
-                const nextUnitLessonId = unitLessons.unitLessons[getUnitLessonIndex + 1]?._id;
+                // # Lấy id của unitLesson tiếp theo (bài học tiếp theo) dựa vào vị trí của bài học trước + 1
+                let nextUnitLessonId = unitLessons.unitLessons[currentUnitLessonIndex + 1]?._id;
 
+                // # Nếu không phải bài cuối thì điều hướng
                 if (nextUnitLessonId) {
                     navigate(`?id=${nextUnitLessonId}`);
                 } else {
-                    setLessonId('1');
-                    refetch();
+                    // # Nếu là bài cuối cùng
+                    // # Lấy vị trí của lesson dựa vào unitLesson bài hiện tại . id của lesson
+                    const currentLessonIndex = lessons.lessons.findIndex((lesson: LessonType) => {
+                        return lesson._id === unitLesson.unitLesson.lesson;
+                    });
+
+                    // # Lấy ra id của lesson tiếp theo dựa vào vị trí của lesson trước + 1
+                    const nextLessonId = lessons.lessons[currentLessonIndex + 1]?._id;
+
+                    // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
+                    if (!nextLessonId) {
+                        return toastError('Bạn đã học đến bài cuối cùng!');
+                    }
+
+                    // # Lấy ra tất cả unitLesson của bài tiếp theo dựa vào id lesson mới
+                    const allUnitLessonWithNextLessonId = unitLessons.unitLessons.filter((unitLesson: UnitLessonType) => {
+                        return unitLesson.lesson === nextLessonId;
+                    });
+
+                    // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
+                    nextUnitLessonId = allUnitLessonWithNextLessonId[0]._id;
                 }
-
-                console.log(lessonId);
-
-                // const getLessonIndex = lessons.lessons.findIndex((lesson: LessonType) => {
-                //     return lesson._id === lessonId;
-                // });
-                // const nextLessonId = lessons.lessons[getLessonIndex + 1]._id;
-                // setLessonId(nextLessonId);
             }
         }
     };
-
-    useEffect(() => {
-        if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
-            const lessonId = unitLesson.unitLesson.lesson;
-            setLessonId(lessonId);
-        }
-    }, []);
 
     return (
         <div>
