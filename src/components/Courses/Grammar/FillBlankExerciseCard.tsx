@@ -16,7 +16,7 @@ import {
     useGetUnitLessonByIdQuery,
     useGetAllUnitLessonsByLessonIdQuery,
 } from '@store/api/courseApi';
-import { LessonType, QuestionType, UnitLessonType } from 'types/api-types';
+import { QuestionType, UnitLessonType } from 'types/api-types';
 
 const FillBlankExerciseCard: React.FC = () => {
     const navigate = useNavigate();
@@ -39,7 +39,7 @@ const FillBlankExerciseCard: React.FC = () => {
     // #  FUNCTION MANAGEMENT   #
     // ##########################
 
-    const { data: unitLessons } = useGetAllUnitLessonsByLessonIdQuery(lessonId || '');
+    const { data: unitLessons, isLoading: unitLessonsLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(lessonId || '');
 
     // # Hàm lấy các giá trị người dùng nhập vào và kiểm tra xem đúng không
     const handleSetFillBlankAnswers: (e: React.ChangeEvent<HTMLInputElement>, index: number, questionIndex: number) => void = (
@@ -93,7 +93,7 @@ const FillBlankExerciseCard: React.FC = () => {
     // # Hàm chuyển sang bài học tiếp theo
     const handleNextUnitLesson: () => void = () => {
         if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
-            if (unitLessons?.success) {
+            if (unitLessons?.success && !unitLessonsLoading) {
                 const getUnitLessonIndex = unitLessons.unitLessons.findIndex((unitLesson: UnitLessonType) => {
                     return unitLesson._id === id;
                 });
@@ -102,7 +102,12 @@ const FillBlankExerciseCard: React.FC = () => {
 
                 if (nextUnitLessonId) {
                     navigate(`?id=${nextUnitLessonId}`);
+                } else {
+                    setLessonId('1');
+                    refetch();
                 }
+
+                console.log(lessonId);
 
                 // const getLessonIndex = lessons.lessons.findIndex((lesson: LessonType) => {
                 //     return lesson._id === lessonId;
