@@ -27,62 +27,46 @@ const initialState: NewCourseStateType = {
 // #      CREATE ASYNC THUNK        #
 // ##################################
 // Create async thunk for creating a new course
-export const createNewCourse = createAsyncThunk(
-    'course/createNewCourse',
-    async (payload: NewCoursePayloadType, thunkAPI) => {
-        try {
-            const config = {
-                headers: {
-                    'Content-Type': 'multipart/form-data',
-                },
-            };
-            const response = await axios.post<MessageResponse>(
-                '/api/v1/new-course',
-                payload,
-                config
-            );
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.response.data);
-        }
+export const createNewCourse = createAsyncThunk('course/createNewCourse', async (payload: NewCoursePayloadType, thunkAPI) => {
+    try {
+        const config = {
+            headers: {
+                'Content-Type': 'multipart/form-data',
+            },
+        };
+        const response = await axios.post<MessageResponse>('/api/v1/new-course', payload, config);
+        return response.data;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.response.data);
     }
-);
+});
 
 // Create async thunk for creating a new lesson
-export const createNewLesson = createAsyncThunk(
-    'course/createNewLesson',
-    async (payload: NewLessonPayloadType, thunkAPI) => {
-        try {
-            const response = await axios.post<MessageResponse>('/api/v1/new-lesson', payload);
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.response.data);
-        }
+export const createNewLesson = createAsyncThunk('course/createNewLesson', async (payload: NewLessonPayloadType, thunkAPI) => {
+    try {
+        const response = await axios.post<MessageResponse>('/api/v1/new-lesson', payload);
+        return response.data;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.response.data);
     }
-);
+});
 
 // Create async thunk for creating a new unit lesson
-export const createNewUnitLesson = createAsyncThunk(
-    'course/createNewUnitLesson',
-    async (payload: NewUnitLessonPayloadType, thunkAPI) => {
-        try {
-            const response = await axios.post<MessageResponse>('/api/v1/new-unitLesson', payload);
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.response.data);
-        }
+export const createNewUnitLesson = createAsyncThunk('course/createNewUnitLesson', async (payload: NewUnitLessonPayloadType, thunkAPI) => {
+    try {
+        const response = await axios.post<MessageResponse>('/api/v1/new-unitLesson', payload);
+        return response.data;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.response.data);
     }
-);
+});
 
 // Create async thunk for creating a new content unit lesson
 export const createNewContentUnitLesson = createAsyncThunk(
     'course/createNewContentUnitLesson',
     async (payload: NewContentUnitLessonPayloadType, thunkAPI) => {
         try {
-            const response = await axios.post<MessageResponse>(
-                '/api/v1/new-content-unitLesson',
-                payload
-            );
+            const response = await axios.post<MessageResponse>('/api/v1/new-content-unitLesson', payload);
             return response.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
