@@ -13,6 +13,7 @@ import { useNavigate } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { useParams, useSearchParams } from 'react-router-dom';
+import { useEffect } from 'react';
 
 const headerSidebar: React.FC<{ title: string; process: string; totalTime: string }> = ({ title, process, totalTime }) => {
     return (
@@ -106,6 +107,12 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
          * Trong trường hợp này, nó cho phép chèn các giá trị của totalHours, totalMinutes, và totalSeconds vào trong chuỗi một cách dễ dàng.
          */
     };
+
+    useEffect(() => {
+        if (data?.success === false) {
+            navigate('/notfound');
+        }
+    }, [data?.success]);
 
     return (
         <Accordion>
