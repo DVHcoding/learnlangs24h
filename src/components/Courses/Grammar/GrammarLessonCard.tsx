@@ -1,14 +1,16 @@
 // ##################################
 // #       IMPORT Components
 // ##################################
-import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
-import { LessonType, UnitLessonType } from 'types/api-types';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
+import { LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
+import { useUserDetailsQuery } from '@store/api/userApi';
 
 // ##################################
 // #       IMPORT Npm
 // ##################################
 import { Accordion } from 'rsuite';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
@@ -37,6 +39,12 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     const unitLessonIdUrl = searchParams.get('id');
     const { data, isLoading } = useGetAllLessonsByCourseIdQuery(id || '');
     const { data: dataUnitLesson } = useGetAllUnitLessonsByCourseIdQuery(id || '');
+
+    // Lấy ra id người dùng và tìm các trạng thái của unitLessons (ví dụ unlock, completed, ...)
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = userDetailsData?.user?._id ?? 'undefined';
+    const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId);
+
     // ##########################
     // #    STATE MANAGEMENT    #
     // ##########################
@@ -45,22 +53,37 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     // #  FUNCTION MANAGEMENT   #
     // ##########################
     const handleRedirect = (unitLessonId: string) => {
-        navigate(`/grammar/${id}?id=${unitLessonId}`);
-        handleToggleLesson();
+        // # Chỉ những unitLesson nào unlock hoặc completed thì mới click được
+        const isUnitLessonUnlocked = userProcessStatusData?.unitLessonStatus?.find((status) => status.unitLessonId._id === unitLessonId);
+
+        if (isUnitLessonUnlocked) {
+            navigate(`/grammar/${id}?id=${unitLessonId}`);
+            handleToggleLesson(); // sử dụng cái này dành cho màn hình nhỏ. Khi chuyển bài thì phải đóng sidebar lại
+        }
     };
 
     const handleGetProcess = (lessonId: string) => {
-        let process = 0;
+        let process: number = 0;
+        let completed: number = 0;
 
         if (dataUnitLesson?.unitLessons) {
             dataUnitLesson?.unitLessons.forEach((unitLesson: UnitLessonType) => {
                 if (unitLesson.lesson === lessonId) {
-                    process += 1;
+                    process++;
+
+                    // Đếm số unitLesson đã hoàn thành
+                    const isCompleted = userProcessStatusData?.unitLessonStatus?.find(
+                        (status: UnitLessonStatus) => status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                    );
+
+                    if (isCompleted) {
+                        completed++;
+                    }
                 }
             });
         }
 
-        return `0/${process}`;
+        return `${completed}/${process}`;
     };
 
     const handleGetTotalTime = (lessonId: string) => {
@@ -127,34 +150,55 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
                         key={lesson._id}
                     >
                         <ul className="flex flex-col gap-2">
-                            {dataUnitLesson &&
-                                dataUnitLesson?.unitLessons?.map((unitLesson: UnitLessonType) =>
-                                    unitLesson.lesson === lesson._id ? (
-                                        <li
-                                            className={`flex items-center justify-between 
-                                            ${unitLesson._id === unitLessonIdUrl ? 'bg-bgHoverGrayDark' : ''} 
-                                            cursor-pointer rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
-                                            key={unitLesson._id}
-                                            onClick={() => handleRedirect(unitLesson._id)}
-                                        >
-                                            <div>
-                                                <h4 className="mb-2 text-sm font-semibold text-textCustom">{unitLesson.title}</h4>
-                                                <div className="flex items-center gap-2">
-                                                    {unitLesson.icon === 'videoLecture' ? (
-                                                        <PlayCircleFilledIcon className="text-xs text-orange-400" />
-                                                    ) : (
-                                                        <CreateIcon className="text-xs text-orange-400" />
-                                                    )}
-                                                    <p className="text-xs text-textCustom">{unitLesson.time}</p>
-                                                </div>
-                                            </div>
+                            {dataUnitLesson && !userProcessStatusLoading
+                                ? dataUnitLesson?.unitLessons?.map((unitLesson: UnitLessonType) =>
+                                      unitLesson.lesson === lesson._id ? (
+                                          <li
+                                              className={`flex items-center justify-between  
+                                              ${unitLesson._id === unitLessonIdUrl ? 'bg-bgHoverGrayDark' : ''}  
+                                                ${
+                                                    // UnitLesson nào là completed và unlock thì sẽ không có bg là gray
+                                                    userProcessStatusData?.unitLessonStatus?.find(
+                                                        (status: UnitLessonStatus) =>
+                                                            status.unitLessonId._id === unitLesson._id &&
+                                                            (status.status === 'completed' || status.status === 'unlock')
+                                                    )
+                                                        ? ''
+                                                        : 'cursor-default bg-bgHoverGrayDark'
+                                                }
+                                              cursor-pointer rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
+                                              key={unitLesson._id}
+                                              onClick={() => handleRedirect(unitLesson._id)}
+                                          >
+                                              <div>
+                                                  <h4 className="mb-2 text-sm font-semibold text-textCustom">{unitLesson.title}</h4>
+                                                  <div className="flex items-center gap-2">
+                                                      {unitLesson.icon === 'videoLecture' ? (
+                                                          <PlayCircleFilledIcon className="text-xs text-orange-400" />
+                                                      ) : (
+                                                          <CreateIcon className="text-xs text-orange-400" />
+                                                      )}
+                                                      <p className="text-xs text-textCustom">{unitLesson.time}</p>
+                                                  </div>
+                                              </div>
 
-                                            {<CheckCircleIcon className="text-sm text-green-500" />}
-                                        </li>
-                                    ) : (
-                                        ''
-                                    )
-                                )}
+                                              {userProcessStatusData?.unitLessonStatus?.find(
+                                                  (status: UnitLessonStatus) =>
+                                                      status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                                              ) ? (
+                                                  <CheckCircleIcon className="text-sm text-green-500" />
+                                              ) : userProcessStatusData?.unitLessonStatus?.find(
+                                                    (status: UnitLessonStatus) =>
+                                                        status.unitLessonId._id === unitLesson._id && status.status === 'unlock'
+                                                ) ? null : ( // Nếu điều kiện cho LockIcon được đáp ứng, không hiển thị gì cả
+                                                  <LockIcon className="text-sm text-gray-400" />
+                                              )}
+                                          </li>
+                                      ) : (
+                                          ''
+                                      )
+                                  )
+                                : ''}
                         </ul>
                     </Accordion.Panel>
                 ))}

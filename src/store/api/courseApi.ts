@@ -7,6 +7,7 @@ import {
     AllUnitLessonsResponseType,
     FillBlankExerciseResponseType,
     UnitLessonResponseType,
+    UserProcessStatusResponse,
     VideoLectureContentResponseType,
 } from 'types/api-types';
 
@@ -60,6 +61,11 @@ export const courseApi = createApi({
             query: (id: string) => `fillBlankExercise/${id}`,
             providesTags: ['Course'],
         }),
+        // get User Process Status + populate unitLessonStatus
+        getUserProcessStatuses: builder.query<UserProcessStatusResponse, string>({
+            query: (id: string) => `userProcessStatuses/${id}`,
+            providesTags: ['Course'],
+        }),
     }),
 });
 
@@ -71,4 +77,5 @@ export const {
     useGetUnitLessonByIdQuery,
     useGetVideoLectureContentQuery,
     useGetFillBlankExerciseQuery,
+    useGetUserProcessStatusesQuery,
 } = courseApi;
