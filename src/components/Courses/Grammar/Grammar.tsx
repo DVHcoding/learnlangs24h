@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 // ##################################
 // #       IMPORT Npm
 // ##################################
@@ -8,7 +8,7 @@ import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Spin } from 'antd';
 import { Breadcrumb } from 'antd';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 
 // ##################################
 // #       IMPORT Components
@@ -24,6 +24,7 @@ const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
 import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams();
     let id = searchParams.get('id');
@@ -45,6 +46,12 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const handleToggleLesson = () => {
         setOpen(!open);
     };
+
+    useEffect(() => {
+        if (unitLessonData?.success === false) {
+            navigate('/notfound');
+        }
+    }, [unitLessonData?.success]);
 
     // ############################################
     return (
