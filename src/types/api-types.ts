@@ -15,6 +15,7 @@ export interface LoginUserType {
 }
 
 export interface RegisterUserType {
+    _id: string;
     username: string;
     email: string;
     password: string;
@@ -141,4 +142,27 @@ export interface CourseType {
     };
     createAt: Date;
     rating: number;
+}
+
+export interface UserProcessStatusResponse {
+    success: boolean;
+    unitLessonStatus: UnitLessonStatus[];
+}
+
+export interface UnitLessonStatus {
+    _id: string;
+    userId: string;
+    unitLessonId: UnitLessonID;
+    status: string;
+}
+
+export interface UnitLessonID {
+    _id: string;
+    title: string;
+    time: string;
+    icon: string;
+    lectureType: string;
+    createAt: Date;
+    lesson: string;
+    course: string;
 }
