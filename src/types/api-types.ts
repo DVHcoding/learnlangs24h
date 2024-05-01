@@ -62,6 +62,11 @@ export interface NewContentUnitLessonPayloadType {
     unitLesson: string;
 }
 
+export interface NewUserProcessStatusPayloadType {
+    userId: string;
+    unitLessonId: string;
+}
+
 export interface NewCourseStateType {
     loading: boolean;
     error: string | null;

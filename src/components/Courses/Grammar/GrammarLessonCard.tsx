@@ -163,10 +163,10 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
                                                             status.unitLessonId._id === unitLesson._id &&
                                                             (status.status === 'completed' || status.status === 'unlock')
                                                     )
-                                                        ? ''
+                                                        ? 'cursor-pointer'
                                                         : 'cursor-default bg-bgHoverGrayDark'
                                                 }
-                                              cursor-pointer rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
+                                              rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
                                               key={unitLesson._id}
                                               onClick={() => handleRedirect(unitLesson._id)}
                                           >
