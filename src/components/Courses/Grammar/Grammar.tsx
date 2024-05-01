@@ -9,11 +9,11 @@ import loadable from '@loadable/component';
 import { Spin } from 'antd';
 import { Breadcrumb } from 'antd';
 import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Empty } from 'antd';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
-// const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'));
 const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
     fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
 });
@@ -21,18 +21,16 @@ const Navbar = loadable(() => import('@pages/Header/Navbar'));
 const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
 const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
 const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
-import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams();
     let id = searchParams.get('id');
-    if (!id) {
-        id = '662407c34c6fc5e5d110835d';
-    }
 
-    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || '');
+    const { data: allUnitLessonData, isLoading: allUnitLessonLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || 'undefined');
+    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || 'undefined');
 
     // ##########################
     // #    STATE MANAGEMENT    #
@@ -48,10 +46,12 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     };
 
     useEffect(() => {
-        if (unitLessonData?.success === false) {
-            navigate('/notfound');
+        // Nếu vô bài học đầu tiên k có id của unitLesson trên url thì điều hướng
+        if (!allUnitLessonLoading && allUnitLessonData?.success && !id) {
+            const firstUnitLessonId = allUnitLessonData?.unitLessons[0]._id;
+            return navigate(`?id=${firstUnitLessonId}`);
         }
-    }, [unitLessonData?.success]);
+    }, [id, navigate, unitLessonData?.success, allUnitLessonData?.success]);
 
     // ############################################
     return (
@@ -119,6 +119,8 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 ) : (
                                     ''
                                 )}
+
+                                {!unitLessonByIdLoading && unitLessonData?.success === false ? <Empty /> : ''}
 
                                 <div
                                     className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center gap-2 rounded-lg
