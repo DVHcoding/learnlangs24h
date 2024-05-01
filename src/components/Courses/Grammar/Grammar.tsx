@@ -10,6 +10,8 @@ import { Spin } from 'antd';
 import { Breadcrumb } from 'antd';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Empty } from 'antd';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
 // ##################################
 // #       IMPORT Components
@@ -22,13 +24,20 @@ const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
 const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
 const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
 import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery } from '@store/api/courseApi';
+import { useUserDetailsQuery } from '@store/api/userApi';
+import { AppDispatch } from '@store/store';
+import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
+import { toastError } from '@components/Toast/Toasts';
 
+// #########################################################################
 const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const navigate = useNavigate();
+    const dispatch: AppDispatch = useDispatch();
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams();
     let id = searchParams.get('id');
 
+    const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
     const { data: allUnitLessonData, isLoading: allUnitLessonLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || 'undefined');
     const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || 'undefined');
 
@@ -46,11 +55,35 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     };
 
     useEffect(() => {
-        // Nếu vô bài học đầu tiên k có id của unitLesson trên url thì điều hướng
-        if (!allUnitLessonLoading && allUnitLessonData?.success && !id) {
-            const firstUnitLessonId = allUnitLessonData?.unitLessons[0]._id;
-            return navigate(`?id=${firstUnitLessonId}`);
-        }
+        const fetchData = async () => {
+            // Nếu vào bài học đầu tiên mà không có id của unitLesson trên URL thì điều hướng
+            if (!allUnitLessonLoading && allUnitLessonData?.success && !id) {
+                const firstUnitLessonId = allUnitLessonData?.unitLessons[0]._id;
+
+                try {
+                    if (!userDetailsLoading && userDetailsData?.user) {
+                        const userId = userDetailsData.user._id as string;
+
+                        // kiểm tra xem bài đầu tiên này đã có trong danh sách chưa
+                        const { data }: any = await axios.post('/api/v1/unitLessonIdByUserProcess', {
+                            userId,
+                            unitLessonId: firstUnitLessonId,
+                        });
+
+                        // Chưa có thì thêm vào (unlock bài đầu tiên)
+                        if (data.success === false) {
+                            await dispatch(createNewUserProcessStatus({ userId, unitLessonId: firstUnitLessonId }));
+                        }
+                    }
+
+                    return navigate(`?id=${firstUnitLessonId}`);
+                } catch (error) {
+                    toastError('Có lỗi xảy ra!');
+                }
+            }
+        };
+
+        fetchData();
     }, [id, navigate, unitLessonData?.success, allUnitLessonData?.success]);
 
     // ############################################
@@ -119,6 +152,8 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 ) : (
                                     ''
                                 )}
+
+                                {unitLessonByIdLoading && <Spin />}
 
                                 {!unitLessonByIdLoading && unitLessonData?.success === false ? <Empty /> : ''}
 

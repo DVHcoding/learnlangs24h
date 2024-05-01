@@ -15,6 +15,7 @@ import {
     NewCourseStateType,
     NewLessonPayloadType,
     NewUnitLessonPayloadType,
+    NewUserProcessStatusPayloadType,
 } from 'types/api-types';
 
 const initialState: NewCourseStateType = {
@@ -67,6 +68,19 @@ export const createNewContentUnitLesson = createAsyncThunk(
     async (payload: NewContentUnitLessonPayloadType, thunkAPI) => {
         try {
             const response = await axios.post<MessageResponse>('/api/v1/new-content-unitLesson', payload);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Create async thunk for creating a new user process status
+export const createNewUserProcessStatus = createAsyncThunk(
+    'course/createNewUserProcessStatus',
+    async (payload: NewUserProcessStatusPayloadType, thunkAPI) => {
+        try {
+            const response = await axios.post<MessageResponse>('/api/v1/newUserProcessStatus', payload);
             return response.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
@@ -177,8 +191,33 @@ export const newContentUnitLessonSlice = createSlice({
     },
 });
 
+// Create new User Process Status slice
+export const newUserProcessStatusSlice = createSlice({
+    name: 'newUserProcessStatus',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(createNewUserProcessStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(createNewUserProcessStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Tạo thành công!');
+            })
+            .addCase(createNewUserProcessStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
 export const newUnitLessonReducer = newUnitLessonSlice.reducer;
 export const newContentUnitLessonReducer = newContentUnitLessonSlice.reducer;
+export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;

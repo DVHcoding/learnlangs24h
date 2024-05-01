@@ -156,16 +156,16 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
                                           <li
                                               className={`flex items-center justify-between  
                                               ${unitLesson._id === unitLessonIdUrl ? 'bg-bgHoverGrayDark' : ''}  
-                                              ${
-                                                  // UnitLesson nào là completed và unlock thì sẽ không có bg là gray
-                                                  userProcessStatusData?.unitLessonStatus?.find(
-                                                      (status: UnitLessonStatus) =>
-                                                          status.unitLessonId._id === unitLesson._id &&
-                                                          (status.status === 'completed' || status.status === 'unlock')
-                                                  )
-                                                      ? 'cursor-pointer'
-                                                      : 'cursor-default bg-bgHoverGrayDark'
-                                              }
+                                                ${
+                                                    // UnitLesson nào là completed và unlock thì sẽ không có bg là gray
+                                                    userProcessStatusData?.unitLessonStatus?.find(
+                                                        (status: UnitLessonStatus) =>
+                                                            status.unitLessonId._id === unitLesson._id &&
+                                                            (status.status === 'completed' || status.status === 'unlock')
+                                                    )
+                                                        ? 'cursor-pointer'
+                                                        : 'cursor-default bg-bgHoverGrayDark'
+                                                }
                                               rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
                                               key={unitLesson._id}
                                               onClick={() => handleRedirect(unitLesson._id)}

@@ -9,6 +9,7 @@ import {
     newLessonReducer,
     newContentUnitLessonReducer,
     newUnitLessonReducer,
+    newUserProcessStatusReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -24,9 +25,9 @@ export const store = configureStore({
         newLesson: newLessonReducer,
         newUnitLesson: newUnitLessonReducer,
         newContentUnitLesson: newContentUnitLessonReducer,
+        newUserProcessStatus: newUserProcessStatusReducer,
     },
-    middleware: (getDefaultMiddleware) =>
-        getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;
