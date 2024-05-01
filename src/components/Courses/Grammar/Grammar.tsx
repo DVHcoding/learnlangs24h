@@ -65,10 +65,9 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                         const userId = userDetailsData.user._id as string;
 
                         // kiểm tra xem bài đầu tiên này đã có trong danh sách chưa
-                        const { data }: any = await axios.post('/api/v1/unitLessonIdByUserProcess', {
-                            userId,
-                            unitLessonId: firstUnitLessonId,
-                        });
+                        const { data }: any = await axios.get(
+                            `/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${firstUnitLessonId}`
+                        );
 
                         // Chưa có thì thêm vào (unlock bài đầu tiên)
                         if (data.success === false) {

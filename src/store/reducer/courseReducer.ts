@@ -205,7 +205,6 @@ export const newUserProcessStatusSlice = createSlice({
             .addCase(createNewUserProcessStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
-                toastSuccess('Tạo thành công!');
             })
             .addCase(createNewUserProcessStatus.rejected, (state, action) => {
                 state.loading = false;
