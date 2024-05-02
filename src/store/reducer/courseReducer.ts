@@ -88,9 +88,25 @@ export const createNewUserProcessStatus = createAsyncThunk(
     }
 );
 
-// ##########################
-// #         SLICE          #
-// ##########################
+// ##################################
+// #      UPDATE ASYNC THUNK        #
+// ##################################
+// Create async thunk for creating a new user process status
+export const updateUserProcessStatus = createAsyncThunk(
+    'course/updateUserProcessStatus',
+    async (payload: NewUserProcessStatusPayloadType, thunkAPI) => {
+        try {
+            const response = await axios.put<MessageResponse>('/api/v1/updateUserProcessStatus', payload);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// ################################
+// #        CREATE SLICE          #
+// ################################
 // Create new course slice
 export const newCourseSlice = createSlice({
     name: 'newCourse',
@@ -214,9 +230,35 @@ export const newUserProcessStatusSlice = createSlice({
     },
 });
 
+// ################################
+// #        UPDATE SLICE          #
+// ################################
+export const updateUserProcessStatusSlice = createSlice({
+    name: 'updateUserProcessStatus',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(updateUserProcessStatus.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUserProcessStatus.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+            })
+            .addCase(updateUserProcessStatus.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
 export const newUnitLessonReducer = newUnitLessonSlice.reducer;
 export const newContentUnitLessonReducer = newContentUnitLessonSlice.reducer;
 export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
+export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
