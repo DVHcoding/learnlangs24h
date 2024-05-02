@@ -58,6 +58,7 @@ export interface NewUnitLessonPayloadType {
 
 export interface NewContentUnitLessonPayloadType {
     videoUrl: string;
+    totalTime: string;
     description: string;
     unitLesson: string;
 }
@@ -116,6 +117,7 @@ export interface VideoLectureContentResponseType {
     videoLectureContent: {
         _id: string;
         videoUrl: string;
+        totalTime: string;
         description: string;
         unitLesson: string;
     };

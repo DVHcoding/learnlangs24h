@@ -18,10 +18,8 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import CreateIcon from '@mui/icons-material/Create';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
-import { toastError } from '@components/Toast/Toasts';
 import { Editor } from '@tinymce/tinymce-react';
 import { Loader } from 'rsuite';
-
 import { useDispatch, useSelector } from 'react-redux';
 
 // ##################################
@@ -31,6 +29,7 @@ import { RootState, AppDispatch } from '@store/store';
 import { AllUnitLessonsResponseType, CourseType, LessonType, UnitLessonType } from 'types/api-types';
 import { createNewUnitLesson, createNewContentUnitLesson } from '@store/reducer/courseReducer';
 import { useGetAllCoursesQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
+import { toastError } from '@components/Toast/Toasts';
 
 // ##################################
 interface QuestionType {
@@ -60,6 +59,7 @@ const CreateUnit: React.FC<{
 
     const [editorContent, setEditorContent] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
+    const [totalTime, setTotalTime] = useState<dayjs.Dayjs | null>(dayjs('2024-04-17T00:00'));
     const [unitLessonValue, setUnitLessonValue] = useState<string>('');
 
     const [questions, setQuestions] = useState<QuestionType[]>([]);
@@ -93,6 +93,7 @@ const CreateUnit: React.FC<{
             await dispatch(
                 createNewContentUnitLesson({
                     videoUrl,
+                    totalTime: dayjs(totalTime).format('HH:mm:ss'),
                     description: editorContent,
                     unitLesson: unitLessonValue,
                 })
@@ -140,21 +141,6 @@ const CreateUnit: React.FC<{
             getLectureType = data.unitLessons.find((unitLesson: UnitLessonType) => unitLesson._id === unitLessonValue)?.lectureType;
         }
     }
-
-    // console.log(dayjs(timeValue).format('HH:mm:ss'));
-
-    // // Định nghĩa hai giá trị thời gian
-    // const time1 = dayjs('01:03:00', 'HH:mm:ss');
-    // const time2 = dayjs('12:03:00', 'HH:mm:ss');
-
-    // // Tính tổng thời gian
-    // const sumTime = time1
-    //     .add(time2.hour(), 'hour')
-    //     .add(time2.minute(), 'minute')
-    //     .add(time2.second(), 'second');
-
-    // // In ra tổng thời gian
-    // console.log(sumTime.format('HH:mm:ss'));
 
     return (
         <Fragment>
@@ -365,10 +351,23 @@ const CreateUnit: React.FC<{
                             variant="outlined"
                             value={videoUrl}
                             onChange={(e) => setVideoUrl(e.target.value)}
+                            className="mb-4"
                             required
-                            className="mt-4"
                             fullWidth
                         />
+
+                        <LocalizationProvider dateAdapter={AdapterDayjs}>
+                            <DemoContainer components={['TimeField']}>
+                                <TimeField
+                                    fullWidth
+                                    label="Total Time"
+                                    value={totalTime}
+                                    format="HH:mm:ss"
+                                    onChange={(value) => setTotalTime(value)}
+                                    className="border-blue-200 bg-bgCustom text-textCustom"
+                                />
+                            </DemoContainer>
+                        </LocalizationProvider>
 
                         <div className="mt-4">
                             <Editor
