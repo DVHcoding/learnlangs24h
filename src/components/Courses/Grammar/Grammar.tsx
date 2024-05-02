@@ -60,8 +60,6 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
         setOpen(!open);
     };
 
-    console.log('re-render');
-
     useEffect(() => {
         const fetchData = async () => {
             // Nếu vào bài học đầu tiên mà không có id của unitLesson trên URL thì điều hướng

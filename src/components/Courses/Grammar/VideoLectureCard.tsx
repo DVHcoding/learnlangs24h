@@ -55,7 +55,12 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
     const handleProgress = async (progress: { playedSeconds: number }) => {
         currentTimeRef.current = progress.playedSeconds;
 
-        if (currentTimeRef.current >= 565 - 120 && !apiCalled /* chỉ cho phép chạy api get 1 lần */) {
+        // Lấy ra tổng thời gian của video và chuyển về số giây
+        const timeStr = videoLectureContentData?.videoLectureContent.totalTime ?? '00:05:00';
+        const [hours, minutes, seconds] = timeStr.split(':').map(Number);
+        const totalSeconds = hours * 3600 + minutes * 60 + seconds;
+
+        if (currentTimeRef.current >= totalSeconds - 100 && !apiCalled /* chỉ cho phép chạy api get 1 lần */) {
             if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
                 if (unitLessons?.success && !getUnitLessonsByCourseIdLoading && !userDetailsLoading && userDetailsData?.user) {
                     // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
@@ -116,12 +121,6 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
             }
         }
     };
-
-    // const timeStr = '9:26';
-    // const [minutes, seconds] = timeStr.split(':').map(Number);
-
-    // const totalSeconds = minutes * 60 + seconds;
-    // console.log('Tổng số giây:', totalSeconds);
 
     return (
         <div className="w-full rounded-lg pb-2">
