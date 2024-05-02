@@ -10,6 +10,7 @@ import {
     newContentUnitLessonReducer,
     newUnitLessonReducer,
     newUserProcessStatusReducer,
+    updateUserProcessStatusReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -26,6 +27,7 @@ export const store = configureStore({
         newUnitLesson: newUnitLessonReducer,
         newContentUnitLesson: newContentUnitLessonReducer,
         newUserProcessStatus: newUserProcessStatusReducer,
+        updateUserProcessStatus: updateUserProcessStatusReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
 });
