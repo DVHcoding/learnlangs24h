@@ -23,7 +23,7 @@ const Navbar = loadable(() => import('@pages/Header/Navbar'));
 const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
 const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
 const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
-import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery } from '@store/api/courseApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import { AppDispatch } from '@store/store';
 import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
@@ -40,6 +40,12 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
     const { data: allUnitLessonData, isLoading: allUnitLessonLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || 'undefined');
     const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || 'undefined');
+    const userId = userDetailsData?.user?._id ?? 'undefined';
+    const {
+        data: userProcessStatusData,
+        isLoading: userProcessStatusLoading,
+        refetch: userProcessRefetch,
+    } = useGetUserProcessStatusesQuery(userId);
 
     // ##########################
     // #    STATE MANAGEMENT    #
@@ -53,6 +59,8 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const handleToggleLesson = () => {
         setOpen(!open);
     };
+
+    console.log('re-render');
 
     useEffect(() => {
         const fetchData = async () => {
@@ -76,6 +84,24 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                     }
 
                     return navigate(`?id=${firstUnitLessonId}`);
+                } catch (error) {
+                    toastError('Có lỗi xảy ra!');
+                }
+            }
+
+            if (!allUnitLessonLoading && allUnitLessonData?.success && id) {
+                try {
+                    if (!userDetailsLoading && userDetailsData?.user) {
+                        const userId = userDetailsData.user._id as string;
+
+                        // kiểm tra xem bài đầu tiên này đã có trong danh sách chưa
+                        const { data }: any = await axios.get(`/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${id}`);
+
+                        // Chưa có thì thêm vào (unlock bài đầu tiên)
+                        if (data.success === false) {
+                            return navigate('/notfound');
+                        }
+                    }
                 } catch (error) {
                     toastError('Có lỗi xảy ra!');
                 }
@@ -147,7 +173,10 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 {!unitLessonByIdLoading &&
                                 unitLessonData?.unitLesson &&
                                 unitLessonData.unitLesson.lectureType === 'videoLecture' ? (
-                                    <VideoLectureCard unitLessonId={unitLessonData.unitLesson._id} />
+                                    <VideoLectureCard
+                                        unitLessonId={unitLessonData.unitLesson._id}
+                                        userProcessRefetch={userProcessRefetch}
+                                    />
                                 ) : (
                                     ''
                                 )}
@@ -175,7 +204,11 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 sm:h-[85%] sm:rounded-md md:fixed md:right-0 md:top-24 md:h-[85%] lg:block lg:max-w-full lg:translate-x-0 xl:h-full`}
                             >
                                 <div className="scrollbar h-full w-full overflow-auto ">
-                                    <GrammarLessonCard handleToggleLesson={handleToggleLesson} />
+                                    <GrammarLessonCard
+                                        handleToggleLesson={handleToggleLesson}
+                                        userProcessStatusData={userProcessStatusData}
+                                        userProcessStatusLoading={userProcessStatusLoading}
+                                    />
                                 </div>
                             </div>
                         </div>

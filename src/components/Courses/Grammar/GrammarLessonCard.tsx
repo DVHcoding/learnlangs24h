@@ -1,9 +1,8 @@
 // ##################################
 // #       IMPORT Components
 // ##################################
-import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
-import { LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
-import { useUserDetailsQuery } from '@store/api/userApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
+import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
 
 // ##################################
 // #       IMPORT Npm
@@ -31,7 +30,11 @@ const headerSidebar: React.FC<{ title: string; process: string; totalTime: strin
     );
 };
 
-const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handleToggleLesson }) => {
+const GrammarLessonCard: React.FC<{
+    handleToggleLesson: () => void;
+    userProcessStatusData: UserProcessStatusResponse | undefined;
+    userProcessStatusLoading: boolean;
+}> = ({ handleToggleLesson, userProcessStatusData, userProcessStatusLoading }) => {
     //  Get id from url
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -39,11 +42,6 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     const unitLessonIdUrl = searchParams.get('id');
     const { data, isLoading } = useGetAllLessonsByCourseIdQuery(id || '');
     const { data: dataUnitLesson } = useGetAllUnitLessonsByCourseIdQuery(id || '');
-
-    // Lấy ra id người dùng và tìm các trạng thái của unitLessons (ví dụ unlock, completed, ...)
-    const { data: userDetailsData } = useUserDetailsQuery();
-    const userId = userDetailsData?.user?._id ?? 'undefined';
-    const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId);
 
     // ##########################
     // #    STATE MANAGEMENT    #
@@ -54,7 +52,9 @@ const GrammarLessonCard: React.FC<{ handleToggleLesson: () => void }> = ({ handl
     // ##########################
     const handleRedirect = (unitLessonId: string) => {
         // # Chỉ những unitLesson nào unlock hoặc completed thì mới click được
-        const isUnitLessonUnlocked = userProcessStatusData?.unitLessonStatus?.find((status) => status.unitLessonId._id === unitLessonId);
+        const isUnitLessonUnlocked = userProcessStatusData?.unitLessonStatus?.find(
+            (status: UnitLessonStatus) => status.unitLessonId._id === unitLessonId
+        );
 
         if (isUnitLessonUnlocked) {
             navigate(`/grammar/${id}?id=${unitLessonId}`);
