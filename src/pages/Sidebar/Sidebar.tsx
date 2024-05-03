@@ -61,9 +61,9 @@ const Sidebar: React.FC = () => {
 
     return (
         <div
-            className={`scrollbar duration-50 h-full w-[240px] max-w-max 
-            overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
-            ${expanded ? 'phone:fixed phone:z-10 pm:fixed pm:z-10 tablet:fixed tablet:z-10' : ''}`}
+            className={`scrollbar duration-50 h-full w-[240px]  
+            overflow-auto overflow-x-hidden border-r-2 border-bdCustom transition-all phone:transition-none
+            ${expanded ? 'phone:fixed phone:z-10 ' : 'w-[3.8rem]'}`}
         >
             <Sidenav defaultOpenKeys={['3', '4']} expanded={expanded} className="h-full bg-bgCustom">
                 <Sidenav.Body>

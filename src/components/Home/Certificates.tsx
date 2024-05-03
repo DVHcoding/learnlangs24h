@@ -15,9 +15,7 @@ const Certificates = () => {
         <div>
             {/* top */}
             <div className="mb-4 flex items-center justify-between">
-                <h1 className="font-title text-xl font-bold text-textCustom md:text-lg phone:text-base">
-                    Certificates
-                </h1>
+                <h1 className="font-title text-xl font-bold text-textCustom md:text-lg phone:text-base">Certificates</h1>
 
                 <div className="flex items-center gap-1">
                     <p
@@ -27,24 +25,20 @@ const Certificates = () => {
                     >
                         See All
                     </p>
-                    <ArrowRight
-                        strokeWidth={2}
-                        size={18}
-                        className="text-textCustom phone:w-[15px]"
-                    />
+                    <ArrowRight strokeWidth={2} size={18} className="text-textCustom phone:w-[15px]" />
                 </div>
             </div>
 
             {/* bottom */}
             <div
                 className="flex items-center justify-between gap-4 sm:flex-nowrap md:flex-wrap 
-                lg:flex-nowrap phone:flex-wrap pm:flex-wrap"
+                lg:flex-nowrap phone:flex-wrap "
             >
                 <Link to="/ielts">
                     <img
                         src={Ielts}
                         alt="Ielts"
-                        className="mx-auto rounded-lg sm:w-full md:w-[80%] lg:w-full phone:w-full"
+                        className="mx-auto rounded-lg object-cover sm:w-full lg:w-full phone:w-full pm:aspect-square"
                     />
                 </Link>
 
@@ -52,7 +46,7 @@ const Certificates = () => {
                     <img
                         src={Toeic}
                         alt="Toeic"
-                        className="mx-auto rounded-lg sm:w-full md:w-[80%] lg:w-full phone:w-full"
+                        className="mx-auto min-w-full rounded-lg object-cover sm:w-full md:w-[80%] lg:w-full phone:w-full pm:aspect-square"
                     />
                 </Link>
             </div>
