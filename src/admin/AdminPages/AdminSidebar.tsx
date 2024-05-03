@@ -112,15 +112,11 @@ const AdminSidebar = () => {
 
     return (
         <div
-            className={`scrollbar duration-50 h-full w-[350px] max-w-max 
-            overflow-auto border-r-2 border-bdCustom transition-all sm:overflow-x-hidden
-            ${expanded ? 'phone:fixed phone:z-10 pm:fixed pm:z-10 tablet:fixed tablet:z-10' : ''}`}
+            className={`scrollbar duration-50 h-full w-[240px]  
+            overflow-auto overflow-x-hidden border-r-2 border-bdCustom transition-all phone:transition-none
+            ${expanded ? 'phone:fixed phone:z-10 ' : 'w-[3.8rem]'}`}
         >
-            <Sidenav
-                defaultOpenKeys={['3', '4']}
-                expanded={expanded}
-                className="h-full bg-bgCustom"
-            >
+            <Sidenav defaultOpenKeys={['3', '4']} expanded={expanded} className="h-full bg-bgCustom">
                 <Sidenav.Body>
                     <Nav activeKey="1">
                         <Link to="/">
@@ -129,9 +125,7 @@ const AdminSidebar = () => {
                                 height={16}
                                 src={Logo}
                                 alt="logo"
-                                className={`mb-8 ml-4 mt-6 w-16 select-none ${
-                                    !expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''
-                                } 
+                                className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''} 
                                 sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
                             />
                         </Link>
@@ -172,9 +166,7 @@ const AdminSidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="3"
                             title="Widgets"
-                            icon={
-                                <Blocks className="absolute left-5" strokeWidth={1.5} size={17} />
-                            }
+                            icon={<Blocks className="absolute left-5" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/general')}
@@ -184,9 +176,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    General
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">General</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -197,9 +187,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Chart
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Chart</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -207,11 +195,7 @@ const AdminSidebar = () => {
                         <div className="h-[1px] w-full bg-slate-200"></div>
 
                         {/*=========================================*/}
-                        <Nav.Item
-                            panel
-                            style={panelStyles}
-                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
-                        >
+                        <Nav.Item panel style={panelStyles} className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}>
                             Application
                         </Nav.Item>
 
@@ -221,13 +205,7 @@ const AdminSidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="4"
                             title="Courses"
-                            icon={
-                                <FolderKanban
-                                    className="absolute left-5 text-textSidebar"
-                                    strokeWidth={1.5}
-                                    size={17}
-                                />
-                            }
+                            icon={<FolderKanban className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
@@ -237,9 +215,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Courses List
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Courses List</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -248,9 +224,7 @@ const AdminSidebar = () => {
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    New Course
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Course</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -260,13 +234,7 @@ const AdminSidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="5"
                             title="Chat"
-                            icon={
-                                <MessageCirclePlus
-                                    className="absolute left-5 text-textSidebar"
-                                    strokeWidth={1.5}
-                                    size={17}
-                                />
-                            }
+                            icon={<MessageCirclePlus className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
@@ -276,9 +244,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Private Chat
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Private Chat</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -286,9 +252,7 @@ const AdminSidebar = () => {
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Group Chat
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Group Chat</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -298,13 +262,7 @@ const AdminSidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="6"
                             title="Card Manager"
-                            icon={
-                                <Layers
-                                    className="absolute left-5 text-textSidebar"
-                                    strokeWidth={1.5}
-                                    size={17}
-                                />
-                            }
+                            icon={<Layers className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
@@ -314,9 +272,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Card List
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Card List</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -324,9 +280,7 @@ const AdminSidebar = () => {
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    New Card
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Card</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -336,13 +290,7 @@ const AdminSidebar = () => {
                             onClick={() => setExpanded(true)}
                             eventKey="7"
                             title="Books"
-                            icon={
-                                <SquareLibrary
-                                    className="absolute left-5 text-textSidebar"
-                                    strokeWidth={1.5}
-                                    size={17}
-                                />
-                            }
+                            icon={<SquareLibrary className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
                                 onClick={() => redirect('/admin/courses')}
@@ -352,9 +300,7 @@ const AdminSidebar = () => {
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    Books List
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Books List</span>
                             </Nav.Item>
 
                             <Nav.Item
@@ -362,9 +308,7 @@ const AdminSidebar = () => {
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">
-                                    New Books
-                                </span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Books</span>
                             </Nav.Item>
                         </Nav.Menu>
 
@@ -372,11 +316,7 @@ const AdminSidebar = () => {
                         <div className="h-[1px] w-full bg-slate-200"></div>
 
                         {/*=========================================*/}
-                        <Nav.Item
-                            panel
-                            style={panelStyles}
-                            className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}
-                        >
+                        <Nav.Item panel style={panelStyles} className={`phone:hidden ${!expanded ? 'hidden' : ''} text-textCustom`}>
                             FORMS & TABLE
                         </Nav.Item>
                     </Nav>
@@ -394,10 +334,7 @@ const AdminSidebar = () => {
 
                 <Modal.Body>
                     <div className="mb-4">
-                        <label
-                            aria-label="Unit Name"
-                            className=" text-base font-semibold text-textCustom"
-                        >
+                        <label aria-label="Unit Name" className=" text-base font-semibold text-textCustom">
                             Unit Name
                         </label>
                         <Input
@@ -423,18 +360,10 @@ const AdminSidebar = () => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button
-                        disabled={loading}
-                        onClick={() => handleSubmitNewCourse()}
-                        appearance="primary"
-                    >
+                    <Button disabled={loading} onClick={() => handleSubmitNewCourse()} appearance="primary">
                         Ok
                     </Button>
-                    <Button
-                        onClick={handleClose}
-                        appearance="subtle"
-                        className="bg-bgCustom text-textCustom"
-                    >
+                    <Button onClick={handleClose} appearance="subtle" className="bg-bgCustom text-textCustom">
                         Cancel
                     </Button>
                 </Modal.Footer>
