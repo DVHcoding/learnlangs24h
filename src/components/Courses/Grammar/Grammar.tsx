@@ -163,7 +163,12 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 {!unitLessonByIdLoading &&
                                 unitLessonData?.unitLesson &&
                                 unitLessonData.unitLesson.lectureType === 'exercise' ? (
-                                    <FillBlankExerciseCard />
+                                    <FillBlankExerciseCard
+                                        userProcessStatusData={userProcessStatusData}
+                                        userProcessStatusLoading={userProcessStatusLoading}
+                                        userProcessRefetch={userProcessRefetch}
+                                        userId={userId}
+                                    />
                                 ) : (
                                     ''
                                 )}
