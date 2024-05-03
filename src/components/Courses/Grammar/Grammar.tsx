@@ -155,11 +155,8 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             </button>
                         </div>
 
-                        <div className="mt-2 flex h-full ">
-                            <div
-                                className="scrollbar relative h-full overflow-auto rounded-lg xl:min-w-[54.4rem] xl:max-w-[54.4rem]"
-                                style={{ scrollbarWidth: 'none' }}
-                            >
+                        <div className="mt-2 flex h-full justify-between ">
+                            <div className="scrollbar relative h-full w-full  overflow-auto rounded-lg " style={{ scrollbarWidth: 'none' }}>
                                 {!unitLessonByIdLoading &&
                                 unitLessonData?.unitLesson &&
                                 unitLessonData.unitLesson.lectureType === 'exercise' ? (
@@ -198,7 +195,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             </div>
 
                             <div
-                                className={`basis-96 lg:static ${
+                                className={`min-w-[17rem] lg:static ${
                                     open
                                         ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                                         : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
