@@ -16,14 +16,28 @@ import {
     useGetUnitLessonByIdQuery,
     useGetAllUnitLessonsByCourseIdQuery,
 } from '@store/api/courseApi';
-import { LessonType, QuestionType, UnitLessonType } from 'types/api-types';
+import { LessonType, QuestionType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@store/store';
+import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
 
-const FillBlankExerciseCard: React.FC = () => {
+const FillBlankExerciseCard: React.FC<{
+    userProcessStatusData: UserProcessStatusResponse | undefined;
+    userProcessStatusLoading: boolean;
+    userProcessRefetch: () => void;
+    userId: string;
+}> = ({ userProcessStatusData, userProcessStatusLoading, userProcessRefetch, userId }) => {
+    const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id'); // ?id=.....
     const { id: courseId } = useParams();
+
+    /* -------------------------------------------------------------------------- */
+    /*                               RTK query data                               */
+    /* -------------------------------------------------------------------------- */
     const { data: fillBlankExerciseData, isLoading: fillBlankExerciseLoading } = useGetFillBlankExerciseQuery(id || '');
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || '');
     const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || '');
@@ -34,7 +48,6 @@ const FillBlankExerciseCard: React.FC = () => {
     // ##########################
     const [answers, setAnswers] = useState([]);
     const [results, setResults] = useState<boolean>(false);
-    const [allCorrect, setAllCorrect] = useState<boolean>(false);
 
     // ##########################
     // #  FUNCTION MANAGEMENT   #
@@ -58,12 +71,20 @@ const FillBlankExerciseCard: React.FC = () => {
         setResults(false);
     };
 
-    // # Hàm check đáp án khi nhấn vào nút kiểm tra
-    const handleChecking: () => void = () => {
+    let isCompleted: boolean = false;
+    if (!userProcessStatusLoading && userProcessStatusData?.success) {
+        const currentUnitLesson = userProcessStatusData.unitLessonStatus.find((status: UnitLessonStatus) => status.unitLessonId._id === id);
+        if (currentUnitLesson?.status === 'completed') isCompleted = true;
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                # Hàm check đáp án khi nhấn vào nút kiểm tra                */
+    /* -------------------------------------------------------------------------- */
+    const handleChecking: () => void = async () => {
         setResults(true);
 
         if (!fillBlankExerciseLoading && fillBlankExerciseData?.fillBlankExercise) {
-            const isCorrect = fillBlankExerciseData.fillBlankExercise.questions.every(
+            const allCorrect = fillBlankExerciseData.fillBlankExercise.questions.every(
                 // Lấy data từ api lọc qua từng question
                 (question: QuestionType, questionIndex: number) => {
                     // Nhận được từng object là question
@@ -85,11 +106,66 @@ const FillBlankExerciseCard: React.FC = () => {
                 }
             );
 
-            setAllCorrect(isCorrect);
+            if (!isCompleted && allCorrect) {
+                // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
+                const currentUnitLessonIndex = unitLessons?.unitLessons.findIndex((unitLesson: UnitLessonType) => {
+                    return unitLesson._id === id;
+                });
+
+                // id của unitLesson hiện tại
+                const currentUnitLessonId = unitLessons?.unitLessons[currentUnitLessonIndex as number]?._id as string;
+
+                // # Lấy id của unitLesson tiếp theo (bài học tiếp theo) dựa vào vị trí của bài học trước + 1
+                let nextUnitLessonId = unitLessons?.unitLessons[(currentUnitLessonIndex as number) + 1]?._id;
+
+                try {
+                    // # Nếu không phải bài cuối thì mở khóa bài tiếp theo
+                    if (nextUnitLessonId) {
+                        await dispatch(updateUserProcessStatus({ userId, unitLessonId: id as string }));
+                        userProcessRefetch();
+                        // kiểm tra xem bài tiếp theo đã completed hay unlock chưa
+                        const { data }: any = await axios.get(
+                            `/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${nextUnitLessonId}`
+                        );
+
+                        if (data.success === false) {
+                            await dispatch(createNewUserProcessStatus({ userId, unitLessonId: nextUnitLessonId }));
+                            await dispatch(updateUserProcessStatus({ userId, unitLessonId: currentUnitLessonId }));
+                            userProcessRefetch();
+                        }
+                    } else {
+                        // # Nếu là bài cuối cùng
+                        // # Lấy vị trí của lesson dựa vào unitLesson bài hiện tại . id của lesson
+                        const currentLessonIndex = lessons?.lessons.findIndex((lesson: LessonType) => {
+                            return lesson._id === unitLesson?.unitLesson.lesson;
+                        });
+
+                        // # Lấy ra id của lesson tiếp theo dựa vào vị trí của lesson trước + 1
+                        const nextLessonId = lessons?.lessons[(currentLessonIndex as number) + 1]?._id;
+
+                        // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
+                        if (!nextLessonId) {
+                            return toastError('Bạn đã học đến bài cuối cùng!');
+                        }
+
+                        // # Lấy ra tất cả unitLesson của bài tiếp theo dựa vào id lesson mới
+                        const allUnitLessonWithNextLessonId = unitLessons?.unitLessons.filter((unitLesson: UnitLessonType) => {
+                            return unitLesson.lesson === nextLessonId;
+                        });
+
+                        // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
+                        nextUnitLessonId = allUnitLessonWithNextLessonId?.[0]?._id;
+                    }
+                } catch (error) {
+                    toastError('Có lỗi xảy ra!');
+                }
+            }
         }
     };
 
-    // # Hàm chuyển sang bài học tiếp theo
+    /* -------------------------------------------------------------------------- */
+    /*                     # Hàm chuyển sang bài học tiếp theo                    */
+    /* -------------------------------------------------------------------------- */
     const handleNextUnitLesson: () => void = () => {
         if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
             if (unitLessons?.success && !getUnitLessonsByCourseIdLoading) {
@@ -160,10 +236,10 @@ const FillBlankExerciseCard: React.FC = () => {
                                                   onChange={(e) => handleSetFillBlankAnswers(e, index, questionIndex)}
                                               />
                                               {results ? (
-                                                  question?.correctAnswer[index].toLowerCase() ===
-                                                      (answers[questionIndex] as string)?.[index].toLowerCase() ||
-                                                  question?.otherAnswer[index].toLowerCase() ===
-                                                      (answers[questionIndex] as string)?.[index].toLowerCase() ? (
+                                                  question?.correctAnswer?.[index]?.toLowerCase() ===
+                                                      (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ||
+                                                  question?.otherAnswer?.[index]?.toLowerCase() ===
+                                                      (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ? (
                                                       <Check className="text-green-500" size={18} />
                                                   ) : (
                                                       <X className="text-red-500" size={18} />
@@ -187,7 +263,8 @@ const FillBlankExerciseCard: React.FC = () => {
                     </button>
 
                     <button
-                        className={`${allCorrect ? 'btn-success' : 'btn-disabled'} font-body font-medium`}
+                        className={`${isCompleted ? 'btn-success' : 'btn-disabled'} font-body font-medium`}
+                        disabled={!isCompleted}
                         onClick={handleNextUnitLesson}
                     >
                         Bài tiếp theo
