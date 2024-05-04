@@ -19,6 +19,7 @@ const Home = lazy(() => import('./components/Home/Home'));
 const Register = lazy(() => import('./features/Authentication/Register'));
 const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
 const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
+const Profile = lazy(() => import('./components/Profile/Profile'));
 
 // Admin Components
 const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
@@ -83,6 +84,7 @@ function App() {
                        #################################*/}
                     <Route element={<ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />}>
                         <Route path="/grammar/:id" element={<Grammar toggleTheme={toggleTheme} />} />
+                        <Route path="/profile/:id" element={<Profile toggleTheme={toggleTheme} />} />
                     </Route>
 
                     {/*#################################
