@@ -4,11 +4,12 @@ import React from 'react';
 // ##################################
 import loadable from '@loadable/component';
 import { Spin, Progress } from 'antd';
-import { Breadcrumb, Tabs } from 'antd';
+import { Breadcrumb, Tabs, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import { Clock3 } from 'lucide-react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import type { TabsProps } from 'antd';
+import { UserOutlined } from '@ant-design/icons';
 import 'react-calendar-heatmap/dist/styles.css';
 
 // ##################################
@@ -31,12 +32,46 @@ const items: TabsProps['items'] = [
     {
         key: '1',
         label: 'Đang theo dõi',
-        children: 'Content of Tab Pane 1',
+        children: (
+            <ul className="flex flex-col items-center gap-2">
+                {[...Array(6)].map((_item, index) => (
+                    <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2" key={index}>
+                        <div className="flex items-center gap-2">
+                            <Avatar size={'large'} style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+                            <div>
+                                <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
+                                <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
+                            </div>
+                        </div>
+
+                        <button className="btn-disabled">Followed</button>
+                    </li>
+                ))}
+                <li className="font-segoe text-textCustom">loading...</li>
+            </ul>
+        ),
     },
     {
         key: '2',
         label: 'Người theo dõi',
-        children: 'Content of Tab Pane 2',
+        children: (
+            <ul className="flex flex-col items-center gap-2">
+                {[...Array(6)].map((_item, index) => (
+                    <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2" key={index}>
+                        <div className="flex items-center gap-2">
+                            <Avatar size={'large'} style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
+                            <div>
+                                <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
+                                <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
+                            </div>
+                        </div>
+
+                        <button className="btn-primary">Follow</button>
+                    </li>
+                ))}
+                <li className="font-segoe text-textCustom">loading...</li>
+            </ul>
+        ),
     },
 ];
 
@@ -95,7 +130,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                 {/* CONTENT */}
                 <div
-                    className={`scrollbar w-full overflow-auto bg-bgCustom 
+                    className={`scrollbar mb-4 w-full overflow-auto bg-bgCustom 
                         ${expanded ? 'phone:z-0' : ''} `}
                 >
                     {/* Navbar */}
@@ -183,7 +218,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
                                 <ul
                                     className="grid auto-rows-[7rem] grid-cols-2 gap-2 rounded-lg sm:col-span-12 
-                                md:col-span-6 xl:col-span-5"
+                                    md:col-span-6 xl:col-span-5"
                                 >
                                     {[...Array(4)].map((_, index) => (
                                         <li
@@ -236,7 +271,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                         }}
                                     />
 
-                                    <div className="mt-1 flex items-center justify-between">
+                                    <div className="mb-2 mt-1 flex items-center justify-between">
                                         <h3 className="max-w-max rounded-lg font-segoe leading-tight text-textCustom phone:hidden phone:text-base">
                                             Biểu đồ số giờ học theo ngày
                                         </h3>
@@ -256,8 +291,9 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                 </div>
 
                                 <div
-                                    className="rounded-lg p-2 shadow sm:col-span-12 sm:h-[18rem] md:col-span-6 md:row-start-2 
-                                    xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
+                                    className="overflow-auto rounded-lg bg-bgHoverGrayDark p-2 sm:col-span-12 sm:h-[18rem] md:col-span-6 
+                                    md:row-start-2 md:h-[14.6rem] xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
+                                    style={{ scrollbarWidth: 'none' }}
                                 >
                                     <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
                                 </div>

@@ -402,6 +402,28 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-1t8l2tu-MuiInputBase-inp
   border-color: var(--border-custom)
 }
 
+:where(.css-dev-only-do-not-override-usln0u).ant-tabs-top>.ant-tabs-nav::before,
+:where(.css-dev-only-do-not-override-usln0u).ant-tabs-top>div>.ant-tabs-nav::before {
+  border-color: var(--border-custom);
+}
+
+.ant-tabs-nav-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.ant-tabs-tab-btn {
+  color: var(--text-custom);
+  font-size: 1rem;
+}
+
+:where(.css-dev-only-do-not-override-usln0u).ant-tabs .ant-tabs-ink-bar {
+  background-color: var(--text-custom-process);
+}
+
+.ant-tabs-tab-btn[aria-selected="true"] {
+  color: var(--text-custom-process) !important;
+}
 
 /* -------------------------------------------------------------------------- */
 /*                                  Calendar                                  */
