@@ -144,7 +144,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             <div className="mt-4 grid grid-cols-12 gap-4">
                                 <div className="flex rounded-lg bg-bgHoverGrayDark sm:col-span-12 md:col-span-12 xl:col-span-7">
                                     <div className="flex w-full gap-2">
-                                        <div className="min-w-[9rem]  self-start py-4">
+                                        <div className="min-w-[9rem] self-start py-4 phone:min-w-[6rem]">
                                             <img src={Achievement} alt="achievement" className="ml-auto w-[90%]" />
                                         </div>
 
@@ -174,9 +174,8 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                             </div>
 
                                             <p className="text-justify text-base text-textCustom phone:line-clamp-4 pm:line-clamp-4">
-                                                Để đạt được cấp độ này thì học viên cần có điểm thành tích từ tối thiểu 5 đến 50 điểm, tương
-                                                ứng với việc học viên hoàn thành 5 đến 50 bài học bất kỳ trên hệ thống, mỗi điểm tương ứng
-                                                với một bài học.
+                                                Hoàn thành 50 giờ học để đạt cấp độ tiếp theo. Khi đạt cấp độ mới sẽ nhận được các phần quà
+                                                khác nhau.
                                             </p>
                                         </div>
                                     </div>
