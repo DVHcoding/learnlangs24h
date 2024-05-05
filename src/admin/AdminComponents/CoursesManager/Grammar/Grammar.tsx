@@ -5,6 +5,8 @@ import { Avatar, Tabs, Radio } from 'antd';
 import ReactPlayer from 'react-player';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { Editor } from '@tinymce/tinymce-react';
+import { AlignLeft } from 'lucide-react';
+import { useState } from 'react';
 
 // ##########################
 // #    IMPORT Components   #
@@ -12,17 +14,29 @@ import { Editor } from '@tinymce/tinymce-react';
 import Logo from '@assets/logo.png';
 
 const Grammar = () => {
+    const [open, setOpen] = useState<boolean>(false);
+
     return (
         <div className="h-screen">
+            {/* overlay */}
+            <div
+                onClick={() => setOpen(!open)}
+                className={`fixed z-10 mt-12 h-full w-full ${open ? 'block' : 'hidden'}`}
+                style={{ backgroundColor: 'rgb(11 11 11 / 41%)' }}
+            ></div>
+
             {/* header */}
-            <div className="flex items-center bg-blue-400 px-2 shadow">
-                <div className="flex w-[20%] items-center gap-2">
+            <div className="z-50 flex items-center bg-blue-400 px-2 shadow phone:py-2">
+                <div className="flex w-[18.5rem] items-center gap-2 phone:hidden">
                     <img src={Logo} alt="Logo" className="w-20 object-cover" />
                     <h3 className="font-body text-lg font-bold text-white">Admin</h3>
                 </div>
 
                 <div className="flex w-full items-center justify-between">
-                    <h3 className="font-segoe text-lg text-white">Sửa bài học video</h3>
+                    <AlignLeft color="white" className="hidden cursor-pointer border phone:block pm:block" onClick={() => setOpen(!open)} />
+
+                    <h3 className="font-segoe text-lg text-white phone:text-base pm:text-base">Sửa bài học video</h3>
+
                     <div className="flex items-center gap-1">
                         <Avatar />
                         <p className="font-segoe text-white">Đỗ Hùng</p>
@@ -32,7 +46,13 @@ const Grammar = () => {
 
             <div className="flex" style={{ height: 'calc(100% - 3.2rem)' }}>
                 {/*sidebar  */}
-                <div className="h-full basis-[15rem] overflow-auto">
+                <div
+                    className={`h-full basis-[15rem] overflow-auto bg-white phone:fixed phone:z-50 
+                    pm:fixed pm:z-50
+                    ${
+                        !open ? 'phone:translate-x-[-100%] pm:translate-x-[-100%]' : 'phone:translate-x-0 pm:translate-x-0'
+                    } transition-all duration-300`}
+                >
                     <h3 className="bg-gray-300 text-center font-title font-bold">Grammar</h3>
 
                     <ul className="h-full">
@@ -83,8 +103,8 @@ const Grammar = () => {
                                                     <span className="font-body font-bold">Ten (*)</span>
                                                     <input
                                                         type="text"
-                                                        className="text-segoe mt-1 block w-[30%] rounded-[3px] border border-gray-300 p-1
-                                                    focus:border-blue-400"
+                                                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                                                    sm:w-full"
                                                     />
                                                 </div>
 
@@ -92,8 +112,8 @@ const Grammar = () => {
                                                     <span className="font-body font-bold">Chương học (*)</span>
                                                     <select
                                                         id="small"
-                                                        className="mt-2 block w-[30%] rounded-[3px] border border-gray-300 
-                                                    bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500"
+                                                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white 
+                                                      p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
                                                     >
                                                         <option className="hidden"> --- Chọn chương --- </option>
                                                         <option value="US">United States</option>
@@ -115,8 +135,8 @@ const Grammar = () => {
 
                                                     <input
                                                         type="text"
-                                                        className="text-segoe mt-2 block w-[30%] rounded-[3px] border border-gray-300 p-1
-                                                    focus:border-blue-400"
+                                                        className="text-segoe mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1
+                                                      focus:border-blue-400 sm:w-full"
                                                         placeholder="https://www.youtube.com"
                                                     />
 
@@ -140,7 +160,7 @@ const Grammar = () => {
                                                     <Editor
                                                         apiKey={import.meta.env.VITE_TINY_API_KEY}
                                                         initialValue=""
-                                                        value=""
+                                                        value="<h2>1. Thì hi&ecirc;̣n tại đơn&nbsp;</h2>"
                                                         init={{
                                                             height: 700,
                                                             menubar: true,
