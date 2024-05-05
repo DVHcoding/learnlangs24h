@@ -38,7 +38,7 @@ const GrammarLessonCard: React.FC<{
     //  Get id from url
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const unitLessonIdUrl = searchParams.get('id');
     const { data, isLoading } = useGetAllLessonsByCourseIdQuery(id || '');
     const { data: dataUnitLesson } = useGetAllUnitLessonsByCourseIdQuery(id || '');

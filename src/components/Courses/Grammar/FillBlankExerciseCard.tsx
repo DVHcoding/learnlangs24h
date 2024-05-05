@@ -33,7 +33,7 @@ const FillBlankExerciseCard: React.FC<{
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id'); // ?id=.....
-    const { id: courseId } = useParams();
+    const { id: courseId } = useParams<{ id: string }>();
 
     /* -------------------------------------------------------------------------- */
     /*                               RTK query data                               */

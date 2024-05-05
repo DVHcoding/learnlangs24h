@@ -12,8 +12,8 @@ import { useGetAllCoursesQuery, useGetAllLessonsByCourseIdQuery, useGetAllUnitLe
 import { CourseType, LessonType, UnitLessonType } from 'types/api-types';
 
 //###########################
-const Sidebar = () => {
-    const { id: courseId, unitId } = useParams();
+const Sidebar: React.FC<{ open: boolean }> = ({ open }) => {
+    const { id: courseId, unitId } = useParams<{ id: string; unitId: string }>();
     const navigate = useNavigate();
 
     //  RTK query data
@@ -21,7 +21,7 @@ const Sidebar = () => {
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || 'undefined');
     const { data: unitLessons, isLoading: getAllUnitLessonByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || '');
 
-    let courseName;
+    let courseName: string | undefined;
     if (!isLoading && courses?.success) {
         courseName = courses?.courses.find((course: CourseType) => course._id === courseId)?.name;
     }
@@ -44,7 +44,7 @@ const Sidebar = () => {
                     ? lessons.lessons.map((lesson: LessonType) => (
                           <li key={lesson._id}>
                               <div className="flex min-h-[3rem] items-center bg-gray-200 p-2">
-                                  <h3 className="leading-tight">Chương {lesson.name}</h3>
+                                  <h3 className="font-segoe leading-tight">Chương {lesson.name}</h3>
                               </div>
 
                               <ul>
