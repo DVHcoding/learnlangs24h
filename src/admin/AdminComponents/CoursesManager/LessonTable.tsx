@@ -33,7 +33,7 @@ type TableRowSelection<T> = TableProps<T>['rowSelection'];
 // ##################################
 const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const dispatch: AppDispatch = useDispatch();
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
 
     const { data } = useGetAllCoursesQuery();
     const { data: dataGetAllLessons } = useGetAllLessonsByCourseIdQuery(id || '');

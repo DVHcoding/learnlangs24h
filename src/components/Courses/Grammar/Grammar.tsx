@@ -34,7 +34,7 @@ const Grammar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
     const [searchParams] = useSearchParams();
-    const { id: courseId } = useParams();
+    const { id: courseId } = useParams<{ id: string }>();
     let id = searchParams.get('id');
 
     const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();

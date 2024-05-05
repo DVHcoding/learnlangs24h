@@ -33,7 +33,7 @@ interface DataType {
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 // ##################################
 const UnitLesson: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
-    const { id } = useParams();
+    const { id } = useParams<{ id: string }>();
     const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || '');
 
     // ##########################
@@ -57,11 +57,6 @@ const UnitLesson: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
             title: 'Name',
             dataIndex: 'name',
             key: 'name',
-            render: (_, record) => (
-                <Link to={`/admin/lesson/${record.key}`} className="transition-none hover:text-orange-400">
-                    {record.name}
-                </Link>
-            ),
         },
         {
             title: 'Time',

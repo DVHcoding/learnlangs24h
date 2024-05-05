@@ -30,7 +30,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
     const dispatch: AppDispatch = useDispatch();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id'); // ?id=.....
-    const { id: courseId } = useParams();
+    const { id: courseId } = useParams<{ id: string }>();
 
     /* -------------------------------------------------------------------------- */
     /*                                # API RTK query                             */
