@@ -407,7 +407,7 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-1t8l2tu-MuiInputBase-inp
   border-color: var(--border-custom);
 }
 
-.ant-tabs-nav-wrap {
+.tab-profile .ant-tabs-nav-wrap {
   display: flex;
   justify-content: center;
 }

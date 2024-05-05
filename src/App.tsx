@@ -26,6 +26,7 @@ const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
 const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
 const LessonTable = lazy(() => import('@admin/AdminComponents/CoursesManager/LessonTable'));
 const UnitLesson = lazy(() => import('@admin/AdminComponents/CoursesManager/UnitLesson'));
+const GrammarManagement = lazy(() => import('@admin/AdminComponents/CoursesManager/Grammar/Grammar'));
 
 // ##################################
 type Theme = 'light' | 'dark';
@@ -100,6 +101,7 @@ function App() {
                         <Route path="/admin/course/:id" element={<LessonTable toggleTheme={toggleTheme} />} />
                         <Route path="/admin/lesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
                         <Route path="/admin/unitlesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
+                        <Route path="/admin/courses/grammar" element={<GrammarManagement />} />
                     </Route>
                 </Routes>
             </Suspense>
