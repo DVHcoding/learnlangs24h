@@ -30,42 +30,6 @@ const Sidebar = () => {
         navigate(`/admin/course/${courseId}/edit/${unitId}`);
     };
 
-    interface User {
-        _id: string;
-        name: string;
-    }
-
-    const users: User[] = [
-        {
-            _id: '1',
-            name: 'dohung',
-        },
-        {
-            _id: '2',
-            name: 'quocdung',
-        },
-        {
-            _id: '1',
-            name: 'dohung',
-        },
-        {
-            _id: '3',
-            name: 'long',
-        },
-    ];
-
-    const uniqueUsers: User[] = [];
-    const idSet: Set<string> = new Set();
-
-    users.forEach((user) => {
-        if (!idSet.has(user._id)) {
-            uniqueUsers.push(user);
-            idSet.add(user._id);
-        }
-    });
-
-    console.log(JSON.stringify(uniqueUsers));
-
     return (
         <div
             className={`h-full basis-[15rem] overflow-auto bg-white phone:fixed phone:z-50 pm:fixed pm:z-50
