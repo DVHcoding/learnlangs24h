@@ -6,7 +6,6 @@ import loadable from '@loadable/component';
 import { Spin, Progress } from 'antd';
 import { Breadcrumb, Tabs, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
-import { Clock3 } from 'lucide-react';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import type { TabsProps } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
@@ -137,6 +136,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                     <Navbar toggleTheme={toggleTheme} />
 
                     <div className="h-full px-4 phone:p-1 ">
+                        {/* BreadCrumbs */}
                         <div className="flex justify-between">
                             <Breadcrumb
                                 items={[
@@ -153,30 +153,52 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                             />
                         </div>
 
+                        {/* Content */}
                         <div className="mt-2 h-full justify-between">
                             {/* Banner */}
-                            <div className="relative flex h-[13rem] w-full items-center rounded-lg bg-[#cd7900]">
-                                <div className="ml-4 flex items-center gap-4">
-                                    <div className="relative h-24 w-24 rounded-full bg-white">
-                                        <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
-                                        <img src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg" alt="Avatar" />
+                            <div
+                                className="relative flex h-[13rem] w-full items-center rounded-lg"
+                                style={{ backgroundColor: 'rgb(52 109 226 / 47%)' }}
+                            >
+                                <div className="flex gap-4 md:mx-auto md:gap-8 lg:m-0 phone:flex-wrap pm:flex-wrap">
+                                    <div className="ml-4 flex gap-4">
+                                        <div className="relative h-24 w-24 select-none rounded-full">
+                                            <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
+                                            <img
+                                                src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
+                                                alt="Avatar"
+                                                className="min-w-[6rem]"
+                                            />
+                                        </div>
+
+                                        <div className="mt-2">
+                                            <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">Đỗ Hùng</h2>
+
+                                            <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Follower: 1200</h3>
+
+                                            <span className="font-segoe text-base text-textCustom">Join At: 13/04/2024</span>
+                                        </div>
                                     </div>
 
-                                    <div>
-                                        <h2 className="font-body font-bold leading-tight">Đỗ Hùng</h2>
-
-                                        <div className="flex items-center gap-2">
-                                            <Clock3 size={18} />
-                                            <span className="font-segoe text-lg">Đã tham gia 13/04/2024</span>
+                                    <div className="mt-2 grid-cols-2 gap-2 phone:ml-5 phone:grid pm:ml-5 pm:grid">
+                                        <div className="flex flex-wrap items-center gap-2">
+                                            <h2 className="font-segoe font-bold leading-tight text-textCustom phone:text-base">Cấp bậc:</h2>
+                                            <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
+                                                level 1
+                                            </h4>
                                         </div>
+
+                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Bài viết: 12</h3>
+                                        <span className="font-body text-base text-textCustom">Id: @dohung1052</span>
                                     </div>
                                 </div>
 
-                                <img src={BannerIcon} alt="banner icon" className="absolute right-0" />
+                                <img src={BannerIcon} alt="banner icon" className="absolute right-0 hidden xl:block" />
                             </div>
 
                             {/* Bottom */}
                             <div className="mt-4 grid grid-cols-12 gap-4">
+                                {/* Achievement */}
                                 <div className="flex rounded-lg bg-bgHoverGrayDark sm:col-span-12 md:col-span-12 xl:col-span-7">
                                     <div className="flex w-full gap-2">
                                         <div className="min-w-[9rem] self-start py-4 phone:min-w-[6rem]">
@@ -216,6 +238,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                     </div>
                                 </div>
 
+                                {/* Quantity exam completed */}
                                 <ul
                                     className="grid auto-rows-[7rem] grid-cols-2 gap-2 rounded-lg sm:col-span-12 
                                     md:col-span-6 xl:col-span-5"
@@ -244,7 +267,7 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                         endDate={new Date('2024-12-31')}
                                         values={values}
                                         onClick={(value) => {
-                                            alert(`Bạn đã học ${value?.count ?? '0'} giờ ngày ${value?.date}`);
+                                            alert(`Bạn đã học ${value?.count ?? '0'} giờ ngày ${value?.date ?? '....'}`);
                                         }}
                                         classForValue={(value) => {
                                             if (!value) {
@@ -290,8 +313,9 @@ const Profile: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
                                     </div>
                                 </div>
 
+                                {/* Follower */}
                                 <div
-                                    className="overflow-auto rounded-lg bg-bgHoverGrayDark p-2 sm:col-span-12 sm:h-[18rem] md:col-span-6 
+                                    className="tab-profile overflow-auto rounded-lg bg-bgHoverGrayDark p-2 sm:col-span-12 sm:h-[18rem] md:col-span-6 
                                     md:row-start-2 md:h-[14.6rem] xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
                                     style={{ scrollbarWidth: 'none' }}
                                 >
