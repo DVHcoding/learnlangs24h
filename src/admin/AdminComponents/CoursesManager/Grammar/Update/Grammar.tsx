@@ -1,7 +1,7 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { Avatar, Tabs, Radio } from 'antd';
+import { Avatar } from 'antd';
 import { AlignLeft } from 'lucide-react';
 import { useState } from 'react';
 
@@ -10,7 +10,7 @@ import { useState } from 'react';
 // ##########################
 import Logo from '@assets/logo.png';
 import Sidebar from './Sidebar';
-import VideoLecture from './VideoLecture';
+// import VideoLecture from './VideoLecture';
 import ExerciseLecture from './ExerciseLecture';
 
 const Grammar: React.FC = () => {
