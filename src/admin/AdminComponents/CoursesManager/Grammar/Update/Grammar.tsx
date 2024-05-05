@@ -3,7 +3,6 @@
 // ##########################
 import { Avatar, Tabs, Radio } from 'antd';
 import ReactPlayer from 'react-player';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { Editor } from '@tinymce/tinymce-react';
 import { AlignLeft } from 'lucide-react';
 import { useState } from 'react';
@@ -12,9 +11,17 @@ import { useState } from 'react';
 // #    IMPORT Components   #
 // ##########################
 import Logo from '@assets/logo.png';
+import Sidebar from './Sidebar';
 
 const Grammar = () => {
+    /* -------------------------------------------------------------------------- */
+    /*                              STATE MANAGEMENT                              */
+    /* -------------------------------------------------------------------------- */
     const [open, setOpen] = useState<boolean>(false);
+
+    /* -------------------------------------------------------------------------- */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* -------------------------------------------------------------------------- */
 
     return (
         <div className="h-screen">
@@ -46,45 +53,7 @@ const Grammar = () => {
 
             <div className="flex" style={{ height: 'calc(100% - 3.2rem)' }}>
                 {/*sidebar  */}
-                <div
-                    className={`h-full basis-[15rem] overflow-auto bg-white phone:fixed phone:z-50 
-                    pm:fixed pm:z-50
-                    ${
-                        !open ? 'phone:translate-x-[-100%] pm:translate-x-[-100%]' : 'phone:translate-x-0 pm:translate-x-0'
-                    } transition-all duration-300`}
-                >
-                    <h3 className="bg-gray-300 text-center font-title font-bold">Grammar</h3>
-
-                    <ul className="h-full">
-                        {[...Array(5)].map((_item, index) => (
-                            <li key={index}>
-                                <h3 className="bg-gray-200 p-1">Chương 1: Thì</h3>
-
-                                <ul>
-                                    <li
-                                        className="flex min-h-[3rem] cursor-pointer items-center gap-2 
-                                        p-2 transition-all duration-300 hover:bg-bgHoverGrayDark"
-                                    >
-                                        <PlayCircleFilledIcon className="text-base text-orange-400" />
-                                        <h4 className="select-none text-[0.9rem] font-semibold leading-tight text-textCustom">
-                                            Bai 1: Thì hiện tại đơn
-                                        </h4>
-                                    </li>
-
-                                    <li
-                                        className="flex min-h-[3rem] cursor-pointer items-center gap-2 
-                                    p-2 transition-all duration-300 hover:bg-bgHoverGrayDark"
-                                    >
-                                        <PlayCircleFilledIcon className="text-base text-orange-400" />
-                                        <h4 className="select-none text-[0.9rem] font-semibold leading-tight text-textCustom">
-                                            Bai 1: Thực hành thì hiện tại đơn
-                                        </h4>
-                                    </li>
-                                </ul>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                <Sidebar />
 
                 {/* content */}
                 <div className="h-full flex-1 overflow-auto px-3">
@@ -104,7 +73,7 @@ const Grammar = () => {
                                                     <input
                                                         type="text"
                                                         className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
-                                                    sm:w-full"
+                                                        sm:w-full"
                                                     />
                                                 </div>
 
