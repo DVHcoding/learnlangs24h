@@ -80,10 +80,7 @@ const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
             dataIndex: 'name',
             key: 'name',
             render: (_, record) => (
-                <Link
-                    to={`/admin/lesson/${record.key}`}
-                    className="transition-none hover:text-orange-400"
-                >
+                <Link to={`/admin/lesson/${record.key}`} className="transition-none hover:text-orange-400">
                     {record.name}
                 </Link>
             ),
@@ -98,16 +95,11 @@ const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Link
-                        to={`/admin/course/661e3ee0f7cba428a3500a91/${record.key}`}
-                        className="hover:no-underline"
-                    >
+                    <Link to={`/admin/course/661e3ee0f7cba428a3500a91/${record.key}`} className="hover:no-underline">
                         <p className="transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Link>
                     <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
-                        <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">
-                            Delete
-                        </p>
+                        <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
                 </Space>
             ),
@@ -181,11 +173,7 @@ const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
                                             }))
                                         }
                                     />
-                                    <button
-                                        className="btn-primary"
-                                        type="submit"
-                                        disabled={loading}
-                                    >
+                                    <button className="btn-primary" type="submit" disabled={loading}>
                                         New Lesson
                                     </button>
                                     {loading && <Loader content="Loading..." />}
