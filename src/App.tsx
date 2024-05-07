@@ -3,6 +3,8 @@
 // ##################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ##################################
 // #       IMPORT Components
@@ -64,46 +66,55 @@ function App() {
     return (
         <Router>
             <Suspense fallback={<Loader />}>
-                <Routes>
-                    {/*#################################
-                       #          PUBLIC ROUTE         #
-                       #################################*/}
-                    <Route path="*" element={<NotFound />} />
-                    <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
+                <div className="App">
+                    <Routes>
+                        {/*#################################*/}
+                        {/*#          PUBLIC ROUTE          */}
+                        {/*#################################*/}
+                        <Route path="*" element={<NotFound />} />
+                        <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
 
-                    {/*#######################################
-                       # REDIRECT TO HOME WHEN AUTHENTICATED #
-                       #######################################*/}
-                    <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/forgot" element={<ForgotPassword />} />
-                    </Route>
+                        {/*############################################*/}
+                        {/*#    REDIRECT TO HOME WHEN AUTHENTICATED    */}
+                        {/*############################################*/}
+                        <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/forgot" element={<ForgotPassword />} />
+                        </Route>
 
-                    {/*#################################
-                       # AUTHENTICATED PROTECTED ROUTE #
-                       #################################*/}
-                    <Route element={<ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />}>
-                        <Route path="/grammar/:id" element={<Grammar toggleTheme={toggleTheme} />} />
-                        <Route path="/profile/:id" element={<Profile toggleTheme={toggleTheme} />} />
-                    </Route>
+                        {/*######################################*/}
+                        {/*#    AUTHENTICATED PROTECTED ROUTE    */}
+                        {/*######################################*/}
+                        <Route element={<ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />}>
+                            <Route path="/grammar/:id" element={<Grammar toggleTheme={toggleTheme} />} />
+                            <Route path="/profile/:id" element={<Profile toggleTheme={toggleTheme} />} />
+                        </Route>
 
-                    {/*#################################
-                       #          ADMIN ROUTE          #
-                       #################################*/}
-                    <Route
-                        element={
-                            <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} isAdmin={true} role={data?.user?.roles} />
-                        }
-                    >
-                        <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
-                        <Route path="/admin/courses" element={<CoursesList toggleTheme={toggleTheme} />} />
-                        <Route path="/admin/course/:id" element={<LessonTable toggleTheme={toggleTheme} />} />
-                        <Route path="/admin/lesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
-                        <Route path="/admin/unitlesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
-                        <Route path="/admin/course/:id/edit/:unitId" element={<GrammarManagement />} />
-                    </Route>
-                </Routes>
+                        {/*#################################*/}
+                        {/*#          ADMIN ROUTE           */}
+                        {/*#################################*/}
+                        <Route
+                            element={
+                                <ProtectedRoute
+                                    isAuthenticated={data?.success}
+                                    isLoading={isLoading}
+                                    isAdmin={true}
+                                    role={data?.user?.roles}
+                                />
+                            }
+                        >
+                            <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
+                            <Route path="/admin/courses" element={<CoursesList toggleTheme={toggleTheme} />} />
+                            <Route path="/admin/course/:id" element={<LessonTable toggleTheme={toggleTheme} />} />
+                            <Route path="/admin/lesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
+                            <Route path="/admin/unitlesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
+                            <Route path="/admin/course/:id/edit/:unitId" element={<GrammarManagement />} />
+                        </Route>
+                    </Routes>
+
+                    <ToastContainer />
+                </div>
             </Suspense>
         </Router>
     );

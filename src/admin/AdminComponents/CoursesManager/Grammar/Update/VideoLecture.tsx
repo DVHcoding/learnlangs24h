@@ -7,6 +7,7 @@ import ReactPlayer from 'react-player';
 import { Editor } from '@tinymce/tinymce-react';
 import { useParams } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
+import { Loader } from 'rsuite';
 
 // ##########################
 // #    IMPORT Components   #
@@ -16,7 +17,6 @@ import { LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { AppDispatch, RootState } from '@store/store';
 import { updateUnitLessonAndVideoLectureContent } from '@store/reducer/courseReducer';
-import { Loader } from 'rsuite';
 
 const VideoLecture: React.FC = () => {
     const { id: courseId, unitId } = useParams<string>();
