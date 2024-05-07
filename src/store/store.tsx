@@ -11,6 +11,7 @@ import {
     newUnitLessonReducer,
     newUserProcessStatusReducer,
     updateUserProcessStatusReducer,
+    updateUnitLessonAndVideoLectureContentReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -27,6 +28,7 @@ export const store = configureStore({
         newUnitLesson: newUnitLessonReducer,
         newContentUnitLesson: newContentUnitLessonReducer,
         newUserProcessStatus: newUserProcessStatusReducer,
+        updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
         updateUserProcessStatus: updateUserProcessStatusReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),

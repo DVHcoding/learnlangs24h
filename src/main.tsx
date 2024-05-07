@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom/client';
 import { HelmetProvider } from 'react-helmet-async';
 import { StyledEngineProvider } from '@mui/material/styles';
 import { Provider } from 'react-redux';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 // ##########################
 // #    IMPORT Components   #
@@ -19,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <Provider store={store}>
             <StyledEngineProvider injectFirst>
                 <App />
+                <ToastContainer />
             </StyledEngineProvider>
         </Provider>
     </HelmetProvider>

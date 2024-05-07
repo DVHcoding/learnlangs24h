@@ -173,3 +173,13 @@ export interface UnitLessonID {
     lesson: string;
     course: string;
 }
+
+export interface UpdateUnitLessonAndVideoLectureContentPayloadType {
+    _id: string;
+    title: string;
+    time: string;
+    lesson: string;
+    videoUrl: string;
+    totalTime: string;
+    description: string;
+}
