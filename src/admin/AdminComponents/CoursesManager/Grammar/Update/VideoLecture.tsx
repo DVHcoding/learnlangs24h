@@ -6,15 +6,24 @@ import { Tabs, Radio } from 'antd';
 import ReactPlayer from 'react-player';
 import { Editor } from '@tinymce/tinymce-react';
 import { useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
 import { useGetAllLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetVideoLectureContentQuery } from '@store/api/courseApi';
 import { LessonType } from 'types/api-types';
+import { toastError } from '@components/Toast/Toasts';
+import { AppDispatch, RootState } from '@store/store';
+import { updateUnitLessonAndVideoLectureContent } from '@store/reducer/courseReducer';
+import { Loader } from 'rsuite';
 
 const VideoLecture: React.FC = () => {
     const { id: courseId, unitId } = useParams<string>();
+    const dispatch: AppDispatch = useDispatch();
+    const { loading: updateUnitLessonAndVideoLectureContentLoading } = useSelector(
+        (state: RootState) => state.updateUnitLessonAndVideoLectureContent
+    );
 
     // RTK query data
     const { data: videoLectureContent, isLoading: getVideoLectureContentLoading } = useGetVideoLectureContentQuery(unitId || 'undefined');
@@ -26,21 +35,61 @@ const VideoLecture: React.FC = () => {
     /* -------------------------------------------------------------------------- */
     // const [title, setTitle] = useState<string>(unitLesson?.unitLesson.title ?? '');
     const [title, setTitle] = useState<string>('');
+    const [unitTime, setUnitTime] = useState<string>('');
     const [chapter, setChapter] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
+    const [totalTimeVideo, setTotalTimeVideo] = useState<string>('');
+    const [description, setDescription] = useState<string>('');
 
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
 
+    const handleUpdateForm: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
+        e.preventDefault();
+
+        if (
+            !unitId ||
+            title === '' ||
+            unitTime === '' ||
+            chapter === '' ||
+            videoUrl === '' ||
+            totalTimeVideo === '' ||
+            description === ''
+        ) {
+            toastError('Please Enter All Fields');
+        }
+
+        try {
+            await dispatch(
+                updateUnitLessonAndVideoLectureContent({
+                    _id: unitId!,
+                    title,
+                    time: unitTime,
+                    lesson: chapter,
+                    description,
+                    totalTime: totalTimeVideo,
+                    videoUrl,
+                })
+            );
+
+            window.location.reload();
+        } catch (error) {
+            toastError('Có lỗi xảy ra!');
+        }
+    };
+
     useEffect(() => {
         if (unitId) {
             if (unitLesson?.unitLesson) {
                 setTitle(unitLesson.unitLesson.title);
+                setUnitTime(unitLesson.unitLesson.time);
                 setChapter(unitLesson.unitLesson.lesson);
             }
             if (videoLectureContent?.videoLectureContent) {
                 setVideoUrl(videoLectureContent.videoLectureContent.videoUrl);
+                setTotalTimeVideo(videoLectureContent.videoLectureContent.totalTime);
+                setDescription(videoLectureContent.videoLectureContent.description);
             }
         }
     }, [unitId, unitLesson, videoLectureContent]);
@@ -61,13 +110,35 @@ const VideoLecture: React.FC = () => {
                                 key: '1',
                                 children: (
                                     <div>
-                                        <form className="flex flex-col gap-4">
-                                            <button className="btn-primary max-w-max">Cập nhật</button>
+                                        <form className="flex flex-col gap-4" onSubmit={handleUpdateForm}>
+                                            <div className="flex items-center gap-4">
+                                                <button
+                                                    className={`${
+                                                        updateUnitLessonAndVideoLectureContentLoading ? 'btn-disabled' : 'btn-primary'
+                                                    } max-w-max`}
+                                                    disabled={updateUnitLessonAndVideoLectureContentLoading}
+                                                >
+                                                    Cập nhật
+                                                </button>
+                                                {updateUnitLessonAndVideoLectureContentLoading && <Loader content="Loading..." />}
+                                            </div>
+
                                             <div>
                                                 <span className="font-body font-bold">Tên (*)</span>
                                                 <input
                                                     onChange={(e) => setTitle(e.target.value)}
                                                     value={title}
+                                                    type="text"
+                                                    className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                                                    sm:w-full"
+                                                />
+                                            </div>
+
+                                            <div>
+                                                <span className="font-body font-bold">Thời gian (*)</span>
+                                                <input
+                                                    onChange={(e) => setUnitTime(e.target.value)}
+                                                    value={unitTime}
                                                     type="text"
                                                     className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
                                                     sm:w-full"
@@ -92,6 +163,17 @@ const VideoLecture: React.FC = () => {
                                             </div>
 
                                             <div>
+                                                <span className="font-body font-bold">Tổng giời gian video (*)</span>
+                                                <input
+                                                    onChange={(e) => setTotalTimeVideo(e.target.value)}
+                                                    value={totalTimeVideo}
+                                                    type="text"
+                                                    className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                                                        sm:w-full"
+                                                />
+                                            </div>
+
+                                            <div>
                                                 <span className="font-body font-bold">Bài học video (*)</span>
 
                                                 <div className="mt-2">
@@ -105,13 +187,13 @@ const VideoLecture: React.FC = () => {
                                                     onChange={(e) => setVideoUrl(e.target.value)}
                                                     value={videoUrl}
                                                     type="text"
-                                                    className="text-segoe mt-2 block  rounded-[3px] border border-gray-300 p-1
+                                                    className="text-segoe mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1
                                                       focus:border-blue-400 sm:w-full"
                                                     placeholder="https://www.youtube.com"
                                                 />
 
                                                 <div className="mt-4 max-w-[35rem] overflow-hidden rounded-[3px] sm:h-[20rem] sm:w-full">
-                                                    <ReactPlayer url={videoUrl} width={'100%'} />
+                                                    <ReactPlayer controls={true} url={videoUrl} width={'100%'} />
                                                 </div>
                                             </div>
                                         </form>
@@ -128,8 +210,9 @@ const VideoLecture: React.FC = () => {
 
                                             <div className="mt-4">
                                                 <Editor
+                                                    onEditorChange={(value) => setDescription(value)}
                                                     apiKey={import.meta.env.VITE_TINY_API_KEY}
-                                                    value={videoLectureContent.videoLectureContent.description}
+                                                    value={description}
                                                     init={{
                                                         height: 700,
                                                         menubar: true,

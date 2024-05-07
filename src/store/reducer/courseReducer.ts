@@ -16,6 +16,7 @@ import {
     NewLessonPayloadType,
     NewUnitLessonPayloadType,
     NewUserProcessStatusPayloadType,
+    UpdateUnitLessonAndVideoLectureContentPayloadType,
 } from 'types/api-types';
 
 const initialState: NewCourseStateType = {
@@ -91,7 +92,21 @@ export const createNewUserProcessStatus = createAsyncThunk(
 // ##################################
 // #      UPDATE ASYNC THUNK        #
 // ##################################
-// Create async thunk for creating a new user process status
+
+// Update async thunk for updating a UnitLessonAndVideoLectureContent
+export const updateUnitLessonAndVideoLectureContent = createAsyncThunk(
+    'course/updateUnitLessonAndVideoLectureContent',
+    async (payload: UpdateUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
+        try {
+            const response = await axios.put<MessageResponse>('/api/v1/updateUnitLessonAndVideoLectureContent', payload);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Update async thunk for updating a user process status
 export const updateUserProcessStatus = createAsyncThunk(
     'course/updateUserProcessStatus',
     async (payload: NewUserProcessStatusPayloadType, thunkAPI) => {
@@ -233,6 +248,32 @@ export const newUserProcessStatusSlice = createSlice({
 // ################################
 // #        UPDATE SLICE          #
 // ################################
+
+// Update UnitLessonAndVideoLectureContent
+export const updateUnitLessonAndVideoLectureContentSlice = createSlice({
+    name: 'updateUnitLessonAndVideoLectureContent',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(updateUnitLessonAndVideoLectureContent.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUnitLessonAndVideoLectureContent.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Cập nhật thành công!');
+            })
+            .addCase(updateUnitLessonAndVideoLectureContent.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
+// Update UserProcessStatusSlice
 export const updateUserProcessStatusSlice = createSlice({
     name: 'updateUserProcessStatus',
     initialState,
@@ -261,4 +302,5 @@ export const newLessonReducer = newLessonSlice.reducer;
 export const newUnitLessonReducer = newUnitLessonSlice.reducer;
 export const newContentUnitLessonReducer = newContentUnitLessonSlice.reducer;
 export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
+export const updateUnitLessonAndVideoLectureContentReducer = updateUnitLessonAndVideoLectureContentSlice.reducer;
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
