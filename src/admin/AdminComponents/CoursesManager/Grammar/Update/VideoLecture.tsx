@@ -105,7 +105,7 @@ const VideoLecture: React.FC = () => {
                                                     onChange={(e) => setVideoUrl(e.target.value)}
                                                     value={videoUrl}
                                                     type="text"
-                                                    className="text-segoe mt-2 block  rounded-[3px] border border-gray-300 p-1
+                                                    className="text-segoe mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1
                                                       focus:border-blue-400 sm:w-full"
                                                     placeholder="https://www.youtube.com"
                                                 />
