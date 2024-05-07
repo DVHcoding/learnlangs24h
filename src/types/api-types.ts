@@ -136,8 +136,8 @@ export interface FillBlankExercise {
 
 export interface QuestionType {
     sentence: string;
-    correctAnswer: string;
-    otherAnswer: string;
+    correctAnswer: string[];
+    otherAnswer: string[];
     _id: string;
 }
 
