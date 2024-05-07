@@ -29,10 +29,6 @@ const VideoLecture: React.FC = () => {
     const [chapter, setChapter] = useState<string>('');
     const [videoUrl, setVideoUrl] = useState<string>('');
 
-    function handleSelectChange(value: string): void {
-        throw new Error('Function not implemented.');
-    }
-
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
@@ -109,13 +105,13 @@ const VideoLecture: React.FC = () => {
                                                     onChange={(e) => setVideoUrl(e.target.value)}
                                                     value={videoUrl}
                                                     type="text"
-                                                    className="text-segoe mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1
+                                                    className="text-segoe mt-2 block  rounded-[3px] border border-gray-300 p-1
                                                       focus:border-blue-400 sm:w-full"
                                                     placeholder="https://www.youtube.com"
                                                 />
 
-                                                <div className="mt-4 max-w-max overflow-hidden rounded-[3px]">
-                                                    <ReactPlayer url={videoUrl} />
+                                                <div className="mt-4 max-w-[35rem] overflow-hidden rounded-[3px] sm:h-[20rem] sm:w-full">
+                                                    <ReactPlayer url={videoUrl} width={'100%'} />
                                                 </div>
                                             </div>
                                         </form>
