@@ -138,7 +138,7 @@ export interface QuestionType {
     sentence: string;
     correctAnswer: string[];
     otherAnswer: string[];
-    _id: string;
+    _id?: string;
 }
 
 export interface CourseType {

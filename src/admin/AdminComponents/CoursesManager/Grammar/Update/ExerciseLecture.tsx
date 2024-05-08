@@ -6,6 +6,8 @@ import { Tabs, Button } from 'antd';
 import { X } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import dayjs from 'dayjs';
+import { Loader } from 'rsuite';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ##########################
 // #    IMPORT Components   #
@@ -13,10 +15,8 @@ import dayjs from 'dayjs';
 import { LessonType, QuestionType } from 'types/api-types';
 import { useGetAllLessonsByCourseIdQuery, useGetFillBlankExerciseQuery, useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 import { toastError } from '@components/Toast/Toasts';
-import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '@store/store';
 import { updateUnitLessonAndFillBlankExercise } from '@store/reducer/courseReducer';
-import { Loader } from 'rsuite';
 
 // #############################################
 const ExerciseLecture: React.FC = () => {
@@ -60,13 +60,15 @@ const ExerciseLecture: React.FC = () => {
         }
     };
 
+    console.log(questions);
+
     const handleAddQuestion: () => void = () => {
-        const newItem: QuestionType = { _id: `${Date.now()}`, sentence: '', correctAnswer: [''], otherAnswer: [''] };
+        const newItem: QuestionType = { sentence: '', correctAnswer: [''], otherAnswer: [''] };
         setQuestions([...questions, newItem]);
     };
 
-    const handleDeleteQuestion = (questionId: string) => {
-        const updatedQuestions = questions.filter((question) => question._id !== questionId);
+    const handleDeleteQuestion = (questionIndex: number) => {
+        const updatedQuestions = questions.filter((_question, index) => index !== questionIndex);
         setQuestions(updatedQuestions);
     };
 
@@ -206,7 +208,7 @@ const ExerciseLecture: React.FC = () => {
                                                     <X
                                                         className="absolute right-1 top-1 cursor-pointer text-red-500"
                                                         size={19}
-                                                        onClick={() => handleDeleteQuestion(question._id)}
+                                                        onClick={() => handleDeleteQuestion(index)}
                                                     />
 
                                                     <div>
