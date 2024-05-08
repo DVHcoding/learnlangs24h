@@ -6,9 +6,9 @@ import { Progress } from 'antd';
 import { Breadcrumb, Tabs, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import CalendarHeatmap from 'react-calendar-heatmap';
-import type { TabsProps } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import 'react-calendar-heatmap/dist/styles.css';
+import type { TabsProps } from 'antd';
 
 // ##################################
 // #       IMPORT Components
@@ -75,7 +75,6 @@ const Profile: React.FC = () => {
     // ##########################
     // #    STATE MANAGEMENT    #
     // ##########################
-    const expanded: boolean = window.innerWidth > 390;
 
     // ##########################
     // #  FUNCTION MANAGEMENT   #
