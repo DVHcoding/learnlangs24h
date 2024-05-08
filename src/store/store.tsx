@@ -2,6 +2,10 @@
 // #      IMPORT NPM        #
 // ##########################
 import { configureStore } from '@reduxjs/toolkit';
+
+// ##########################
+// #    IMPORT Components   #
+// ##########################
 import { userApi } from './api/userApi';
 import { courseApi } from './api/courseApi';
 import {
@@ -12,11 +16,8 @@ import {
     newUserProcessStatusReducer,
     updateUserProcessStatusReducer,
     updateUnitLessonAndVideoLectureContentReducer,
+    updateUnitLessonAndFillBlankExerciseReducer,
 } from './reducer/courseReducer';
-
-// ##########################
-// #    IMPORT Components   #
-// ##########################
 
 // ##########################
 export const store = configureStore({
@@ -29,6 +30,7 @@ export const store = configureStore({
         newContentUnitLesson: newContentUnitLessonReducer,
         newUserProcessStatus: newUserProcessStatusReducer,
         updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
+        updateUnitLessonAndFillBlankExercise: updateUnitLessonAndFillBlankExerciseReducer,
         updateUserProcessStatus: updateUserProcessStatusReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),

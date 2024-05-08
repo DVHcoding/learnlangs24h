@@ -16,6 +16,7 @@ import {
     NewLessonPayloadType,
     NewUnitLessonPayloadType,
     NewUserProcessStatusPayloadType,
+    UpdateUnitLessonAndFillBlankExercisePayloadType,
     UpdateUnitLessonAndVideoLectureContentPayloadType,
 } from 'types/api-types';
 
@@ -99,6 +100,19 @@ export const updateUnitLessonAndVideoLectureContent = createAsyncThunk(
     async (payload: UpdateUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
         try {
             const response = await axios.put<MessageResponse>('/api/v1/updateUnitLessonAndVideoLectureContent', payload);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+// Update async thunk for updating a UnitLessonAndFillBlankExercise
+export const updateUnitLessonAndFillBlankExercise = createAsyncThunk(
+    'course/updateUnitLessonAndFillBlankExercise',
+    async (payload: UpdateUnitLessonAndFillBlankExercisePayloadType, thunkAPI) => {
+        try {
+            const response = await axios.put<MessageResponse>('/api/v1/updateUnitLessonAndFillBlankExercise', payload);
             return response.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
@@ -273,6 +287,30 @@ export const updateUnitLessonAndVideoLectureContentSlice = createSlice({
     },
 });
 
+// Update UnitLessonAndFillBlankExercise
+export const updateUnitLessonAndFillBlankExerciseSlice = createSlice({
+    name: 'updateUnitLessonAndFillBlankExercise',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(updateUnitLessonAndFillBlankExercise.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateUnitLessonAndFillBlankExercise.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Cập nhật thành công!');
+            })
+            .addCase(updateUnitLessonAndFillBlankExercise.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 // Update UserProcessStatusSlice
 export const updateUserProcessStatusSlice = createSlice({
     name: 'updateUserProcessStatus',
@@ -303,4 +341,5 @@ export const newUnitLessonReducer = newUnitLessonSlice.reducer;
 export const newContentUnitLessonReducer = newContentUnitLessonSlice.reducer;
 export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
 export const updateUnitLessonAndVideoLectureContentReducer = updateUnitLessonAndVideoLectureContentSlice.reducer;
+export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFillBlankExerciseSlice.reducer;
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;

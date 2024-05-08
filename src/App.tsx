@@ -2,7 +2,7 @@
 // #       IMPORT Npm
 // ##################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Fragment } from 'react';
+import { Fragment, useEffect } from 'react';
 import loadable from '@loadable/component';
 
 // ##################################
@@ -32,6 +32,16 @@ const ForgotPassword = loadable(() => import('./features/Authentication/ForgotPa
 
 function App() {
     const { data, isLoading } = useUserDetailsQuery();
+    const themeLocal = localStorage.getItem('theme');
+    const theme = themeLocal === 'false' ? 'light' : 'dark';
+
+    useEffect(() => {
+        document.body.classList.add(theme);
+
+        return () => {
+            document.body.classList.remove(theme);
+        };
+    }, [theme]);
 
     return (
         <Router>
