@@ -1,7 +1,8 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { Outlet, Navigate } from 'react-router-dom';
+import { Fragment, ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 
 // ##########################
 // #    IMPORT Components   #
@@ -12,14 +13,10 @@ interface AuthorizationType {
     isLoading: boolean;
     isAdmin?: boolean;
     role?: string;
+    children: ReactNode;
 }
 
-const ProtectedRoute: React.FC<AuthorizationType> = ({
-    isAuthenticated,
-    isLoading,
-    isAdmin,
-    role,
-}) => {
+const ProtectedRoute: React.FC<AuthorizationType> = ({ isAuthenticated, isLoading, isAdmin, role, children }) => {
     if (isLoading === false) {
         if (isAdmin && role !== 'admin') {
             return <Navigate to="/" />;
@@ -30,7 +27,7 @@ const ProtectedRoute: React.FC<AuthorizationType> = ({
         }
     }
 
-    return <Outlet />;
+    return <Fragment>{children}</Fragment>;
 };
 
 export default ProtectedRoute;

@@ -1,4 +1,13 @@
-import React, { useState } from 'react';
+// ##################################
+// #       IMPORT Npm
+// ##################################
+import React, { useEffect, useState } from 'react';
+import { AutoComplete, InputGroup, Toggle } from 'rsuite';
+import SearchIcon from '@rsuite/icons/Search';
+import NightlightIcon from '@mui/icons-material/Nightlight';
+import { MessageCircleMore, Sun } from 'lucide-react';
+import { Link } from 'react-router-dom';
+
 // ##################################
 // #       IMPORT Components
 // ##################################
@@ -6,16 +15,7 @@ import TippyNotify from '@components/Tippys/TippyNotify';
 import TippyProfile from '@components/Tippys/TippyProfile';
 
 // ##################################
-// #       IMPORT Npm
-// ##################################
-
-import { AutoComplete, InputGroup, Toggle } from 'rsuite';
-import SearchIcon from '@rsuite/icons/Search';
-import NightlightIcon from '@mui/icons-material/Nightlight';
-import { MessageCircleMore, Sun } from 'lucide-react';
-import { Link } from 'react-router-dom';
-
-const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
+const Navbar: React.FC = () => {
     const data: string[] = [
         'Eugenia',
         'Bryan',
@@ -37,6 +37,24 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
         'Hilda',
     ];
 
+    type Theme = 'light' | 'dark';
+    /* -------------------------------------------------------------------------- */
+    /*                              STATE MANAGEMENT                              */
+    /* -------------------------------------------------------------------------- */
+    const [theme, setTheme] = useState<Theme>(() => {
+        const themeLocal = localStorage.getItem('theme');
+
+        let themeBoolean: Theme = 'light';
+
+        if (themeLocal === 'false') {
+            themeBoolean = 'light';
+        } else if (themeLocal === 'true') {
+            themeBoolean = 'dark';
+        }
+
+        return themeBoolean;
+    });
+
     // Light & DarkMode
     const [checked, setChecked] = useState<boolean>(() => {
         const theme = localStorage.getItem('theme');
@@ -55,6 +73,24 @@ const Navbar: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
 
         return setThemeBoolean;
     });
+
+    /* -------------------------------------------------------------------------- */
+    /*                            FUNCTION MANAGAGEMENT                           */
+    /* -------------------------------------------------------------------------- */
+    const toggleTheme = () => {
+        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
+    };
+
+    /* -------------------------------------------------------------------------- */
+    /*                                   EFFECT                                   */
+    /* -------------------------------------------------------------------------- */
+    useEffect(() => {
+        document.body.classList.add(theme);
+
+        return () => {
+            document.body.classList.remove(theme);
+        };
+    }, [theme]);
 
     return (
         <div

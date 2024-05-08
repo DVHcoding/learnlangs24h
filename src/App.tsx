@@ -2,120 +2,143 @@
 // #       IMPORT Npm
 // ##################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { lazy, Suspense, useEffect, useState, useCallback } from 'react';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { Fragment } from 'react';
+import loadable from '@loadable/component';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
+import { adminRoute, protectedRoute, publicRoute } from './routes/routes';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
 import { useUserDetailsQuery } from '@store/api/userApi';
+import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
+import AdminDefaultLayout from '@layouts/AdminDefaultLayout/AdminDefaultLayout';
 
 // ##################################
-const NotFound = lazy(() => import('./pages/NotFound/NotFound'));
-const Loader = lazy(() => import('./pages/Loader/Loader'));
-const Login = lazy(() => import('./features/Authentication/Login'));
-const Home = lazy(() => import('./components/Home/Home'));
-const Register = lazy(() => import('./features/Authentication/Register'));
-const ForgotPassword = lazy(() => import('./features/Authentication/ForgotPassword'));
-const Grammar = lazy(() => import('./components/Courses/Grammar/Grammar'));
-const Profile = lazy(() => import('./components/Profile/Profile'));
-
-// Admin Components
-const Dashboard = lazy(() => import('@admin/AdminComponents/Dashboard'));
-const CoursesList = lazy(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
-const LessonTable = lazy(() => import('@admin/AdminComponents/CoursesManager/LessonTable'));
-const UnitLesson = lazy(() => import('@admin/AdminComponents/CoursesManager/UnitLesson'));
-const GrammarManagement = lazy(() => import('@admin/AdminComponents/CoursesManager/Grammar/Update/Grammar'));
+const NotFound = loadable(() => import('@pages/NotFound/NotFound'));
+const Loader = loadable(() => import('@pages/Loader/Loader'));
+const Login = loadable(() => import('@features/Authentication/Login'), {
+    fallback: <Loader />,
+});
+const Register = loadable(() => import('./features/Authentication/Register'), {
+    fallback: <Loader />,
+});
+const ForgotPassword = loadable(() => import('./features/Authentication/ForgotPassword'), {
+    fallback: <Loader />,
+});
 
 // ##################################
-type Theme = 'light' | 'dark';
 
 function App() {
     const { data, isLoading } = useUserDetailsQuery();
 
-    const [theme, setTheme] = useState<Theme>(() => {
-        const themeLocal = localStorage.getItem('theme');
-
-        let themeBoolean: Theme = 'light';
-
-        if (themeLocal === 'false') {
-            themeBoolean = 'light';
-        } else if (themeLocal === 'true') {
-            themeBoolean = 'dark';
-        }
-
-        return themeBoolean;
-    });
-
-    /* The function that is handle change theme when click on toggle*/
-    const toggleTheme = useCallback(() => {
-        setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
-    }, []);
-
-    useEffect(() => {
-        document.body.classList.add(theme);
-
-        return () => {
-            document.body.classList.remove(theme);
-        };
-    }, [theme]);
-
     return (
         <Router>
-            <Suspense fallback={<Loader />}>
-                <div className="App">
-                    <Routes>
-                        {/*#################################*/}
-                        {/*#          PUBLIC ROUTE          */}
-                        {/*#################################*/}
-                        <Route path="*" element={<NotFound />} />
-                        <Route path="/" element={<Home toggleTheme={toggleTheme} />} />
+            <div className="App">
+                <Routes>
+                    {/*#################################*/}
+                    {/*#          PUBLIC ROUTE          */}
+                    {/*#################################*/}
+                    <Route path="*" element={<NotFound />} />
 
-                        {/*############################################*/}
-                        {/*#    REDIRECT TO HOME WHEN AUTHENTICATED    */}
-                        {/*############################################*/}
-                        <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
-                            <Route path="/login" element={<Login />} />
-                            <Route path="/register" element={<Register />} />
-                            <Route path="/forgot" element={<ForgotPassword />} />
-                        </Route>
+                    {publicRoute.map((route, index) => {
+                        let Layout = DefaultLayout;
 
-                        {/*######################################*/}
-                        {/*#    AUTHENTICATED PROTECTED ROUTE    */}
-                        {/*######################################*/}
-                        <Route element={<ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading} />}>
-                            <Route path="/grammar/:id" element={<Grammar toggleTheme={toggleTheme} />} />
-                            <Route path="/profile/:id" element={<Profile toggleTheme={toggleTheme} />} />
-                        </Route>
+                        if (route.layout) {
+                            Layout = route.layout;
+                        } else if (route.layout === null) {
+                            Layout = Fragment;
+                        }
 
-                        {/*#################################*/}
-                        {/*#          ADMIN ROUTE           */}
-                        {/*#################################*/}
-                        <Route
-                            element={
-                                <ProtectedRoute
-                                    isAuthenticated={data?.success}
-                                    isLoading={isLoading}
-                                    isAdmin={true}
-                                    role={data?.user?.roles}
-                                />
-                            }
-                        >
-                            <Route path="/admin" element={<Dashboard toggleTheme={toggleTheme} />} />
-                            <Route path="/admin/courses" element={<CoursesList toggleTheme={toggleTheme} />} />
-                            <Route path="/admin/course/:id" element={<LessonTable toggleTheme={toggleTheme} />} />
-                            <Route path="/admin/lesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
-                            <Route path="/admin/unitlesson/:id" element={<UnitLesson toggleTheme={toggleTheme} />} />
-                            <Route path="/admin/course/:id/edit/:unitId" element={<GrammarManagement />} />
-                        </Route>
-                    </Routes>
+                        const Page = route.component;
 
-                    <ToastContainer />
-                </div>
-            </Suspense>
+                        return (
+                            <Route
+                                path={route.path}
+                                key={index}
+                                element={
+                                    <Layout>
+                                        <Page />
+                                    </Layout>
+                                }
+                            />
+                        );
+                    })}
+
+                    {/*############################################*/}
+                    {/*#    REDIRECT TO HOME WHEN AUTHENTICATED    */}
+                    {/*############################################*/}
+                    <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
+                        <Route path="/login" element={<Login />} />
+                        <Route path="/register" element={<Register />} />
+                        <Route path="/forgot" element={<ForgotPassword />} />
+                    </Route>
+
+                    {/*######################################*/}
+                    {/*#    AUTHENTICATED PROTECTED ROUTE    */}
+                    {/*######################################*/}
+                    {protectedRoute.map((route, index) => {
+                        let Layout = DefaultLayout;
+
+                        if (route.layout) {
+                            Layout = route.layout;
+                        } else if (route.layout === null) {
+                            Layout = Fragment;
+                        }
+
+                        const Page = route.component;
+
+                        return (
+                            <Route
+                                path={route.path}
+                                key={index}
+                                element={
+                                    <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading}>
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                        );
+                    })}
+
+                    {/*#################################*/}
+                    {/*#          ADMIN ROUTE           */}
+                    {/*#################################*/}
+                    {adminRoute.map((route, index) => {
+                        let Layout = AdminDefaultLayout;
+
+                        if (route.layout) {
+                            Layout = route.layout;
+                        } else if (route.layout === null) {
+                            Layout = Fragment;
+                        }
+
+                        const Page = route.component;
+
+                        return (
+                            <Route
+                                path={route.path}
+                                key={index}
+                                element={
+                                    <ProtectedRoute
+                                        isAuthenticated={data?.success}
+                                        isLoading={isLoading}
+                                        isAdmin={true}
+                                        role={data?.user?.roles}
+                                    >
+                                        <Layout>
+                                            <Page />
+                                        </Layout>
+                                    </ProtectedRoute>
+                                }
+                            />
+                        );
+                    })}
+                </Routes>
+            </div>
         </Router>
     );
 }

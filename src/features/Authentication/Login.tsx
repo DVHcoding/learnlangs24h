@@ -17,8 +17,6 @@ import { toastError, toastSuccess } from '@components/Toast/Toasts';
 import { Fragment } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { GoogleAuthProvider, signInWithPopup } from 'firebase/auth';
-import { Bounce, ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { Loader } from 'rsuite';
 
 // ##################################
@@ -44,25 +42,14 @@ const Login: React.FC = () => {
             } else {
                 if (response.data.success) {
                     setUserDataResponse(response.data);
-
-                    setTimeout(() => {
-                        navigate('/');
-                    }, 1500);
+                    toastSuccess('Đăng nhập thành công!');
+                    navigate('/');
                 } else {
                     setUserDataResponse(response.data);
                 }
             }
         } catch (error) {
-            toast.error(`${error}`, {
-                position: 'top-right',
-                autoClose: 1500,
-                hideProgressBar: true,
-                closeOnClick: false,
-                pauseOnHover: true,
-                draggable: true,
-                theme: 'light',
-                transition: Bounce,
-            });
+            toastError(`${error}`);
         }
     };
 
@@ -92,10 +79,7 @@ const Login: React.FC = () => {
                     toastError(`${data.message}`);
                 } else {
                     toastSuccess('Đăng nhập thành công!');
-
-                    setTimeout(() => {
-                        navigate('/');
-                    }, 1500);
+                    navigate('/');
                 }
             }
         } catch (error) {
@@ -106,18 +90,12 @@ const Login: React.FC = () => {
     return (
         <Fragment>
             {/* Helmet */}
-            <HelmetWrapper
-                title="Login"
-                description="Login to access and practicing your English Skills"
-                canonical="/login"
-            />
+            <HelmetWrapper title="Login" description="Login to access and practicing your English Skills" canonical="/login" />
 
             {/* Main */}
             <div className="flex h-screen items-center justify-center bg-gradient-to-r from-green-100 via-indigo-200 to-purple-100">
                 <div className="h-[80%] rounded-lg bg-white p-8 shadow phone:h-full phone:w-full">
-                    <h2 className="mb-4 font-body text-2xl font-bold text-black phone:text-xl">
-                        Welcome Back
-                    </h2>
+                    <h2 className="mb-4 font-body text-2xl font-bold text-black phone:text-xl">Welcome Back</h2>
 
                     <div className="mb-4 flex flex-wrap items-center justify-center gap-4">
                         <button
@@ -125,16 +103,12 @@ const Login: React.FC = () => {
                             className="flex items-center gap-2 rounded-lg border border-slate-200 px-8 py-2 hover:bg-[#f3f4f6]"
                         >
                             <img src={GoogleIcon} alt="Google Icon" className="w-5" />
-                            <span className="font-body font-semibold text-black">
-                                Login with Google
-                            </span>
+                            <span className="font-body font-semibold text-black">Login with Google</span>
                         </button>
 
                         <button className="flex items-center gap-2 rounded-lg border border-slate-200 px-6 py-2 hover:bg-[#f3f4f6]">
                             <img src={FacebookIcon} alt="Facebook icon" className="w-5" />
-                            <span className="font-body font-semibold text-black">
-                                Login with Facebook
-                            </span>
+                            <span className="font-body font-semibold text-black">Login with Facebook</span>
                         </button>
                     </div>
 
@@ -174,19 +148,11 @@ const Login: React.FC = () => {
                         </div>
 
                         {/* Handler error | success text */}
-                        <span
-                            className={`mb-2 text-sm text-red-500 ${
-                                userDataResponse?.success === false ? 'block' : 'hidden'
-                            }`}
-                        >
+                        <span className={`mb-2 text-sm text-red-500 ${userDataResponse?.success === false ? 'block' : 'hidden'}`}>
                             Tài khoản hoặc mật khẩu không chính xác!
                         </span>
 
-                        <span
-                            className={`mb-2 text-sm text-green-500 ${
-                                userDataResponse?.success ? 'block' : 'hidden'
-                            }`}
-                        >
+                        <span className={`mb-2 text-sm text-green-500 ${userDataResponse?.success ? 'block' : 'hidden'}`}>
                             Đăng nhập thành công!
                         </span>
 
@@ -227,8 +193,6 @@ const Login: React.FC = () => {
                     />
                 </div>
             )}
-
-            <ToastContainer />
         </Fragment>
     );
 };
