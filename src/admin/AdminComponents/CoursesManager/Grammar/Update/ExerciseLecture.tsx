@@ -12,9 +12,19 @@ import dayjs from 'dayjs';
 // ##########################
 import { LessonType, QuestionType } from 'types/api-types';
 import { useGetAllLessonsByCourseIdQuery, useGetFillBlankExerciseQuery, useGetUnitLessonByIdQuery } from '@store/api/courseApi';
+import { toastError } from '@components/Toast/Toasts';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '@store/store';
+import { updateUnitLessonAndFillBlankExercise } from '@store/reducer/courseReducer';
+import { Loader } from 'rsuite';
 
 // #############################################
 const ExerciseLecture: React.FC = () => {
+    const dispatch: AppDispatch = useDispatch();
+    const { loading: updateUnitLessonAndFillBlankExerciseLoading } = useSelector(
+        (state: RootState) => state.updateUnitLessonAndFillBlankExercise
+    );
+
     const { id: courseId, unitId } = useParams<string>();
 
     // RTK query data
@@ -26,15 +36,30 @@ const ExerciseLecture: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* -------------------------------------------------------------------------- */
     const [title, setTitle] = useState<string>('');
-    const [time, setTime] = useState<string>('');
-    const [date, setDate] = useState<string>();
+    const [unitTime, setUnitTime] = useState<string>('');
     const [chapter, setChapter] = useState<string>('');
+    const [date, setDate] = useState<string>();
 
     const [questions, setQuestions] = useState<QuestionType[]>([]);
 
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
+    const handleUpdateForm: (e: React.FormEvent<HTMLFormElement>) => void = async (e) => {
+        e.preventDefault();
+
+        if (!unitId || title === '' || unitTime === '' || chapter === '' || !questions || questions.length === 0) {
+            toastError('Please Enter All Fields');
+        }
+
+        try {
+            await dispatch(updateUnitLessonAndFillBlankExercise({ _id: unitId!, title, time: unitTime, lesson: chapter, questions }));
+            window.location.reload();
+        } catch (error) {
+            toastError('Có lỗi xảy ra!');
+        }
+    };
+
     const handleAddQuestion: () => void = () => {
         const newItem: QuestionType = { _id: `${Date.now()}`, sentence: '', correctAnswer: [''], otherAnswer: [''] };
         setQuestions([...questions, newItem]);
@@ -49,7 +74,7 @@ const ExerciseLecture: React.FC = () => {
         if (unitId) {
             if (unitLesson?.unitLesson) {
                 setTitle(unitLesson.unitLesson.title);
-                setTime(unitLesson.unitLesson.time);
+                setUnitTime(unitLesson.unitLesson.time);
                 setDate(dayjs(unitLesson.unitLesson.createAt).format('YYYY-MM-DD HH:mm:ss'));
                 setChapter(unitLesson.unitLesson.lesson);
             }
@@ -59,8 +84,6 @@ const ExerciseLecture: React.FC = () => {
             }
         }
     }, [unitId, unitLesson, fillBlankExercise]);
-
-    console.log(questions);
 
     return (
         <Fragment>
@@ -77,8 +100,19 @@ const ExerciseLecture: React.FC = () => {
                                 label: 'Thông tin chung',
                                 key: '1',
                                 children: (
-                                    <form className="flex flex-col gap-4">
-                                        <button className="btn-primary max-w-max">Cập nhật</button>
+                                    <form className="flex flex-col gap-4" onSubmit={handleUpdateForm}>
+                                        <div className="flex items-center gap-4">
+                                            <button
+                                                className={`${
+                                                    updateUnitLessonAndFillBlankExerciseLoading ? 'btn-disabled' : 'btn-primary'
+                                                } max-w-max`}
+                                                disabled={updateUnitLessonAndFillBlankExerciseLoading}
+                                            >
+                                                Cập nhật
+                                            </button>
+                                            {updateUnitLessonAndFillBlankExerciseLoading && <Loader content="Loading..." />}
+                                        </div>
+
                                         <div>
                                             <span className="font-body font-bold">Tên (*)</span>
                                             <input
@@ -93,8 +127,8 @@ const ExerciseLecture: React.FC = () => {
                                         <div>
                                             <span className="font-body font-bold">Thời gian (*)</span>
                                             <input
-                                                onChange={(e) => setTime(e.target.value)}
-                                                value={time}
+                                                onChange={(e) => setUnitTime(e.target.value)}
+                                                value={unitTime}
                                                 type="text"
                                                 className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
                                                 sm:w-full"
@@ -176,6 +210,7 @@ const ExerciseLecture: React.FC = () => {
                                                     />
 
                                                     <div>
+                                                        {/* Question sentence */}
                                                         <div>
                                                             <span className="select-none font-body font-bold">Câu hỏi (*)</span>
                                                             <input
@@ -204,6 +239,7 @@ const ExerciseLecture: React.FC = () => {
                                                             />
                                                         </div>
 
+                                                        {/* Answers */}
                                                         <div>
                                                             <span className="select-none font-body font-bold">Đáp án (*)</span>
                                                             <input
@@ -231,6 +267,7 @@ const ExerciseLecture: React.FC = () => {
                                                             />
                                                         </div>
 
+                                                        {/* Other Answers */}
                                                         <div>
                                                             <span className="select-none font-body font-bold">Đáp án khác (*)</span>
                                                             <input

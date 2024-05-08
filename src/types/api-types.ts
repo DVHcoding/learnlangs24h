@@ -183,3 +183,11 @@ export interface UpdateUnitLessonAndVideoLectureContentPayloadType {
     totalTime: string;
     description: string;
 }
+
+export interface UpdateUnitLessonAndFillBlankExercisePayloadType {
+    _id: string;
+    title: string;
+    time: string;
+    lesson: string;
+    questions: QuestionType[];
+}
