@@ -6,8 +6,6 @@ import 'tippy.js/dist/tippy.css';
 // import { Avatar } from 'rsuite';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 // ##########################
 // #    IMPORT Components   #
@@ -124,8 +122,6 @@ const TippyProfile: React.FC = () => {
             >
                 <Avatar size={35} src={<img src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar} alt="avatar" />} />
             </Tippy>
-
-            <ToastContainer />
         </>
     );
 };

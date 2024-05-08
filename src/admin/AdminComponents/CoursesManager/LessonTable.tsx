@@ -12,8 +12,6 @@ import { Loader } from 'rsuite';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import Navbar from '@pages/Header/Navbar';
-import Sidebar from '@admin/AdminPages/AdminSidebar';
 import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
@@ -31,7 +29,7 @@ interface DataType {
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 
 // ##################################
-const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
+const LessonTable: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const { id } = useParams<{ id: string }>();
 
@@ -118,71 +116,50 @@ const LessonTable: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => 
     }
 
     return (
-        <div>
-            {/* CONTAINER */}
-            <div
-                className="scrollbar h-screen overflow-auto bg-bgCustom sm:px-0 sm:py-0 md:p-0 
-                xl:px-8 xl:py-4"
-            >
-                {/* BOX */}
-                <div className="flex h-full w-full overflow-hidden rounded-md border-2 border-bdCustom sm:rounded-none">
-                    {/* SIDE-BAR */}
-                    <Sidebar />
-
-                    {/* CONTENT */}
-                    <div className={`scrollbar w-full overflow-auto bg-bgCustom `}>
-                        {/* Navbar */}
-                        <Navbar toggleTheme={toggleTheme} />
-
-                        {/* Body */}
-                        <div className="h-full px-4">
-                            {/* BreadCrumbs */}
-                            <div>
-                                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
-                            </div>
-
-                            <form onSubmit={handleSubmitNewLesson}>
-                                <Table
-                                    columns={columns}
-                                    dataSource={dataTable}
-                                    rowSelection={rowSelection}
-                                    pagination={{ pageSize: 10 }}
-                                    className="scrollbar mb-4 overflow-auto"
-                                />
-
-                                <div className="flex flex-wrap items-center gap-4">
-                                    <Input
-                                        placeholder="Lesson Title"
-                                        size="large"
-                                        className="w-[14.063rem] border-bdCustom bg-bgCustom text-textCustom 
-                                        placeholder:text-textCustom hover:bg-bgCustom focus:bg-bgCustom"
-                                        onChange={(e) => setLessonName(e.target.value)}
-                                        value={lessonName}
-                                        required
-                                    />
-                                    <Select
-                                        size="large"
-                                        defaultValue="---Select Course---"
-                                        style={{ width: 200 }}
-                                        onChange={handleChangeSelectedCourse}
-                                        options={
-                                            data &&
-                                            data.courses.map((course: CourseType) => ({
-                                                value: course._id,
-                                                label: course.name,
-                                            }))
-                                        }
-                                    />
-                                    <button className="btn-primary" type="submit" disabled={loading}>
-                                        New Lesson
-                                    </button>
-                                    {loading && <Loader content="Loading..." />}
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
+        <div className="h-full px-4">
+            {/* BreadCrumbs */}
+            <div>
+                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
             </div>
+
+            <form onSubmit={handleSubmitNewLesson}>
+                <Table
+                    columns={columns}
+                    dataSource={dataTable}
+                    rowSelection={rowSelection}
+                    pagination={{ pageSize: 10 }}
+                    className="scrollbar mb-4 overflow-auto"
+                />
+
+                <div className="flex flex-wrap items-center gap-4">
+                    <Input
+                        placeholder="Lesson Title"
+                        size="large"
+                        className="w-[14.063rem] border-bdCustom bg-bgCustom text-textCustom 
+                                        placeholder:text-textCustom hover:bg-bgCustom focus:bg-bgCustom"
+                        onChange={(e) => setLessonName(e.target.value)}
+                        value={lessonName}
+                        required
+                    />
+                    <Select
+                        size="large"
+                        defaultValue="---Select Course---"
+                        style={{ width: 200 }}
+                        onChange={handleChangeSelectedCourse}
+                        options={
+                            data &&
+                            data.courses.map((course: CourseType) => ({
+                                value: course._id,
+                                label: course.name,
+                            }))
+                        }
+                    />
+                    <button className="btn-primary" type="submit" disabled={loading}>
+                        New Lesson
+                    </button>
+                    {loading && <Loader content="Loading..." />}
+                </div>
+            </form>
         </div>
     );
 };

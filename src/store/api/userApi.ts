@@ -1,13 +1,7 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import {
-    MessageResponse,
-    APIResponse,
-    LoginGoogleType,
-    LoginUserType,
-    RegisterUserType,
-} from 'types/api-types';
+import { MessageResponse, APIResponse, LoginGoogleType, LoginUserType, RegisterUserType } from 'types/api-types';
 
 // ##########################
 // #    IMPORT Components   #
@@ -72,10 +66,5 @@ export const userApi = createApi({
     }),
 });
 
-export const {
-    useUserDetailsQuery,
-    useRegisterUserMutation,
-    useLoginUserMutation,
-    useLoginGoogleMutation,
-    useLogoutUserMutation,
-} = userApi;
+export const { useUserDetailsQuery, useRegisterUserMutation, useLoginUserMutation, useLoginGoogleMutation, useLogoutUserMutation } =
+    userApi;

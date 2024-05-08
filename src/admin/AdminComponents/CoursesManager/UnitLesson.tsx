@@ -9,8 +9,6 @@ import type { TableProps } from 'antd';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import Navbar from '@pages/Header/Navbar';
-import Sidebar from '@admin/AdminPages/AdminSidebar';
 import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
 import CreateUnit from '@admin/AdminComponents/CoursesManager/Grammar/CreateUnit';
 import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
@@ -32,7 +30,7 @@ interface DataType {
 
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 // ##################################
-const UnitLesson: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
+const UnitLesson: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || '');
 
@@ -111,42 +109,21 @@ const UnitLesson: React.FC<{ toggleTheme: () => void }> = ({ toggleTheme }) => {
     }
 
     return (
-        <div>
-            {/* CONTAINER */}
-            <div
-                className="scrollbar h-screen overflow-auto bg-bgCustom sm:px-0 sm:py-0 md:p-0 
-                xl:px-8 xl:py-4"
-            >
-                {/* BOX */}
-                <div className="flex h-full w-full overflow-hidden rounded-md border-2 border-bdCustom sm:rounded-none">
-                    {/* SIDE-BAR */}
-                    <Sidebar />
-
-                    {/* CONTENT */}
-                    <div className={`scrollbar w-full overflow-auto bg-bgCustom `}>
-                        {/* Navbar */}
-                        <Navbar toggleTheme={toggleTheme} />
-
-                        {/* Body */}
-                        <div className="h-full px-4">
-                            {/* BreadCrumbs */}
-                            <div>
-                                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
-                            </div>
-
-                            <Table
-                                columns={columns}
-                                dataSource={dataTable}
-                                rowSelection={rowSelection}
-                                pagination={{ pageSize: 10 }}
-                                className="scrollbar mb-4 overflow-auto"
-                            />
-
-                            <CreateUnit data={data} isLoading={isLoading} reloadData={() => refetch()} />
-                        </div>
-                    </div>
-                </div>
+        <div className="h-full px-4">
+            {/* BreadCrumbs */}
+            <div>
+                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
             </div>
+
+            <Table
+                columns={columns}
+                dataSource={dataTable}
+                rowSelection={rowSelection}
+                pagination={{ pageSize: 10 }}
+                className="scrollbar mb-4 overflow-auto"
+            />
+
+            <CreateUnit data={data} isLoading={isLoading} reloadData={() => refetch()} />
         </div>
     );
 };

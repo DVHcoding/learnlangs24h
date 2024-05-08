@@ -12,7 +12,7 @@ import { toastError, toastSuccess } from '@components/Toast/Toasts';
 import { Fragment, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Checkbox from '@mui/material/Checkbox';
-import { Bounce, ToastContainer, toast } from 'react-toastify';
+import { Bounce, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
 // ##################################
@@ -57,12 +57,7 @@ const Register = () => {
         password: null,
         confirmPassword: null,
     });
-    const allValueCorrect = [
-        isValid.username,
-        isValid.email,
-        userInfo.password === userInfo.confirmPassword,
-        isValid.confirmPassword,
-    ];
+    const allValueCorrect = [isValid.username, isValid.email, userInfo.password === userInfo.confirmPassword, isValid.confirmPassword];
 
     const registerSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -113,21 +108,12 @@ const Register = () => {
     return (
         <Fragment>
             {/* Helmet */}
-            <HelmetWrapper
-                title="Login"
-                description="Login to access and practicing your English Skills"
-                canonical="/login"
-            />
+            <HelmetWrapper title="Login" description="Login to access and practicing your English Skills" canonical="/login" />
 
             {/* Main */}
             <div className="scrollbar flex h-screen items-center justify-center bg-gradient-to-r from-green-100 via-indigo-200 to-purple-100 phone:overflow-y-auto">
-                <form
-                    onSubmit={registerSubmit}
-                    className="w-[31rem] rounded-lg bg-white p-8 shadow phone:min-h-full phone:w-full"
-                >
-                    <h2 className="mb-4 font-body text-2xl font-bold text-black phone:text-xl">
-                        Create an Account
-                    </h2>
+                <form onSubmit={registerSubmit} className="w-[31rem] rounded-lg bg-white p-8 shadow phone:min-h-full phone:w-full">
+                    <h2 className="mb-4 font-body text-2xl font-bold text-black phone:text-xl">Create an Account</h2>
 
                     {/* Form email */}
                     <div className="mb-4">
@@ -179,11 +165,7 @@ const Register = () => {
                                 className="w-full rounded-md border bg-[#f9fafb] p-2 focus:border-2 focus:border-blue-500"
                                 required
                             />
-                            {!isValid.email && isValid.email !== null ? (
-                                <span className={`text-red-400 `}>Email không hợp lệ</span>
-                            ) : (
-                                ''
-                            )}
+                            {!isValid.email && isValid.email !== null ? <span className={`text-red-400 `}>Email không hợp lệ</span> : ''}
                         </div>
 
                         <div className="mb-4">
@@ -208,9 +190,7 @@ const Register = () => {
                             />
 
                             {!isValid.password && isValid.password !== null ? (
-                                <span className={`text-red-400 `}>
-                                    Password không được để trống
-                                </span>
+                                <span className={`text-red-400 `}>Password không được để trống</span>
                             ) : (
                                 ''
                             )}
@@ -222,9 +202,7 @@ const Register = () => {
                                 onBlur={() =>
                                     setIsValid((prevIsValid) => ({
                                         ...prevIsValid,
-                                        confirmPassword:
-                                            userInfo.confirmPassword !== '' &&
-                                            userInfo.confirmPassword === userInfo.password,
+                                        confirmPassword: userInfo.confirmPassword !== '' && userInfo.confirmPassword === userInfo.password,
                                     }))
                                 }
                                 onChange={(e) =>
@@ -239,9 +217,7 @@ const Register = () => {
                                 required
                             />
                             {!isValid.confirmPassword && isValid.confirmPassword !== null ? (
-                                <span className={`text-red-400 `}>
-                                    Password nhập lại không chính xác
-                                </span>
+                                <span className={`text-red-400 `}>Password nhập lại không chính xác</span>
                             ) : (
                                 ''
                             )}
@@ -266,9 +242,7 @@ const Register = () => {
                         type="submit"
                         disabled={isLoading || !isCheckedTerms ? true : false}
                         className={`mt-4 w-full rounded-md ${
-                            isCheckedTerms
-                                ? 'bg-blue-500 text-white'
-                                : 'bg-[#e0e0e0] text-[#a6a6a6]'
+                            isCheckedTerms ? 'bg-blue-500 text-white' : 'bg-[#e0e0e0] text-[#a6a6a6]'
                         } p-2 font-semibold disabled:cursor-default`}
                     >
                         Register
@@ -285,8 +259,6 @@ const Register = () => {
                     {isLoading && <p>isLoading....</p>}
                 </form>
             </div>
-
-            <ToastContainer />
         </Fragment>
     );
 };
