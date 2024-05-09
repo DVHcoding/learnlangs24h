@@ -89,8 +89,6 @@ const UnitLesson: React.FC = () => {
                     </Popconfirm>
                 </Space>
             ),
-
-            width: '20%',
         },
     ];
 
