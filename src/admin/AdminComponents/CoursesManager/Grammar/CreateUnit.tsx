@@ -440,6 +440,60 @@ const CreateUnit: React.FC<{
                     ))}
                 </ul>
             </form>
+
+            <form className="flex flex-col gap-4 pb-4">
+                <div className="flex items-center gap-4">
+                    <button className="btn-primary">Tạo Unit</button>
+                </div>
+
+                <div>
+                    <span className="font-body font-bold">Tên (*)</span>
+                    <input
+                        type="text"
+                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                        sm:w-full"
+                    />
+                </div>
+
+                <div>
+                    <span className="font-body font-bold">Thời gian (*)</span>
+                    <input
+                        type="text"
+                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                        sm:w-full"
+                    />
+                </div>
+
+                <div>
+                    <span className="font-body font-bold">Icon (*)</span>
+                    <select
+                        id="small"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                    >
+                        <option disabled>--- Chọn icon ---</option>
+                    </select>
+                </div>
+
+                <div>
+                    <span className="font-body font-bold">Loại bài học (*)</span>
+                    <select
+                        id="small"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                    >
+                        <option disabled>--- Chọn loại bài học ---</option>
+                    </select>
+                </div>
+
+                <div>
+                    <span className="font-body font-bold">Khóa học (*)</span>
+                    <select
+                        id="small"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                    >
+                        <option disabled>--- Chọn khóa học ---</option>
+                    </select>
+                </div>
+            </form>
         </Fragment>
     );
 };
