@@ -447,50 +447,58 @@ const CreateUnit: React.FC<{
                 </div>
 
                 <div>
-                    <span className="font-body font-bold">Tên (*)</span>
+                    <span className="font-body font-bold text-textCustom">Tên (*)</span>
                     <input
                         type="text"
-                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
-                        sm:w-full"
+                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-bgCustom p-1
+                        text-textCustom focus:border-blue-400 sm:w-full"
                     />
                 </div>
 
                 <div>
-                    <span className="font-body font-bold">Thời gian (*)</span>
+                    <span className="font-body font-bold text-textCustom">Thời gian (*)</span>
                     <input
                         type="text"
-                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
-                        sm:w-full"
+                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-bgCustom p-1
+                        text-textCustom focus:border-blue-400 sm:w-full"
                     />
                 </div>
 
                 <div>
-                    <span className="font-body font-bold">Icon (*)</span>
+                    <span className="font-body font-bold text-textCustom">Icon (*)</span>
                     <select
                         id="small"
-                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-bgCustom p-2 text-sm text-textCustom 
+                        focus:border-blue-500 focus:ring-blue-500 sm:w-full"
                     >
                         <option disabled>--- Chọn icon ---</option>
+                        <option value="Create">Create</option>
                     </select>
                 </div>
 
                 <div>
-                    <span className="font-body font-bold">Loại bài học (*)</span>
+                    <span className="font-body font-bold text-textCustom">Loại bài học (*)</span>
                     <select
                         id="small"
-                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-bgCustom p-2 text-sm text-textCustom focus:border-blue-500 
+                        focus:ring-blue-500 sm:w-full"
                     >
                         <option disabled>--- Chọn loại bài học ---</option>
+                        <option value="VideoLecture">Video</option>
+                        <option value="Exercise">Exercise</option>
                     </select>
                 </div>
 
                 <div>
-                    <span className="font-body font-bold">Khóa học (*)</span>
+                    <span className="font-body font-bold text-textCustom">Khóa học (*)</span>
                     <select
                         id="small"
-                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-white p-2 text-sm focus:border-blue-500 focus:ring-blue-500 sm:w-full"
+                        className="mt-2 block w-[21.8rem] rounded-[3px] border border-gray-300 bg-bgCustom p-2 text-sm text-textCustom
+                       focus:border-blue-500 focus:ring-blue-500 sm:w-full"
                     >
                         <option disabled>--- Chọn khóa học ---</option>
+                        <option value="Grammar">Grammar</option>
+                        <option value="Listening">Listening</option>
                     </select>
                 </div>
             </form>

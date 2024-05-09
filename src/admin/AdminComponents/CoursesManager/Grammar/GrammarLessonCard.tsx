@@ -8,20 +8,8 @@ import { LessonsType } from 'types/types';
 // #       IMPORT Npm
 // ##################################
 import { Accordion } from 'rsuite';
-import {
-    DndContext,
-    closestCenter,
-    KeyboardSensor,
-    PointerSensor,
-    useSensor,
-    useSensors,
-} from '@dnd-kit/core';
-import {
-    arrayMove,
-    SortableContext,
-    sortableKeyboardCoordinates,
-    verticalListSortingStrategy,
-} from '@dnd-kit/sortable';
+import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useState } from 'react';
 
 import SortableItem from './SortableItem';
@@ -40,11 +28,7 @@ const GrammarLessonCard: React.FC = () => {
     return (
         <>
             <Accordion>
-                <DndContext
-                    sensors={sensors}
-                    collisionDetection={closestCenter}
-                    onDragEnd={handleDragEnd}
-                >
+                <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                     <SortableContext items={items} strategy={verticalListSortingStrategy}>
                         {items.map((lesson: LessonsType) => (
                             <SortableItem key={lesson.id} lesson={lesson} />
