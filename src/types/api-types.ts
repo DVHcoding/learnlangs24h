@@ -47,20 +47,16 @@ export interface NewLessonPayloadType {
     courseId: string;
 }
 
-export interface NewUnitLessonPayloadType {
+export interface NewUnitLessonAndVideoLectureContentPayloadType {
     title: string;
     time: string;
     icon: string;
     lectureType: string;
     lesson: string;
     course: string;
-}
-
-export interface NewContentUnitLessonPayloadType {
     videoUrl: string;
-    totalTime: string;
     description: string;
-    unitLesson: string;
+    totalTime: string;
 }
 
 export interface NewUserProcessStatusPayloadType {
