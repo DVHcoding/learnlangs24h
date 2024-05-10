@@ -357,7 +357,7 @@ const CreateUnit: React.FC<{
                                     <div>
                                         {/* Question sentence */}
                                         <div>
-                                            <span className="select-none font-body font-bold">Câu hỏi (*)</span>
+                                            <span className="select-none font-body font-bold text-textCustom">Câu hỏi (*)</span>
                                             <input
                                                 onChange={(e) => {
                                                     // Tạo một bản sao của mảng questions với các thay đổi cần thiết
@@ -378,14 +378,14 @@ const CreateUnit: React.FC<{
                                                     setQuestions(updatedQuestions);
                                                 }}
                                                 type="text"
-                                                className="text-segoe mt-1 block w-full rounded-[3px] border border-gray-300 p-1
-                                            focus:border-blue-400"
+                                                className="text-segoe mt-1 block w-full rounded-[3px] border border-gray-300 bg-bgCustom
+                                                p-1 text-textCustom focus:border-blue-400"
                                             />
                                         </div>
 
                                         {/* Answers */}
                                         <div>
-                                            <span className="select-none font-body font-bold">Đáp án (*)</span>
+                                            <span className="select-none font-body font-bold text-textCustom">Đáp án (*)</span>
                                             <input
                                                 onChange={(e) => {
                                                     const updateAnswers = questions.map(
@@ -405,14 +405,14 @@ const CreateUnit: React.FC<{
                                                     setQuestions(updateAnswers);
                                                 }}
                                                 type="text"
-                                                className="text-segoe mt-1 block w-full rounded-[3px] border border-gray-300 p-1
-                                           focus:border-blue-400"
+                                                className="text-segoe mt-1 block w-full rounded-[3px] border border-gray-300 bg-bgCustom
+                                                p-1 text-textCustom focus:border-blue-400"
                                             />
                                         </div>
 
                                         {/* Other Answers */}
                                         <div>
-                                            <span className="select-none font-body font-bold">Đáp án khác (*)</span>
+                                            <span className="select-none font-body font-bold text-textCustom">Đáp án khác (*)</span>
                                             <input
                                                 onChange={(e) => {
                                                     const updateAnswers = questions.map(
@@ -433,7 +433,7 @@ const CreateUnit: React.FC<{
                                                 }}
                                                 type="text"
                                                 className="text-segoe mt-1 block w-full rounded-[3px] border border-gray-300
-                                            p-1 focus:border-blue-400"
+                                                bg-bgCustom p-1 text-textCustom focus:border-blue-400"
                                             />
                                         </div>
                                     </div>
