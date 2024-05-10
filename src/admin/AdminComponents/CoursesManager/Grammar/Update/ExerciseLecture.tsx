@@ -60,8 +60,6 @@ const ExerciseLecture: React.FC = () => {
         }
     };
 
-    console.log(questions);
-
     const handleAddQuestion: () => void = () => {
         const newItem: QuestionType = { sentence: '', correctAnswer: [''], otherAnswer: [''] };
         setQuestions([...questions, newItem]);

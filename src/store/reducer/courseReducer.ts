@@ -10,11 +10,10 @@ import axios from 'axios';
 import { toastSuccess, toastError } from '@components/Toast/Toasts';
 import {
     MessageResponse,
-    NewContentUnitLessonPayloadType,
     NewCoursePayloadType,
     NewCourseStateType,
     NewLessonPayloadType,
-    NewUnitLessonPayloadType,
+    NewUnitLessonAndVideoLectureContentPayloadType,
     NewUserProcessStatusPayloadType,
     UpdateUnitLessonAndFillBlankExercisePayloadType,
     UpdateUnitLessonAndVideoLectureContentPayloadType,
@@ -54,22 +53,12 @@ export const createNewLesson = createAsyncThunk('course/createNewLesson', async 
     }
 });
 
-// Create async thunk for creating a new unit lesson
-export const createNewUnitLesson = createAsyncThunk('course/createNewUnitLesson', async (payload: NewUnitLessonPayloadType, thunkAPI) => {
-    try {
-        const response = await axios.post<MessageResponse>('/api/v1/new-unitLesson', payload);
-        return response.data;
-    } catch (error: any) {
-        return thunkAPI.rejectWithValue(error.response.data);
-    }
-});
-
-// Create async thunk for creating a new content unit lesson
-export const createNewContentUnitLesson = createAsyncThunk(
-    'course/createNewContentUnitLesson',
-    async (payload: NewContentUnitLessonPayloadType, thunkAPI) => {
+// Create async thunk for creating a new unitLesson and videoLectureContent
+export const createNewUnitLessonAndVideoLectureContent = createAsyncThunk(
+    'course/createNewUnitLessonAndVideoLectureContent',
+    async (payload: NewUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
         try {
-            const response = await axios.post<MessageResponse>('/api/v1/new-content-unitLesson', payload);
+            const response = await axios.post<MessageResponse>('/api/v1/newUnitLessonAndVideoLectureContent', payload);
             return response.data;
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
@@ -188,47 +177,23 @@ export const newLessonSlice = createSlice({
     },
 });
 
-// Create new unit lesson slice
-export const newUnitLessonSlice = createSlice({
-    name: 'newUnitLesson',
+// Create new unitLesson and VideoLectureContent slice
+export const newUnitLessonAndVideoLectureContentSlice = createSlice({
+    name: 'newUnitLessonAndVideoLectureContent',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(createNewUnitLesson.pending, (state) => {
+            .addCase(createNewUnitLessonAndVideoLectureContent.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(createNewUnitLesson.fulfilled, (state, action) => {
+            .addCase(createNewUnitLessonAndVideoLectureContent.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
                 toastSuccess('Tạo thành công!');
             })
-            .addCase(createNewUnitLesson.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload ? action.payload.toString() : 'Unknown error';
-                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
-            });
-    },
-});
-
-// Create new content unit lesson slice
-export const newContentUnitLessonSlice = createSlice({
-    name: 'newContentUnitLesson',
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-            .addCase(createNewContentUnitLesson.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(createNewContentUnitLesson.fulfilled, (state, action) => {
-                state.loading = false;
-                state.data = action.payload;
-                toastSuccess('Tạo thành công!');
-            })
-            .addCase(createNewContentUnitLesson.rejected, (state, action) => {
+            .addCase(createNewUnitLessonAndVideoLectureContent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload ? action.payload.toString() : 'Unknown error';
                 toastError('Có lỗi xảy ra. Vui lòng thử lại!');
@@ -337,9 +302,9 @@ export const updateUserProcessStatusSlice = createSlice({
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
-export const newUnitLessonReducer = newUnitLessonSlice.reducer;
-export const newContentUnitLessonReducer = newContentUnitLessonSlice.reducer;
+export const newUnitLessonAndVideoLectureContentReducer = newUnitLessonAndVideoLectureContentSlice.reducer;
 export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
+
 export const updateUnitLessonAndVideoLectureContentReducer = updateUnitLessonAndVideoLectureContentSlice.reducer;
 export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFillBlankExerciseSlice.reducer;
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
