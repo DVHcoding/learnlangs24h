@@ -59,6 +59,16 @@ export interface NewUnitLessonAndVideoLectureContentPayloadType {
     totalTime: string;
 }
 
+export interface NewUnitLessonAndFillBlankExercisePayloadType {
+    title: string;
+    time: string;
+    icon: string;
+    lectureType: string;
+    lesson: string;
+    course: string;
+    questions: QuestionType[];
+}
+
 export interface NewUserProcessStatusPayloadType {
     userId: string;
     unitLessonId: string;
