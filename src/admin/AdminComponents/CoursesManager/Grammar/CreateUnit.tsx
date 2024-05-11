@@ -105,6 +105,9 @@ const CreateUnit: React.FC<{
                 }
             }
         }
+
+        if (lectureType === 'exercise') {
+        }
     };
 
     // # Hàm Thêm câu hỏi
