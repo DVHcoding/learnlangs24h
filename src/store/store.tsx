@@ -16,6 +16,7 @@ import {
     updateUserProcessStatusReducer,
     updateUnitLessonAndVideoLectureContentReducer,
     updateUnitLessonAndFillBlankExerciseReducer,
+    newUnitLessonAndFillBlankExerciseReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -26,6 +27,7 @@ export const store = configureStore({
         newCourse: newCourseReducer,
         newLesson: newLessonReducer,
         newUnitLessonAndVideoLectureContent: newUnitLessonAndVideoLectureContentReducer,
+        newUnitLessonAndFillBlankExercise: newUnitLessonAndFillBlankExerciseReducer,
         newUserProcessStatus: newUserProcessStatusReducer,
         updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
         updateUnitLessonAndFillBlankExercise: updateUnitLessonAndFillBlankExerciseReducer,

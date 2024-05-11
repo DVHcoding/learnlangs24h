@@ -13,7 +13,7 @@ import { X } from 'lucide-react';
 // ##################################
 import { RootState, AppDispatch } from '@store/store';
 import { AllUnitLessonsResponseType, CourseType, LessonType, QuestionType } from 'types/api-types';
-import { createNewUnitLessonAndVideoLectureContent } from '@store/reducer/courseReducer';
+import { createNewUnitLessonAndVideoLectureContent, createNewUnitLessonAndFillBlankExercise } from '@store/reducer/courseReducer';
 import { useGetAllCoursesQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
 import { toastError } from '@components/Toast/Toasts';
 
@@ -27,6 +27,9 @@ const CreateUnit: React.FC<{
 
     const dispatch: AppDispatch = useDispatch();
     const { loading } = useSelector((state: RootState) => state.newUnitLessonAndVideoLectureContent);
+    const { loading: newUnitLessonAndFillBlankExerciseLoading } = useSelector(
+        (state: RootState) => state.newUnitLessonAndFillBlankExercise
+    );
 
     // ##########################
     // #      STATE MANAGER     #
@@ -42,8 +45,8 @@ const CreateUnit: React.FC<{
     const [videoUrl, setVideoUrl] = useState<string>('');
     const [totalTime, setTotalTime] = useState<string>('');
 
-    const [questions, setQuestions] = useState<QuestionType[]>([]);
     const [exerciseType, setExerciseType] = useState<string>('');
+    const [questions, setQuestions] = useState<QuestionType[]>([]);
 
     const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || null);
 
@@ -113,10 +116,39 @@ const CreateUnit: React.FC<{
                 icon === '' ||
                 lessonId === '' ||
                 courseId === '' ||
+                exerciseType === '' ||
                 questions.length === 0 ||
                 !questions
             ) {
                 toastError('Các trường không được bỏ trống!');
+            }
+
+            if (data) {
+                try {
+                    await dispatch(
+                        createNewUnitLessonAndFillBlankExercise({
+                            title: unitName,
+                            time: timeValue,
+                            icon,
+                            lectureType,
+                            lesson: lessonId,
+                            course: courseId,
+                            questions,
+                        })
+                    );
+                    setUnitName('');
+                    setTimeValue('');
+                    setIcon('');
+                    setLessonId('');
+                    setCourseId('');
+
+                    setQuestions([]);
+
+                    // Reload lại bảng dữ liệu
+                    reloadData();
+                } catch (error) {
+                    return toastError(`${error}`);
+                }
             }
         }
     };
@@ -137,10 +169,13 @@ const CreateUnit: React.FC<{
         <Fragment>
             <form className="flex flex-col gap-4 pb-4" onSubmit={handleCreateNewUnitLesson}>
                 <div className="flex items-center gap-4">
-                    <button className={`${loading ? 'btn-disabled' : 'btn-primary'} max-w-max`} disabled={loading}>
+                    <button
+                        className={`${loading || newUnitLessonAndFillBlankExerciseLoading ? 'btn-disabled' : 'btn-primary'} max-w-max`}
+                        disabled={loading || newUnitLessonAndFillBlankExerciseLoading}
+                    >
                         Tạo Unit
                     </button>
-                    {loading && <Loader content="Loading..." />}
+                    {loading || (newUnitLessonAndFillBlankExerciseLoading && <Loader content="Loading..." />)}
                 </div>
 
                 {/* unitName */}
