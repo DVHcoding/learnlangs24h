@@ -107,6 +107,17 @@ const CreateUnit: React.FC<{
         }
 
         if (lectureType === 'exercise') {
+            if (
+                unitName === '' ||
+                timeValue === '' ||
+                icon === '' ||
+                lessonId === '' ||
+                courseId === '' ||
+                questions.length === 0 ||
+                !questions
+            ) {
+                toastError('Các trường không được bỏ trống!');
+            }
         }
     };
 
