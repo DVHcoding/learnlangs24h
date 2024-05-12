@@ -175,7 +175,7 @@ const CreateUnit: React.FC<{
                     >
                         Tạo Unit
                     </button>
-                    {loading || (newUnitLessonAndFillBlankExerciseLoading && <Loader content="Loading..." />)}
+                    {(loading || newUnitLessonAndFillBlankExerciseLoading) && <Loader content="Loading..." />}
                 </div>
 
                 {/* unitName */}

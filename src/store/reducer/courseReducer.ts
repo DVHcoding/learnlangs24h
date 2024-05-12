@@ -9,7 +9,6 @@ import axios from 'axios';
 // ##########################
 import { toastSuccess, toastError } from '@components/Toast/Toasts';
 import {
-    DeleteUnitLessonAndVideoLectureContentPayloadType,
     MessageResponse,
     NewCoursePayloadType,
     NewCourseStateType,
@@ -142,12 +141,12 @@ export const updateUserProcessStatus = createAsyncThunk(
 // ##################################
 export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
     'course/deleteUnitLessonAndVideoLectureContent',
-    async (payload: DeleteUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
+    async (payload: string, thunkAPI) => {
         try {
             const response = await axios.delete<MessageResponse>(`/api/v1/deleteUnitLessonAndVideoLectureContent?unitId=${payload}`);
             return response.data;
         } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.response.data);
+            return thunkAPI.rejectWithValue(error.message);
         }
     }
 );
