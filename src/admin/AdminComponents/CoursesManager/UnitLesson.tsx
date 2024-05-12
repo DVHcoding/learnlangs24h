@@ -3,6 +3,8 @@
 // ##################################
 import { Space, Table, Popconfirm } from 'antd';
 import { useState } from 'react';
+import dayjs from 'dayjs';
+import { useSelector, useDispatch } from 'react-redux';
 import { Link, useParams } from 'react-router-dom';
 import type { TableProps } from 'antd';
 
@@ -13,8 +15,8 @@ import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBread
 import CreateUnit from '@admin/AdminComponents/CoursesManager/Grammar/CreateUnit';
 import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
-import dayjs from 'dayjs';
-import handleDeleteUnitLesson from './Grammar/Delete/DeleteUnit';
+import handleDeleteUnitLesson from '@admin/AdminComponents/CoursesManager/Grammar/Delete/DeleteUnit';
+import { AppDispatch, RootState } from '@store/store';
 
 // ##################################
 // #       IMPORT Components
@@ -34,8 +36,12 @@ type TableRowSelection<T> = TableProps<T>['rowSelection'];
 // ##################################
 const UnitLesson: React.FC = () => {
     const { id } = useParams<{ id: string }>();
-    const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || '');
+    const dispatch: AppDispatch = useDispatch();
+    const { loading: deleteUnitLessonAndVideoLectureContentLoading } = useSelector(
+        (state: RootState) => state.deleteUnitLessonAndVideoLectureContent
+    );
 
+    const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || 'undefined');
     // ##########################
     // #      STATE MANAGER     #
     // ##########################
@@ -52,6 +58,7 @@ const UnitLesson: React.FC = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+
     const columns: TableProps<DataType>['columns'] = [
         {
             title: 'Name',
@@ -86,7 +93,11 @@ const UnitLesson: React.FC = () => {
                     <Link to={`/admin/course/${record.courseId}/edit/${record.key}`} className="hover:no-underline">
                         <p className="transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Link>
-                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteUnitLesson(record._id)}>
+                    <Popconfirm
+                        title="Sure to delete?"
+                        disabled={deleteUnitLessonAndVideoLectureContentLoading}
+                        onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id, refetch, dispatch)}
+                    >
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
                 </Space>
