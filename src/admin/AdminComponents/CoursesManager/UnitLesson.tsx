@@ -14,11 +14,13 @@ import CreateUnit from '@admin/AdminComponents/CoursesManager/Grammar/CreateUnit
 import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
 import dayjs from 'dayjs';
+import handleDeleteUnitLesson from './Grammar/Delete/DeleteUnit';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
 interface DataType {
+    _id: string;
     courseId: string;
     key: string;
     name: string;
@@ -84,7 +86,7 @@ const UnitLesson: React.FC = () => {
                     <Link to={`/admin/course/${record.courseId}/edit/${record.key}`} className="hover:no-underline">
                         <p className="transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Link>
-                    <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
+                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteUnitLesson(record._id)}>
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
                 </Space>
@@ -96,6 +98,7 @@ const UnitLesson: React.FC = () => {
 
     if (data && data.unitLessons) {
         dataTable = data.unitLessons.map((unitLesson: UnitLessonType) => ({
+            _id: unitLesson._id,
             courseId: unitLesson.course,
             key: unitLesson._id,
             name: unitLesson.title,
