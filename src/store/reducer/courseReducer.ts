@@ -9,6 +9,7 @@ import axios from 'axios';
 // ##########################
 import { toastSuccess, toastError } from '@components/Toast/Toasts';
 import {
+    DeleteUnitLessonAndVideoLectureContentPayloadType,
     MessageResponse,
     NewCoursePayloadType,
     NewCourseStateType,
@@ -136,9 +137,24 @@ export const updateUserProcessStatus = createAsyncThunk(
     }
 );
 
-// ################################
-// #        CREATE SLICE          #
-// ################################
+// ##################################
+// #      DELETE ASYNC THUNK        #
+// ##################################
+export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
+    'course/deleteUnitLessonAndVideoLectureContent',
+    async (payload: DeleteUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
+        try {
+            const response = await axios.delete<MessageResponse>(`/api/v1/deleteUnitLessonAndVideoLectureContent?unitId=${payload}`);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.response.data);
+        }
+    }
+);
+
+/* -------------------------------------------------------------------------- */
+/*                                CREATE SLICE                                */
+/* -------------------------------------------------------------------------- */
 // Create new course slice
 export const newCourseSlice = createSlice({
     name: 'newCourse',
@@ -262,9 +278,9 @@ export const newUserProcessStatusSlice = createSlice({
     },
 });
 
-// ################################
-// #        UPDATE SLICE          #
-// ################################
+/* -------------------------------------------------------------------------- */
+/*                                UPDATE SLICE                                */
+/* -------------------------------------------------------------------------- */
 
 // Update UnitLessonAndVideoLectureContent
 export const updateUnitLessonAndVideoLectureContentSlice = createSlice({
@@ -337,6 +353,33 @@ export const updateUserProcessStatusSlice = createSlice({
     },
 });
 
+/* -------------------------------------------------------------------------- */
+/*                                DELETE SLICE                                */
+/* -------------------------------------------------------------------------- */
+
+export const deleteUnitLessonAndVideoLectureContentSlice = createSlice({
+    name: 'deleteUnitLessonAndVideoLectureContent',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(deleteUnitLessonAndVideoLectureContent.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteUnitLessonAndVideoLectureContent.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Xóa thành công!');
+            })
+            .addCase(deleteUnitLessonAndVideoLectureContent.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
@@ -347,3 +390,5 @@ export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
 export const updateUnitLessonAndVideoLectureContentReducer = updateUnitLessonAndVideoLectureContentSlice.reducer;
 export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFillBlankExerciseSlice.reducer;
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
+
+export const deleteUnitLessonAndVideoLectureContentReducer = deleteUnitLessonAndVideoLectureContentSlice.reducer;

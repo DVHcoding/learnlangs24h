@@ -190,6 +190,10 @@ export interface UpdateUnitLessonAndVideoLectureContentPayloadType {
     description: string;
 }
 
+export interface DeleteUnitLessonAndVideoLectureContentPayloadType {
+    unitId: string;
+}
+
 export interface UpdateUnitLessonAndFillBlankExercisePayloadType {
     _id: string;
     title: string;
