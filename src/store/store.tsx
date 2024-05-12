@@ -17,6 +17,7 @@ import {
     updateUnitLessonAndVideoLectureContentReducer,
     updateUnitLessonAndFillBlankExerciseReducer,
     newUnitLessonAndFillBlankExerciseReducer,
+    deleteUnitLessonAndVideoLectureContentReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -32,6 +33,7 @@ export const store = configureStore({
         updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
         updateUnitLessonAndFillBlankExercise: updateUnitLessonAndFillBlankExerciseReducer,
         updateUserProcessStatus: updateUserProcessStatusReducer,
+        deleteUnitLessonAndVideoLectureContent: deleteUnitLessonAndVideoLectureContentReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
 });
