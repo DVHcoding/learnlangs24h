@@ -47,6 +47,7 @@ const AdminSidebar = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
+    // Hàm tạo khóa học mới
     const handleSubmitNewCourse = async () => {
         if (unitName === '') {
             return toastError('Vui Lòng Nhập Unit Name!');
@@ -65,6 +66,7 @@ const AdminSidebar = () => {
         }
     };
 
+    // Hàm thay đổi hình ảnh
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         const fileName = e.target.files?.[0]?.name;
