@@ -6,7 +6,7 @@
 // #    IMPORT Components   #
 // ##########################
 import { toastError } from '@components/Toast/Toasts';
-import { deleteUnitLessonAndVideoLectureContent } from '@store/reducer/courseReducer';
+import { deleteUnitLessonAndVideoLectureContent, deleteUnitLessonAndFillBlankExercise } from '@store/reducer/courseReducer';
 import { AppDispatch } from '@store/store';
 
 const handleDeleteUnitLesson: (lectureType: string, unitId: string, refetch: () => void, dispatch: AppDispatch) => void = async (
@@ -26,6 +26,8 @@ const handleDeleteUnitLesson: (lectureType: string, unitId: string, refetch: () 
         }
 
         if (lectureType === 'exercise') {
+            await dispatch(deleteUnitLessonAndFillBlankExercise(unitId));
+            refetch();
         }
     } catch (error) {
         toastError('Có lỗi xảy ra!');

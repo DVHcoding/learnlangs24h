@@ -41,6 +41,10 @@ const UnitLesson: React.FC = () => {
         (state: RootState) => state.deleteUnitLessonAndVideoLectureContent
     );
 
+    const { loading: deleteUnitLessonAndFillBlankExerciseLoading } = useSelector(
+        (state: RootState) => state.deleteUnitLessonAndFillBlankExercise
+    );
+
     const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || 'undefined');
     // ##########################
     // #      STATE MANAGER     #
@@ -95,7 +99,7 @@ const UnitLesson: React.FC = () => {
                     </Link>
                     <Popconfirm
                         title="Sure to delete?"
-                        disabled={deleteUnitLessonAndVideoLectureContentLoading}
+                        disabled={deleteUnitLessonAndVideoLectureContentLoading || deleteUnitLessonAndFillBlankExerciseLoading}
                         onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id, refetch, dispatch)}
                     >
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
