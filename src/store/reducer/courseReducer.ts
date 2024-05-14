@@ -151,6 +151,18 @@ export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
     }
 );
 
+export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
+    'course/deleteUnitLessonAndFillBlankExercise',
+    async (payload: string, thunkAPI) => {
+        try {
+            const response = await axios.delete<MessageResponse>(`/api/v1/deleteUnitLessonAndFillBlankExercise?unitId=${payload}`);
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                CREATE SLICE                                */
 /* -------------------------------------------------------------------------- */
@@ -356,6 +368,7 @@ export const updateUserProcessStatusSlice = createSlice({
 /*                                DELETE SLICE                                */
 /* -------------------------------------------------------------------------- */
 
+// Delete UnitLessonAndVideoLectureContent Slice
 export const deleteUnitLessonAndVideoLectureContentSlice = createSlice({
     name: 'deleteUnitLessonAndVideoLectureContent',
     initialState,
@@ -379,6 +392,30 @@ export const deleteUnitLessonAndVideoLectureContentSlice = createSlice({
     },
 });
 
+// Delete UnitLessonAndFillBlankExercise Slice
+export const deleteUnitLessonAndFillBlankExerciseSlice = createSlice({
+    name: 'deleteUnitLessonAndFillBlankExercise',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(deleteUnitLessonAndFillBlankExercise.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteUnitLessonAndFillBlankExercise.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Xóa thành công!');
+            })
+            .addCase(deleteUnitLessonAndFillBlankExercise.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
@@ -391,3 +428,4 @@ export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFi
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
 
 export const deleteUnitLessonAndVideoLectureContentReducer = deleteUnitLessonAndVideoLectureContentSlice.reducer;
+export const deleteUnitLessonAndFillBlankExerciseReducer = deleteUnitLessonAndFillBlankExerciseSlice.reducer;
