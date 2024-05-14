@@ -9,7 +9,7 @@ import { ReactNode } from 'react';
 // #       IMPORT Components
 // ##################################
 const Navbar = loadable(() => import('@pages/Header/Navbar'));
-const Sidebar = loadable(() => import('@admin/AdminPages/AdminSidebar'), {
+const Sidebar = loadable(() => import('@admin/pages/AdminSidebar'), {
     fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
 });
 
