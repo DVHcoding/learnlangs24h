@@ -24,6 +24,9 @@ const handleDeleteUnitLesson: (lectureType: string, unitId: string, refetch: () 
             await dispatch(deleteUnitLessonAndVideoLectureContent(unitId));
             refetch();
         }
+
+        if (lectureType === 'exercise') {
+        }
     } catch (error) {
         toastError('Có lỗi xảy ra!');
     }
