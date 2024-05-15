@@ -21,11 +21,13 @@ const Sidebar: React.FC<{ open: boolean }> = ({ open }) => {
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || 'undefined');
     const { data: unitLessons, isLoading: getAllUnitLessonByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || '');
 
+    // Lấy ra tên khóa học để làm label cho sidebar
     let courseName: string | undefined;
     if (!isLoading && courses?.success) {
         courseName = courses?.courses.find((course: CourseType) => course._id === courseId)?.name;
     }
 
+    // hàm điều hướng người dùng qua route khác
     const handleRedirect: (unitId: string) => void = (unitId) => {
         navigate(`/admin/course/${courseId}/edit/${unitId}`);
     };
