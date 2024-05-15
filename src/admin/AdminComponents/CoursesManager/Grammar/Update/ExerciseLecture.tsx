@@ -21,10 +21,12 @@ import { updateUnitLessonAndFillBlankExercise } from '@store/reducer/courseReduc
 // #############################################
 const ExerciseLecture: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    // lấy trạng thái updateUnitLessonAndFillBlankExerciseLoading từ store
     const { loading: updateUnitLessonAndFillBlankExerciseLoading } = useSelector(
         (state: RootState) => state.updateUnitLessonAndFillBlankExercise
     );
 
+    // lấy courseId và unitLessonId từ trên thành URL
     const { id: courseId, unitId } = useParams<string>();
 
     // RTK query data
@@ -60,11 +62,13 @@ const ExerciseLecture: React.FC = () => {
         }
     };
 
+    // hàm thêm câu hỏi trắc nghiệm
     const handleAddQuestion: () => void = () => {
         const newItem: QuestionType = { sentence: '', correctAnswer: [''], otherAnswer: [''] };
         setQuestions([...questions, newItem]);
     };
 
+    // hàm xóa câu hỏi trắc nghiệm
     const handleDeleteQuestion = (questionIndex: number) => {
         const updatedQuestions = questions.filter((_question, index) => index !== questionIndex);
         setQuestions(updatedQuestions);
