@@ -47,12 +47,17 @@ const LessonTable: React.FC = () => {
     // ##########################
     // #    FUNCTION MANAGER    #
     // ##########################
+    // Hàm này để biết được dòng nào đã click vào ô vuông (ô select)
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
+
+    // Hàm chọn khóa học khi tạo một lesson mới
     const handleChangeSelectedCourse = (courseId: string) => {
         setCourseId(courseId);
     };
+
+    // Hàm tạo lesson mới
     const handleSubmitNewLesson = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -72,6 +77,8 @@ const LessonTable: React.FC = () => {
         selectedRowKeys,
         onChange: onSelectChange,
     };
+
+    // Columns của bảng
     const columns: TableProps<DataType>['columns'] = [
         {
             title: 'Name',
