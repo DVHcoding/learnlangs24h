@@ -1,8 +1,8 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import { Space, Table, Select, Input, Popconfirm } from 'antd';
-import { useState } from 'react';
+import { Space, Table, Select, Input, Popconfirm, Popover, Button } from 'antd';
+import { Fragment, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { TableProps } from 'antd';
 import dayjs from 'dayjs';
@@ -78,6 +78,17 @@ const LessonTable: React.FC = () => {
         onChange: onSelectChange,
     };
 
+    const [openPopover, setOpenPopover] = useState<string>('');
+
+    const handleOpenChange = (key: string) => {
+        setOpenPopover(key);
+    };
+
+    // Hàm để đóng popover
+    const hidePopover = () => {
+        setOpenPopover('');
+    };
+
     // Columns của bảng
     const columns: TableProps<DataType>['columns'] = [
         {
@@ -100,9 +111,37 @@ const LessonTable: React.FC = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    <Link to={`/admin/course/661e3ee0f7cba428a3500a91/${record.key}`} className="hover:no-underline">
-                        <p className="transition-all hover:text-orange-400 hover:underline">Edit</p>
-                    </Link>
+                    {/* <Link to={`/admin/course/661e3ee0f7cba428a3500a91/${record.key}`} className="hover:no-underline"> */}
+                    <Popover
+                        trigger="click"
+                        content={
+                            <Fragment>
+                                <div>
+                                    <span className="font-body font-bold">Tên (*)</span>
+                                    <input
+                                        type="text"
+                                        className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
+                                        sm:w-full"
+                                    />
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <Button type="primary" onClick={hidePopover} className="mt-4">
+                                        Close
+                                    </Button>
+
+                                    <Button type="primary" danger onClick={hidePopover} className="mt-4">
+                                        Update
+                                    </Button>
+                                </div>
+                            </Fragment>
+                        }
+                        open={record.key === openPopover}
+                        onOpenChange={() => handleOpenChange(record.key)}
+                    >
+                        <p className="cursor-pointer transition-all hover:text-orange-400 hover:underline">Edit</p>
+                    </Popover>
+                    {/* </Link> */}
                     <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
