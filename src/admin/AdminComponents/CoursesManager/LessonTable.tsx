@@ -37,16 +37,17 @@ const LessonTable: React.FC = () => {
     const { data: dataGetAllLessons } = useGetAllLessonsByCourseIdQuery(id || '');
     const { loading } = useSelector((state: RootState) => state.newLesson);
 
-    // ##########################
-    // #      STATE MANAGER     #
-    // ##########################
+    /* -------------------------------------------------------------------------- */
+    /*                              STATE MANAGEMENT                              */
+    /* -------------------------------------------------------------------------- */
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
     const [courseId, setCourseId] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
+    const [openPopover, setOpenPopover] = useState<string>('');
 
-    // ##########################
-    // #    FUNCTION MANAGER    #
-    // ##########################
+    /* -------------------------------------------------------------------------- */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* -------------------------------------------------------------------------- */
     // Hàm này để biết được dòng nào đã click vào ô vuông (ô select)
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
@@ -73,15 +74,10 @@ const LessonTable: React.FC = () => {
             toastError(`${error}`);
         }
     };
+
     const rowSelection: TableRowSelection<DataType> = {
         selectedRowKeys,
         onChange: onSelectChange,
-    };
-
-    const [openPopover, setOpenPopover] = useState<string>('');
-
-    const handleOpenChange = (key: string) => {
-        setOpenPopover(key);
     };
 
     // Hàm để đóng popover
@@ -137,7 +133,7 @@ const LessonTable: React.FC = () => {
                             </Fragment>
                         }
                         open={record.key === openPopover}
-                        onOpenChange={() => handleOpenChange(record.key)}
+                        onOpenChange={() => setOpenPopover(record.key)}
                     >
                         <p className="cursor-pointer transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Popover>
