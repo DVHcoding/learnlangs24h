@@ -80,6 +80,10 @@ const LessonTable: React.FC = () => {
         onChange: onSelectChange,
     };
 
+    const handleUpdateLesson = (lessonId: string) => {
+        console.log(lessonId);
+    };
+
     // Hàm để đóng popover
     const hidePopover = () => {
         setOpenPopover('');
@@ -126,7 +130,7 @@ const LessonTable: React.FC = () => {
                                         Close
                                     </Button>
 
-                                    <Button type="primary" danger onClick={hidePopover} className="mt-4">
+                                    <Button type="primary" danger className="mt-4" onClick={() => handleUpdateLesson(record.key)}>
                                         Update
                                     </Button>
                                 </div>
