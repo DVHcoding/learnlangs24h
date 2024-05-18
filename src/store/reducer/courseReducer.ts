@@ -16,6 +16,7 @@ import {
     NewUnitLessonAndFillBlankExercisePayloadType,
     NewUnitLessonAndVideoLectureContentPayloadType,
     NewUserProcessStatusPayloadType,
+    UpdateLessonPayloadType,
     UpdateUnitLessonAndFillBlankExercisePayloadType,
     UpdateUnitLessonAndVideoLectureContentPayloadType,
 } from 'types/api-types';
@@ -135,6 +136,16 @@ export const updateUserProcessStatus = createAsyncThunk(
         }
     }
 );
+
+// Update async thunk for updating a lesson
+export const updateLesson = createAsyncThunk('course/updateLesson', async (payload: UpdateLessonPayloadType, thunkAPI) => {
+    try {
+        const response = await axios.put<MessageResponse>('/api/v1/updateLesson', payload);
+        return response.data;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.response.data);
+    }
+});
 
 // ##################################
 // #      DELETE ASYNC THUNK        #
@@ -364,6 +375,29 @@ export const updateUserProcessStatusSlice = createSlice({
     },
 });
 
+// Update Lesson Slice
+export const updateLessonSlice = createSlice({
+    name: 'updateLesson',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(updateLesson.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(updateLesson.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+            })
+            .addCase(updateLesson.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
 /* -------------------------------------------------------------------------- */
 /*                                DELETE SLICE                                */
 /* -------------------------------------------------------------------------- */
@@ -426,6 +460,7 @@ export const newUserProcessStatusReducer = newUserProcessStatusSlice.reducer;
 export const updateUnitLessonAndVideoLectureContentReducer = updateUnitLessonAndVideoLectureContentSlice.reducer;
 export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFillBlankExerciseSlice.reducer;
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
+export const updateLessonReducer = updateLessonSlice.reducer;
 
 export const deleteUnitLessonAndVideoLectureContentReducer = deleteUnitLessonAndVideoLectureContentSlice.reducer;
 export const deleteUnitLessonAndFillBlankExerciseReducer = deleteUnitLessonAndFillBlankExerciseSlice.reducer;
