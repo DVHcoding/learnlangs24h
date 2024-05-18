@@ -366,6 +366,7 @@ export const updateUserProcessStatusSlice = createSlice({
             .addCase(updateUserProcessStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
+                toastSuccess('Cập nhật thành công!');
             })
             .addCase(updateUserProcessStatus.rejected, (state, action) => {
                 state.loading = false;
@@ -389,6 +390,7 @@ export const updateLessonSlice = createSlice({
             .addCase(updateLesson.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
+                toastSuccess('Cập nhật thành công!');
             })
             .addCase(updateLesson.rejected, (state, action) => {
                 state.loading = false;

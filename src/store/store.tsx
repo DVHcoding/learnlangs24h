@@ -19,6 +19,7 @@ import {
     newUnitLessonAndFillBlankExerciseReducer,
     deleteUnitLessonAndVideoLectureContentReducer,
     deleteUnitLessonAndFillBlankExerciseReducer,
+    updateLessonReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -31,9 +32,12 @@ export const store = configureStore({
         newUnitLessonAndVideoLectureContent: newUnitLessonAndVideoLectureContentReducer,
         newUnitLessonAndFillBlankExercise: newUnitLessonAndFillBlankExerciseReducer,
         newUserProcessStatus: newUserProcessStatusReducer,
+
         updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
         updateUnitLessonAndFillBlankExercise: updateUnitLessonAndFillBlankExerciseReducer,
         updateUserProcessStatus: updateUserProcessStatusReducer,
+        updateLesson: updateLessonReducer,
+
         deleteUnitLessonAndVideoLectureContent: deleteUnitLessonAndVideoLectureContentReducer,
         deleteUnitLessonAndFillBlankExercise: deleteUnitLessonAndFillBlankExerciseReducer,
     },
