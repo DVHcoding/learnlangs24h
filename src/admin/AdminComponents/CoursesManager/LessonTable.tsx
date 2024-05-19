@@ -17,7 +17,7 @@ import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { RootState, AppDispatch } from '@store/store';
-import { createNewLesson } from '@store/reducer/courseReducer';
+import { createNewLesson, updateLesson } from '@store/reducer/courseReducer';
 import { useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
 
 interface DataType {
@@ -33,9 +33,13 @@ const LessonTable: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const { id } = useParams<{ id: string }>();
 
+    /* -------------------------------------------------------------------------- */
+    /*                               RTK QUERY DATA                               */
+    /* -------------------------------------------------------------------------- */
     const { data } = useGetAllCoursesQuery();
     const { data: dataGetAllLessons } = useGetAllLessonsByCourseIdQuery(id || '');
     const { loading } = useSelector((state: RootState) => state.newLesson);
+    const { loading: updateLessonLoading } = useSelector((state: RootState) => state.updateLesson);
 
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
@@ -44,6 +48,8 @@ const LessonTable: React.FC = () => {
     const [courseId, setCourseId] = useState<string>('');
     const [lessonName, setLessonName] = useState<string>('');
     const [openPopover, setOpenPopover] = useState<string>('');
+
+    const [name, setName] = useState<string>('');
 
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
@@ -80,8 +86,18 @@ const LessonTable: React.FC = () => {
         onChange: onSelectChange,
     };
 
-    const handleUpdateLesson = (lessonId: string) => {
-        console.log(lessonId);
+    const handleUpdateLesson: (lessonId: string) => void = async (lessonId) => {
+        if (!lessonId || name === '') {
+            toastError('Vui lòng điền đủ thông tin!');
+        }
+
+        try {
+            await dispatch(updateLesson({ lessonId, lessonName: name }));
+            setLessonName('');
+            hidePopover();
+        } catch (error) {
+            toastError('Có lỗi xảy ra!');
+        }
     };
 
     // Hàm để đóng popover
@@ -111,14 +127,14 @@ const LessonTable: React.FC = () => {
             key: 'action',
             render: (_, record) => (
                 <Space size="middle">
-                    {/* <Link to={`/admin/course/661e3ee0f7cba428a3500a91/${record.key}`} className="hover:no-underline"> */}
                     <Popover
                         trigger="click"
                         content={
-                            <Fragment>
+                            <form>
                                 <div>
                                     <span className="font-body font-bold">Tên (*)</span>
                                     <input
+                                        onChange={(e) => setName(e.target.value)}
                                         type="text"
                                         className="text-segoe mt-1 block w-[21.8rem] rounded-[3px] border border-gray-300 p-1 focus:border-blue-400
                                         sm:w-full"
@@ -130,18 +146,24 @@ const LessonTable: React.FC = () => {
                                         Close
                                     </Button>
 
-                                    <Button type="primary" danger className="mt-4" onClick={() => handleUpdateLesson(record.key)}>
+                                    <Button
+                                        type="primary"
+                                        onClick={() => handleUpdateLesson(record.key)}
+                                        loading={updateLessonLoading}
+                                        danger
+                                        className="mt-4"
+                                    >
                                         Update
                                     </Button>
                                 </div>
-                            </Fragment>
+                            </form>
                         }
                         open={record.key === openPopover}
                         onOpenChange={() => setOpenPopover(record.key)}
                     >
                         <p className="cursor-pointer transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Popover>
-                    {/* </Link> */}
+
                     <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
