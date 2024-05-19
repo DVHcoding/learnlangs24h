@@ -37,7 +37,7 @@ const LessonTable: React.FC = () => {
     /*                               RTK QUERY DATA                               */
     /* -------------------------------------------------------------------------- */
     const { data } = useGetAllCoursesQuery();
-    const { data: dataGetAllLessons } = useGetAllLessonsByCourseIdQuery(id || '');
+    const { data: dataGetAllLessons, refetch } = useGetAllLessonsByCourseIdQuery(id || '');
     const { loading } = useSelector((state: RootState) => state.newLesson);
     const { loading: updateLessonLoading } = useSelector((state: RootState) => state.updateLesson);
 
@@ -86,6 +86,7 @@ const LessonTable: React.FC = () => {
         onChange: onSelectChange,
     };
 
+    // Hàm UpdateLesson
     const handleUpdateLesson: (lessonId: string) => void = async (lessonId) => {
         if (!lessonId || name === '') {
             toastError('Vui lòng điền đủ thông tin!');
@@ -95,6 +96,7 @@ const LessonTable: React.FC = () => {
             await dispatch(updateLesson({ lessonId, lessonName: name }));
             setLessonName('');
             hidePopover();
+            refetch();
         } catch (error) {
             toastError('Có lỗi xảy ra!');
         }
