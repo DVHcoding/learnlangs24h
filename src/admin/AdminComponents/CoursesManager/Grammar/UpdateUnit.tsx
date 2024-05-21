@@ -66,6 +66,7 @@ const UpdateUnit: React.FC = () => {
         setLectureType(event.target.value as string);
     };
 
+    // Hàm thay đổi loại câu hỏi (Điền vào chỗ chống || chọn đáp án đúng)
     const handleChangeQuestionType = (event: SelectChangeEvent) => {
         setExerciseType(event.target.value as string);
     };
