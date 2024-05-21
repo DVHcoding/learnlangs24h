@@ -39,6 +39,10 @@ const UpdateUnit: React.FC = () => {
 
     const [timeValue, setTimeValue] = useState<dayjs.Dayjs | null>(dayjs('2022-04-17T15:30'));
 
+
+    /* -------------------------------------------------------------------------- */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* -------------------------------------------------------------------------- */
     const handleTimeChange = (newValue: dayjs.Dayjs | null) => {
         if (newValue) {
             setTimeValue(newValue);
