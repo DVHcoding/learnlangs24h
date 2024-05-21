@@ -39,7 +39,6 @@ const UpdateUnit: React.FC = () => {
 
     const [timeValue, setTimeValue] = useState<dayjs.Dayjs | null>(dayjs('2022-04-17T15:30'));
 
-
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
@@ -49,11 +48,13 @@ const UpdateUnit: React.FC = () => {
         }
     };
 
+    // Hàm thêm câu hỏi
     const addQuestion = () => {
         const newItem: QuestionType = { id: Date.now() };
         setQuestions([...questions, newItem]);
     };
 
+    // Hàm xóa câu hỏi
     const removeQuestion = (index: number) => {
         const updatedItems = [...questions];
         updatedItems.splice(index, 1);
@@ -78,17 +79,10 @@ const UpdateUnit: React.FC = () => {
         <div>
             <ul className="mt-2 flex flex-col gap-4">
                 <li className="">
-                    <label
-                        aria-label="Unit Name"
-                        className=" text-base font-semibold text-textCustom"
-                    >
+                    <label aria-label="Unit Name" className=" text-base font-semibold text-textCustom">
                         Unit Name
                     </label>
-                    <Input
-                        size="lg"
-                        placeholder="Unit Name"
-                        className="mt-2 border-bdCustom bg-bgCustom"
-                    />
+                    <Input size="lg" placeholder="Unit Name" className="mt-2 border-bdCustom bg-bgCustom" />
                 </li>
 
                 <li className="flex flex-wrap items-center gap-4">
@@ -138,11 +132,7 @@ const UpdateUnit: React.FC = () => {
                             </FormControl>
 
                             {exerciseType === 'fillBlank' && (
-                                <AddCircleOutlineIcon
-                                    fontSize="medium"
-                                    className="cursor-pointer text-textCustom"
-                                    onClick={addQuestion}
-                                />
+                                <AddCircleOutlineIcon fontSize="medium" className="cursor-pointer text-textCustom" onClick={addQuestion} />
                             )}
                         </div>
                     )}
@@ -185,8 +175,7 @@ const UpdateUnit: React.FC = () => {
                                 'bold italic forecolor | alignleft aligncenter ' +
                                 'alignright alignjustify | bullist numlist outdent indent | ' +
                                 'removeformat | help',
-                            content_style:
-                                'body { font-family:QuickSand,Arial,sans-serif; font-size:14px; font-weight: 500; }',
+                            content_style: 'body { font-family:QuickSand,Arial,sans-serif; font-size:14px; font-weight: 500; }',
                         }}
                     />
 
@@ -204,18 +193,8 @@ const UpdateUnit: React.FC = () => {
                             onClick={() => removeQuestion(index)}
                         />
                         <div className="flex flex-wrap items-center gap-4">
-                            <TextField
-                                id={`outlined-basic-${index}`}
-                                label="Question"
-                                variant="outlined"
-                                style={{ width: '20rem' }}
-                            />
-                            <TextField
-                                id={`outlined-basic-${index}`}
-                                label="Answers"
-                                variant="outlined"
-                                style={{ width: '20rem' }}
-                            />
+                            <TextField id={`outlined-basic-${index}`} label="Question" variant="outlined" style={{ width: '20rem' }} />
+                            <TextField id={`outlined-basic-${index}`} label="Answers" variant="outlined" style={{ width: '20rem' }} />
                             <TextField
                                 id={`outlined-basic-${index}`}
                                 label="Others Answers"
