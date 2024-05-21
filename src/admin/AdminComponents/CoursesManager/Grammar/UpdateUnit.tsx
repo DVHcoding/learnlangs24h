@@ -54,6 +54,7 @@ const UpdateUnit: React.FC = () => {
         setQuestions([...questions, newItem]);
     };
 
+    // Hàm xóa câu hỏi
     const removeQuestion = (index: number) => {
         const updatedItems = [...questions];
         updatedItems.splice(index, 1);
