@@ -61,6 +61,7 @@ const UpdateUnit: React.FC = () => {
         setQuestions(updatedItems);
     };
 
+    // Hàm thay đổi Loại bài học (Video hay thực hành)
     const handleChangeLectureType = (event: SelectChangeEvent) => {
         setLectureType(event.target.value as string);
     };
