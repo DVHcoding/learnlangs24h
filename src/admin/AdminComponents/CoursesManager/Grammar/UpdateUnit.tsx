@@ -61,12 +61,6 @@ const UpdateUnit: React.FC = () => {
         setQuestions(updatedItems);
     };
 
-    const log = () => {
-        if (editorRef.current) {
-            console.log(editorRef.current.getContent());
-        }
-    };
-
     const handleChangeLectureType = (event: SelectChangeEvent) => {
         setLectureType(event.target.value as string);
     };
@@ -178,8 +172,6 @@ const UpdateUnit: React.FC = () => {
                             content_style: 'body { font-family:QuickSand,Arial,sans-serif; font-size:14px; font-weight: 500; }',
                         }}
                     />
-
-                    <button onClick={log}>Log editor content</button>
                 </div>
             )}
 
