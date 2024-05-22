@@ -452,6 +452,31 @@ export const deleteUnitLessonAndFillBlankExerciseSlice = createSlice({
     },
 });
 
+// Delete LessonAndUnitLesson Slice
+export const deleteLessonAndUnitLessonSlice = createSlice({
+    name: 'deleteLessonAndUnitLesson',
+    initialState,
+    reducers: {},
+    extraReducers: (builder) => {
+        builder
+            .addCase(deleteUnitLessonAndFillBlankExercise.pending, (state) => {
+                state.loading = true;
+                state.error = null;
+            })
+            .addCase(deleteUnitLessonAndFillBlankExercise.fulfilled, (state, action) => {
+                state.loading = false;
+                state.data = action.payload;
+                toastSuccess('Xóa thành công!');
+            })
+            .addCase(deleteUnitLessonAndFillBlankExercise.rejected, (state, action) => {
+                state.loading = false;
+                state.error = action.payload ? action.payload.toString() : 'Unknown error';
+                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+            });
+    },
+});
+
+
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
 export const newLessonReducer = newLessonSlice.reducer;
