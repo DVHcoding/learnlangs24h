@@ -150,6 +150,8 @@ export const updateLesson = createAsyncThunk('course/updateLesson', async (paylo
 // ##################################
 // #      DELETE ASYNC THUNK        #
 // ##################################
+
+// Hàm asyncThunk xóa unitLesson và videoLectureContent
 export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
     'course/deleteUnitLessonAndVideoLectureContent',
     async (payload: string, thunkAPI) => {
@@ -162,6 +164,7 @@ export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
     }
 );
 
+// Hàm asyncThunk xóa unitLesson và fillBlankExercise
 export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
     'course/deleteUnitLessonAndFillBlankExercise',
     async (payload: string, thunkAPI) => {
@@ -174,6 +177,7 @@ export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
     }
 );
 
+// Hàm asyncThunk xóa lesson và unitLesson
 export const deleteLessonAndUnitLesson = createAsyncThunk(
     'course/deleteLessonAndUnitLesson',
     async ({ lessonId, unitLessonId }: { lessonId: string; unitLessonId: string }, thunkAPI) => {
