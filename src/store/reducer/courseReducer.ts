@@ -504,3 +504,4 @@ export const updateLessonReducer = updateLessonSlice.reducer;
 
 export const deleteUnitLessonAndVideoLectureContentReducer = deleteUnitLessonAndVideoLectureContentSlice.reducer;
 export const deleteUnitLessonAndFillBlankExerciseReducer = deleteUnitLessonAndFillBlankExerciseSlice.reducer;
+export const deleteLessonAndUnitLessonReducer = deleteLessonAndUnitLessonSlice.reducer;
