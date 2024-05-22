@@ -174,6 +174,20 @@ export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
     }
 );
 
+export const deleteLessonAndUnitLesson = createAsyncThunk(
+    'course/deleteLessonAndUnitLesson',
+    async ({ lessonId, unitLessonId }: { lessonId: string; unitLessonId: string }, thunkAPI) => {
+        try {
+            const response = await axios.delete<MessageResponse>(
+                `/api/v1/deleteLessonAndUnitLesson?lessonId=${lessonId}&unitLesson=${unitLessonId}`
+            );
+            return response.data;
+        } catch (error: any) {
+            return thunkAPI.rejectWithValue(error.message);
+        }
+    }
+);
+
 /* -------------------------------------------------------------------------- */
 /*                                CREATE SLICE                                */
 /* -------------------------------------------------------------------------- */
@@ -459,23 +473,22 @@ export const deleteLessonAndUnitLessonSlice = createSlice({
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(deleteUnitLessonAndFillBlankExercise.pending, (state) => {
+            .addCase(deleteLessonAndUnitLesson.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(deleteUnitLessonAndFillBlankExercise.fulfilled, (state, action) => {
+            .addCase(deleteLessonAndUnitLesson.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
                 toastSuccess('Xóa thành công!');
             })
-            .addCase(deleteUnitLessonAndFillBlankExercise.rejected, (state, action) => {
+            .addCase(deleteLessonAndUnitLesson.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload ? action.payload.toString() : 'Unknown error';
                 toastError('Có lỗi xảy ra. Vui lòng thử lại!');
             });
     },
 });
-
 
 // Export the course reducer
 export const newCourseReducer = newCourseSlice.reducer;
