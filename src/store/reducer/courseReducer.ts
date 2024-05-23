@@ -98,7 +98,7 @@ export const createNewUserProcessStatus = createAsyncThunk(
 // #      UPDATE ASYNC THUNK        #
 // ##################################
 
-// Update async thunk for updating a UnitLessonAndVideoLectureContent
+// Hàm asyncThunk update UnitLessonAndVideoLectureContent
 export const updateUnitLessonAndVideoLectureContent = createAsyncThunk(
     'course/updateUnitLessonAndVideoLectureContent',
     async (payload: UpdateUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
