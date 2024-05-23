@@ -30,7 +30,7 @@ const initialState: NewCourseStateType = {
 // ##################################
 // #      CREATE ASYNC THUNK        #
 // ##################################
-// Create async thunk for creating a new course
+// Hàm asyncThunk tạo khóa học mới
 export const createNewCourse = createAsyncThunk('course/createNewCourse', async (payload: NewCoursePayloadType, thunkAPI) => {
     try {
         const config = {
