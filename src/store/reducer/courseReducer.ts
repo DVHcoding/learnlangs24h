@@ -111,7 +111,7 @@ export const updateUnitLessonAndVideoLectureContent = createAsyncThunk(
     }
 );
 
-// Update async thunk for updating a UnitLessonAndFillBlankExercise
+// Hàm asyncThunk update UnitLessonAndFillBlankExercise
 export const updateUnitLessonAndFillBlankExercise = createAsyncThunk(
     'course/updateUnitLessonAndFillBlankExercise',
     async (payload: UpdateUnitLessonAndFillBlankExercisePayloadType, thunkAPI) => {
