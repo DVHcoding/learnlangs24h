@@ -68,7 +68,7 @@ export const createNewUnitLessonAndVideoLectureContent = createAsyncThunk(
     }
 );
 
-// Create async thunk for creating a new unitLesson and fillBlankExercise
+// Hàm asyncThunk tạo unitLesson and fillBlankExercise
 export const createNewUnitLessonAndFillBlankExercise = createAsyncThunk(
     'course/createNewUnitLessonAndFillBlankExercise',
     async (payload: NewUnitLessonAndFillBlankExercisePayloadType, thunkAPI) => {
@@ -81,7 +81,7 @@ export const createNewUnitLessonAndFillBlankExercise = createAsyncThunk(
     }
 );
 
-// Create async thunk for creating a new user process status
+// Hàm asyncThunk tạo user process status
 export const createNewUserProcessStatus = createAsyncThunk(
     'course/createNewUserProcessStatus',
     async (payload: NewUserProcessStatusPayloadType, thunkAPI) => {
