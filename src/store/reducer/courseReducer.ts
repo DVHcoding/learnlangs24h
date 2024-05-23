@@ -55,7 +55,7 @@ export const createNewLesson = createAsyncThunk('course/createNewLesson', async 
     }
 });
 
-// Create async thunk for creating a new unitLesson and videoLectureContent
+// Hàm asyncThunk tạo unitLesson and videoLectureContent
 export const createNewUnitLessonAndVideoLectureContent = createAsyncThunk(
     'course/createNewUnitLessonAndVideoLectureContent',
     async (payload: NewUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
