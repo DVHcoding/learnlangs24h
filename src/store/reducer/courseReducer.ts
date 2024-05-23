@@ -45,7 +45,7 @@ export const createNewCourse = createAsyncThunk('course/createNewCourse', async 
     }
 });
 
-// Create async thunk for creating a new lesson
+// Hàm asyncThunk tạo lesson mới
 export const createNewLesson = createAsyncThunk('course/createNewLesson', async (payload: NewLessonPayloadType, thunkAPI) => {
     try {
         const response = await axios.post<MessageResponse>('/api/v1/new-lesson', payload);
