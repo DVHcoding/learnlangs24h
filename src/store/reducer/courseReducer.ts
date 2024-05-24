@@ -195,7 +195,7 @@ export const deleteLessonAndUnitLesson = createAsyncThunk(
 /* -------------------------------------------------------------------------- */
 /*                                CREATE SLICE                                */
 /* -------------------------------------------------------------------------- */
-// Create new course slice
+// Slice tạo course mới
 export const newCourseSlice = createSlice({
     name: 'newCourse',
     initialState,
