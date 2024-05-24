@@ -322,7 +322,7 @@ export const newUserProcessStatusSlice = createSlice({
 /*                                UPDATE SLICE                                */
 /* -------------------------------------------------------------------------- */
 
-// Update UnitLessonAndVideoLectureContent
+// Slice Update UnitLessonAndVideoLectureContent
 export const updateUnitLessonAndVideoLectureContentSlice = createSlice({
     name: 'updateUnitLessonAndVideoLectureContent',
     initialState,
