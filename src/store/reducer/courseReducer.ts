@@ -223,7 +223,7 @@ export const newCourseSlice = createSlice({
     },
 });
 
-// Create new lesson slice
+// Slice tạo lesson mới
 export const newLessonSlice = createSlice({
     name: 'newLesson',
     initialState,
