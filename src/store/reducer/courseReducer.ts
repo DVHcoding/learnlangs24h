@@ -247,7 +247,7 @@ export const newLessonSlice = createSlice({
     },
 });
 
-// Create new unitLesson and VideoLectureContent slice
+// Slice tạo unitLesson and VideoLectureContent mới
 export const newUnitLessonAndVideoLectureContentSlice = createSlice({
     name: 'newUnitLessonAndVideoLectureContent',
     initialState,
