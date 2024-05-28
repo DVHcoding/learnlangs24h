@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import HelpIcon from '@mui/icons-material/Help';
+import { IoIosHelpCircle } from 'react-icons/io';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
@@ -164,7 +164,7 @@ const Grammar: React.FC = () => {
                             className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center gap-2 rounded-lg
                                     bg-slate-100 p-2 shadow-md"
                         >
-                            <HelpIcon className="text-orange-400" />
+                            <IoIosHelpCircle className="text-orange-400" size={20} />
                             <p className="text-title text-nowrap font-bold">Hỏi đáp</p>
                         </div>
                     </div>

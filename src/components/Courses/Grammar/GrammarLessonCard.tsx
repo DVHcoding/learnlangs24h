@@ -8,11 +8,10 @@ import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse
 // #       IMPORT Npm
 // ##################################
 import { Accordion } from 'rsuite';
-import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import LockIcon from '@mui/icons-material/Lock';
+import {  PencilLine } from 'lucide-react';
+import { FaCheckCircle, FaLock  } from 'react-icons/fa';
+import { IoPlayCircleSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
-import CreateIcon from '@mui/icons-material/Create';
-import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
@@ -174,9 +173,9 @@ const GrammarLessonCard: React.FC<{
                                                   <h4 className="mb-2 text-sm font-semibold text-textCustom">{unitLesson.title}</h4>
                                                   <div className="flex items-center gap-2">
                                                       {unitLesson.icon === 'videoLecture' ? (
-                                                          <PlayCircleFilledIcon className="text-xs text-orange-400" />
+                                                          <IoPlayCircleSharp className="text-sm text-orange-400" />
                                                       ) : (
-                                                          <CreateIcon className="text-xs text-orange-400" />
+                                                          <PencilLine className="text-orange-400" size={13} />
                                                       )}
                                                       <p className="text-xs text-textCustom">{unitLesson.time}</p>
                                                   </div>
@@ -186,12 +185,12 @@ const GrammarLessonCard: React.FC<{
                                                   (status: UnitLessonStatus) =>
                                                       status.unitLessonId._id === unitLesson._id && status.status === 'completed'
                                               ) ? (
-                                                  <CheckCircleIcon className="text-sm text-green-500" />
+                                                  <FaCheckCircle className="text-xs text-green-500" />
                                               ) : userProcessStatusData?.unitLessonStatus?.find(
                                                     (status: UnitLessonStatus) =>
                                                         status.unitLessonId._id === unitLesson._id && status.status === 'unlock'
                                                 ) ? null : ( // Nếu điều kiện cho LockIcon được đáp ứng, không hiển thị gì cả
-                                                  <LockIcon className="text-sm text-gray-400" />
+                                                  <FaLock className="text-xs text-gray-400" />
                                               )}
                                           </li>
                                       ) : (
