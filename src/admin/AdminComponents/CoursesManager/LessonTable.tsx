@@ -87,9 +87,10 @@ const LessonTable: React.FC = () => {
     };
 
     // Hàm UpdateLesson
-    const handleUpdateLesson: (lessonId: string) => void = async (lessonId) => {
+    const handleUpdateLesson: (lessonId: string) => void = async (lessonId): Promise<void> => {
         if (!lessonId || name === '') {
             toastError('Vui lòng điền đủ thông tin!');
+            return;
         }
 
         try {
