@@ -93,6 +93,7 @@ const GrammarLessonCard: React.FC<{
         if (dataUnitLesson) {
             // Duyệt qua từng phần tử trong mảng unitLessons
             dataUnitLesson.unitLessons.forEach((unitLesson: UnitLessonType) => {
+                // Kiểm tra nếu lesson của unitLesson trùng khớp với lessonId
                 if (unitLesson.lesson === lessonId) {
                     const timeParts = unitLesson.time.split(':');
                     const hours = parseInt(timeParts[0]);
