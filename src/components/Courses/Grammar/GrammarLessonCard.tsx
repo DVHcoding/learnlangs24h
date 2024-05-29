@@ -8,8 +8,8 @@ import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse
 // #       IMPORT Npm
 // ##################################
 import { Accordion } from 'rsuite';
-import {  PencilLine } from 'lucide-react';
-import { FaCheckCircle, FaLock  } from 'react-icons/fa';
+import { PencilLine } from 'lucide-react';
+import { FaCheckCircle, FaLock } from 'react-icons/fa';
 import { IoPlayCircleSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { useParams, useSearchParams } from 'react-router-dom';
@@ -91,6 +91,7 @@ const GrammarLessonCard: React.FC<{
         let totalSeconds = 0;
 
         if (dataUnitLesson) {
+            // Duyệt qua từng phần tử trong mảng unitLessons
             dataUnitLesson.unitLessons.forEach((unitLesson: UnitLessonType) => {
                 if (unitLesson.lesson === lessonId) {
                     const timeParts = unitLesson.time.split(':');
