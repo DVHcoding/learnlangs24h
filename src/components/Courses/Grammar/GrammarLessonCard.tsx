@@ -97,6 +97,7 @@ const GrammarLessonCard: React.FC<{
                 if (unitLesson.lesson === lessonId) {
                     // Tách chuỗi thời gian (dạng 'hh:mm:ss') thành mảng các phần tử [hours, minutes, seconds]
                     const timeParts = unitLesson.time.split(':');
+                    // Chuyển đổi các phần tử từ chuỗi sang số nguyên
                     const hours = parseInt(timeParts[0]);
                     const minutes = parseInt(timeParts[1]);
                     const seconds = parseInt(timeParts[2]);
