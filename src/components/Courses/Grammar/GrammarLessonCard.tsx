@@ -95,6 +95,7 @@ const GrammarLessonCard: React.FC<{
             dataUnitLesson.unitLessons.forEach((unitLesson: UnitLessonType) => {
                 // Kiểm tra nếu lesson của unitLesson trùng khớp với lessonId
                 if (unitLesson.lesson === lessonId) {
+                    // Tách chuỗi thời gian (dạng 'hh:mm:ss') thành mảng các phần tử [hours, minutes, seconds]
                     const timeParts = unitLesson.time.split(':');
                     const hours = parseInt(timeParts[0]);
                     const minutes = parseInt(timeParts[1]);
