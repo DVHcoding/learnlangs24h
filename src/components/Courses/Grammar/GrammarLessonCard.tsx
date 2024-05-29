@@ -102,6 +102,7 @@ const GrammarLessonCard: React.FC<{
                     const minutes = parseInt(timeParts[1]);
                     const seconds = parseInt(timeParts[2]);
 
+                    // Cộng dồn giờ, phút và giây vào tổng số giờ, phút và giây
                     totalHours += hours;
                     totalMinutes += minutes;
                     totalSeconds += seconds;
