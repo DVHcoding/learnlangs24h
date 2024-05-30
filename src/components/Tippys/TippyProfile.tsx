@@ -57,7 +57,7 @@ const TippyProfile: React.FC = () => {
                             {data?.success && (
                                 <div>
                                     <Link
-                                        to={`/profile/@${data?.user?.nickname}`}
+                                        to={`/profile/${data?.user?.nickname}`}
                                         className="text-textCustom transition-all 
                                     duration-200 hover:text-orange-400 hover:text-textCustom"
                                         style={{ textDecoration: 'none' }}
