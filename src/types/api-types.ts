@@ -6,7 +6,20 @@ export type MessageResponse = {
 export interface APIResponse {
     success: boolean;
     message?: string;
-    user: RegisterUserType;
+    user: UserDetailsType;
+}
+
+export interface UserDetailsType {
+    _id?: string;
+    nickname: string;
+    username: string;
+    email: string;
+    password: string;
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    roles?: string;
 }
 
 export interface LoginUserType {
@@ -16,7 +29,6 @@ export interface LoginUserType {
 
 export interface RegisterUserType {
     _id?: string;
-    nickname?: string;
     username: string;
     email: string;
     password: string;
@@ -28,7 +40,6 @@ export interface RegisterUserType {
 }
 
 export interface LoginGoogleType {
-    nickname?: string;
     username: string | null;
     email: string | null;
     photo: {
