@@ -13,7 +13,7 @@ import { Link } from 'react-router-dom';
 // ##################################
 // #       IMPORT Components
 // #################################
-import GrammarLessonCard from '@admin/AdminComponents/CoursesManager/Grammar/GrammarLessonCard';
+import GrammarLessonCard from '@admin/components/CoursesManager/Grammar/GrammarLessonCard';
 import { CourseType } from 'types/api-types';
 
 import { useGetAllCoursesQuery } from '@store/api/courseApi';

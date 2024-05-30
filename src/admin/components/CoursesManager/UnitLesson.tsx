@@ -11,10 +11,10 @@ import type { TableProps } from 'antd';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import CreateUnit from '@admin/AdminComponents/CoursesManager/Grammar/CreateUnit';
+import CreateUnit from '@admin/components/CoursesManager/Grammar/CreateUnit';
 import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
-import handleDeleteUnitLesson from '@admin/AdminComponents/CoursesManager/Grammar/Delete/DeleteUnit';
+import handleDeleteUnitLesson from '@admin/components/CoursesManager/Grammar/Delete/DeleteUnit';
 import { AppDispatch, RootState } from '@store/store';
 import { useNavigate } from 'react-router-dom';
 
