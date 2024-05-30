@@ -13,13 +13,16 @@ import {
     newLessonReducer,
     newUnitLessonAndVideoLectureContentReducer,
     newUserProcessStatusReducer,
+    newUnitLessonAndFillBlankExerciseReducer,
+    // ######################################
     updateUserProcessStatusReducer,
     updateUnitLessonAndVideoLectureContentReducer,
     updateUnitLessonAndFillBlankExerciseReducer,
-    newUnitLessonAndFillBlankExerciseReducer,
+    updateLessonReducer,
+    // ######################################
     deleteUnitLessonAndVideoLectureContentReducer,
     deleteUnitLessonAndFillBlankExerciseReducer,
-    updateLessonReducer,
+    deleteLessonAndUnitLessonReducer,
 } from './reducer/courseReducer';
 
 // ##########################
@@ -40,6 +43,7 @@ export const store = configureStore({
 
         deleteUnitLessonAndVideoLectureContent: deleteUnitLessonAndVideoLectureContentReducer,
         deleteUnitLessonAndFillBlankExercise: deleteUnitLessonAndFillBlankExerciseReducer,
+        deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
 });
