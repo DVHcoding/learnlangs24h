@@ -1,7 +1,7 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import { Space, Table, Select, Input, Popconfirm, Popover, Button } from 'antd';
+import { Space, Table, Select, Input, Popconfirm, Popover, Button, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { TableProps } from 'antd';
@@ -12,7 +12,6 @@ import { Loader } from 'rsuite';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
@@ -205,8 +204,20 @@ const LessonTable: React.FC = () => {
     return (
         <div className="h-full px-4">
             {/* BreadCrumbs */}
-            <div>
-                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
+            <div className="mb-4">
+                <Breadcrumb
+                    items={[
+                        {
+                            title: <Link to="/admin">Dashboard</Link>,
+                        },
+                        {
+                            title: <Link to="/admin/courses">Course</Link>,
+                        },
+                        {
+                            title: 'Lesson Table',
+                        },
+                    ]}
+                />
             </div>
 
             <form onSubmit={handleSubmitNewLesson}>
