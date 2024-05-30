@@ -1,7 +1,7 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import { Space, Table, Popconfirm } from 'antd';
+import { Space, Table, Popconfirm, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import { useSelector, useDispatch } from 'react-redux';
@@ -17,6 +17,7 @@ import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
 import handleDeleteUnitLesson from '@admin/AdminComponents/CoursesManager/Grammar/Delete/DeleteUnit';
 import { AppDispatch, RootState } from '@store/store';
+import { useNavigate } from 'react-router-dom';
 
 // ##################################
 // #       IMPORT Components
@@ -37,6 +38,8 @@ type TableRowSelection<T> = TableProps<T>['rowSelection'];
 const UnitLesson: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
+
     const { loading: deleteUnitLessonAndVideoLectureContentLoading } = useSelector(
         (state: RootState) => state.deleteUnitLessonAndVideoLectureContent
     );
@@ -127,8 +130,24 @@ const UnitLesson: React.FC = () => {
     return (
         <div className="h-full px-4">
             {/* BreadCrumbs */}
-            <div>
-                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
+            <div className="mb-4">
+                <Breadcrumb
+                    items={[
+                        {
+                            title: <Link to="/admin">Dashboard</Link>,
+                        },
+                        {
+                            title: (
+                                <Link to="#" onClick={() => navigate(-1)}>
+                                    Lesson Table
+                                </Link>
+                            ),
+                        },
+                        {
+                            title: 'Unit Lesson',
+                        },
+                    ]}
+                />
             </div>
 
             <Table
