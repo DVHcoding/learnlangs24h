@@ -178,19 +178,14 @@ export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
 );
 
 // Hàm asyncThunk xóa lesson và unitLesson
-export const deleteLessonAndUnitLesson = createAsyncThunk(
-    'course/deleteLessonAndUnitLesson',
-    async ({ lessonId, unitLessonId }: { lessonId: string; unitLessonId: string }, thunkAPI) => {
-        try {
-            const response = await axios.delete<MessageResponse>(
-                `/api/v1/deleteLessonAndUnitLesson?lessonId=${lessonId}&unitLesson=${unitLessonId}`
-            );
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
+export const deleteLessonAndUnitLesson = createAsyncThunk('course/deleteLessonAndUnitLesson', async (lessonId: string, thunkAPI) => {
+    try {
+        const response = await axios.delete<MessageResponse>(`/api/v1/deleteLessonAndUnitLesson?lessonId=${lessonId}`);
+        return response.data;
+    } catch (error: any) {
+        return thunkAPI.rejectWithValue(error.message);
     }
-);
+});
 
 /* -------------------------------------------------------------------------- */
 /*                                CREATE SLICE                                */

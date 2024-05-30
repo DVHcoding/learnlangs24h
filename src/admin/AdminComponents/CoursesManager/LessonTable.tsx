@@ -17,7 +17,7 @@ import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { RootState, AppDispatch } from '@store/store';
-import { createNewLesson, updateLesson } from '@store/reducer/courseReducer';
+import { createNewLesson, deleteLessonAndUnitLesson, updateLesson } from '@store/reducer/courseReducer';
 import { useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
 
 interface DataType {
@@ -104,6 +104,21 @@ const LessonTable: React.FC = () => {
         }
     };
 
+    // Hàm xóa Lesson và UnitLesson
+    const handleDeleteLessonAndUnitLesson = async (lessonId: string): Promise<void> => {
+        if (!lessonId || lessonId === '') {
+            toastError('Không tìm thấy lesson Id');
+            return;
+        }
+
+        try {
+            await dispatch(deleteLessonAndUnitLesson(lessonId));
+            refetch();
+        } catch (error) {
+            toastError(`Có lỗi xảy ra!${error}`);
+        }
+    };
+
     // Hàm để đóng popover
     const hidePopover = () => {
         setOpenPopover('');
@@ -168,7 +183,7 @@ const LessonTable: React.FC = () => {
                         <p className="cursor-pointer transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Popover>
 
-                    <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
+                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteLessonAndUnitLesson(record.key)}>
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
                 </Space>
