@@ -211,7 +211,7 @@ const LessonTable: React.FC = () => {
                             title: <Link to="/admin">Dashboard</Link>,
                         },
                         {
-                            title: <Link to="/admin/courses">Course</Link>,
+                            title: <Link to="/admin/courses">Course List</Link>,
                         },
                         {
                             title: 'Lesson Table',
