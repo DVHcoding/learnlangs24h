@@ -1,12 +1,12 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { MessageResponse, APIResponse, LoginGoogleType, LoginUserType, RegisterUserType } from 'types/api-types';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { MessageResponse, APIResponse, LoginGoogleType, LoginUserType, RegisterUserType } from 'types/api-types';
 
 export const userApi = createApi({
     reducerPath: 'userApi',
