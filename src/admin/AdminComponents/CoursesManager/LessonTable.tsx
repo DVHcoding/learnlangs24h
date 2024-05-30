@@ -74,6 +74,7 @@ const LessonTable: React.FC = () => {
 
         try {
             await dispatch(createNewLesson({ name: lessonName, courseId }));
+            refetch();
             setLessonName('');
             setCourseId('');
         } catch (error) {
