@@ -16,7 +16,7 @@ export interface LoginUserType {
 
 export interface RegisterUserType {
     _id?: string;
-    nickname: string;
+    nickname?: string;
     username: string;
     email: string;
     password: string;
@@ -28,6 +28,7 @@ export interface RegisterUserType {
 }
 
 export interface LoginGoogleType {
+    nickname?: string;
     username: string | null;
     email: string | null;
     photo: {
