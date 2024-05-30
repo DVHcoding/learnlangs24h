@@ -16,6 +16,7 @@ export interface LoginUserType {
 
 export interface RegisterUserType {
     _id?: string;
+    nickname: string;
     username: string;
     email: string;
     password: string;
@@ -27,6 +28,7 @@ export interface RegisterUserType {
 }
 
 export interface LoginGoogleType {
+    nickname: string;
     username: string | null;
     email: string | null;
     photo: {
@@ -75,8 +77,8 @@ export interface NewUserProcessStatusPayloadType {
 }
 
 export interface UpdateLessonPayloadType {
-    lessonId:string,
-    lessonName: string,
+    lessonId: string;
+    lessonName: string;
 }
 
 export interface NewCourseStateType {

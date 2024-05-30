@@ -3,7 +3,6 @@
 // ##########################
 import Tippy from '@tippyjs/react/headless';
 import 'tippy.js/dist/tippy.css';
-// import { Avatar } from 'rsuite';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 
@@ -58,7 +57,7 @@ const TippyProfile: React.FC = () => {
                             {data?.success && (
                                 <div>
                                     <Link
-                                        to="/profile"
+                                        to={`/profile/@${data?.user?.nickname}`}
                                         className="text-textCustom transition-all 
                                     duration-200 hover:text-orange-400 hover:text-textCustom"
                                         style={{ textDecoration: 'none' }}
