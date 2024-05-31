@@ -126,7 +126,7 @@ const Profile: React.FC = () => {
                             title: 'Profile',
                         },
                         {
-                            title: 'dohung',
+                            title: nickname,
                         },
                     ]}
                 />
