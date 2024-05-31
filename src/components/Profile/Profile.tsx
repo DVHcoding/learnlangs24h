@@ -8,6 +8,7 @@ import { Breadcrumb, Tabs, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import { UserOutlined } from '@ant-design/icons';
+import dayjs from 'dayjs';
 import 'react-calendar-heatmap/dist/styles.css';
 import type { TabsProps } from 'antd';
 
@@ -150,11 +151,15 @@ const Profile: React.FC = () => {
                                 </div>
 
                                 <div className="mt-2">
-                                    <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">Đỗ Hùng</h2>
+                                    <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
+                                        {data?.user?.username}
+                                    </h2>
 
                                     <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Follower: 1200</h3>
 
-                                    <span className="font-segoe text-base text-textCustom">Join At: 13/04/2024</span>
+                                    <span className="font-segoe text-base text-textCustom">
+                                        Join At: {dayjs(data?.user?.createdAt).format('DD/MM/YYYY')}
+                                    </span>
                                 </div>
                             </div>
 
@@ -165,7 +170,7 @@ const Profile: React.FC = () => {
                                 </div>
 
                                 <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Bài viết: 12</h3>
-                                <span className="font-body text-base text-textCustom">Id: @dohung1052</span>
+                                <span className="font-body text-base text-textCustom">Id: {data?.user?.nickname}</span>
                             </div>
                         </div>
 

@@ -14,12 +14,12 @@ export interface UserDetailsType {
     nickname: string;
     username: string;
     email: string;
-    password: string;
     photo: {
         public_id: string;
         url: string;
     };
     roles?: string;
+    createdAt: Date;
 }
 
 export interface LoginUserType {
