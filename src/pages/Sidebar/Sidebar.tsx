@@ -174,7 +174,7 @@ const Sidebar: React.FC = () => {
                             <Nav.Item
                                 eventKey="7-1"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                              before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
                                 <span className="text-textCustom transition-all hover:text-[#8bbf64]">IELTS</span>
                             </Nav.Item>
@@ -182,9 +182,9 @@ const Sidebar: React.FC = () => {
                             <Nav.Item
                                 eventKey="7-2"
                                 className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                              before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
-                                <span className="transition-all hover:text-[#8bbf64]">TOEIC</span>
+                                <span className="text-textCustom transition-all hover:text-[#8bbf64]">TOEIC</span>
                             </Nav.Item>
 
                             <Nav.Item
