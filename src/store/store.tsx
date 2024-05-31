@@ -30,6 +30,7 @@ export const store = configureStore({
     reducer: {
         [userApi.reducerPath]: userApi.reducer,
         [courseApi.reducerPath]: courseApi.reducer,
+
         newCourse: newCourseReducer,
         newLesson: newLessonReducer,
         newUnitLessonAndVideoLectureContent: newUnitLessonAndVideoLectureContentReducer,

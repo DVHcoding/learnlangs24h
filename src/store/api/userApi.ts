@@ -25,6 +25,12 @@ export const userApi = createApi({
             providesTags: ['User'],
         }),
 
+        // UserDetails By NickName
+        userDetailsByNickName: builder.query<APIResponse, string>({
+            query: (nickname: string) => `profile/${nickname}`,
+            providesTags: ['User'],
+        }),
+
         // Register User
         registerUser: builder.mutation<APIResponse, RegisterUserType>({
             query: (registerUserInfo) => ({
@@ -66,5 +72,11 @@ export const userApi = createApi({
     }),
 });
 
-export const { useUserDetailsQuery, useRegisterUserMutation, useLoginUserMutation, useLoginGoogleMutation, useLogoutUserMutation } =
-    userApi;
+export const {
+    useUserDetailsQuery,
+    useUserDetailsByNickNameQuery,
+    useRegisterUserMutation,
+    useLoginUserMutation,
+    useLoginGoogleMutation,
+    useLogoutUserMutation,
+} = userApi;
