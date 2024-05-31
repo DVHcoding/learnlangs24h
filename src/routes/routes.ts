@@ -51,7 +51,7 @@ const protectedRoute: ProtectedRouteType[] = [
         component: Grammar,
     },
     {
-        path: '/profile/:id',
+        path: '/profile/:nickname',
         component: Profile,
     },
 ];
