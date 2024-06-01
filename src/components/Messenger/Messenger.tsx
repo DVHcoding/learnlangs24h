@@ -23,8 +23,8 @@ const Messenger = () => {
                                 size={45}
                             />
                             <div className="flex-1 select-none py-2">
-                                <h3 className="font-semibold leading-tight">Đỗ Hùng</h3>
-                                <p>This is a example text</p>
+                                <h3 className="font-semibold leading-tight text-textCustom">Đỗ Hùng</h3>
+                                <p className="text-textBlackGray">This is a example text</p>
                             </div>
                         </li>
                     ))}
