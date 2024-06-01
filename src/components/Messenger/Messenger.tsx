@@ -61,7 +61,7 @@ const Messenger = () => {
                                     <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
                                 }
                             />
-                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2">Day la tin nhan dau tien</p>
+                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom">Day la tin nhan dau tien</p>
                         </li>
 
                         <li className="flex gap-2">
@@ -74,12 +74,11 @@ const Messenger = () => {
                                     <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
                                 }
                             />
-                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2">Day la tin nhan thu 2</p>
+                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom">Day la tin nhan thu 2</p>
                         </li>
 
                         <li className="flex gap-2">
                             <p className="ml-auto max-w-[33rem] rounded-2xl bg-blue-500 p-2 text-white">
-                                {' '}
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestias unde commodi illum laboriosam corporis
                                 iure eum voluptatibus eveniet, nesciunt ipsam voluptates nisi sequi fugit, dicta neque voluptas inventore?
                                 Blanditiis, doloribus?
@@ -92,7 +91,7 @@ const Messenger = () => {
                                     <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
                                 }
                             />
-                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2">
+                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, fugit. Quos non unde omnis porro
                                 praesentium rerum voluptates autem? Accusamus explicabo ad quas. Veniam voluptate in eligendi et perferendis
                                 deleniti?
@@ -105,7 +104,7 @@ const Messenger = () => {
                                     <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
                                 }
                             />
-                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2">
+                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom">
                                 Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, fugit. Quos non unde omnis porro
                                 praesentium rerum voluptates autem? Accusamus explicabo ad quas. Veniam voluptate in eligendi et perferendis
                                 deleniti?
