@@ -19,6 +19,7 @@ const CoursesList = loadable(() => import('@admin/components/CoursesManager/Cour
 const LessonTable = loadable(() => import('@admin/components/CoursesManager/LessonTable'));
 const UnitLesson = loadable(() => import('@admin/components/CoursesManager/UnitLesson'));
 const GrammarManagement = loadable(() => import('@admin/components/CoursesManager/Grammar/Update/Grammar'));
+const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 
 interface PublicRouteType {
     path: string;
@@ -53,6 +54,10 @@ const protectedRoute: ProtectedRouteType[] = [
     {
         path: '/profile/:nickname',
         component: Profile,
+    },
+    {
+        path: '/messages',
+        component: Messenger,
     },
 ];
 
