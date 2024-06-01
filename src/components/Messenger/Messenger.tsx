@@ -53,8 +53,7 @@ const Messenger = () => {
                 </div>
 
                 {/* Body */}
-                <div className="relative overflow-auto" style={{ height: 'calc(100% - 3.3rem)' }}>
-                    {/* Message left */}
+                <div className="overflow-auto" style={{ height: 'calc(100% - 3.3rem)' }}>
                     <ul className="mx-2 mb-14 mt-2 flex flex-col gap-2">
                         <li className="flex max-w-max gap-2">
                             <Avatar
@@ -99,16 +98,28 @@ const Messenger = () => {
                                 deleniti?
                             </p>
                         </li>
+
+                        <li className="flex max-w-max gap-2">
+                            <Avatar
+                                src={
+                                    <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
+                                }
+                            />
+                            <p className="max-w-[33rem] rounded-2xl bg-bgHoverGrayDark p-2">
+                                Lorem ipsum dolor sit amet consectetur adipisicing elit. Architecto, fugit. Quos non unde omnis porro
+                                praesentium rerum voluptates autem? Accusamus explicabo ad quas. Veniam voluptate in eligendi et perferendis
+                                deleniti?
+                            </p>
+                        </li>
                     </ul>
+                </div>
 
-                    {/* Chat bar */}
-
-                    <div className="fixed bottom-[1.15rem] flex gap-2 bg-white pb-1" style={{ width: '62%' }}>
-                        <input type="text" className="w-full rounded-full bg-bgHoverGrayDark p-2" placeholder="Aa" />
-                        <button>
-                            <IoMdSend size={25} color="#3798f2" />
-                        </button>
-                    </div>
+                {/* Chat bar */}
+                <div className="fixed bottom-[1.15rem] flex gap-2 bg-bgCustom pb-1" style={{ width: '62%' }}>
+                    <input type="text" className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom" placeholder="Aa" />
+                    <button>
+                        <IoMdSend size={25} color="#3798f2" />
+                    </button>
                 </div>
             </div>
         </div>
