@@ -3,6 +3,9 @@
 // ##########################
 import { Avatar } from 'antd';
 import { IoMdSend } from 'react-icons/io';
+import { GoFileMedia } from 'react-icons/go';
+import { MdOutlineAddReaction } from 'react-icons/md';
+import { IoSearchSharp } from 'react-icons/io5';
 
 // ##########################
 // #    IMPORT Components   #
@@ -13,6 +16,14 @@ const Messenger = () => {
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
             <div className="w-[22rem] overflow-auto border-r border-t border-[#e5e5e5]">
+                <h2 className="font-bold text-textBlackGray">Đoạn chat</h2>
+
+                <div className="flex items-center gap-2 rounded-full bg-bgHoverGrayDark p-2">
+                    <IoSearchSharp size={20} className="left-3 text-gray-400" />
+
+                    <input type="text" className="w-full bg-transparent text-textCustom" placeholder="Tìm kiếm trên messenger" />
+                </div>
+
                 <ul>
                     {[...Array(3)].map((_, index) => (
                         <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={index}>
@@ -112,8 +123,21 @@ const Messenger = () => {
                 </div>
 
                 {/* Chat bar */}
-                <div className="sticky bottom-0 flex gap-2 bg-bgCustom pb-1">
-                    <input type="text" className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom" placeholder="Aa" />
+                <div className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
+                    {/* File Media */}
+                    <div>
+                        <GoFileMedia size={20} color="#3798f2" className="cursor-pointer" />
+                    </div>
+
+                    <div className="relative flex w-full">
+                        <input type="text" className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom" placeholder="Aa" />
+                        <MdOutlineAddReaction
+                            className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
+                            size={18}
+                            color="#3798f2"
+                        />
+                    </div>
+
                     <button>
                         <IoMdSend size={25} color="#3798f2" />
                     </button>
