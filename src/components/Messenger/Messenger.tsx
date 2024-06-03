@@ -12,7 +12,7 @@ const Messenger = () => {
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
-            <div className="w-[22rem] overflow-auto border-r border-[#e5e5e5]">
+            <div className="w-[22rem] overflow-auto border-r border-t border-[#e5e5e5]">
                 <ul>
                     {[...Array(3)].map((_, index) => (
                         <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={index}>
@@ -34,21 +34,19 @@ const Messenger = () => {
             {/* Content  */}
             <div className="w-full">
                 {/* Header */}
-                <div>
-                    <div className="flex items-center gap-2 px-2 shadow">
-                        <div className="relative">
-                            <Avatar
-                                src={
-                                    <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
-                                }
-                                size={45}
-                            />
-                            <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
-                        </div>
-                        <div className="flex-1 select-none py-2">
-                            <h3 className="font-semibold leading-tight text-textCustom">Đỗ Hùng</h3>
-                            <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
-                        </div>
+                <div className="flex items-center gap-2 border-t px-2 shadow">
+                    <div className="relative">
+                        <Avatar
+                            src={
+                                <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
+                            }
+                            size={45}
+                        />
+                        <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
+                    </div>
+                    <div className="flex-1 select-none py-2">
+                        <h3 className="font-semibold leading-tight text-textCustom">Đỗ Hùng</h3>
+                        <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
                     </div>
                 </div>
 
