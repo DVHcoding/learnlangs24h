@@ -112,7 +112,7 @@ const Messenger = () => {
                 </div>
 
                 {/* Chat bar */}
-                <div className="fixed bottom-[1.15rem] flex gap-2 bg-bgCustom pb-1" style={{ width: '62%' }}>
+                <div className="sticky bottom-0 flex gap-2 bg-bgCustom pb-1">
                     <input type="text" className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom" placeholder="Aa" />
                     <button>
                         <IoMdSend size={25} color="#3798f2" />
