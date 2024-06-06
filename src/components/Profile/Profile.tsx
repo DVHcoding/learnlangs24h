@@ -136,38 +136,54 @@ const Profile: React.FC = () => {
                 <div className="mt-2 h-full justify-between">
                     {/* Banner */}
                     <div
-                        className="relative flex h-[13rem] w-full items-center rounded-lg"
+                        className="relative flex h-[13rem] w-full items-center overflow-x-auto rounded-lg phone:h-[20rem]"
                         style={{ backgroundColor: 'rgb(52 109 226 / 47%)' }}
                     >
-                        <div className="flex gap-4 md:mx-auto md:gap-8 lg:m-0 phone:flex-wrap pm:flex-wrap">
-                            <div className="ml-4 flex gap-4">
-                                <div className="relative h-24 w-24 select-none rounded-full">
-                                    <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
-                                    <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
-                                </div>
+                        <div className="ml-4 flex gap-4 phone:flex-col">
+                            <div className="relative flex h-24 w-24 select-none flex-col gap-2 rounded-full phone:flex-row phone:items-center phone:gap-4">
+                                <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
+                                <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
-                                <div className="mt-2">
-                                    <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
-                                        {data?.user?.username}
-                                    </h2>
-
-                                    <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Follower: 1200</h3>
-
-                                    <span className="font-segoe text-base text-textCustom">
-                                        Join At: {dayjs(data?.user?.createdAt).format('DD/MM/YYYY')}
-                                    </span>
-                                </div>
+                                <button className="btn-primary">Follow</button>
                             </div>
 
-                            <div className="mt-2 grid-cols-2 gap-2 phone:ml-5 phone:grid pm:ml-5 pm:grid">
-                                <div className="flex flex-wrap items-center gap-2">
-                                    <h2 className="font-segoe font-bold leading-tight text-textCustom phone:text-base">Cấp bậc:</h2>
-                                    <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">level 1</h4>
+                            <ul className="mt-2 grid grid-cols-3 gap-4">
+                                <div className="col-span-1 space-y-2">
+                                    <li>
+                                        <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
+                                            {data?.user?.username}
+                                        </h2>
+                                    </li>
+                                    <li>
+                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Follower: 1200</h3>
+                                    </li>
+                                    <li>
+                                        <span className="font-segoe text-base text-textCustom">
+                                            Join At: {dayjs(data?.user?.createdAt).format('DD/MM/YYYY')}
+                                        </span>
+                                    </li>
                                 </div>
 
-                                <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Bài viết: 12</h3>
-                                <span className="font-body text-base text-textCustom">Id: {data?.user?.nickname}</span>
-                            </div>
+                                <div className="col-span-1 space-y-2">
+                                    <li className="flex items-center gap-2">
+                                        <h2 className="text-nowrap font-segoe font-bold leading-tight text-textCustom phone:text-base">
+                                            Cấp bậc:
+                                        </h2>
+
+                                        <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
+                                            level 1
+                                        </h4>
+                                    </li>
+
+                                    <li>
+                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Bài viết: 12</h3>
+                                    </li>
+
+                                    <li>
+                                        <span className="text-nowrap font-body text-base text-textCustom">Id: {data?.user?.nickname}</span>
+                                    </li>
+                                </div>
+                            </ul>
                         </div>
 
                         <img src={BannerIcon} alt="banner icon" className="absolute right-0 hidden xl:block" />
