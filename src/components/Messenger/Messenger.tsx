@@ -18,7 +18,8 @@ const Messenger = () => {
             <div className="w-[22rem] overflow-auto border-r border-t border-[#e5e5e5]">
                 <h2 className="font-bold text-textBlackGray">Đoạn chat</h2>
 
-                <div className="flex items-center gap-2 rounded-full bg-bgHoverGrayDark p-2">
+                {/* search */}
+                <div className="mb-4 flex items-center gap-2 rounded-full bg-bgHoverGrayDark p-2">
                     <IoSearchSharp size={20} className="left-3 text-gray-400" />
 
                     <input type="text" className="w-full bg-transparent text-textCustom" placeholder="Tìm kiếm trên messenger" />
