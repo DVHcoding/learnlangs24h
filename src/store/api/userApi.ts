@@ -69,6 +69,16 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        // Follow User
+        followUser: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'followUser',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -79,4 +89,6 @@ export const {
     useLoginUserMutation,
     useLoginGoogleMutation,
     useLogoutUserMutation,
+
+    useFollowUserMutation,
 } = userApi;
