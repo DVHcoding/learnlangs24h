@@ -20,6 +20,8 @@ export interface UserDetailsType {
     };
     roles?: string;
     createdAt: Date;
+    followers: string[];
+    following: string[];
 }
 
 export interface LoginUserType {
