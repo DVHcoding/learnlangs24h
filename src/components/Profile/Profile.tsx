@@ -143,11 +143,7 @@ const Profile: React.FC = () => {
                             <div className="ml-4 flex gap-4">
                                 <div className="relative h-24 w-24 select-none rounded-full">
                                     <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
-                                    <img
-                                        src="https://gw.alipayobjects.com/zos/rmsportal/KDpgvguMpGfqaHPjicRK.svg"
-                                        alt="Avatar"
-                                        className="min-w-[6rem]"
-                                    />
+                                    <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
                                 </div>
 
                                 <div className="mt-2">
