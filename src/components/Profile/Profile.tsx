@@ -155,7 +155,9 @@ const Profile: React.FC = () => {
                                         </h2>
                                     </li>
                                     <li>
-                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Follower: 1200</h3>
+                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">
+                                            Follower: {data?.user?.followers?.length}
+                                        </h3>
                                     </li>
                                     <li>
                                         <span className="font-segoe text-base text-textCustom">
@@ -171,7 +173,7 @@ const Profile: React.FC = () => {
                                         </h2>
 
                                         <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
-                                            level 1
+                                            level {data?.user?.level}
                                         </h4>
                                     </li>
 

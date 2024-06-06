@@ -22,6 +22,7 @@ export interface UserDetailsType {
     createdAt: Date;
     followers: string[];
     following: string[];
+    level: number;
 }
 
 export interface LoginUserType {
