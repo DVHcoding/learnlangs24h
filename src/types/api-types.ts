@@ -10,7 +10,7 @@ export interface APIResponse {
 }
 
 export interface UserDetailsType {
-    _id?: string;
+    _id: string;
     nickname: string;
     username: string;
     email: string;

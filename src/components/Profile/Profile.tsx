@@ -113,6 +113,10 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
+    const handleFollowUser: (userId: string) => void = (userId) => {
+        alert(userId);
+    };
+
     return (
         <div className="h-full px-4 phone:p-1 ">
             {/* BreadCrumbs */}
@@ -144,7 +148,9 @@ const Profile: React.FC = () => {
                                 <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
                                 <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
-                                <button className="btn-primary">Follow</button>
+                                <button className="btn-primary" onClick={() => handleFollowUser(data?.user?._id)}>
+                                    Follow
+                                </button>
                             </div>
 
                             <ul className="mt-2 grid grid-cols-3 gap-4">
