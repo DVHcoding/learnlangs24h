@@ -22,6 +22,7 @@ export interface UserDetailsType {
     createdAt: Date;
     followers: string[];
     following: string[];
+    friends: string[];
     level: number;
 }
 

@@ -3,7 +3,7 @@ import React from 'react';
 // #       IMPORT Npm
 // ##################################
 import { useParams } from 'react-router-dom';
-import { Progress, Empty } from 'antd';
+import { Progress, Empty, Button } from 'antd';
 import { Breadcrumb, Tabs, Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import CalendarHeatmap from 'react-calendar-heatmap';
@@ -22,6 +22,7 @@ import Achievement from '@assets/profiles/achievement.svg';
 import AchievementActive from '@assets/profiles/achievement-active.svg';
 import { useFollowUserMutation, useUserDetailsByNickNameQuery, useUserDetailsQuery } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
+import { APIResponse } from 'types/api-types';
 
 const onChange = (key: string) => {
     console.log(key);
@@ -78,7 +79,7 @@ const items: TabsProps['items'] = [
 const Profile: React.FC = () => {
     const { nickname } = useParams<string>();
 
-    // use RTK query to get userDetailsByNickName
+    // use RTK query to get userDetailsByNickName && userDetails
     const { data, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
 
@@ -117,8 +118,39 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
-    const handleFollowUser = (userId: string) => {
-        followUser({ userId });
+    const handleFollowUser: (userToFollowId: string, myUserData: APIResponse, userToFollow: APIResponse) => void = (
+        userToFollowId,
+        myUserData,
+        userToFollow
+    ) => {
+        const { following, friends } = myUserData.user;
+        const { _id: targetId } = userToFollow.user;
+        const isFollowing = following.includes(targetId);
+        const isFriend = friends.includes(targetId);
+
+        // Hủy kết bạn
+        if (isFriend) {
+            return;
+        }
+
+        // Hủy theo dõi
+        if (isFollowing) {
+            return;
+        }
+
+        // Theo dõi
+        return followUser({ userId: userToFollowId });
+    };
+
+    const getButtonLabel = (myUserData: APIResponse, userToFollow: APIResponse) => {
+        const { following, friends } = myUserData.user;
+        const { _id: targetId } = userToFollow.user;
+        const isFollowing = following.includes(targetId);
+        const isFriend = friends.includes(targetId);
+
+        if (isFriend) return 'Bạn bè';
+        if (isFollowing) return 'Đã theo dõi';
+        return 'Follow';
     };
 
     return (
@@ -152,14 +184,12 @@ const Profile: React.FC = () => {
                                 <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
                                 <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
-                                {dataUserDetails.user._id !== data.user._id && (
-                                    <button
-                                        className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
-                                        onClick={() => handleFollowUser(data?.user?._id)}
-                                    >
-                                        Follow
-                                    </button>
-                                )}
+                                <button
+                                    className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
+                                    onClick={() => handleFollowUser(data?.user?._id, dataUserDetails, data)}
+                                >
+                                    {getButtonLabel(dataUserDetails, data)}
+                                </button>
                             </div>
 
                             <ul className="mt-2 grid grid-cols-3 gap-4">
