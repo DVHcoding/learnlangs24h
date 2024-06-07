@@ -20,7 +20,8 @@ import AvatarFrame from '@assets/profiles/avatarFrame.png';
 import BannerIcon from '@assets/profiles/persional-header.svg';
 import Achievement from '@assets/profiles/achievement.svg';
 import AchievementActive from '@assets/profiles/achievement-active.svg';
-import { useUserDetailsByNickNameQuery } from '@store/api/userApi';
+import { useFollowUserMutation, useUserDetailsByNickNameQuery, useUserDetailsQuery } from '@store/api/userApi';
+import { useAsyncMutation } from '@hooks/hook';
 
 const onChange = (key: string) => {
     console.log(key);
@@ -79,6 +80,9 @@ const Profile: React.FC = () => {
 
     // use RTK query to get userDetailsByNickName
     const { data, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
+    const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
+
+    const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
 
     const values = [
         { date: '2024-05-08', count: 0 },
@@ -113,8 +117,8 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
-    const handleFollowUser: (userId: string) => void = (userId) => {
-        alert(userId);
+    const handleFollowUser = (userId: string) => {
+        followUser({ userId });
     };
 
     return (
@@ -136,7 +140,7 @@ const Profile: React.FC = () => {
                 />
             </div>
 
-            {data?.success && data.user && !isLoading ? (
+            {data?.success && data.user && dataUserDetails?.user && !isLoading && !dataUserDetailsLoading ? (
                 <div className="mt-2 h-full justify-between">
                     {/* Banner */}
                     <div
@@ -148,9 +152,14 @@ const Profile: React.FC = () => {
                                 <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
                                 <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
-                                <button className="btn-primary" onClick={() => handleFollowUser(data?.user?._id)}>
-                                    Follow
-                                </button>
+                                {dataUserDetails.user._id !== data.user._id && (
+                                    <button
+                                        className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
+                                        onClick={() => handleFollowUser(data?.user?._id)}
+                                    >
+                                        Follow
+                                    </button>
+                                )}
                             </div>
 
                             <ul className="mt-2 grid grid-cols-3 gap-4">

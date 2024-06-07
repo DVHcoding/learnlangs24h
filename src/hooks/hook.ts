@@ -6,30 +6,25 @@ import { useState } from 'react';
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { toastError, toastLoading, toastSuccess } from '@components/Toast/Toasts';
+import { toastError, toastSuccess } from '@components/Toast/Toasts';
 
-type MutationHook<T, U> = () => [(...args: U[]) => Promise<T>, unknown];
-
-const useAsyncMutation = <T, U>(mutationHook: MutationHook<T, U>) => {
+const useAsyncMutation = <TData, TVariables>(mutationHook: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [data, setData] = useState<T | null>(null);
+    const [data, setData] = useState<TData | null>(null);
 
     const [mutate] = mutationHook();
 
-    const executeMutation = async (toastMessage: string, ...args: U[]) => {
+    const executeMutation = async (variables: TVariables) => {
         setIsLoading(true);
 
-        // Your toastLoading function implementation goes here
-        toastLoading(toastMessage || 'Updating data...');
-
         try {
-            const res: any = await mutate(...args);
+            const response = await mutate(variables);
 
-            if ('error' in res) {
-                toastError('Something went wrong!');
+            if (response.data.success === false) {
+                toastError(response.data.message);
             } else {
-                toastSuccess(res?.data?.message);
-                setData(res.data);
+                toastSuccess(response.data?.message || 'Success');
+                setData(response.data);
             }
         } catch (error) {
             toastError('Something went wrong!');
@@ -38,7 +33,7 @@ const useAsyncMutation = <T, U>(mutationHook: MutationHook<T, U>) => {
         }
     };
 
-    return [executeMutation, isLoading, data];
+    return [executeMutation, isLoading, data] as const;
 };
 
 export { useAsyncMutation };

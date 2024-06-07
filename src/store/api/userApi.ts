@@ -17,7 +17,12 @@ export const userApi = createApi({
         },
         credentials: 'include',
     }),
-    tagTypes: ['User'],
+    tagTypes: ['User', 'Follow'],
+    /**
+     * TagTypes có tác dụng: Nếu call 1 api thì tất cả các api nào có cùng tagTypes sẽ bị gọi lại
+     * Nên Những cái k cần thiết gọi lại thì phải tạo ra một tagTypes riêng
+     */
+
     endpoints: (builder) => ({
         // UserDetails
         userDetails: builder.query<APIResponse, void>({
@@ -77,7 +82,7 @@ export const userApi = createApi({
                 method: 'POST',
                 body: { userId },
             }),
-            invalidatesTags: ['User'],
+            invalidatesTags: ['Follow'],
         }),
     }),
 });
