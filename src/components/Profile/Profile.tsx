@@ -80,7 +80,7 @@ const Profile: React.FC = () => {
     const { nickname } = useParams<string>();
 
     // use RTK query to get userDetailsByNickName && userDetails
-    const { data, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
+    const { data: dataUserByNickName, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
@@ -118,11 +118,7 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
-    const handleFollowUser: (userToFollowId: string, myUserData: APIResponse, userToFollow: APIResponse) => void = (
-        userToFollowId,
-        myUserData,
-        userToFollow
-    ) => {
+    const handleFollowUser: (myUserData: APIResponse, userToFollow: APIResponse) => void = (myUserData, userToFollow) => {
         const { following, friends } = myUserData.user;
         const { _id: targetId } = userToFollow.user;
         const isFollowing = following.includes(targetId);
@@ -139,7 +135,7 @@ const Profile: React.FC = () => {
         }
 
         // Theo dõi
-        return followUser({ userId: userToFollowId });
+        return followUser({ userId: targetId });
     };
 
     const getButtonLabel = (myUserData: APIResponse, userToFollow: APIResponse) => {
@@ -172,7 +168,7 @@ const Profile: React.FC = () => {
                 />
             </div>
 
-            {data?.success && data.user && dataUserDetails?.user && !isLoading && !dataUserDetailsLoading ? (
+            {dataUserByNickName?.success && dataUserByNickName.user && dataUserDetails?.user && !isLoading && !dataUserDetailsLoading ? (
                 <div className="mt-2 h-full justify-between">
                     {/* Banner */}
                     <div
@@ -182,31 +178,33 @@ const Profile: React.FC = () => {
                         <div className="ml-4 flex gap-4 phone:flex-col">
                             <div className="relative flex h-24 w-24 select-none flex-col gap-2 rounded-full phone:flex-row phone:items-center phone:gap-4">
                                 <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
-                                <img src={data?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
+                                <img src={dataUserByNickName?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
-                                <button
-                                    className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
-                                    onClick={() => handleFollowUser(data?.user?._id, dataUserDetails, data)}
-                                >
-                                    {getButtonLabel(dataUserDetails, data)}
-                                </button>
+                                {dataUserDetails.user._id !== dataUserByNickName.user._id && (
+                                    <button
+                                        className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
+                                        onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
+                                    >
+                                        {getButtonLabel(dataUserDetails, dataUserByNickName)}
+                                    </button>
+                                )}
                             </div>
 
                             <ul className="mt-2 grid grid-cols-3 gap-4">
                                 <div className="col-span-1 space-y-2">
                                     <li>
                                         <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
-                                            {data?.user?.username}
+                                            {dataUserByNickName?.user?.username}
                                         </h2>
                                     </li>
                                     <li>
                                         <h3 className="my-0.5 font-segoe leading-tight text-textCustom">
-                                            Follower: {data?.user?.followers?.length}
+                                            Follower: {dataUserByNickName?.user?.followers?.length}
                                         </h3>
                                     </li>
                                     <li>
                                         <span className="font-segoe text-base text-textCustom">
-                                            Join At: {dayjs(data?.user?.createdAt).format('DD/MM/YYYY')}
+                                            Join At: {dayjs(dataUserByNickName?.user?.createdAt).format('DD/MM/YYYY')}
                                         </span>
                                     </li>
                                 </div>
@@ -218,7 +216,7 @@ const Profile: React.FC = () => {
                                         </h2>
 
                                         <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
-                                            level {data?.user?.level}
+                                            level {dataUserByNickName?.user?.level}
                                         </h4>
                                     </li>
 
@@ -227,7 +225,9 @@ const Profile: React.FC = () => {
                                     </li>
 
                                     <li>
-                                        <span className="text-nowrap font-body text-base text-textCustom">Id: {data?.user?.nickname}</span>
+                                        <span className="text-nowrap font-body text-base text-textCustom">
+                                            Id: {dataUserByNickName?.user?.nickname}
+                                        </span>
                                     </li>
                                 </div>
                             </ul>
