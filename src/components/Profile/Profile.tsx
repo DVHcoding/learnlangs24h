@@ -139,12 +139,14 @@ const Profile: React.FC = () => {
     };
 
     const getButtonLabel = (myUserData: APIResponse, userToFollow: APIResponse) => {
-        const { following, friends } = myUserData.user;
+        const { _id: myUserId, following, friends } = myUserData.user;
         const { _id: targetId } = userToFollow.user;
         const isFollowing = following.includes(targetId);
+        const followed = userToFollow.user.following.includes(myUserId);
         const isFriend = friends.includes(targetId);
 
         if (isFriend) return 'Bạn bè';
+        if (followed) return 'Theo dõi lại';
         if (isFollowing) return 'Đã theo dõi';
         return 'Follow';
     };
