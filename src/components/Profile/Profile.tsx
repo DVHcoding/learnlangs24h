@@ -4,7 +4,7 @@ import React from 'react';
 // ##################################
 import { useParams } from 'react-router-dom';
 import { Progress, Empty } from 'antd';
-import { Breadcrumb, Tabs, Avatar } from 'antd';
+import { Breadcrumb, Tabs, Avatar, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import CalendarHeatmap from 'react-calendar-heatmap';
 import { UserOutlined } from '@ant-design/icons';
@@ -20,7 +20,13 @@ import AvatarFrame from '@assets/profiles/avatarFrame.png';
 import BannerIcon from '@assets/profiles/persional-header.svg';
 import Achievement from '@assets/profiles/achievement.svg';
 import AchievementActive from '@assets/profiles/achievement-active.svg';
-import { useAddFriendMutation, useFollowUserMutation, useUserDetailsByNickNameQuery, useUserDetailsQuery } from '@store/api/userApi';
+import {
+    useAddFriendMutation,
+    useFollowUserMutation,
+    useUnFriendMutation,
+    useUserDetailsByNickNameQuery,
+    useUserDetailsQuery,
+} from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
 import { APIResponse } from 'types/api-types';
 
@@ -85,6 +91,7 @@ const Profile: React.FC = () => {
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
     const [addFriend, addFriendLoading] = useAsyncMutation(useAddFriendMutation);
+    const [unFriend, unFriendLoading] = useAsyncMutation(useUnFriendMutation);
 
     const values = [
         { date: '2024-05-08', count: 0 },
@@ -126,22 +133,22 @@ const Profile: React.FC = () => {
         const isFriend = friends.includes(targetId);
         const followed = userToFollowing.includes(myUserId);
 
-        // Hủy kết bạn
+        // unFriend
         if (isFriend) {
-            return;
+            return unFriend({ userId: targetId });
         }
 
-        // Hủy theo dõi
+        // unFollow
         if (isFollowing) {
             return;
         }
 
-        // Ket ban
+        // addFriend
         if (followed) {
             return addFriend({ userId: targetId });
         }
 
-        // Theo dõi
+        // Follow
         return followUser({ userId: targetId });
     };
 
@@ -190,12 +197,14 @@ const Profile: React.FC = () => {
                                 <img src={dataUserByNickName?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
-                                    <button
-                                        className={`${followUserLoading || addFriendLoading ? 'btn-disabled' : 'btn-primary'}`}
+                                    <Button
+                                        type="primary"
+                                        loading={followUserLoading || addFriendLoading || unFriendLoading}
+                                        disabled={followUserLoading || addFriendLoading || unFriendLoading}
                                         onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
                                     >
                                         {getButtonLabel(dataUserDetails, dataUserByNickName)}
-                                    </button>
+                                    </Button>
                                 )}
                             </div>
 
