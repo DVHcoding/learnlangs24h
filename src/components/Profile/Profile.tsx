@@ -20,7 +20,7 @@ import AvatarFrame from '@assets/profiles/avatarFrame.png';
 import BannerIcon from '@assets/profiles/persional-header.svg';
 import Achievement from '@assets/profiles/achievement.svg';
 import AchievementActive from '@assets/profiles/achievement-active.svg';
-import { useFollowUserMutation, useUserDetailsByNickNameQuery, useUserDetailsQuery } from '@store/api/userApi';
+import { useAddFriendMutation, useFollowUserMutation, useUserDetailsByNickNameQuery, useUserDetailsQuery } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
 import { APIResponse } from 'types/api-types';
 
@@ -84,6 +84,7 @@ const Profile: React.FC = () => {
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
+    const [addFriend, addFriendLoading] = useAsyncMutation(useAddFriendMutation);
 
     const values = [
         { date: '2024-05-08', count: 0 },
@@ -137,6 +138,7 @@ const Profile: React.FC = () => {
 
         // Ket ban
         if (followed) {
+            return addFriend({ userId: targetId });
         }
 
         // Theo dõi
@@ -189,7 +191,7 @@ const Profile: React.FC = () => {
 
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
                                     <button
-                                        className={`${followUserLoading ? 'btn-disabled' : 'btn-primary'}`}
+                                        className={`${followUserLoading || addFriendLoading ? 'btn-disabled' : 'btn-primary'}`}
                                         onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
                                     >
                                         {getButtonLabel(dataUserDetails, dataUserByNickName)}
