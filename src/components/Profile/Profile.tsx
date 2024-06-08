@@ -167,6 +167,19 @@ const Profile: React.FC = () => {
         return 'Follow';
     };
 
+    const getButtonStyle = (myUserData: APIResponse, userToFollow: APIResponse) => {
+        const { _id: myUserId, following, friends } = myUserData.user;
+        const { _id: targetId } = userToFollow.user;
+        const isFollowing = following.includes(targetId);
+        const followed = userToFollow.user.following.includes(myUserId);
+        const isFriend = friends.includes(targetId);
+
+        if (isFriend) return 'bg-[#d8dadf]';
+        if (followed) return 'bg-[#0861f2] text-white border-none';
+        if (isFollowing) return 'bg-[#0861f2] text-white border-none';
+        return 'bg-[#0861f2] text-white border-none';
+    };
+
     return (
         <div className="h-full px-4 phone:p-1 ">
             {/* BreadCrumbs */}
@@ -200,7 +213,7 @@ const Profile: React.FC = () => {
 
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
                                     <Button
-                                        type="primary"
+                                        className={getButtonStyle(dataUserDetails, dataUserByNickName)}
                                         loading={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
                                         disabled={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
                                         onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
