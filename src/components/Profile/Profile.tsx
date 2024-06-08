@@ -23,6 +23,7 @@ import AchievementActive from '@assets/profiles/achievement-active.svg';
 import {
     useAddFriendMutation,
     useFollowUserMutation,
+    useUnFollowMutation,
     useUnFriendMutation,
     useUserDetailsByNickNameQuery,
     useUserDetailsQuery,
@@ -90,6 +91,7 @@ const Profile: React.FC = () => {
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
+    const [unFollow, unFollowLoading] = useAsyncMutation(useUnFollowMutation);
     const [addFriend, addFriendLoading] = useAsyncMutation(useAddFriendMutation);
     const [unFriend, unFriendLoading] = useAsyncMutation(useUnFriendMutation);
 
@@ -140,7 +142,7 @@ const Profile: React.FC = () => {
 
         // unFollow
         if (isFollowing) {
-            return;
+            return unFollow({ userId: targetId });
         }
 
         // addFriend
@@ -199,8 +201,8 @@ const Profile: React.FC = () => {
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
                                     <Button
                                         type="primary"
-                                        loading={followUserLoading || addFriendLoading || unFriendLoading}
-                                        disabled={followUserLoading || addFriendLoading || unFriendLoading}
+                                        loading={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
+                                        disabled={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
                                         onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
                                     >
                                         {getButtonLabel(dataUserDetails, dataUserByNickName)}
