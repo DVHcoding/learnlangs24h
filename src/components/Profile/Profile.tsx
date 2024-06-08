@@ -119,10 +119,11 @@ const Profile: React.FC = () => {
     ];
 
     const handleFollowUser: (myUserData: APIResponse, userToFollow: APIResponse) => void = (myUserData, userToFollow) => {
-        const { following, friends } = myUserData.user;
-        const { _id: targetId } = userToFollow.user;
+        const { _id: myUserId, following, friends } = myUserData.user;
+        const { _id: targetId, following: userToFollowing } = userToFollow.user;
         const isFollowing = following.includes(targetId);
         const isFriend = friends.includes(targetId);
+        const followed = userToFollowing.includes(myUserId);
 
         // Hủy kết bạn
         if (isFriend) {
@@ -132,6 +133,10 @@ const Profile: React.FC = () => {
         // Hủy theo dõi
         if (isFollowing) {
             return;
+        }
+
+        // Ket ban
+        if (followed) {
         }
 
         // Theo dõi

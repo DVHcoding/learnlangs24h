@@ -82,7 +82,17 @@ export const userApi = createApi({
                 method: 'POST',
                 body: { userId },
             }),
-            invalidatesTags: ['Follow'],
+            invalidatesTags: ['User'],
+        }),
+
+        // Add friend
+        addFriend: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'addFriend',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
         }),
     }),
 });
@@ -96,4 +106,5 @@ export const {
     useLogoutUserMutation,
 
     useFollowUserMutation,
+    useAddFriendMutation,
 } = userApi;
