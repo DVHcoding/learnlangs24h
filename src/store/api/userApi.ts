@@ -6,7 +6,14 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { MessageResponse, APIResponse, LoginGoogleType, LoginUserType, RegisterUserType } from 'types/api-types';
+import {
+    MessageResponse,
+    APIResponse,
+    LoginGoogleType,
+    LoginUserType,
+    RegisterUserType,
+    UserDetailsPopulateResponseType,
+} from 'types/api-types';
 
 export const userApi = createApi({
     reducerPath: 'userApi',
@@ -33,6 +40,12 @@ export const userApi = createApi({
         // UserDetails By NickName
         userDetailsByNickName: builder.query<APIResponse, string>({
             query: (nickname: string) => `profile/${nickname}`,
+            providesTags: ['User'],
+        }),
+
+        // UserDetailsPopulate
+        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, void>({
+            query: () => 'userDetailsPopulate',
             providesTags: ['User'],
         }),
 
@@ -120,6 +133,8 @@ export const userApi = createApi({
 export const {
     useUserDetailsQuery,
     useUserDetailsByNickNameQuery,
+    useUserDetailsPopulateQuery,
+
     useRegisterUserMutation,
     useLoginUserMutation,
     useLoginGoogleMutation,

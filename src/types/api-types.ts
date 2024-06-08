@@ -9,6 +9,48 @@ export interface APIResponse {
     user: UserDetailsType;
 }
 
+export interface UserDetailsPopulateResponseType {
+    success: boolean;
+    message?: string;
+    user: User;
+}
+
+export interface User {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    username: string;
+    email: string;
+    roles: string;
+    createdAt: Date;
+    __v: number;
+    nickname: string;
+    level: number;
+    followers: Follow[];
+    following: Follow[];
+    friends: string[];
+}
+
+export interface Follow {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    username: string;
+    email: string;
+    roles: string;
+    createdAt: Date;
+    __v: number;
+    nickname: string;
+    level: number;
+    followers: string[];
+    following: string[];
+    friends: string[];
+}
+
 export interface UserDetailsType {
     _id: string;
     nickname: string;
