@@ -94,6 +94,16 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        // UnFriend
+        unFriend: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'unFriend',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -107,4 +117,5 @@ export const {
 
     useFollowUserMutation,
     useAddFriendMutation,
+    useUnFriendMutation,
 } = userApi;
