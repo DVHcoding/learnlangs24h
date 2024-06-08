@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Fragment } from 'react';
 // ##################################
 // #       IMPORT Npm
 // ##################################
@@ -7,7 +7,6 @@ import { Progress, Empty } from 'antd';
 import { Breadcrumb, Tabs, Avatar, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import CalendarHeatmap from 'react-calendar-heatmap';
-import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import 'react-calendar-heatmap/dist/styles.css';
 
@@ -30,10 +29,6 @@ import {
 } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
 import { APIResponse, Follow } from 'types/api-types';
-
-const onChange = (key: string) => {
-    console.log(key);
-};
 
 // #########################################################################
 const Profile: React.FC = () => {
@@ -82,81 +77,80 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
-    const handleFollowUser: (myUserData: APIResponse, userToFollow: APIResponse) => void = (myUserData, userToFollow) => {
-        const { _id: myUserId, following, friends } = myUserData.user;
-        const { _id: targetId, following: userToFollowing } = userToFollow.user;
-        const isFollowing = following.includes(targetId);
-        const isFriend = friends.includes(targetId);
-        const followed = userToFollowing.includes(myUserId);
+    const handleUserAction: (currentUserData: APIResponse, targetUserData: APIResponse) => void = (currentUserData, targetUserData) => {
+        const { _id: currentUserId, following, friends } = currentUserData.user;
+        const { _id: targetUserId, following: targetUserFollowing } = targetUserData.user;
+        const isFollowing = following.includes(targetUserId);
+        const isFriend = friends.includes(targetUserId);
+        const isFollowedByTarget = targetUserFollowing.includes(currentUserId);
 
         // unFriend
         if (isFriend) {
-            return unFriend({ userId: targetId });
+            return unFriend({ userId: targetUserId });
         }
 
         // unFollow
         if (isFollowing) {
-            return unFollow({ userId: targetId });
+            return unFollow({ userId: targetUserId });
         }
 
         // addFriend
-        if (followed) {
-            return addFriend({ userId: targetId });
+        if (isFollowedByTarget) {
+            return addFriend({ userId: targetUserId });
         }
 
         // Follow
-        return followUser({ userId: targetId });
+        return followUser({ userId: targetUserId });
     };
 
-    const getButtonLabel = (myUserData: APIResponse, userToFollow: APIResponse) => {
-        const { _id: myUserId, following, friends } = myUserData.user;
-        const { _id: targetId } = userToFollow.user;
-        const isFollowing = following.includes(targetId);
-        const followed = userToFollow.user.following.includes(myUserId);
-        const isFriend = friends.includes(targetId);
+    const getActionButtonLabel = (currentUserData: APIResponse, targetUserData: APIResponse) => {
+        const { _id: currentUserId, following, friends } = currentUserData.user;
+        const { _id: targetUserId } = targetUserData.user;
+        const isFollowing = following.includes(targetUserId);
+        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId);
+        const isFriend = friends.includes(targetUserId);
 
         if (isFriend) return 'Bạn bè';
-        if (followed) return 'Theo dõi lại';
+        if (isFollowedByTarget) return 'Theo dõi lại';
         if (isFollowing) return 'Đã theo dõi';
-        return 'Follow';
+        return 'Theo dõi';
     };
 
-    const getButtonStyle = (myUserData: APIResponse, userToFollow: APIResponse) => {
-        const { _id: myUserId, following, friends } = myUserData.user;
-        const { _id: targetId } = userToFollow.user;
-        const isFollowing = following.includes(targetId);
-        const followed = userToFollow.user.following.includes(myUserId);
-        const isFriend = friends.includes(targetId);
+    const getActionButtonStyle = (currentUserData: APIResponse, targetUserData: APIResponse) => {
+        const { _id: currentUserId, following, friends } = currentUserData.user;
+        const { _id: targetUserId } = targetUserData.user;
+        const isFollowing = following.includes(targetUserId);
+        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId);
+        const isFriend = friends.includes(targetUserId);
 
         if (isFriend) return 'bg-[#d8dadf]';
-        if (followed) return 'bg-[#0861f2] text-white border-none';
+        if (isFollowedByTarget) return 'bg-[#0861f2] text-white border-none';
         if (isFollowing) return 'bg-[#0861f2] text-white border-none';
         return 'bg-[#0861f2] text-white border-none';
     };
 
-    const getButtonLabelTab = (myUserData: APIResponse, followingUserList: Follow) => {
-        const { _id: myUserId, following, friends } = myUserData.user;
-        const { _id: targetId } = followingUserList;
+    const getButtonLabelTab = (userData: APIResponse, targetUser: Follow) => {
+        const { _id: myUserId, following, friends } = userData.user;
+        const { _id: targetId } = targetUser;
         const isFollowing = following.includes(targetId);
-        const followed = followingUserList.following.includes(myUserId);
+        const isFollowedBack = targetUser.following.includes(myUserId);
         const isFriend = friends.includes(targetId);
 
-        if (isFriend) return 'Bạn bè';
-        if (followed) return 'Theo dõi lại';
-        if (isFollowing) return 'Đã theo dõi';
-        return 'Follow';
+        if (isFriend) return 'Bạn bè';
+        if (isFollowedBack) return 'Theo dõi lại';
+        if (isFollowing) return 'Đã theo dõi';
+        return 'Theo dõi';
     };
 
-    const getButtonStyleTab = (myUserData: APIResponse, followingUserList: Follow) => {
-        const { _id: myUserId, following, friends } = myUserData.user;
-        const { _id: targetId } = followingUserList;
+    const getButtonStyleTab = (userData: APIResponse, targetUser: Follow) => {
+        const { _id: myUserId, following, friends } = userData.user;
+        const { _id: targetId } = targetUser;
         const isFollowing = following.includes(targetId);
-        const followed = followingUserList.following.includes(myUserId);
+        const isFollowedBack = targetUser.following.includes(myUserId);
         const isFriend = friends.includes(targetId);
 
         if (isFriend) return 'bg-[#d8dadf]';
-        if (followed) return 'bg-[#0861f2] text-white border-none';
-        if (isFollowing) return 'bg-[#0861f2] text-white border-none';
+        if (isFollowedBack || isFollowing) return 'bg-[#0861f2] text-white border-none';
         return 'bg-[#0861f2] text-white border-none';
     };
 
@@ -193,12 +187,12 @@ const Profile: React.FC = () => {
 
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
                                     <Button
-                                        className={getButtonStyle(dataUserDetails, dataUserByNickName)}
+                                        className={getActionButtonStyle(dataUserDetails, dataUserByNickName)}
                                         loading={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
                                         disabled={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
-                                        onClick={() => handleFollowUser(dataUserDetails, dataUserByNickName)}
+                                        onClick={() => handleUserAction(dataUserDetails, dataUserByNickName)}
                                     >
-                                        {getButtonLabel(dataUserDetails, dataUserByNickName)}
+                                        {getActionButtonLabel(dataUserDetails, dataUserByNickName)}
                                     </Button>
                                 )}
                             </div>
@@ -411,28 +405,60 @@ const Profile: React.FC = () => {
                                         label: 'Người theo dõi',
                                         children: (
                                             <ul className="flex flex-col items-center gap-2">
-                                                <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2">
-                                                    <div className="flex items-center gap-2">
-                                                        <Avatar
-                                                            size={'large'}
-                                                            style={{ backgroundColor: '#87d068' }}
-                                                            icon={<UserOutlined />}
-                                                        />
-                                                        <div>
-                                                            <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
-                                                            <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
-                                                        </div>
-                                                    </div>
+                                                {!dataUserDetailsPopulateLoading &&
+                                                    dataUserDetailsPopulate?.user &&
+                                                    (() => {
+                                                        // Chuyển đổi danh sách following thành một tập hợp các _id
+                                                        const followingSet = new Set(
+                                                            dataUserDetailsPopulate.user.following.map(
+                                                                (followingUser: Follow) => followingUser._id
+                                                            )
+                                                        );
 
-                                                    <button className="btn-primary">Follow</button>
-                                                </li>
+                                                        return dataUserDetailsPopulate.user.followers.map((follower: Follow) => {
+                                                            // Kiểm tra nếu follower không có trong tập hợp following
+                                                            const isFollowing = followingSet.has(follower._id);
+
+                                                            return (
+                                                                !isFollowing && (
+                                                                    <Fragment key={follower._id}>
+                                                                        <li className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2">
+                                                                            <div className="flex items-center gap-2">
+                                                                                <Avatar
+                                                                                    size={'large'}
+                                                                                    style={{ backgroundColor: '#87d068' }}
+                                                                                    src={follower.photo?.url}
+                                                                                />
+                                                                                <div>
+                                                                                    <p className="font-segoe leading-tight text-textCustom">
+                                                                                        {follower.username}
+                                                                                    </p>
+                                                                                    <p className="mt-1 font-segoe leading-tight text-textCustom">
+                                                                                        {follower.nickname}
+                                                                                    </p>
+                                                                                </div>
+                                                                            </div>
+
+                                                                            <Button
+                                                                                className={`${getButtonStyleTab(
+                                                                                    dataUserDetails,
+                                                                                    follower
+                                                                                )}`}
+                                                                            >
+                                                                                {getButtonLabelTab(dataUserDetails, follower)}
+                                                                            </Button>
+                                                                        </li>
+                                                                    </Fragment>
+                                                                )
+                                                            );
+                                                        });
+                                                    })()}
 
                                                 <li className="font-segoe text-textCustom">loading...</li>
                                             </ul>
                                         ),
                                     },
                                 ]}
-                                onChange={onChange}
                             />
                         </div>
                     </div>
