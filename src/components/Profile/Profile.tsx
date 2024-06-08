@@ -10,7 +10,6 @@ import CalendarHeatmap from 'react-calendar-heatmap';
 import { UserOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import 'react-calendar-heatmap/dist/styles.css';
-import type { TabsProps } from 'antd';
 
 // ##################################
 // #       IMPORT Components
@@ -26,61 +25,15 @@ import {
     useUnFollowMutation,
     useUnFriendMutation,
     useUserDetailsByNickNameQuery,
+    useUserDetailsPopulateQuery,
     useUserDetailsQuery,
 } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
-import { APIResponse } from 'types/api-types';
+import { APIResponse, Follow } from 'types/api-types';
 
 const onChange = (key: string) => {
     console.log(key);
 };
-
-const items: TabsProps['items'] = [
-    {
-        key: '1',
-        label: 'Đang theo dõi',
-        children: (
-            <ul className="flex flex-col items-center gap-2">
-                {[...Array(6)].map((_item, index) => (
-                    <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2" key={index}>
-                        <div className="flex items-center gap-2">
-                            <Avatar size={'large'} style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-                            <div>
-                                <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
-                                <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
-                            </div>
-                        </div>
-
-                        <button className="btn-disabled">Followed</button>
-                    </li>
-                ))}
-                <li className="font-segoe text-textCustom">loading...</li>
-            </ul>
-        ),
-    },
-    {
-        key: '2',
-        label: 'Người theo dõi',
-        children: (
-            <ul className="flex flex-col items-center gap-2">
-                {[...Array(6)].map((_item, index) => (
-                    <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2" key={index}>
-                        <div className="flex items-center gap-2">
-                            <Avatar size={'large'} style={{ backgroundColor: '#87d068' }} icon={<UserOutlined />} />
-                            <div>
-                                <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
-                                <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
-                            </div>
-                        </div>
-
-                        <button className="btn-primary">Follow</button>
-                    </li>
-                ))}
-                <li className="font-segoe text-textCustom">loading...</li>
-            </ul>
-        ),
-    },
-];
 
 // #########################################################################
 const Profile: React.FC = () => {
@@ -89,6 +42,7 @@ const Profile: React.FC = () => {
     // use RTK query to get userDetailsByNickName && userDetails
     const { data: dataUserByNickName, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
+    const { data: dataUserDetailsPopulate, isLoading: dataUserDetailsPopulateLoading } = useUserDetailsPopulateQuery();
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
     const [unFollow, unFollowLoading] = useAsyncMutation(useUnFollowMutation);
@@ -172,6 +126,32 @@ const Profile: React.FC = () => {
         const { _id: targetId } = userToFollow.user;
         const isFollowing = following.includes(targetId);
         const followed = userToFollow.user.following.includes(myUserId);
+        const isFriend = friends.includes(targetId);
+
+        if (isFriend) return 'bg-[#d8dadf]';
+        if (followed) return 'bg-[#0861f2] text-white border-none';
+        if (isFollowing) return 'bg-[#0861f2] text-white border-none';
+        return 'bg-[#0861f2] text-white border-none';
+    };
+
+    const getButtonLabelTab = (myUserData: APIResponse, followingUserList: Follow) => {
+        const { _id: myUserId, following, friends } = myUserData.user;
+        const { _id: targetId } = followingUserList;
+        const isFollowing = following.includes(targetId);
+        const followed = followingUserList.following.includes(myUserId);
+        const isFriend = friends.includes(targetId);
+
+        if (isFriend) return 'Bạn bè';
+        if (followed) return 'Theo dõi lại';
+        if (isFollowing) return 'Đã theo dõi';
+        return 'Follow';
+    };
+
+    const getButtonStyleTab = (myUserData: APIResponse, followingUserList: Follow) => {
+        const { _id: myUserId, following, friends } = myUserData.user;
+        const { _id: targetId } = followingUserList;
+        const isFollowing = following.includes(targetId);
+        const followed = followingUserList.following.includes(myUserId);
         const isFriend = friends.includes(targetId);
 
         if (isFriend) return 'bg-[#d8dadf]';
@@ -385,7 +365,75 @@ const Profile: React.FC = () => {
                                     md:row-start-2 md:h-[14.6rem] xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
                             style={{ scrollbarWidth: 'none' }}
                         >
-                            <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+                            <Tabs
+                                defaultActiveKey="1"
+                                items={[
+                                    {
+                                        key: '1',
+                                        label: 'Đang theo dõi',
+                                        children: (
+                                            <ul className="flex flex-col items-center gap-2">
+                                                {!dataUserDetailsPopulateLoading &&
+                                                    dataUserDetailsPopulate?.user &&
+                                                    dataUserDetailsPopulate.user.following.map((user: Follow) => (
+                                                        <li
+                                                            className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2"
+                                                            key={user._id}
+                                                        >
+                                                            <div className="flex items-center gap-2">
+                                                                <Avatar
+                                                                    size={'large'}
+                                                                    style={{ backgroundColor: '#87d068' }}
+                                                                    src={user?.photo?.url}
+                                                                />
+                                                                <div>
+                                                                    <p className="font-segoe leading-tight text-textCustom">
+                                                                        {user.username}
+                                                                    </p>
+                                                                    <p className="mt-1 font-segoe leading-tight text-textCustom">
+                                                                        {user.nickname}
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+
+                                                            <Button className={`${getButtonStyleTab(dataUserDetails, user)}`}>
+                                                                {getButtonLabelTab(dataUserDetails, user)}
+                                                            </Button>
+                                                        </li>
+                                                    ))}
+
+                                                <li className="font-segoe text-textCustom">loading...</li>
+                                            </ul>
+                                        ),
+                                    },
+                                    {
+                                        key: '2',
+                                        label: 'Người theo dõi',
+                                        children: (
+                                            <ul className="flex flex-col items-center gap-2">
+                                                <li className="flex w-[90%] justify-between rounded-lg bg-bgCustom p-2">
+                                                    <div className="flex items-center gap-2">
+                                                        <Avatar
+                                                            size={'large'}
+                                                            style={{ backgroundColor: '#87d068' }}
+                                                            icon={<UserOutlined />}
+                                                        />
+                                                        <div>
+                                                            <p className="font-segoe leading-tight text-textCustom">Đỗ Hùng</p>
+                                                            <p className="mt-1 font-segoe leading-tight text-textCustom">@dohung1504</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <button className="btn-primary">Follow</button>
+                                                </li>
+
+                                                <li className="font-segoe text-textCustom">loading...</li>
+                                            </ul>
+                                        ),
+                                    },
+                                ]}
+                                onChange={onChange}
+                            />
                         </div>
                     </div>
                 </div>

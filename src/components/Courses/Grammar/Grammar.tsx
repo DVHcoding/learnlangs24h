@@ -24,6 +24,7 @@ import { useUserDetailsQuery } from '@store/api/userApi';
 import { AppDispatch } from '@store/store';
 import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
 import { toastError } from '@components/Toast/Toasts';
+import { GetUnitLessonIdByUserProcessResponseType } from 'types/types';
 
 // #########################################################################
 const Grammar: React.FC = () => {
@@ -57,54 +58,37 @@ const Grammar: React.FC = () => {
 
     useEffect(() => {
         const fetchData = async () => {
-            // Nếu vào bài học đầu tiên mà không có id của unitLesson trên URL thì điều hướng
-            if (!allUnitLessonLoading && allUnitLessonData?.success && !id) {
-                const firstUnitLessonId = allUnitLessonData?.unitLessons[0]._id;
+            if (allUnitLessonLoading || userDetailsLoading) return;
+            if (!allUnitLessonData?.success || !userDetailsData?.user) return;
 
-                try {
-                    if (!userDetailsLoading && userDetailsData?.user) {
-                        const userId = userDetailsData.user._id as string;
+            const userId = userDetailsData.user._id;
+            const unitLessonId = id || allUnitLessonData?.unitLessons[0]._id;
 
-                        // kiểm tra xem bài đầu tiên này đã có trong danh sách chưa
-                        const { data }: any = await axios.get(
-                            `/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${firstUnitLessonId}`
-                        );
+            try {
+                const { data }: { data: GetUnitLessonIdByUserProcessResponseType } = await axios.get(
+                    `/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${unitLessonId}`
+                );
 
-                        // Chưa có thì thêm vào (unlock bài đầu tiên)
-                        if (data.success === false) {
-                            await dispatch(createNewUserProcessStatus({ userId, unitLessonId: firstUnitLessonId }));
-                        }
+                if (data.success === false) {
+                    if (!id) {
+                        await dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
+                        navigate(`?id=${unitLessonId}`);
+                    } else {
+                        navigate('/notfound');
                     }
-
-                    return navigate(`?id=${firstUnitLessonId}`);
-                } catch (error) {
-                    toastError('Có lỗi xảy ra!');
+                } else if (!id) {
+                    navigate(`?id=${unitLessonId}`);
                 }
-            }
-
-            if (!allUnitLessonLoading && allUnitLessonData?.success && id) {
-                try {
-                    if (!userDetailsLoading && userDetailsData?.user) {
-                        const userId = userDetailsData.user._id as string;
-
-                        // kiểm tra xem bài đầu tiên này đã có trong danh sách chưa
-                        const { data }: any = await axios.get(`/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${id}`);
-
-                        // Chưa có thì thêm vào (unlock bài đầu tiên)
-                        if (data.success === false) {
-                            return navigate('/notfound');
-                        }
-                    }
-                } catch (error) {
-                    toastError('Có lỗi xảy ra!');
-                }
+            } catch (error) {
+                toastError('Có lỗi xảy ra!');
             }
         };
 
         fetchData();
-    }, [id, navigate, unitLessonData?.success, allUnitLessonData?.success]);
+    }, [id, navigate, allUnitLessonLoading, userDetailsLoading, allUnitLessonData?.success, userDetailsData?.user]);
 
     // ############################################
+
     return (
         <div>
             <div className="h-[85%] pl-4 phone:p-1 ">
