@@ -37,7 +37,9 @@ const Profile: React.FC = () => {
     // use RTK query to get userDetailsByNickName && userDetails
     const { data: dataUserByNickName, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
     const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
-    const { data: dataUserDetailsPopulate, isLoading: dataUserDetailsPopulateLoading } = useUserDetailsPopulateQuery();
+    const { data: dataUserDetailsPopulate, isLoading: dataUserDetailsPopulateLoading } = useUserDetailsPopulateQuery(
+        nickname || 'undefined'
+    );
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
     const [unFollow, unFollowLoading] = useAsyncMutation(useUnFollowMutation);
@@ -152,6 +154,32 @@ const Profile: React.FC = () => {
         if (isFriend) return 'bg-[#d8dadf]';
         if (isFollowedBack || isFollowing) return 'bg-[#0861f2] text-white border-none';
         return 'bg-[#0861f2] text-white border-none';
+    };
+
+    const handleTabUserAction = (currentUserData: APIResponse, targetUserData: Follow) => {
+        const { _id: currentUserId, following, friends } = currentUserData.user;
+        const { _id: targetUserId, following: targetUserFollowing } = targetUserData;
+        const isFollowing = following.includes(targetUserId);
+        const isFriend = friends.includes(targetUserId);
+        const isFollowedByTarget = targetUserFollowing.includes(currentUserId);
+
+        // unFriend
+        if (isFriend) {
+            return unFriend({ userId: targetUserId });
+        }
+
+        // unFollow
+        if (isFollowing) {
+            return unFollow({ userId: targetUserId });
+        }
+
+        // addFriend
+        if (isFollowedByTarget) {
+            return addFriend({ userId: targetUserId });
+        }
+
+        // Follow
+        return followUser({ userId: targetUserId });
     };
 
     return (
@@ -389,10 +417,26 @@ const Profile: React.FC = () => {
                                                                     </p>
                                                                 </div>
                                                             </div>
-
-                                                            <Button className={`${getButtonStyleTab(dataUserDetails, user)}`}>
-                                                                {getButtonLabelTab(dataUserDetails, user)}
-                                                            </Button>
+                                                            {dataUserDetails.user._id === dataUserDetailsPopulate.user._id && (
+                                                                <Button
+                                                                    className={`${getButtonStyleTab(dataUserDetails, user)}`}
+                                                                    onClick={() => handleTabUserAction(dataUserDetails, user)}
+                                                                    loading={
+                                                                        followUserLoading ||
+                                                                        unFollowLoading ||
+                                                                        addFriendLoading ||
+                                                                        unFriendLoading
+                                                                    }
+                                                                    disabled={
+                                                                        followUserLoading ||
+                                                                        unFollowLoading ||
+                                                                        addFriendLoading ||
+                                                                        unFriendLoading
+                                                                    }
+                                                                >
+                                                                    {getButtonLabelTab(dataUserDetails, user)}
+                                                                </Button>
+                                                            )}
                                                         </li>
                                                     ))}
 
@@ -439,14 +483,32 @@ const Profile: React.FC = () => {
                                                                                 </div>
                                                                             </div>
 
-                                                                            <Button
-                                                                                className={`${getButtonStyleTab(
-                                                                                    dataUserDetails,
-                                                                                    follower
-                                                                                )}`}
-                                                                            >
-                                                                                {getButtonLabelTab(dataUserDetails, follower)}
-                                                                            </Button>
+                                                                            {dataUserDetails.user._id ===
+                                                                                dataUserDetailsPopulate.user._id && (
+                                                                                <Button
+                                                                                    className={`${getButtonStyleTab(
+                                                                                        dataUserDetails,
+                                                                                        follower
+                                                                                    )}`}
+                                                                                    onClick={() =>
+                                                                                        handleTabUserAction(dataUserDetails, follower)
+                                                                                    }
+                                                                                    loading={
+                                                                                        followUserLoading ||
+                                                                                        unFollowLoading ||
+                                                                                        addFriendLoading ||
+                                                                                        unFriendLoading
+                                                                                    }
+                                                                                    disabled={
+                                                                                        followUserLoading ||
+                                                                                        unFollowLoading ||
+                                                                                        addFriendLoading ||
+                                                                                        unFriendLoading
+                                                                                    }
+                                                                                >
+                                                                                    {getButtonLabelTab(dataUserDetails, follower)}
+                                                                                </Button>
+                                                                            )}
                                                                         </li>
                                                                     </Fragment>
                                                                 )

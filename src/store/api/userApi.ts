@@ -39,13 +39,13 @@ export const userApi = createApi({
 
         // UserDetails By NickName
         userDetailsByNickName: builder.query<APIResponse, string>({
-            query: (nickname: string) => `profile/${nickname}`,
+            query: (nickname) => `profile/${nickname}`,
             providesTags: ['User'],
         }),
 
         // UserDetailsPopulate
-        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, void>({
-            query: () => 'userDetailsPopulate',
+        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, string>({
+            query: (nickname) => `userDetailsPopulate/${nickname}`,
             providesTags: ['User'],
         }),
 
