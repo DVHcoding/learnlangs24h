@@ -146,7 +146,7 @@ const Profile: React.FC = () => {
         const { _id: myUserId, following, friends } = userData.user;
         const { _id: targetId } = targetUser;
         const isFollowing = following.includes(targetId); // Nếu mình đã follow đối phương rồi
-        const isFollowedBack = targetUser.following.includes(myUserId);
+        const isFollowedBack = targetUser.following.includes(myUserId); // Nếu đối phương đã follow mình
         const isFriend = friends.includes(targetId);
 
         if (isFriend) return 'Bạn bè';
