@@ -158,7 +158,7 @@ const Profile: React.FC = () => {
     const getButtonStyleTab = (userData: APIResponse, targetUser: Follow) => {
         const { _id: myUserId, following, friends } = userData.user;
         const { _id: targetId } = targetUser;
-        const isFollowing = following.includes(targetId);
+        const isFollowing = following.includes(targetId); // Nếu đã theo dõi đối phương
         const isFollowedBack = targetUser.following.includes(myUserId);
         const isFriend = friends.includes(targetId);
 
