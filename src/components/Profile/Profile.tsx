@@ -132,9 +132,9 @@ const Profile: React.FC = () => {
     const getActionButtonStyle = (currentUserData: APIResponse, targetUserData: APIResponse) => {
         const { _id: currentUserId, following, friends } = currentUserData.user;
         const { _id: targetUserId } = targetUserData.user;
-        const isFollowing = following.includes(targetUserId);
-        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId);
-        const isFriend = friends.includes(targetUserId);
+        const isFollowing = following.includes(targetUserId); // Nếu mình đã follow đối phương rồi
+        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId); // Nếu đối phương đã follow mình rồi
+        const isFriend = friends.includes(targetUserId); // Nếu đã kết bạn
 
         if (isFriend) return 'bg-[#d8dadf]';
         if (isFollowedByTarget) return 'bg-[#0861f2] text-white border-none';
