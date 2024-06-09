@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useState } from 'react';
 // ##################################
 // #       IMPORT Npm
 // ##################################
@@ -29,17 +29,20 @@ import {
 } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/hook';
 import { APIResponse, Follow } from 'types/api-types';
+import { toastError } from '@components/Toast/Toasts';
 
 // #########################################################################
 const Profile: React.FC = () => {
     const { nickname } = useParams<string>();
 
-    // use RTK query to get userDetailsByNickName && userDetails
+    // use RTK query to get userDetailsByNickName && userDetails && userDetailsPopulate
     const { data: dataUserByNickName, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
-    const { data: dataUserDetails, isLoading: dataUserDetailsLoading } = useUserDetailsQuery();
-    const { data: dataUserDetailsPopulate, isLoading: dataUserDetailsPopulateLoading } = useUserDetailsPopulateQuery(
-        nickname || 'undefined'
-    );
+    const { data: dataUserDetails, isLoading: dataUserDetailsLoading, refetch: refetchUserDetails } = useUserDetailsQuery();
+    const {
+        data: dataUserDetailsPopulate,
+        isLoading: dataUserDetailsPopulateLoading,
+        refetch: refetchUserDetailsPopulate,
+    } = useUserDetailsPopulateQuery(nickname || 'undefined');
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
     const [unFollow, unFollowLoading] = useAsyncMutation(useUnFollowMutation);
@@ -79,6 +82,14 @@ const Profile: React.FC = () => {
         { date: '2024-06-25', count: 8 },
     ];
 
+    /* -------------------------------------------------------------------------- */
+    /*                              STATE MANAGEMENT                              */
+    /* -------------------------------------------------------------------------- */
+    const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+
+    /* -------------------------------------------------------------------------- */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* -------------------------------------------------------------------------- */
     const handleUserAction: (currentUserData: APIResponse, targetUserData: APIResponse) => void = (currentUserData, targetUserData) => {
         const { _id: currentUserId, following, friends } = currentUserData.user;
         const { _id: targetUserId, following: targetUserFollowing } = targetUserData.user;
@@ -156,30 +167,52 @@ const Profile: React.FC = () => {
         return 'bg-[#0861f2] text-white border-none';
     };
 
-    const handleTabUserAction = (currentUserData: APIResponse, targetUserData: Follow) => {
+    const handleTabUserAction = async (currentUserData: APIResponse, targetUserData: Follow) => {
         const { _id: currentUserId, following, friends } = currentUserData.user;
         const { _id: targetUserId, following: targetUserFollowing } = targetUserData;
         const isFollowing = following.includes(targetUserId);
         const isFriend = friends.includes(targetUserId);
         const isFollowedByTarget = targetUserFollowing.includes(currentUserId);
 
-        // unFriend
-        if (isFriend) {
-            return unFriend({ userId: targetUserId });
-        }
+        /**
+         * Ví dụ sử dụng Computed Property Names
+         *
+         * let userId = 'user123';
+         * let isLoading = true;
+         *
+         * let loadingStates = {
+         *   [userId]: isLoading
+         * };
+         *
+         * console.log(loadingStates); // Kết quả: { user123: true }
+         */
 
-        // unFollow
-        if (isFollowing) {
-            return unFollow({ userId: targetUserId });
-        }
+        setLoadingStates((prev) => ({ ...prev, [targetUserId]: true }));
 
-        // addFriend
-        if (isFollowedByTarget) {
-            return addFriend({ userId: targetUserId });
-        }
+        try {
+            switch (true) {
+                case isFriend:
+                    await unFriend({ userId: targetUserId });
+                    break;
+                case isFollowing:
+                    await unFollow({ userId: targetUserId });
+                    break;
+                case isFollowedByTarget:
+                    await addFriend({ userId: targetUserId });
+                    break;
+                default:
+                    await followUser({ userId: targetUserId });
+                    break;
+            }
 
-        // Follow
-        return followUser({ userId: targetUserId });
+            // Cập nhật lại dữ liệu sau khi thực hiện hành động
+            refetchUserDetails();
+            refetchUserDetailsPopulate();
+        } catch (error) {
+            toastError('Có lỗi xảy ra. Vui lòng thử lại sau!');
+        } finally {
+            setLoadingStates((prev) => ({ ...prev, [targetUserId]: false }));
+        }
     };
 
     return (
@@ -421,12 +454,7 @@ const Profile: React.FC = () => {
                                                                 <Button
                                                                     className={`${getButtonStyleTab(dataUserDetails, user)}`}
                                                                     onClick={() => handleTabUserAction(dataUserDetails, user)}
-                                                                    loading={
-                                                                        followUserLoading ||
-                                                                        unFollowLoading ||
-                                                                        addFriendLoading ||
-                                                                        unFriendLoading
-                                                                    }
+                                                                    loading={loadingStates[user._id]}
                                                                     disabled={
                                                                         followUserLoading ||
                                                                         unFollowLoading ||
@@ -493,12 +521,7 @@ const Profile: React.FC = () => {
                                                                                     onClick={() =>
                                                                                         handleTabUserAction(dataUserDetails, follower)
                                                                                     }
-                                                                                    loading={
-                                                                                        followUserLoading ||
-                                                                                        unFollowLoading ||
-                                                                                        addFriendLoading ||
-                                                                                        unFriendLoading
-                                                                                    }
+                                                                                    loading={loadingStates[follower._id]}
                                                                                     disabled={
                                                                                         followUserLoading ||
                                                                                         unFollowLoading ||
