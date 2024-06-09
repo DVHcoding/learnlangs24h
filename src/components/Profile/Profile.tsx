@@ -119,9 +119,9 @@ const Profile: React.FC = () => {
     const getActionButtonLabel = (currentUserData: APIResponse, targetUserData: APIResponse) => {
         const { _id: currentUserId, following, friends } = currentUserData.user;
         const { _id: targetUserId } = targetUserData.user;
-        const isFollowing = following.includes(targetUserId);
-        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId);
-        const isFriend = friends.includes(targetUserId);
+        const isFollowing = following.includes(targetUserId); // Nếu mình đã follow đối phương rồi
+        const isFollowedByTarget = targetUserData.user.following.includes(currentUserId); // Nếu đối phương đã follow mình
+        const isFriend = friends.includes(targetUserId); // Nếu đã kết bạn
 
         if (isFriend) return 'Bạn bè';
         if (isFollowedByTarget) return 'Theo dõi lại';
