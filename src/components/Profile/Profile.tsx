@@ -159,7 +159,7 @@ const Profile: React.FC = () => {
         const { _id: myUserId, following, friends } = userData.user;
         const { _id: targetId } = targetUser;
         const isFollowing = following.includes(targetId); // Nếu đã theo dõi đối phương
-        const isFollowedBack = targetUser.following.includes(myUserId);
+        const isFollowedBack = targetUser.following.includes(myUserId); // Nếu đối phương đã follow mình
         const isFriend = friends.includes(targetId);
 
         if (isFriend) return 'bg-[#d8dadf]';
