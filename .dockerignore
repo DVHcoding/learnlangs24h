@@ -1,0 +1,27 @@
+# Bỏ qua node_modules - thư mục này sẽ được cài đặt lại trong Docker image
+node_modules
+
+# Bỏ qua các file log
+*.log
+
+# Bỏ qua thư mục build/output
+dist
+build
+
+# Bỏ qua các file môi trường
+.env
+
+# Bỏ qua các file git
+.git
+.gitignore
+
+# Bỏ qua Dockerfile và các file Docker compose
+Dockerfile
+docker-compose.yml
+
+# Bỏ qua các thư mục IDE và hệ điều hành
+.vscode
+.idea
+*.swp
+.DS_Store
+Thumbs.db

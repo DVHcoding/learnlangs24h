@@ -23,10 +23,13 @@ export default defineConfig({
     server: {
         proxy: {
             '/api/v1': {
-                target: 'http://192.168.43.159:4000',
+                target: 'http://localhost:4000',
                 changeOrigin: true,
                 secure: false,
             },
         },
+        host: true,
+        strictPort: true,
+        port: 8080,
     },
 });
