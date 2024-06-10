@@ -4,7 +4,7 @@ import io, { Socket } from 'socket.io-client';
 interface SocketContextType {
     socket: Socket | null;
 }
-
+// Tạo một context mới để lưu dữ liệu
 const SocketContext = createContext<SocketContextType | undefined>(undefined);
 
 const useSocket = (): SocketContextType => {
