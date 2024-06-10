@@ -25,3 +25,16 @@ export const toastSuccess = (message: string) => {
         transition: Bounce,
     });
 };
+
+export const toastLoading = (message: string) => {
+    return toast.loading(message, {
+        position: `top-center`,
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'light',
+        transition: Bounce,
+    });
+};

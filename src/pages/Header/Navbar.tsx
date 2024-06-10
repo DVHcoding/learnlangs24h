@@ -132,7 +132,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Message */}
-                <Link to="/message" aria-label="Messages">
+                <Link to="/messages" aria-label="Messages">
                     <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
                 </Link>
 

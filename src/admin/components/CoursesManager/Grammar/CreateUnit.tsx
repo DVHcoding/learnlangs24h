@@ -54,104 +54,112 @@ const CreateUnit: React.FC<{
     // #      FUNCTION MANAGER     #
     // #############################
 
-    // Hàm tạo bài học mới và nội dung
+    //////////////////////////////////////////////////////////////////////////////////////
     const handleCreateNewUnitLesson = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         if (lectureType === '') {
-            toastError('Các trường không được bỏ trống!');
+            return toastError('Các trường không được bỏ trống!');
         }
+
+        const commonFields = [unitName, timeValue, icon, lessonId, courseId]; // Các trường chung cho mọi loại bài giảng
 
         if (lectureType === 'videoLecture') {
-            if (
-                unitName === '' ||
-                timeValue === '' ||
-                icon === '' ||
-                lessonId === '' ||
-                courseId === '' ||
-                videoUrl === '' ||
-                totalTime === '' ||
-                editorContent === ''
-            ) {
-                toastError('Các trường không được bỏ trống!');
+            const videoFields = [videoUrl, totalTime, editorContent]; // Các trường riêng cho bài giảng video
+            if (hasEmptyFields([...commonFields, ...videoFields])) {
+                // Kiểm tra nếu có bất kỳ trường nào trống
+                // Hiển thị thông báo lỗi nếu trống
+                return toastError('Các trường không được bỏ trống!');
             }
 
             if (data) {
-                try {
-                    await dispatch(
-                        createNewUnitLessonAndVideoLectureContent({
-                            title: unitName,
-                            time: timeValue,
-                            icon,
-                            lectureType,
-                            lesson: lessonId,
-                            course: courseId,
-                            videoUrl,
-                            description: editorContent,
-                            totalTime,
-                        })
-                    );
-                    setUnitName('');
-                    setTimeValue('');
-                    setIcon('');
-                    setLessonId('');
-                    setCourseId('');
-
-                    setVideoUrl('');
-                    setEditorContent('');
-                    setTotalTime('');
-
-                    // Reload lại bảng dữ liệu
-                    reloadData();
-                } catch (error) {
-                    return toastError(`${error}`);
-                }
+                await createVideoLecture();
             }
-        }
-
-        if (lectureType === 'exercise') {
-            if (
-                unitName === '' ||
-                timeValue === '' ||
-                icon === '' ||
-                lessonId === '' ||
-                courseId === '' ||
-                exerciseType === '' ||
-                questions.length === 0 ||
-                !questions
-            ) {
-                toastError('Các trường không được bỏ trống!');
+        } else if (lectureType === 'exercise') {
+            // Kiểm tra nếu có bất kỳ trường nào trống hoặc không có câu hỏi
+            if (hasEmptyFields([...commonFields, exerciseType]) || questions.length === 0) {
+                // Hiển thị thông báo lỗi nếu trống
+                return toastError('Các trường không được bỏ trống!');
             }
 
             if (data) {
-                try {
-                    await dispatch(
-                        createNewUnitLessonAndFillBlankExercise({
-                            title: unitName,
-                            time: timeValue,
-                            icon,
-                            lectureType,
-                            lesson: lessonId,
-                            course: courseId,
-                            questions,
-                        })
-                    );
-                    setUnitName('');
-                    setTimeValue('');
-                    setIcon('');
-                    setLessonId('');
-                    setCourseId('');
-
-                    setQuestions([]);
-
-                    // Reload lại bảng dữ liệu
-                    reloadData();
-                } catch (error) {
-                    return toastError(`${error}`);
-                }
+                await createExercise();
             }
         }
     };
+
+    // Hàm kiểm tra các trường trống
+    const hasEmptyFields = (fields: string[]) => {
+        // Trả về true nếu có bất kỳ trường nào trống
+        return fields.some((field) => field === '');
+    };
+
+    // Hàm tạo videoLecture
+    const createVideoLecture = async () => {
+        try {
+            await dispatch(
+                createNewUnitLessonAndVideoLectureContent({
+                    title: unitName,
+                    time: timeValue,
+                    icon,
+                    lectureType,
+                    lesson: lessonId,
+                    course: courseId,
+                    videoUrl,
+                    description: editorContent,
+                    totalTime,
+                })
+            );
+            resetVideoLectureFields();
+            reloadData();
+        } catch (error) {
+            toastError(`${error}`);
+        }
+    };
+
+    // Hàm tạo exercise
+    const createExercise = async () => {
+        try {
+            await dispatch(
+                createNewUnitLessonAndFillBlankExercise({
+                    title: unitName,
+                    time: timeValue,
+                    icon,
+                    lectureType,
+                    lesson: lessonId,
+                    course: courseId,
+                    questions,
+                })
+            );
+            resetExerciseFields();
+            reloadData();
+        } catch (error) {
+            toastError(`${error}`);
+        }
+    };
+
+    // Hàm reset state videoLectureFields
+    const resetVideoLectureFields = () => {
+        setUnitName('');
+        setTimeValue('');
+        setIcon('');
+        setLessonId('');
+        setCourseId('');
+        setVideoUrl('');
+        setEditorContent('');
+        setTotalTime('');
+    };
+
+    // Hàm reset state exerciseFields
+    const resetExerciseFields = () => {
+        setUnitName('');
+        setTimeValue('');
+        setIcon('');
+        setLessonId('');
+        setCourseId('');
+        setQuestions([]);
+    };
+    //////////////////////////////////////////////////////////////////////////////////////
 
     // # Hàm Thêm câu hỏi
     const handleAddQuestion: () => void = () => {

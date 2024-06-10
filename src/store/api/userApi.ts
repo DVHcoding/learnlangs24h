@@ -1,12 +1,19 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { MessageResponse, APIResponse, LoginGoogleType, LoginUserType, RegisterUserType } from 'types/api-types';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import {
+    MessageResponse,
+    APIResponse,
+    LoginGoogleType,
+    LoginUserType,
+    RegisterUserType,
+    UserDetailsPopulateResponseType,
+} from 'types/api-types';
 
 export const userApi = createApi({
     reducerPath: 'userApi',
@@ -17,11 +24,28 @@ export const userApi = createApi({
         },
         credentials: 'include',
     }),
-    tagTypes: ['User'],
+    tagTypes: ['User', 'Follow'],
+    /**
+     * TagTypes có tác dụng: Nếu call 1 api thì tất cả các api nào có cùng tagTypes sẽ bị gọi lại
+     * Nên Những cái k cần thiết gọi lại thì phải tạo ra một tagTypes riêng
+     */
+
     endpoints: (builder) => ({
         // UserDetails
         userDetails: builder.query<APIResponse, void>({
             query: () => 'me',
+            providesTags: ['User'],
+        }),
+
+        // UserDetails By NickName
+        userDetailsByNickName: builder.query<APIResponse, string>({
+            query: (nickname) => `profile/${nickname}`,
+            providesTags: ['User'],
+        }),
+
+        // UserDetailsPopulate
+        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, string>({
+            query: (nickname) => `userDetailsPopulate/${nickname}`,
             providesTags: ['User'],
         }),
 
@@ -63,8 +87,61 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        // Follow User
+        followUser: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'followUser',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
+
+        // UnFollow
+        unFollow: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'unFollow',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
+
+        // Add friend
+        addFriend: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'addFriend',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
+
+        // UnFriend
+        unFriend: builder.mutation<MessageResponse, { userId: string }>({
+            query: ({ userId }) => ({
+                url: 'unFriend',
+                method: 'POST',
+                body: { userId },
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
-export const { useUserDetailsQuery, useRegisterUserMutation, useLoginUserMutation, useLoginGoogleMutation, useLogoutUserMutation } =
-    userApi;
+export const {
+    useUserDetailsQuery,
+    useUserDetailsByNickNameQuery,
+    useUserDetailsPopulateQuery,
+
+    useRegisterUserMutation,
+    useLoginUserMutation,
+    useLoginGoogleMutation,
+    useLogoutUserMutation,
+
+    useFollowUserMutation,
+    useUnFollowMutation,
+    useAddFriendMutation,
+    useUnFriendMutation,
+} = userApi;

@@ -5,6 +5,7 @@ import { Drawer, Button, InlineEdit } from 'rsuite';
 import { useState } from 'react';
 import { UsersRound, Clock8, LibraryBig, CalendarDays, Trophy } from 'lucide-react';
 import StarIcon from '@mui/icons-material/Star';
+import { Breadcrumb } from 'antd';
 
 import dayjs from 'dayjs';
 import { Link } from 'react-router-dom';
@@ -12,8 +13,7 @@ import { Link } from 'react-router-dom';
 // ##################################
 // #       IMPORT Components
 // #################################
-import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
-import GrammarLessonCard from '@admin/AdminComponents/CoursesManager/Grammar/GrammarLessonCard';
+import GrammarLessonCard from '@admin/components/CoursesManager/Grammar/GrammarLessonCard';
 import { CourseType } from 'types/api-types';
 
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
@@ -26,8 +26,20 @@ const CoursesList: React.FC = () => {
     return (
         <div className="h-full px-4">
             {/* BreadCrumbs */}
-            <div>
-                <AdminBreadcrumbs pathNext="Courses" pathEnd="Courses List" />
+            <div className="mb-4">
+                <Breadcrumb
+                    items={[
+                        {
+                            title: <Link to="/admin">Dashboard</Link>,
+                        },
+                        {
+                            title: 'Course',
+                        },
+                        {
+                            title: 'Course List',
+                        },
+                    ]}
+                />
             </div>
 
             <div>

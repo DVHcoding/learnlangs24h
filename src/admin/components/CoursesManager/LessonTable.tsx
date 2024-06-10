@@ -1,7 +1,7 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import { Space, Table, Select, Input, Popconfirm, Popover, Button } from 'antd';
+import { Space, Table, Select, Input, Popconfirm, Popover, Button, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import type { TableProps } from 'antd';
@@ -12,12 +12,11 @@ import { Loader } from 'rsuite';
 // ##################################
 // #       IMPORT Components
 // ##################################
-import AdminBreadcrumbs from '@admin/AdminComponents/AdminBreadcrumbs/AdminBreadcrumbs';
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { RootState, AppDispatch } from '@store/store';
-import { createNewLesson, updateLesson } from '@store/reducer/courseReducer';
+import { createNewLesson, deleteLessonAndUnitLesson, updateLesson } from '@store/reducer/courseReducer';
 import { useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
 
 interface DataType {
@@ -74,6 +73,7 @@ const LessonTable: React.FC = () => {
 
         try {
             await dispatch(createNewLesson({ name: lessonName, courseId }));
+            refetch();
             setLessonName('');
             setCourseId('');
         } catch (error) {
@@ -87,9 +87,10 @@ const LessonTable: React.FC = () => {
     };
 
     // Hàm UpdateLesson
-    const handleUpdateLesson: (lessonId: string) => void = async (lessonId) => {
+    const handleUpdateLesson: (lessonId: string) => void = async (lessonId): Promise<void> => {
         if (!lessonId || name === '') {
             toastError('Vui lòng điền đủ thông tin!');
+            return;
         }
 
         try {
@@ -99,6 +100,21 @@ const LessonTable: React.FC = () => {
             refetch();
         } catch (error) {
             toastError('Có lỗi xảy ra!');
+        }
+    };
+
+    // Hàm xóa Lesson và UnitLesson
+    const handleDeleteLessonAndUnitLesson = async (lessonId: string): Promise<void> => {
+        if (!lessonId || lessonId === '') {
+            toastError('Không tìm thấy lesson Id');
+            return;
+        }
+
+        try {
+            await dispatch(deleteLessonAndUnitLesson(lessonId));
+            refetch();
+        } catch (error) {
+            toastError(`Có lỗi xảy ra!${error}`);
         }
     };
 
@@ -166,7 +182,7 @@ const LessonTable: React.FC = () => {
                         <p className="cursor-pointer transition-all hover:text-orange-400 hover:underline">Edit</p>
                     </Popover>
 
-                    <Popconfirm title="Sure to delete?" /*>onConfirm={() => }*/>
+                    <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteLessonAndUnitLesson(record.key)}>
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
                 </Space>
@@ -188,8 +204,20 @@ const LessonTable: React.FC = () => {
     return (
         <div className="h-full px-4">
             {/* BreadCrumbs */}
-            <div>
-                <AdminBreadcrumbs pathNext="Courses" pathEnd="Lesson Table" />
+            <div className="mb-4">
+                <Breadcrumb
+                    items={[
+                        {
+                            title: <Link to="/admin">Dashboard</Link>,
+                        },
+                        {
+                            title: <Link to="/admin/courses">Course List</Link>,
+                        },
+                        {
+                            title: 'Lesson Table',
+                        },
+                    ]}
+                />
             </div>
 
             <form onSubmit={handleSubmitNewLesson}>

@@ -6,7 +6,66 @@ export type MessageResponse = {
 export interface APIResponse {
     success: boolean;
     message?: string;
-    user: RegisterUserType;
+    user: UserDetailsType;
+}
+
+export interface UserDetailsPopulateResponseType {
+    success: boolean;
+    message?: string;
+    user: User;
+}
+
+export interface User {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    username: string;
+    email: string;
+    roles: string;
+    createdAt: Date;
+    __v: number;
+    nickname: string;
+    level: number;
+    followers: Follow[];
+    following: Follow[];
+    friends: string[];
+}
+
+export interface Follow {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    username: string;
+    email: string;
+    roles: string;
+    createdAt: Date;
+    __v: number;
+    nickname: string;
+    level: number;
+    followers: string[];
+    following: string[];
+    friends: string[];
+}
+
+export interface UserDetailsType {
+    _id: string;
+    nickname: string;
+    username: string;
+    email: string;
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    roles?: string;
+    createdAt: Date;
+    followers: string[];
+    following: string[];
+    friends: string[];
+    level: number;
 }
 
 export interface LoginUserType {
@@ -75,8 +134,8 @@ export interface NewUserProcessStatusPayloadType {
 }
 
 export interface UpdateLessonPayloadType {
-    lessonId:string,
-    lessonName: string,
+    lessonId: string;
+    lessonName: string;
 }
 
 export interface NewCourseStateType {

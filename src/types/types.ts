@@ -36,3 +36,16 @@ export interface Question {
     correctAnswers: string[];
     otherAnswers?: string[];
 }
+
+export interface UserProcessStatus {
+    userId: string;
+    unitLessonId: string;
+    status: 'unlock' | 'completed' | 'lock';
+    completedAt?: Date;
+}
+
+export interface GetUnitLessonIdByUserProcessResponseType {
+    success: boolean;
+    userProcessStatus?: UserProcessStatus;
+    message?: string;
+}

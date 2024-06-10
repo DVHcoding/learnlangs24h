@@ -35,6 +35,9 @@
       "@features/*": [
         "features/*"
       ],
+      "@hooks/*": [
+        "hooks/*"
+      ],
       "@services/*": [
         "services/*"
       ],

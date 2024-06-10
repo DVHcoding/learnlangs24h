@@ -25,6 +25,7 @@ module.exports = {
                 textCustomFeatures: 'var(--text-custom-features)',
                 textCustomName: 'var(--text-custom-name)',
                 textCustomGray: 'var(--text-custom-gray)',
+                textBlackGray: 'var(--text-black-gray)',
                 bdCustom: 'var(--border-custom)',
             },
         },

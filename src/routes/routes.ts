@@ -14,11 +14,12 @@ const Profile = loadable(() => import('@components/Profile/Profile'));
 /* -------------------------------------------------------------------------- */
 /*                               ADMIN COMPONENT                              */
 /* -------------------------------------------------------------------------- */
-const Dashboard = loadable(() => import('@admin/AdminComponents/Dashboard'));
-const CoursesList = loadable(() => import('@admin/AdminComponents/CoursesManager/CoursesList'));
-const LessonTable = loadable(() => import('@admin/AdminComponents/CoursesManager/LessonTable'));
-const UnitLesson = loadable(() => import('@admin/AdminComponents/CoursesManager/UnitLesson'));
-const GrammarManagement = loadable(() => import('@admin/AdminComponents/CoursesManager/Grammar/Update/Grammar'));
+const Dashboard = loadable(() => import('@admin/components/Dashboard'));
+const CoursesList = loadable(() => import('@admin/components/CoursesManager/CoursesList'));
+const LessonTable = loadable(() => import('@admin/components/CoursesManager/LessonTable'));
+const UnitLesson = loadable(() => import('@admin/components/CoursesManager/UnitLesson'));
+const GrammarManagement = loadable(() => import('@admin/components/CoursesManager/Grammar/Update/Grammar'));
+const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 
 interface PublicRouteType {
     path: string;
@@ -51,8 +52,12 @@ const protectedRoute: ProtectedRouteType[] = [
         component: Grammar,
     },
     {
-        path: '/profile/:id',
+        path: '/profile/:nickname',
         component: Profile,
+    },
+    {
+        path: '/messages',
+        component: Messenger,
     },
 ];
 
