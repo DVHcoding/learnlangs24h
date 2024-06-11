@@ -22,14 +22,16 @@ type Placement =
     | 'right-start'
     | 'right-end';
 
-const TippyProvider: React.FC<{
+interface PropsType {
     content: ReactNode;
     children: ReactElement;
     visible?: boolean;
     placement?: Placement;
     onClickOutside?: () => void;
     trigger?: 'click';
-}> = ({ content, children, ...props }) => {
+}
+
+const TippyProvider: React.FC<PropsType> = ({ content, children, ...props }) => {
     return (
         <Fragment>
             <Tippy

@@ -56,7 +56,7 @@ const protectedRoute: ProtectedRouteType[] = [
         component: Profile,
     },
     {
-        path: '/messages',
+        path: '/messages/:chatId',
         component: Messenger,
     },
 ];
