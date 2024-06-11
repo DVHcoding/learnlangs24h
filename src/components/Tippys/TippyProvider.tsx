@@ -28,6 +28,7 @@ const TippyProvider: React.FC<{
     visible?: boolean;
     placement?: Placement;
     onClickOutside?: () => void;
+    trigger?: 'click';
 }> = ({ content, children, ...props }) => {
     return (
         <Fragment>

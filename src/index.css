@@ -21,6 +21,19 @@
   .scrollbar::-webkit-scrollbar-thumb:hover {
     background: #8bbf64;
   }
+
+  .scrollbar-small::-webkit-scrollbar {
+    width: 3px;
+  }
+
+  .scrollbar-small::-webkit-scrollbar-track {
+    display: none;
+  }
+
+  .scrollbar-small::-webkit-scrollbar-thumb {
+    background: #e5e5e5;
+  }
+
 }
 
 * {
