@@ -24,13 +24,16 @@ export const userApi = createApi({
         },
         credentials: 'include',
     }),
-    tagTypes: ['User', 'Follow'],
+    tagTypes: ['User', 'Follow', 'Search'],
     /**
      * TagTypes có tác dụng: Nếu call 1 api thì tất cả các api nào có cùng tagTypes sẽ bị gọi lại
      * Nên Những cái k cần thiết gọi lại thì phải tạo ra một tagTypes riêng
      */
 
     endpoints: (builder) => ({
+        /* -------------------------------------------------------------------------- */
+        /*                                    QUERY                                   */
+        /* -------------------------------------------------------------------------- */
         // UserDetails
         userDetails: builder.query<APIResponse, void>({
             query: () => 'me',
@@ -49,6 +52,14 @@ export const userApi = createApi({
             providesTags: ['User'],
         }),
 
+        // SearchUser
+        searchUser: builder.query<APIResponse, string>({
+            query: (username) => `user?username=${username}`,
+            providesTags: ['Search'],
+        }),
+        /* -------------------------------------------------------------------------- */
+        /*                                  MUTATION                                  */
+        /* -------------------------------------------------------------------------- */
         // Register User
         registerUser: builder.mutation<APIResponse, RegisterUserType>({
             query: (registerUserInfo) => ({
@@ -134,6 +145,7 @@ export const {
     useUserDetailsQuery,
     useUserDetailsByNickNameQuery,
     useUserDetailsPopulateQuery,
+    useSearchUserQuery,
 
     useRegisterUserMutation,
     useLoginUserMutation,
