@@ -32,6 +32,10 @@ const TippyProfile: React.FC = () => {
     };
 
     return (
+        /* Using a wrapper <div> tag around the reference element solves
+         * this by creating a new parentNode context.
+         */
+
         <div>
             <TippyProvider
                 hideOnClick={false}
