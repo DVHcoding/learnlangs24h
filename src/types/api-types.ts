@@ -9,6 +9,12 @@ export interface APIResponse {
     user: UserDetailsType;
 }
 
+export interface SearchUsersResponseType {
+    success: boolean;
+    message?: string;
+    users: UserDetailsType[];
+}
+
 export interface UserDetailsPopulateResponseType {
     success: boolean;
     message?: string;

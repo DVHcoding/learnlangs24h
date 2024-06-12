@@ -1,6 +1,7 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
+import { useEffect, useState } from 'react';
 import { Avatar } from 'antd';
 import { IoMdSend } from 'react-icons/io';
 import { GoFileMedia } from 'react-icons/go';
@@ -12,17 +13,49 @@ import { GoArrowLeft } from 'react-icons/go';
 // #    IMPORT Components   #
 // ##########################
 import TippyProvider from '@components/Tippys/TippyProvider';
-import { useState } from 'react';
+import userDebounce from '@hooks/userDebounce';
+import axios from 'axios';
+import { SearchUsersResponseType, UserDetailsType } from 'types/api-types';
+import { Link } from 'react-router-dom';
 
-const Messenger = () => {
+const Messenger: React.FC = () => {
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
     /* -------------------------------------------------------------------------- */
     const [searchVisible, setSearchVisible] = useState(false);
+    const [inputValue, setInputValue] = useState<string>('');
+    const [friends, setFriends] = useState<UserDetailsType[]>([]);
 
+    // const { data: searchUserData, refetch: refetchSearchUser } = useSearchUserQuery('');
+    const debounced = userDebounce(inputValue, 500);
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
+
+    useEffect(() => {
+        if (!searchVisible || inputValue === '') {
+            setFriends([]);
+            return;
+        }
+
+        const refetch = async () => {
+            try {
+                const { data }: { data: SearchUsersResponseType } = await axios.get(
+                    `/api/v1/user?username=${encodeURIComponent(debounced)}`
+                );
+
+                if (data.users) {
+                    setFriends(data.users);
+                } else {
+                    setFriends([]);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        };
+
+        refetch();
+    }, [debounced]);
 
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -43,22 +76,20 @@ const Messenger = () => {
 
                         <TippyProvider
                             visible={searchVisible}
+                            placement="bottom"
                             onClickOutside={() => setSearchVisible(false)}
                             content={
-                                <ul className="scrollbar-small mr-16 mt-2 max-h-[34rem] w-[15rem] overflow-auto rounded-md shadow-md">
-                                    {[...Array(5)].map((_, index) => (
-                                        <li
-                                            className="flex cursor-pointer select-none items-center gap-2 p-3 hover:bg-bgHoverGrayDark"
-                                            key={index}
-                                        >
-                                            <Avatar
-                                                src={
-                                                    <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
-                                                }
-                                                size={35}
-                                            />
-                                            <h3 className="leading-tight text-textCustom">Đỗ Hùng</h3>
-                                        </li>
+                                <ul className="scrollbar-small mr-16 mt-2 max-h-[34rem] w-[15rem] overflow-auto rounded-md bg-bgCustom shadow-md">
+                                    {friends.map((friend: UserDetailsType) => (
+                                        <Link to={`/messages/${friend._id}`} key={friend._id} style={{ textDecoration: 'none' }}>
+                                            <li className="flex cursor-pointer select-none items-center gap-2 p-3 hover:bg-bgHoverGrayDark">
+                                                <Avatar
+                                                    src={friend.photo.url} // Assuming `photo.url` contains the URL for the avatar
+                                                    size={35}
+                                                />
+                                                <h3 className="leading-tight text-textCustom">{friend.username}</h3>
+                                            </li>
+                                        </Link>
                                     ))}
                                 </ul>
                             }
@@ -67,6 +98,8 @@ const Messenger = () => {
                                 type="text"
                                 className="w-full bg-transparent text-textCustom"
                                 placeholder="Tìm kiếm trên messenger"
+                                value={inputValue}
+                                onChange={(e) => setInputValue(e.target.value)}
                                 onClick={() => setSearchVisible(true)}
                             />
                         </TippyProvider>
