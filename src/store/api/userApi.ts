@@ -13,6 +13,7 @@ import {
     LoginUserType,
     RegisterUserType,
     UserDetailsPopulateResponseType,
+    SearchUsersResponseType,
 } from 'types/api-types';
 
 export const userApi = createApi({
@@ -53,7 +54,7 @@ export const userApi = createApi({
         }),
 
         // SearchUser
-        searchUser: builder.query<APIResponse, string>({
+        searchUser: builder.query<SearchUsersResponseType, string>({
             query: (username) => `user?username=${username}`,
             providesTags: ['Search'],
         }),
@@ -145,7 +146,7 @@ export const {
     useUserDetailsQuery,
     useUserDetailsByNickNameQuery,
     useUserDetailsPopulateQuery,
-    useSearchUserQuery,
+    useLazySearchUserQuery, // Sử dụng Lazy ta có thể thêm được trigger giúp linh động hơn
 
     useRegisterUserMutation,
     useLoginUserMutation,

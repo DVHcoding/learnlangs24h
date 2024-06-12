@@ -8,53 +8,48 @@ import { GoFileMedia } from 'react-icons/go';
 import { MdOutlineAddReaction } from 'react-icons/md';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
+import { Link } from 'react-router-dom';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
 import TippyProvider from '@components/Tippys/TippyProvider';
 import userDebounce from '@hooks/userDebounce';
-import axios from 'axios';
-import { SearchUsersResponseType, UserDetailsType } from 'types/api-types';
-import { Link } from 'react-router-dom';
+import { UserDetailsType } from 'types/api-types';
+import { useLazySearchUserQuery } from '@store/api/userApi';
+import { toastError } from '@components/Toast/Toasts';
 
 const Messenger: React.FC = () => {
+    const [searchUser] = useLazySearchUserQuery();
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
     /* -------------------------------------------------------------------------- */
     const [searchVisible, setSearchVisible] = useState(false);
-    const [inputValue, setInputValue] = useState<string>('');
+    const [searchInputValue, setSearchInputValue] = useState<string>('');
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
 
-    // const { data: searchUserData, refetch: refetchSearchUser } = useSearchUserQuery('');
-    const debounced = userDebounce(inputValue, 500);
+    const debounced = userDebounce(searchInputValue, 500);
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
 
     useEffect(() => {
-        if (!searchVisible || inputValue === '') {
+        if (!searchVisible || searchInputValue.trim() === '') {
             setFriends([]);
             return;
         }
 
-        const refetch = async () => {
-            try {
-                const { data }: { data: SearchUsersResponseType } = await axios.get(
-                    `/api/v1/user?username=${encodeURIComponent(debounced)}`
-                );
-
-                if (data.users) {
+        searchUser(encodeURIComponent(debounced))
+            .then(({ data }) => {
+                if (data?.users) {
                     setFriends(data.users);
                 } else {
                     setFriends([]);
                 }
-            } catch (error) {
-                console.log(error);
-            }
-        };
-
-        refetch();
+            })
+            .catch(() => {
+                toastError('Có lỗi xảy ra!');
+            });
     }, [debounced]);
 
     return (
@@ -77,7 +72,10 @@ const Messenger: React.FC = () => {
                         <TippyProvider
                             visible={searchVisible}
                             placement="bottom"
-                            onClickOutside={() => setSearchVisible(false)}
+                            onClickOutside={() => {
+                                setSearchVisible(false);
+                                setSearchInputValue('');
+                            }}
                             content={
                                 <ul className="scrollbar-small mr-16 mt-2 max-h-[34rem] w-[15rem] overflow-auto rounded-md bg-bgCustom shadow-md">
                                     {friends.map((friend: UserDetailsType) => (
@@ -98,8 +96,8 @@ const Messenger: React.FC = () => {
                                 type="text"
                                 className="w-full bg-transparent text-textCustom"
                                 placeholder="Tìm kiếm trên messenger"
-                                value={inputValue}
-                                onChange={(e) => setInputValue(e.target.value)}
+                                value={searchInputValue}
+                                onChange={(e) => setSearchInputValue(e.target.value)}
                                 onClick={() => setSearchVisible(true)}
                             />
                         </TippyProvider>
