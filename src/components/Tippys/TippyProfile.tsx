@@ -33,6 +33,7 @@ const TippyProfile: React.FC = () => {
 
     return (
         <TippyProvider
+            hideOnClick={false}
             content={
                 <div className="min-w-44 rounded-md border border-bdCustom bg-bgCustom p-4 shadow">
                     <div className="flex items-center gap-2">

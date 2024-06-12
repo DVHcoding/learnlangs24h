@@ -97,7 +97,8 @@ const Messenger: React.FC = () => {
                                 className="w-full bg-transparent text-textCustom"
                                 placeholder="Tìm kiếm trên messenger"
                                 value={searchInputValue}
-                                onChange={(e) => setSearchInputValue(e.target.value)}
+                                // trimStart() ngăn người dùng nhấn cách lần đầu
+                                onChange={(e) => setSearchInputValue(e.target.value.trimStart())}
                                 onClick={() => setSearchVisible(true)}
                             />
                         </TippyProvider>

@@ -28,6 +28,7 @@ interface PropsType {
     visible?: boolean;
     placement?: Placement;
     onClickOutside?: () => void;
+    hideOnClick?: boolean;
     trigger?: 'click';
 }
 
