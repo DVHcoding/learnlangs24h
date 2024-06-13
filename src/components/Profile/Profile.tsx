@@ -27,7 +27,7 @@ import {
     useUserDetailsPopulateQuery,
     useUserDetailsQuery,
 } from '@store/api/userApi';
-import { useAsyncMutation } from '@hooks/hook';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import { APIResponse, Follow } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 
