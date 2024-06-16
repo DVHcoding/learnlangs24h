@@ -24,7 +24,7 @@ export const courseApi = createApi({
             'Content-type': 'application/json',
         },
     }),
-    tagTypes: ['Course'],
+    tagTypes: ['Course', 'Lesson', 'UnitLesson', 'Exercise'],
     endpoints: (builder) => ({
         // getAllCourses
         getAllCourses: builder.query<AllCoursesResponseType, void>({
@@ -34,37 +34,37 @@ export const courseApi = createApi({
         // get All Lessons By Course Id
         getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | null>({
             query: (id: string) => `lessons/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['Lesson'],
         }),
         // get All Unit Lesson By Course Id
         getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string>({
             query: (id: string) => `unitLessons/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['UnitLesson'],
         }),
         // get All Unit Lesson By Lessons Id
         getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string>({
             query: (id: string) => `unitLessonsByLessonId/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['UnitLesson'],
         }),
         // get Unit Lesson By Id
         getUnitLessonById: builder.query<UnitLessonResponseType, string>({
             query: (id: string) => `unitLesson/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['UnitLesson'],
         }),
         // get Video Lecture Content
         getVideoLectureContent: builder.query<VideoLectureContentResponseType, string>({
             query: (id: string) => `videoLectureContent/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['Exercise'],
         }),
         // get Fill Blank Exercise
         getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string>({
             query: (id: string) => `fillBlankExercise/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['Exercise'],
         }),
         // get User Process Status + populate unitLessonStatus
         getUserProcessStatuses: builder.query<UserProcessStatusResponse, string>({
             query: (id: string) => `userProcessStatuses/${id}`,
-            providesTags: ['Course'],
+            providesTags: ['UnitLesson'],
         }),
     }),
 });
