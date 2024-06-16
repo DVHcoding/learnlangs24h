@@ -42,6 +42,7 @@ export const chatApi = createApi({
                 method: 'POST',
                 body: { name, members },
             }),
+            invalidatesTags: ['Chat'],
         }),
         getChatById: builder.mutation<{ success: boolean; chatId: string }, { _id: string; name: string; members: string }>({
             query: ({ _id, name, members }) => ({
@@ -49,6 +50,8 @@ export const chatApi = createApi({
                 method: 'POST',
                 body: { name, members },
             }),
+
+            invalidatesTags: ['Chat'],
         }),
     }),
 });
