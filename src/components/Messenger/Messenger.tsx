@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Avatar } from 'antd';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 // ##########################
 // #    IMPORT Components   #
@@ -22,6 +22,7 @@ import { useAsyncMutation } from '@hooks/useAsyncMutation';
 
 const Messenger: React.FC = () => {
     const navigate = useNavigate();
+    const { chatId } = useParams<string>();
 
     const [searchUser] = useLazySearchUserQuery();
     // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
@@ -148,18 +149,24 @@ const Messenger: React.FC = () => {
                 {!searchVisible && !myChatsLoading && (
                     <ul>
                         {myChats?.chats.map((chat: Chat) => (
-                            <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={chat._id}>
-                                <Avatar.Group>
-                                    {chat.avatar.map((avatar, index: number) => (
-                                        <Avatar src={avatar} size={45} key={index} />
-                                    ))}
-                                </Avatar.Group>
+                            <Link to={`/messages/${chat._id}`} key={chat._id} style={{ textDecoration: 'none' }}>
+                                <li
+                                    className={`flex cursor-pointer items-center gap-3 rounded-md ${
+                                        chatId === chat._id ? 'bg-bgHoverGrayDark' : ''
+                                    } hover:bg-bgHoverGrayDark`}
+                                >
+                                    <Avatar.Group>
+                                        {chat.avatar.map((avatar, index: number) => (
+                                            <Avatar src={avatar} size={45} key={index} />
+                                        ))}
+                                    </Avatar.Group>
 
-                                <div className="flex-1 select-none py-2">
-                                    <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
-                                    <p className="text-textBlackGray">This is a example text</p>
-                                </div>
-                            </li>
+                                    <div className="flex-1 select-none py-2">
+                                        <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
+                                        <p className="text-textBlackGray">This is a example text</p>
+                                    </div>
+                                </li>
+                            </Link>
                         ))}
                     </ul>
                 )}
