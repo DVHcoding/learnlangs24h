@@ -8,6 +8,7 @@ import { configureStore } from '@reduxjs/toolkit';
 // ##########################
 import { userApi } from './api/userApi';
 import { courseApi } from './api/courseApi';
+import { chatApi } from './api/chatApi';
 import {
     newCourseReducer,
     newLessonReducer,
@@ -30,6 +31,7 @@ export const store = configureStore({
     reducer: {
         [userApi.reducerPath]: userApi.reducer,
         [courseApi.reducerPath]: courseApi.reducer,
+        [chatApi.reducerPath]: chatApi.reducer,
 
         newCourse: newCourseReducer,
         newLesson: newLessonReducer,

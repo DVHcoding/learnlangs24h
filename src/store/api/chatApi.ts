@@ -1,0 +1,42 @@
+// ##########################
+// #      IMPORT NPM        #
+// ##########################
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { MyChatResponse } from 'types/api-types';
+
+// ##########################
+// #    IMPORT Components   #
+// ##########################
+
+export const chatApi = createApi({
+    reducerPath: 'chatApi',
+    baseQuery: fetchBaseQuery({
+        baseUrl: '/api/v1/',
+        headers: {
+            'Content-type': 'application/json',
+        },
+        credentials: 'include',
+    }),
+    tagTypes: ['Chat'],
+    /**
+     * TagTypes có tác dụng: Nếu call 1 api thì tất cả các api nào có cùng tagTypes sẽ bị gọi lại
+     * Nên Những cái k cần thiết gọi lại thì phải tạo ra một tagTypes riêng
+     */
+
+    endpoints: (builder) => ({
+        /* -------------------------------------------------------------------------- */
+        /*                                    QUERY                                   */
+        /* -------------------------------------------------------------------------- */
+        // getMyChats
+        getMyChats: builder.query<MyChatResponse, void>({
+            query: () => '/chat/my',
+            providesTags: ['Chat'],
+        }),
+
+        /* -------------------------------------------------------------------------- */
+        /*                                  MUTATION                                  */
+        /* -------------------------------------------------------------------------- */
+    }),
+});
+
+export const { useGetMyChatsQuery } = chatApi;

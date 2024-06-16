@@ -9,6 +9,19 @@ export interface APIResponse {
     user: UserDetailsType;
 }
 
+export interface MyChatResponse {
+    success: boolean;
+    chats: Chat[];
+}
+
+export interface Chat {
+    _id: string;
+    groupChat: boolean;
+    avatar: string[];
+    name: string;
+    members: string[];
+}
+
 export interface SearchUsersResponseType {
     success: boolean;
     message?: string;
