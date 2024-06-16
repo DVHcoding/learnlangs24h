@@ -6,6 +6,11 @@ export interface UserType {
     _id: string;
 }
 
+export interface GetChatByIdResponse {
+    success: boolean;
+    chatId: string;
+}
+
 export interface LessonsType {
     id: number;
     title: string;

@@ -19,6 +19,7 @@ import ChatContent from '@components/Messenger/ChatContent';
 import { useGetChatByIdMutation, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { GetChatByIdResponse } from 'types/types';
 
 const Messenger: React.FC = () => {
     const navigate = useNavigate();
@@ -27,11 +28,8 @@ const Messenger: React.FC = () => {
     const [searchUser] = useLazySearchUserQuery();
     // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
-    interface ChatData {
-        success: boolean;
-        chatId: string;
-    }
-    const [getChatById, isLoading, data] = useAsyncMutation<ChatData, { _id: string; name: string; members: string[] }>(
+
+    const [getChatById, isLoading, data] = useAsyncMutation<GetChatByIdResponse, { _id: string; name: string; members: string[] }>(
         useGetChatByIdMutation
     );
 
