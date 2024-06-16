@@ -2,7 +2,7 @@
 // #      IMPORT NPM        #
 // ##########################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { MyChatResponse } from 'types/api-types';
+import { MessageResponse, MyChatResponse } from 'types/api-types';
 
 // ##########################
 // #    IMPORT Components   #
@@ -36,7 +36,14 @@ export const chatApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
+        newGroup: builder.mutation<MessageResponse, { name: string; members: string[] }>({
+            query: ({ name, members }) => ({
+                url: '/chat/new',
+                method: 'POST',
+                body: { name, members },
+            }),
+        }),
     }),
 });
 
-export const { useGetMyChatsQuery } = chatApi;
+export const { useGetMyChatsQuery, useNewGroupMutation } = chatApi;
