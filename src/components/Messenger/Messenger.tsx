@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Avatar } from 'antd';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 // ##########################
 // #    IMPORT Components   #
@@ -16,14 +16,23 @@ import { Chat, UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
 import ChatContent from '@components/Messenger/ChatContent';
-// import { useAsyncMutation } from '@hooks/useAsyncMutation';
-import { useGetMyChatsQuery /*useNewGroupMutation*/ } from '@store/api/chatApi';
+import { useGetChatByIdMutation, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
 
 const Messenger: React.FC = () => {
+    const navigate = useNavigate();
+
     const [searchUser] = useLazySearchUserQuery();
     // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
+    interface ChatData {
+        success: boolean;
+        chatId: string;
+    }
+    const [getChatById, isLoading, data] = useAsyncMutation<ChatData, { _id: string; name: string; members: string[] }>(
+        useGetChatByIdMutation
+    );
 
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
@@ -65,6 +74,25 @@ const Messenger: React.FC = () => {
             });
     }, [debounced]);
 
+    const handleRedirectChatId = async (userId: string) => {
+        if (isLoading) {
+            return;
+        }
+
+        getChatById({ _id: userId, name: 'New chat', members: [userId] });
+
+        if (data) {
+            navigate(`/messages/${data?.chatId}`);
+        }
+
+        handleCloseSearch();
+    };
+
+    const handleCloseSearch = () => {
+        setSearchVisible(false);
+        setSearchInputValue('');
+    };
+
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
@@ -85,22 +113,21 @@ const Messenger: React.FC = () => {
                         <TippyProvider
                             visible={searchVisible}
                             placement="bottom"
-                            onClickOutside={() => {
-                                setSearchVisible(false);
-                                setSearchInputValue('');
-                            }}
+                            onClickOutside={handleCloseSearch}
                             content={
                                 <ul className="scrollbar-small mr-16 mt-2 max-h-[34rem] w-[15rem] overflow-auto rounded-md bg-bgCustom shadow-md">
                                     {friends.map((friend: UserDetailsType) => (
-                                        <Link to={`/messages/${friend._id}`} key={friend._id} style={{ textDecoration: 'none' }}>
-                                            <li className="flex cursor-pointer select-none items-center gap-2 p-3 hover:bg-bgHoverGrayDark">
-                                                <Avatar
-                                                    src={friend.photo.url} // Assuming `photo.url` contains the URL for the avatar
-                                                    size={35}
-                                                />
-                                                <h3 className="leading-tight text-textCustom">{friend.username}</h3>
-                                            </li>
-                                        </Link>
+                                        <li
+                                            className="flex cursor-pointer select-none items-center gap-2 p-3 hover:bg-bgHoverGrayDark"
+                                            key={friend._id}
+                                            onClick={() => handleRedirectChatId(friend._id)}
+                                        >
+                                            <Avatar
+                                                src={friend.photo.url} // Assuming `photo.url` contains the URL for the avatar
+                                                size={35}
+                                            />
+                                            <h3 className="leading-tight text-textCustom">{friend.username}</h3>
+                                        </li>
                                     ))}
                                 </ul>
                             }
@@ -123,8 +150,8 @@ const Messenger: React.FC = () => {
                         {myChats?.chats.map((chat: Chat) => (
                             <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={chat._id}>
                                 <Avatar.Group>
-                                    {chat.avatar.map((avatar) => (
-                                        <Avatar src={avatar} size={45} />
+                                    {chat.avatar.map((avatar, index: number) => (
+                                        <Avatar src={avatar} size={45} key={index} />
                                     ))}
                                 </Avatar.Group>
 

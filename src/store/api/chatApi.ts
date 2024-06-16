@@ -43,7 +43,14 @@ export const chatApi = createApi({
                 body: { name, members },
             }),
         }),
+        getChatById: builder.mutation<{ success: boolean; chatId: string }, { _id: string; name: string; members: string }>({
+            query: ({ _id, name, members }) => ({
+                url: `/chat/${_id}`,
+                method: 'POST',
+                body: { name, members },
+            }),
+        }),
     }),
 });
 
-export const { useGetMyChatsQuery, useNewGroupMutation } = chatApi;
+export const { useGetMyChatsQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;
