@@ -48,7 +48,7 @@ export const store = configureStore({
         deleteUnitLessonAndFillBlankExercise: deleteUnitLessonAndFillBlankExerciseReducer,
         deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
     },
-    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware),
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware, chatApi.middleware),
 });
 
 export type RootState = ReturnType<typeof store.getState>;

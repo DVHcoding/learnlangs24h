@@ -12,13 +12,19 @@ import { Link } from 'react-router-dom';
 // ##########################
 import TippyProvider from '@components/Tippys/TippyProvider';
 import userDebounce from '@hooks/userDebounce';
-import { UserDetailsType } from 'types/api-types';
+import { Chat, UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
 import ChatContent from '@components/Messenger/ChatContent';
+// import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { useGetMyChatsQuery /*useNewGroupMutation*/ } from '@store/api/chatApi';
+import useErrors from '@hooks/useErrors';
 
 const Messenger: React.FC = () => {
     const [searchUser] = useLazySearchUserQuery();
+    // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
+    const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
+
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
     /* -------------------------------------------------------------------------- */
@@ -30,6 +36,15 @@ const Messenger: React.FC = () => {
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
+
+    const errors = [
+        {
+            isError: myChatsIsError,
+            error: myChatsError,
+        },
+    ];
+
+    useErrors(errors);
 
     useEffect(() => {
         if (!searchVisible || searchInputValue.trim() === '') {
@@ -103,18 +118,18 @@ const Messenger: React.FC = () => {
                     </div>
                 </div>
 
-                {!searchVisible && (
+                {!searchVisible && !myChatsLoading && (
                     <ul>
-                        {[...Array(3)].map((_, index) => (
-                            <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={index}>
-                                <Avatar
-                                    src={
-                                        <img src="https://scontent.fhan9-1.fna.fbcdn.net/v/t39.30808-6/244973891_417649256379152_4439076445066100352_n.jpg?_nc_cat=100&ccb=1-7&_nc_sid=5f2048&_nc_ohc=U5vLLmMfJkkQ7kNvgEzlYAc&_nc_ht=scontent.fhan9-1.fna&oh=00_AYAMOIcI4lAoI6LHgXms9eqNqF_qOmQA88RX8lEuPwlc9w&oe=6660EA3F" />
-                                    }
-                                    size={45}
-                                />
+                        {myChats?.chats.map((chat: Chat) => (
+                            <li className="flex cursor-pointer items-center gap-3 rounded-md hover:bg-bgHoverGrayDark" key={chat._id}>
+                                <Avatar.Group>
+                                    {chat.avatar.map((avatar) => (
+                                        <Avatar src={avatar} size={45} />
+                                    ))}
+                                </Avatar.Group>
+
                                 <div className="flex-1 select-none py-2">
-                                    <h3 className="font-semibold leading-tight text-textCustom">Đỗ Hùng</h3>
+                                    <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
                                     <p className="text-textBlackGray">This is a example text</p>
                                 </div>
                             </li>
