@@ -18,8 +18,6 @@ import { toastError } from '@components/Toast/Toasts';
 import ChatContent from '@components/Messenger/ChatContent';
 import { useGetChatByIdMutation, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
-import { useAsyncMutation } from '@hooks/useAsyncMutation';
-import { GetChatByIdResponse } from 'types/types';
 
 const Messenger: React.FC = () => {
     const navigate = useNavigate();
@@ -29,9 +27,7 @@ const Messenger: React.FC = () => {
     // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
 
-    const [getChatById, isLoading, data] = useAsyncMutation<GetChatByIdResponse, { _id: string; name: string; members: string[] }>(
-        useGetChatByIdMutation
-    );
+    const [getChatById] = useGetChatByIdMutation();
 
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
@@ -74,17 +70,26 @@ const Messenger: React.FC = () => {
     }, [debounced]);
 
     const handleRedirectChatId = async (userId: string) => {
-        if (isLoading) {
-            return;
+        try {
+            const response = await getChatById({ _id: userId, name: 'New chat', members: [userId] });
+
+            if ('error' in response) {
+                toastError(`${response.error}`);
+                return;
+            }
+
+            const { success, chatId } = response.data;
+
+            if (success) {
+                navigate(`/messages/${chatId}`);
+            } else {
+                toastError('Something went wrong!');
+            }
+        } catch (error) {
+            toastError('An unexpected error occurred.');
+        } finally {
+            handleCloseSearch();
         }
-
-        getChatById({ _id: userId, name: 'New chat', members: [userId] });
-
-        if (data) {
-            navigate(`/messages/${data?.chatId}`);
-        }
-
-        handleCloseSearch();
     };
 
     const handleCloseSearch = () => {

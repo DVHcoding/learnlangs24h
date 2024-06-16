@@ -2,7 +2,7 @@
 // #      IMPORT NPM        #
 // ##########################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { MessageResponse, MyChatResponse } from 'types/api-types';
+import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
 // ##########################
 // #    IMPORT Components   #
@@ -36,7 +36,7 @@ export const chatApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
-        newGroup: builder.mutation<MessageResponse, { name: string; members: string[] }>({
+        newGroup: builder.mutation<MessageResponse, NewGroupRequest>({
             query: ({ name, members }) => ({
                 url: '/chat/new',
                 method: 'POST',
@@ -44,7 +44,7 @@ export const chatApi = createApi({
             }),
             invalidatesTags: ['Chat'],
         }),
-        getChatById: builder.mutation<{ success: boolean; chatId: string }, { _id: string; name: string; members: string }>({
+        getChatById: builder.mutation<GetChatByIdResponse, GetChatByIdRequest>({
             query: ({ _id, name, members }) => ({
                 url: `/chat/${_id}`,
                 method: 'POST',

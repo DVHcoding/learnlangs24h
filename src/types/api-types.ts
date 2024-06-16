@@ -22,6 +22,22 @@ export interface Chat {
     members: string[];
 }
 
+export interface NewGroupRequest {
+    name: string;
+    members: string[];
+}
+
+export interface GetChatByIdResponse {
+    success: boolean;
+    chatId: string;
+}
+
+export interface GetChatByIdRequest {
+    _id: string;
+    name: string;
+    members: string[];
+}
+
 export interface SearchUsersResponseType {
     success: boolean;
     message?: string;
