@@ -23,7 +23,9 @@ const useAsyncMutation = <TData, TVariables>(mutationHook: any) => {
             if (response.data.success === false) {
                 toastError(response.data.message);
             } else {
-                toastSuccess(response.data?.message || 'Success');
+                if (response.data.message) {
+                    toastSuccess(response.data?.message || 'Success');
+                }
                 setData(response.data);
             }
         } catch (error) {
