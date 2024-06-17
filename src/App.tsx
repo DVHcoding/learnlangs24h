@@ -14,6 +14,7 @@ import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
 import AdminDefaultLayout from '@layouts/AdminDefaultLayout/AdminDefaultLayout';
+import { SocketProvider } from '@utils/socket';
 
 // ##################################
 const NotFound = loadable(() => import('@pages/NotFound/NotFound'));
@@ -45,110 +46,112 @@ function App() {
 
     return (
         <Router>
-            <div className="App">
-                <Routes>
-                    {/*#################################*/}
-                    {/*#          PUBLIC ROUTE          */}
-                    {/*#################################*/}
-                    <Route path="*" element={<NotFound />} />
+            <SocketProvider>
+                <div className="App">
+                    <Routes>
+                        {/*#################################*/}
+                        {/*#          PUBLIC ROUTE          */}
+                        {/*#################################*/}
+                        <Route path="*" element={<NotFound />} />
 
-                    {publicRoute.map((route, index) => {
-                        let Layout = DefaultLayout;
+                        {publicRoute.map((route, index) => {
+                            let Layout = DefaultLayout;
 
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
 
-                        const Page = route.component;
+                            const Page = route.component;
 
-                        return (
-                            <Route
-                                path={route.path}
-                                key={index}
-                                element={
-                                    <Layout>
-                                        <Page />
-                                    </Layout>
-                                }
-                            />
-                        );
-                    })}
-
-                    {/*############################################*/}
-                    {/*#    REDIRECT TO HOME WHEN AUTHENTICATED    */}
-                    {/*############################################*/}
-                    <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
-                        <Route path="/login" element={<Login />} />
-                        <Route path="/register" element={<Register />} />
-                        <Route path="/forgot" element={<ForgotPassword />} />
-                    </Route>
-
-                    {/*######################################*/}
-                    {/*#    AUTHENTICATED PROTECTED ROUTE    */}
-                    {/*######################################*/}
-                    {protectedRoute.map((route, index) => {
-                        let Layout = DefaultLayout;
-
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
-
-                        const Page = route.component;
-
-                        return (
-                            <Route
-                                path={route.path}
-                                key={index}
-                                element={
-                                    <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading}>
+                            return (
+                                <Route
+                                    path={route.path}
+                                    key={index}
+                                    element={
                                         <Layout>
                                             <Page />
                                         </Layout>
-                                    </ProtectedRoute>
-                                }
-                            />
-                        );
-                    })}
+                                    }
+                                />
+                            );
+                        })}
 
-                    {/*#################################*/}
-                    {/*#          ADMIN ROUTE           */}
-                    {/*#################################*/}
-                    {adminRoute.map((route, index) => {
-                        let Layout = AdminDefaultLayout;
+                        {/*############################################*/}
+                        {/*#    REDIRECT TO HOME WHEN AUTHENTICATED    */}
+                        {/*############################################*/}
+                        <Route element={<RedirectToHome isAuthenticated={data?.success} isLoading={isLoading} />}>
+                            <Route path="/login" element={<Login />} />
+                            <Route path="/register" element={<Register />} />
+                            <Route path="/forgot" element={<ForgotPassword />} />
+                        </Route>
 
-                        if (route.layout) {
-                            Layout = route.layout;
-                        } else if (route.layout === null) {
-                            Layout = Fragment;
-                        }
+                        {/*######################################*/}
+                        {/*#    AUTHENTICATED PROTECTED ROUTE    */}
+                        {/*######################################*/}
+                        {protectedRoute.map((route, index) => {
+                            let Layout = DefaultLayout;
 
-                        const Page = route.component;
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
 
-                        return (
-                            <Route
-                                path={route.path}
-                                key={index}
-                                element={
-                                    <ProtectedRoute
-                                        isAuthenticated={data?.success}
-                                        isLoading={isLoading}
-                                        isAdmin={true}
-                                        role={data?.user?.roles}
-                                    >
-                                        <Layout>
-                                            <Page />
-                                        </Layout>
-                                    </ProtectedRoute>
-                                }
-                            />
-                        );
-                    })}
-                </Routes>
-            </div>
+                            const Page = route.component;
+
+                            return (
+                                <Route
+                                    path={route.path}
+                                    key={index}
+                                    element={
+                                        <ProtectedRoute isAuthenticated={data?.success} isLoading={isLoading}>
+                                            <Layout>
+                                                <Page />
+                                            </Layout>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                            );
+                        })}
+
+                        {/*#################################*/}
+                        {/*#          ADMIN ROUTE           */}
+                        {/*#################################*/}
+                        {adminRoute.map((route, index) => {
+                            let Layout = AdminDefaultLayout;
+
+                            if (route.layout) {
+                                Layout = route.layout;
+                            } else if (route.layout === null) {
+                                Layout = Fragment;
+                            }
+
+                            const Page = route.component;
+
+                            return (
+                                <Route
+                                    path={route.path}
+                                    key={index}
+                                    element={
+                                        <ProtectedRoute
+                                            isAuthenticated={data?.success}
+                                            isLoading={isLoading}
+                                            isAdmin={true}
+                                            role={data?.user?.roles}
+                                        >
+                                            <Layout>
+                                                <Page />
+                                            </Layout>
+                                        </ProtectedRoute>
+                                    }
+                                />
+                            );
+                        })}
+                    </Routes>
+                </div>
+            </SocketProvider>
         </Router>
     );
 }

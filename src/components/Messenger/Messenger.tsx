@@ -20,13 +20,18 @@ import { useGetChatByIdMutation, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 
 const Messenger: React.FC = () => {
+    /* -------------------------------------------------------------------------- */
+    /*                               REACT ROUTE DOM                              */
+    /* -------------------------------------------------------------------------- */
     const navigate = useNavigate();
     const { chatId } = useParams<string>();
 
+    /* -------------------------------------------------------------------------- */
+    /*                                     RTK                                    */
+    /* -------------------------------------------------------------------------- */
     const [searchUser] = useLazySearchUserQuery();
     // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
-
     const [getChatById] = useGetChatByIdMutation();
 
     /* -------------------------------------------------------------------------- */
@@ -36,39 +41,9 @@ const Messenger: React.FC = () => {
     const [searchInputValue, setSearchInputValue] = useState<string>('');
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
 
-    const debounced = userDebounce(searchInputValue, 500);
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
     /* -------------------------------------------------------------------------- */
-
-    const errors = [
-        {
-            isError: myChatsIsError,
-            error: myChatsError,
-        },
-    ];
-
-    useErrors(errors);
-
-    useEffect(() => {
-        if (!searchVisible || searchInputValue.trim() === '') {
-            setFriends([]);
-            return;
-        }
-
-        searchUser(encodeURIComponent(debounced))
-            .then(({ data }) => {
-                if (data?.users) {
-                    setFriends(data.users);
-                } else {
-                    setFriends([]);
-                }
-            })
-            .catch(() => {
-                toastError('Có lỗi xảy ra!');
-            });
-    }, [debounced]);
-
     const handleRedirectChatId = async (userId: string) => {
         try {
             const response = await getChatById({ _id: userId, name: 'New chat', members: [userId] });
@@ -96,6 +71,41 @@ const Messenger: React.FC = () => {
         setSearchVisible(false);
         setSearchInputValue('');
     };
+
+    /* -------------------------------------------------------------------------- */
+    /*                                CUSTOM HOOKS                                */
+    /* -------------------------------------------------------------------------- */
+    const debounced = userDebounce(searchInputValue, 500);
+
+    const errors = [
+        {
+            isError: myChatsIsError,
+            error: myChatsError,
+        },
+    ];
+    useErrors(errors);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  useEffect                                  */
+    /* -------------------------------------------------------------------------- */
+    useEffect(() => {
+        if (!searchVisible || searchInputValue.trim() === '') {
+            setFriends([]);
+            return;
+        }
+
+        searchUser(encodeURIComponent(debounced))
+            .then(({ data }) => {
+                if (data?.users) {
+                    setFriends(data.users);
+                } else {
+                    setFriends([]);
+                }
+            })
+            .catch(() => {
+                toastError('Có lỗi xảy ra!');
+            });
+    }, [debounced]);
 
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
