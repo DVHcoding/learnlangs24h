@@ -18,6 +18,7 @@ export default defineConfig({
             '@utils': path.resolve(__dirname, './src/utils'),
             '@assets': path.resolve(__dirname, './src/assets'),
             '@admin': path.resolve(__dirname, './src/admin'),
+            '@constants': path.resolve(__dirname, './src/constants'),
         },
     },
     server: {

@@ -55,6 +55,9 @@
       ],
       "@admin/*": [
         "admin/*"
+      ],
+      "@constants/*": [
+        "constants/*"
       ]
     }
   },

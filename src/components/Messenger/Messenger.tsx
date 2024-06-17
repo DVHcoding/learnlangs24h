@@ -1,11 +1,14 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { useEffect, useState } from 'react';
-import { Avatar } from 'antd';
+import { useCallback, useEffect, useState } from 'react';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
 import { Link, useNavigate, useParams } from 'react-router-dom';
+import { Avatar } from 'antd';
+import { IoMdSend } from 'react-icons/io';
+import { GoFileMedia } from 'react-icons/go';
+import { MdOutlineAddReaction } from 'react-icons/md';
 
 // ##########################
 // #    IMPORT Components   #
@@ -13,13 +16,17 @@ import { Link, useNavigate, useParams } from 'react-router-dom';
 import TippyProvider from '@components/Tippys/TippyProvider';
 import userDebounce from '@hooks/userDebounce';
 import { Chat, UserDetailsType } from 'types/api-types';
-import { useLazySearchUserQuery } from '@store/api/userApi';
+import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
-import ChatContent from '@components/Messenger/ChatContent';
 import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
+import { NEW_MESSAGE } from '@constants/events';
+import { useSocket } from '@utils/socket';
+import useSocketEvents from '@hooks/useSocketEvents';
+import { MessageSocketResponse } from 'types/types';
 
 const Messenger: React.FC = () => {
+    const socket = useSocket();
     /* -------------------------------------------------------------------------- */
     /*                               REACT ROUTE DOM                              */
     /* -------------------------------------------------------------------------- */
@@ -29,6 +36,7 @@ const Messenger: React.FC = () => {
     /* -------------------------------------------------------------------------- */
     /*                                     RTK                                    */
     /* -------------------------------------------------------------------------- */
+    const { data: userDetails } = useUserDetailsQuery();
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
     const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
@@ -40,6 +48,13 @@ const Messenger: React.FC = () => {
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchInputValue, setSearchInputValue] = useState<string>('');
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
+    const [message, setMessage] = useState<string>('');
+    const [messages, setMessages] = useState<MessageSocketResponse[]>([]);
+
+    /* -------------------------------------------------------------------------- */
+    /*                                  VARIABLES                                 */
+    /* -------------------------------------------------------------------------- */
+    const members = chatDetails.data?.chat?.members;
 
     /* -------------------------------------------------------------------------- */
     /*                             FUNCTION MANAGEMENT                            */
@@ -72,6 +87,19 @@ const Messenger: React.FC = () => {
         setSearchInputValue('');
     };
 
+    const newMessageListener = useCallback((data: any) => {
+        if (data.chatId !== chatId) return;
+
+        setMessages((prev) => [...prev, data.message]);
+    }, []);
+
+    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        if (!message.trim()) return;
+
+        socket.emit(NEW_MESSAGE, { chatId, members, message });
+        setMessage('');
+    };
     /* -------------------------------------------------------------------------- */
     /*                                CUSTOM HOOKS                                */
     /* -------------------------------------------------------------------------- */
@@ -88,6 +116,12 @@ const Messenger: React.FC = () => {
         },
     ];
     useErrors(errors);
+
+    const eventHandler = {
+        [NEW_MESSAGE]: newMessageListener,
+    };
+
+    useSocketEvents(socket, eventHandler);
 
     /* -------------------------------------------------------------------------- */
     /*                                  useEffect                                  */
@@ -180,7 +214,7 @@ const Messenger: React.FC = () => {
 
                                     <div className="flex-1 select-none py-2">
                                         <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
-                                        <p className="text-textBlackGray">This is a example text</p>
+                                        <p className="text-textBlackGray">.....</p>
                                     </div>
                                 </li>
                             </Link>
@@ -190,7 +224,74 @@ const Messenger: React.FC = () => {
             </div>
 
             {/* Content  */}
-            <ChatContent />
+            <div className="w-full">
+                {/* Header */}
+                <div className="flex items-center gap-2 border-t px-2 shadow">
+                    <div className="relative">
+                        <Avatar
+                            src={<img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-84.jpg" />}
+                            size={45}
+                        />
+                        <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
+                    </div>
+                    <div className="flex-1 select-none py-2">
+                        <h3 className="font-semibold leading-tight text-textCustom">Quốc dũng</h3>
+                        <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+                    </div>
+                </div>
+
+                {/* Body */}
+                <div className="overflow-auto" style={{ height: 'calc(100% - 3.3rem)' }}>
+                    <ul className="mx-2 mb-14 mt-2 flex flex-col gap-2">
+                        {messages.map((message: MessageSocketResponse) => (
+                            <li className="flex gap-2" key={message._id}>
+                                {userDetails?.user._id !== message.sender._id && (
+                                    <Avatar
+                                        src={
+                                            <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-84.jpg" />
+                                        }
+                                    />
+                                )}
+
+                                <p
+                                    className={`max-w-[33rem] ${
+                                        userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
+                                    } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                                >
+                                    {message.content}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+                {/* Chat bar */}
+                <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
+                    {/* File Media */}
+                    <div>
+                        <GoFileMedia size={20} color="#3798f2" className="cursor-pointer" />
+                    </div>
+
+                    <div className="relative flex w-full">
+                        <input
+                            type="text"
+                            className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
+                            value={message}
+                            onChange={(e) => setMessage(e.target.value)}
+                            placeholder="Aa"
+                        />
+                        <MdOutlineAddReaction
+                            className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
+                            size={18}
+                            color="#3798f2"
+                        />
+                    </div>
+
+                    <button type="submit">
+                        <IoMdSend size={25} color="#3798f2" />
+                    </button>
+                </form>
+            </div>
         </div>
     );
 };

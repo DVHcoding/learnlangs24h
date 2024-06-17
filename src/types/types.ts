@@ -6,6 +6,18 @@ export interface UserType {
     _id: string;
 }
 
+export interface MessageSocketResponse {
+    chatId?: string;
+    _id: string;
+    chat: string;
+    content: string;
+    createdAt: Date;
+    sender: {
+        name: string;
+        _id: string;
+    };
+}
+
 export interface GetChatByIdResponse {
     success: boolean;
     chatId: string;
