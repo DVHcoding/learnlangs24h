@@ -32,6 +32,10 @@ export const chatApi = createApi({
             query: () => '/chat/my',
             providesTags: ['Chat'],
         }),
+        getChatDetails: builder.query({
+            query: (id) => `/chat/details/${id}`,
+            providesTags: ['Chat'],
+        }),
 
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
@@ -56,4 +60,4 @@ export const chatApi = createApi({
     }),
 });
 
-export const { useGetMyChatsQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;
+export const { useGetMyChatsQuery, useGetChatDetailsQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;
