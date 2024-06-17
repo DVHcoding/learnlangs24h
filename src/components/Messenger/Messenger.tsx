@@ -16,7 +16,7 @@ import { Chat, UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
 import ChatContent from '@components/Messenger/ChatContent';
-import { useGetChatByIdMutation, useGetMyChatsQuery } from '@store/api/chatApi';
+import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 
 const Messenger: React.FC = () => {
@@ -29,9 +29,9 @@ const Messenger: React.FC = () => {
     /* -------------------------------------------------------------------------- */
     /*                                     RTK                                    */
     /* -------------------------------------------------------------------------- */
-    const [searchUser] = useLazySearchUserQuery();
-    // const [newGroup, isLoadingNewGroup] = useAsyncMutation(useNewGroupMutation);
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
+    const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
+    const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
 
     /* -------------------------------------------------------------------------- */
@@ -81,6 +81,10 @@ const Messenger: React.FC = () => {
         {
             isError: myChatsIsError,
             error: myChatsError,
+        },
+        {
+            isError: chatDetails.isError,
+            error: chatDetails.error,
         },
     ];
     useErrors(errors);

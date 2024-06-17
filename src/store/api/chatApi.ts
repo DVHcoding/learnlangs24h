@@ -2,6 +2,7 @@
 // #      IMPORT NPM        #
 // ##########################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { ChatDetailsResponse } from 'types/chatApi-types';
 import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
 // ##########################
@@ -32,8 +33,8 @@ export const chatApi = createApi({
             query: () => '/chat/my',
             providesTags: ['Chat'],
         }),
-        getChatDetails: builder.query({
-            query: (id) => `/chat/details/${id}`,
+        getChatDetails: builder.query<ChatDetailsResponse, { chatId: string | undefined; skip: boolean }>({
+            query: ({ chatId }) => `/chat/details/${chatId}`,
             providesTags: ['Chat'],
         }),
 
