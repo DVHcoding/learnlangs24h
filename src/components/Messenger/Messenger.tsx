@@ -27,38 +27,39 @@ import { MessageSocketResponse } from 'types/types';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const navigate = useNavigate();
     const { chatId } = useParams<string>();
 
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                                     RTK                                    */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const { data: userDetails } = useUserDetailsQuery();
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
     const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
 
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const [searchVisible, setSearchVisible] = useState(false);
     const [searchInputValue, setSearchInputValue] = useState<string>('');
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageSocketResponse[]>([]);
 
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                                  VARIABLES                                 */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const members = chatDetails.data?.chat?.members;
 
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+
     const handleRedirectChatId = async (userId: string) => {
         try {
             const response = await getChatById({ _id: userId, name: 'New chat', members: [userId] });
@@ -100,9 +101,9 @@ const Messenger: React.FC = () => {
         socket.emit(NEW_MESSAGE, { chatId, members, message });
         setMessage('');
     };
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const debounced = userDebounce(searchInputValue, 500);
 
     const errors = [
@@ -123,9 +124,9 @@ const Messenger: React.FC = () => {
 
     useSocketEvents(socket, eventHandler);
 
-    /* -------------------------------------------------------------------------- */
-    /*                                  useEffect                                  */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
     useEffect(() => {
         if (!searchVisible || searchInputValue.trim() === '') {
             setFriends([]);
