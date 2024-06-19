@@ -20,7 +20,7 @@ import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi'
 import { toastError } from '@components/Toast/Toasts';
 import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
-import { NEW_MESSAGE } from '@constants/events';
+import { ADD_USER, NEW_MESSAGE } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
 import { MessageSocketResponse } from 'types/types';
@@ -55,6 +55,7 @@ const Messenger: React.FC = () => {
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
     const members = chatDetails.data?.chat?.members;
+    const userId = userDetails?.user?._id;
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -88,7 +89,12 @@ const Messenger: React.FC = () => {
         setSearchInputValue('');
     };
 
+    const addUserListener = useCallback((data: any) => {
+        console.log('adduser:', data);
+    }, []);
+
     const newMessageListener = useCallback((data: any) => {
+        console.log(data);
         if (data.chatId !== chatId) return;
 
         setMessages((prev) => [...prev, data.message]);
@@ -98,9 +104,10 @@ const Messenger: React.FC = () => {
         e.preventDefault();
         if (!message.trim()) return;
 
-        socket.emit(NEW_MESSAGE, { chatId, members, message });
+        socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
         setMessage('');
     };
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
@@ -119,6 +126,7 @@ const Messenger: React.FC = () => {
     useErrors(errors);
 
     const eventHandler = {
+        [ADD_USER]: addUserListener,
         [NEW_MESSAGE]: newMessageListener,
     };
 
@@ -127,6 +135,14 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+    useEffect(() => {
+        const userId = userDetails?.user._id;
+
+        if (userId) {
+            socket.emit(ADD_USER, { userId: userId });
+        }
+    }, [userDetails?.user._id]);
+
     useEffect(() => {
         if (!searchVisible || searchInputValue.trim() === '') {
             setFriends([]);
