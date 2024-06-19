@@ -54,8 +54,9 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
-    const members = chatDetails.data?.chat?.members;
+    const members = chatDetails.data?.chat?.members.map((member) => member._id);
     const userId = userDetails?.user?._id;
+    const receiver = chatDetails.data?.chat?.members.find((member) => member._id !== userId);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -214,6 +215,7 @@ const Messenger: React.FC = () => {
                     </div>
                 </div>
 
+                {/* Chat Sidebar */}
                 {!searchVisible && !myChatsLoading && (
                     <ul>
                         {myChats?.chats.map((chat: Chat) => (
@@ -245,14 +247,11 @@ const Messenger: React.FC = () => {
                 {/* Header */}
                 <div className="flex items-center gap-2 border-t px-2 shadow">
                     <div className="relative">
-                        <Avatar
-                            src={<img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-84.jpg" />}
-                            size={45}
-                        />
+                        <Avatar src={receiver?.photo.url} size={45} />
                         <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
                     </div>
                     <div className="flex-1 select-none py-2">
-                        <h3 className="font-semibold leading-tight text-textCustom">Quốc dũng</h3>
+                        <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
                         <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
                     </div>
                 </div>
@@ -262,13 +261,7 @@ const Messenger: React.FC = () => {
                     <ul className="mx-2 mb-14 mt-2 flex flex-col gap-2">
                         {messages.map((message: MessageSocketResponse) => (
                             <li className="flex gap-2" key={message._id}>
-                                {userDetails?.user._id !== message.sender._id && (
-                                    <Avatar
-                                        src={
-                                            <img src="https://cellphones.com.vn/sforum/wp-content/uploads/2024/02/anh-avatar-cute-84.jpg" />
-                                        }
-                                    />
-                                )}
+                                {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
 
                                 <p
                                     className={`max-w-[33rem] ${

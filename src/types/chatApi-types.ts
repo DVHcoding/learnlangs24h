@@ -8,8 +8,17 @@ export interface Chat {
     name: string;
     groupChat: boolean;
     creator: string;
-    members: string[];
+    members: Member[];
     createdAt: Date;
     updatedAt: Date;
     __v: number;
+}
+
+export interface Member {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    username: string;
 }
