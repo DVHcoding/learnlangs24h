@@ -98,12 +98,15 @@ const Messenger: React.FC = () => {
         console.log('adduser:', data);
     }, []);
 
-    const newMessageListener = useCallback((data: any) => {
-        console.log(data);
-        if (data.chatId !== chatId) return;
+    const newMessageListener = useCallback(
+        (data: any) => {
+            console.log(data);
+            if (data.chatId !== chatId) return;
 
-        setMessages((prev) => [...prev, data.message]);
-    }, []);
+            setMessages((prev) => [...prev, data.message]);
+        },
+        [chatId]
+    );
 
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
@@ -146,7 +149,7 @@ const Messenger: React.FC = () => {
         if (userId) {
             socket.emit(ADD_USER, { userId: userId });
         }
-    }, [userDetails?.user._id]);
+    }, [userDetails?.user._id, chatId]);
 
     useEffect(() => {
         if (!searchVisible || searchInputValue.trim() === '') {
