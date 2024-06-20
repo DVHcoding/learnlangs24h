@@ -24,6 +24,7 @@ import { ADD_USER, NEW_MESSAGE } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
 import { MessageSocketResponse } from 'types/types';
+import { AddMemberSocketResponse, NewMessageSocketResponse } from 'types/chatApi-types';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -94,20 +95,6 @@ const Messenger: React.FC = () => {
         setSearchInputValue('');
     };
 
-    const addUserListener = useCallback((data: any) => {
-        console.log('adduser:', data);
-    }, []);
-
-    const newMessageListener = useCallback(
-        (data: any) => {
-            console.log(data);
-            if (data.chatId !== chatId) return;
-
-            setMessages((prev) => [...prev, data.message]);
-        },
-        [chatId]
-    );
-
     const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         if (!message.trim()) return;
@@ -115,6 +102,20 @@ const Messenger: React.FC = () => {
         socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
         setMessage('');
     };
+
+    const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
+        console.log('adduser:', data);
+    }, []);
+
+    const newMessageListener = useCallback(
+        (data: NewMessageSocketResponse) => {
+            console.log(data);
+            if (data.chatId !== chatId) return;
+
+            setMessages((prev) => [...prev, data.message]);
+        },
+        [chatId]
+    );
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */

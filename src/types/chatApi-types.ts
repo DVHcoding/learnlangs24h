@@ -22,3 +22,26 @@ export interface Member {
     _id: string;
     username: string;
 }
+
+export interface AddMemberSocketResponse {
+    userId: string;
+    socketId: string;
+}
+
+export interface NewMessageSocketResponse {
+    chatId: string;
+    message: Message;
+}
+
+export interface Message {
+    content: string;
+    _id: string;
+    sender: Sender;
+    chat: string;
+    createdAt: Date;
+}
+
+export interface Sender {
+    _id: string;
+    name: string;
+}
