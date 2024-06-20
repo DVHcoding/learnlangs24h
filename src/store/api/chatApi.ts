@@ -2,12 +2,13 @@
 // #      IMPORT NPM        #
 // ##########################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { ChatDetailsResponse } from 'types/chatApi-types';
-import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
 // ##########################
 // #    IMPORT Components   #
 // ##########################
+import { ChatDetailsResponse, GetMessageResponse } from 'types/chatApi-types';
+import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
+
 
 export const chatApi = createApi({
     reducerPath: 'chatApi',
@@ -33,9 +34,15 @@ export const chatApi = createApi({
             query: () => '/chat/my',
             providesTags: ['Chat'],
         }),
+
         getChatDetails: builder.query<ChatDetailsResponse, { chatId: string | undefined; skip: boolean }>({
             query: ({ chatId }) => `/chat/details/${chatId}`,
             providesTags: ['Chat'],
+        }),
+
+        getMessages: builder.query<GetMessageResponse, { chatId: string; page: number }>({
+            query: ({ chatId, page }) => `/message/${chatId}?page=${page}`,
+            keepUnusedDataFor: 0, // Sử dụng để không lưu cached. Giúp dữ liệu luôn mới nhưng sẽ làm hệ thống chịu tải nhiều hơn
         }),
 
         /* -------------------------------------------------------------------------- */
@@ -61,4 +68,4 @@ export const chatApi = createApi({
     }),
 });
 
-export const { useGetMyChatsQuery, useGetChatDetailsQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;
+export const { useGetMyChatsQuery, useGetChatDetailsQuery, useGetMessagesQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;

@@ -3,6 +3,11 @@ export interface ChatDetailsResponse {
     chat: Chat;
 }
 
+export interface GetMessageResponse {
+    success: boolean;
+    messages: Message[];
+}
+
 export interface Chat {
     _id: string;
     name: string;
@@ -38,7 +43,9 @@ export interface Message {
     _id: string;
     sender: Sender;
     chat: string;
+    attachments: string[];
     createdAt: Date;
+    updatedAt: Date;
 }
 
 export interface Sender {
