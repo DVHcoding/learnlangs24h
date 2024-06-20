@@ -1,7 +1,7 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
 import { Link, useNavigate, useParams } from 'react-router-dom';
@@ -50,7 +50,7 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [searchVisible, setSearchVisible] = useState(false);
+    const [searchVisible, setSearchVisible] = useState<boolean>(false);
     const [searchInputValue, setSearchInputValue] = useState<string>('');
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
     const [message, setMessage] = useState<string>('');
@@ -59,9 +59,9 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
-    const members = chatDetails.data?.chat?.members.map((member) => member._id);
-    const userId = userDetails?.user?._id;
-    const receiver = chatDetails.data?.chat?.members.find((member) => member._id !== userId);
+    const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
+    const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
+    const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -90,12 +90,12 @@ const Messenger: React.FC = () => {
         }
     };
 
-    const handleCloseSearch = () => {
+    const handleCloseSearch: () => void = () => {
         setSearchVisible(false);
         setSearchInputValue('');
     };
 
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitHandler: (e: React.FormEvent<HTMLFormElement>) => void = (e) => {
         e.preventDefault();
         if (!message.trim()) return;
 
@@ -104,7 +104,7 @@ const Messenger: React.FC = () => {
     };
 
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
-        console.log('adduser:', data);
+        console.log('ADD_USER:', data);
     }, []);
 
     const newMessageListener = useCallback(
@@ -132,6 +132,7 @@ const Messenger: React.FC = () => {
             error: chatDetails.error,
         },
     ];
+
     useErrors(errors);
 
     const eventHandler = {
@@ -145,12 +146,10 @@ const Messenger: React.FC = () => {
     /*                                  useEffect                                 */
     /* ########################################################################## */
     useEffect(() => {
-        const userId = userDetails?.user._id;
-
         if (userId) {
             socket.emit(ADD_USER, { userId: userId });
         }
-    }, [userDetails?.user._id, chatId]);
+    }, [userId]);
 
     useEffect(() => {
         if (!searchVisible || searchInputValue.trim() === '') {
