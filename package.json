@@ -23,6 +23,7 @@
         "@tinymce/tinymce-react": "^5.0.1",
         "@tippyjs/react": "^4.0.0-alpha.1",
         "@uiw/react-md-editor": "^4.0.4",
+        "6pp": "^1.2.16",
         "antd": "^5.16.2",
         "axios": "^1.6.8",
         "dayjs": "^1.11.10",

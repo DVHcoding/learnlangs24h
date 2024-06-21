@@ -6,6 +6,7 @@ export interface ChatDetailsResponse {
 export interface GetMessageResponse {
     success: boolean;
     messages: Message[];
+    totalPages: number;
 }
 
 export interface Chat {
@@ -35,7 +36,18 @@ export interface AddMemberSocketResponse {
 
 export interface NewMessageSocketResponse {
     chatId: string;
-    message: Message;
+    message: MessageSocketResponse;
+}
+
+export interface MessageSocketResponse {
+    _id: string;
+    chat: string;
+    content: string;
+    createdAt: Date;
+    sender: {
+        name: string;
+        _id: string;
+    };
 }
 
 export interface Message {

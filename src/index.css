@@ -34,6 +34,27 @@
     background: #e5e5e5;
   }
 
+
+  /* CSS cho thanh cuộn */
+  .scrollbar-mess::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  /* CSS cho nút cuộn (thumb) của thanh cuộn */
+  .scrollbar-mess::-webkit-scrollbar-thumb {
+    background: #cccccc;
+    border-radius: 10px;
+  }
+
+  /* CSS cho track của thanh cuộn */
+  .scrollbar-mess::-webkit-scrollbar-track {
+    border-radius: 10px;
+    margin-bottom: 10px;
+  }
+
+
+
+
 }
 
 * {

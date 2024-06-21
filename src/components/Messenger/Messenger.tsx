@@ -1,14 +1,16 @@
 // ##########################
 // #      IMPORT NPM        #
 // ##########################
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
 import { Link, useNavigate, useParams } from 'react-router-dom';
-import { Avatar } from 'antd';
+import { Avatar, Spin } from 'antd';
 import { IoMdSend } from 'react-icons/io';
 import { GoFileMedia } from 'react-icons/go';
 import { MdOutlineAddReaction } from 'react-icons/md';
+import { useInfiniteScrollTop } from '6pp';
+import { LoadingOutlined } from '@ant-design/icons';
 
 // ##########################
 // #    IMPORT Components   #
@@ -18,34 +20,25 @@ import userDebounce from '@hooks/userDebounce';
 import { Chat, UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
-import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMyChatsQuery } from '@store/api/chatApi';
+import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMessagesQuery, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 import { ADD_USER, NEW_MESSAGE } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
-import { MessageSocketResponse } from 'types/types';
-import { AddMemberSocketResponse, NewMessageSocketResponse } from 'types/chatApi-types';
+import { AddMemberSocketResponse, Message, NewMessageSocketResponse, MessageSocketResponse } from 'types/chatApi-types';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
+    const bottomRef = useRef<HTMLUListElement>(null);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
     const navigate = useNavigate();
     const { chatId } = useParams<string>();
-
-    /* ########################################################################## */
-    /*                                     RTK                                    */
-    /* ########################################################################## */
-    const { data: userDetails } = useUserDetailsQuery();
-    const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
-    const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
-    const [searchUser] = useLazySearchUserQuery();
-    const [getChatById] = useGetChatByIdMutation();
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -55,6 +48,17 @@ const Messenger: React.FC = () => {
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageSocketResponse[]>([]);
+    const [page, setPage] = useState<number>(1);
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const oldMessagesChunk = useGetMessagesQuery({ chatId: chatId || 'undefined', page });
+    const { data: userDetails } = useUserDetailsQuery();
+    const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
+    const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
+    const [searchUser] = useLazySearchUserQuery();
+    const [getChatById] = useGetChatByIdMutation();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -62,6 +66,18 @@ const Messenger: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
+
+    const { data: oldMessages } = useInfiniteScrollTop(
+        bottomRef,
+        oldMessagesChunk.data?.totalPages as number,
+        page,
+        setPage,
+        oldMessagesChunk.data?.messages as Message[]
+    );
+
+    const allMessages = useMemo(() => {
+        return [...(oldMessages as Message[]), ...(messages as Message[])];
+    }, [oldMessages, messages]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -170,6 +186,12 @@ const Messenger: React.FC = () => {
             });
     }, [debounced]);
 
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollTop = bottomRef.current.scrollHeight;
+        }
+    }, [messages]);
+
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
@@ -264,23 +286,27 @@ const Messenger: React.FC = () => {
                 </div>
 
                 {/* Body */}
-                <div className="overflow-auto" style={{ height: 'calc(100% - 3.3rem)' }}>
-                    <ul className="mx-2 mb-14 mt-2 flex flex-col gap-2">
-                        {messages.map((message: MessageSocketResponse) => (
-                            <li className="flex gap-2" key={message._id}>
-                                {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
+                <ul
+                    className="scrollbar-mess mb-14 mt-2 flex flex-col gap-2 overflow-auto pb-4"
+                    style={{ height: 'calc(100% - 6.3rem)' }}
+                    ref={bottomRef}
+                >
+                    {oldMessagesChunk.isLoading || oldMessagesChunk.isFetching ? <Spin indicator={<LoadingOutlined spin />} /> : ''}
 
-                                <p
-                                    className={`max-w-[33rem] ${
-                                        userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
-                                    } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
-                                >
-                                    {message.content}
-                                </p>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
+                    {allMessages.map((message: Message) => (
+                        <li className="mr-2 flex gap-2" key={message._id}>
+                            {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
+
+                            <p
+                                className={`max-w-[33rem] ${
+                                    userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
+                                } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                            >
+                                {message.content}
+                            </p>
+                        </li>
+                    ))}
+                </ul>
 
                 {/* Chat bar */}
                 <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
