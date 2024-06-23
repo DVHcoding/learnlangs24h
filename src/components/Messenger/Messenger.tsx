@@ -11,6 +11,8 @@ import { GoFileMedia } from 'react-icons/go';
 import { MdOutlineAddReaction } from 'react-icons/md';
 import { useInfiniteScrollTop } from '6pp';
 import { LoadingOutlined } from '@ant-design/icons';
+import data from '@emoji-mart/data';
+import Picker from '@emoji-mart/react';
 
 // ##########################
 // #    IMPORT Components   #
@@ -49,6 +51,8 @@ const Messenger: React.FC = () => {
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageSocketResponse[]>([]);
     const [page, setPage] = useState<number>(1);
+
+    const [emojiShow, setEmojiShow] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -117,6 +121,13 @@ const Messenger: React.FC = () => {
 
         socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
         setMessage('');
+    };
+
+    const addEmoji = (emojiData: any) => {
+        const unicodeStrings = emojiData.unified.split('_');
+        const codePoints = unicodeStrings.map((el: string) => parseInt(el, 16));
+        const emoji = String.fromCodePoint(...codePoints);
+        setMessage(message + emoji);
     };
 
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
@@ -336,6 +347,7 @@ const Messenger: React.FC = () => {
                             type="text"
                             className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
                             value={message}
+                            onFocus={() => setEmojiShow(false)}
                             onChange={(e) => setMessage(e.target.value)}
                             placeholder="Aa"
                         />
@@ -343,7 +355,14 @@ const Messenger: React.FC = () => {
                             className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
                             size={18}
                             color="#3798f2"
+                            onClick={() => setEmojiShow(!emojiShow)}
                         />
+
+                        {emojiShow && (
+                            <div className="absolute bottom-12 right-0">
+                                <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" />
+                            </div>
+                        )}
                     </div>
 
                     <button type="submit">
