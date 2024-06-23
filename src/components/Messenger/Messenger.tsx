@@ -53,7 +53,7 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
-    const oldMessagesChunk = useGetMessagesQuery({ chatId: chatId || 'undefined', page });
+    const oldMessagesChunk = useGetMessagesQuery({ chatId: chatId || 'undefined', page: page });
     const { data: userDetails } = useUserDetailsQuery();
     const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
     const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
@@ -67,7 +67,7 @@ const Messenger: React.FC = () => {
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
 
-    const { data: oldMessages } = useInfiniteScrollTop(
+    const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
         bottomRef,
         oldMessagesChunk.data?.totalPages as number,
         page,
@@ -192,6 +192,21 @@ const Messenger: React.FC = () => {
         }
     }, [messages]);
 
+    useEffect(() => {
+        return () => {
+            setMessage('');
+            setMessages([]);
+            setOldMessages([]);
+            setPage(0);
+        };
+    }, [chatId]);
+
+    useEffect(() => {
+        if (bottomRef.current) {
+            bottomRef.current.scrollTo(0, bottomRef.current.scrollHeight);
+        }
+    }, [chatId]);
+
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
@@ -286,12 +301,13 @@ const Messenger: React.FC = () => {
                 </div>
 
                 {/* Body */}
+
                 <ul
-                    className="scrollbar-mess mb-14 mt-2 flex flex-col gap-2 overflow-auto pb-4"
+                    className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
                     style={{ height: 'calc(100% - 6.3rem)' }}
                     ref={bottomRef}
                 >
-                    {oldMessagesChunk.isLoading || oldMessagesChunk.isFetching ? <Spin indicator={<LoadingOutlined spin />} /> : ''}
+                    {(oldMessagesChunk.isLoading || oldMessagesChunk.isFetching) && <Spin indicator={<LoadingOutlined spin />} />}
 
                     {allMessages.map((message: Message) => (
                         <li className="mr-2 flex gap-2" key={message._id}>

@@ -9,7 +9,6 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { ChatDetailsResponse, GetMessageResponse } from 'types/chatApi-types';
 import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
-
 export const chatApi = createApi({
     reducerPath: 'chatApi',
     baseQuery: fetchBaseQuery({
