@@ -13,34 +13,20 @@ import { Link } from 'react-router-dom';
 // ##################################
 import TippyNotify from '@components/Tippys/TippyNotify';
 import TippyProfile from '@components/Tippys/TippyProfile';
+import { useGetMyChatsQuery } from '@store/api/chatApi';
 
 // ##################################
 const Navbar: React.FC = () => {
-    const data: string[] = [
-        'Eugenia',
-        'Bryan',
-        'Linda',
-        'Nancy',
-        'Lloyd',
-        'Alice',
-        'Julia',
-        'Albert',
-        'Louisa',
-        'Lester',
-        'Lola',
-        'Lydia',
-        'Hal',
-        'Hannah',
-        'Harriet',
-        'Hattie',
-        'Hazel',
-        'Hilda',
-    ];
-
     type Theme = 'light' | 'dark';
-    /* -------------------------------------------------------------------------- */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+
     const [theme, setTheme] = useState<Theme>(() => {
         const themeLocal = localStorage.getItem('theme');
 
@@ -74,16 +60,53 @@ const Navbar: React.FC = () => {
         return setThemeBoolean;
     });
 
-    /* -------------------------------------------------------------------------- */
-    /*                            FUNCTION MANAGAGEMENT                           */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+
+    const myChats = useGetMyChatsQuery();
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+    const chatId = localStorage.getItem('chatId');
+
+    const data: string[] = [
+        'Eugenia',
+        'Bryan',
+        'Linda',
+        'Nancy',
+        'Lloyd',
+        'Alice',
+        'Julia',
+        'Albert',
+        'Louisa',
+        'Lester',
+        'Lola',
+        'Lydia',
+        'Hal',
+        'Hannah',
+        'Harriet',
+        'Hattie',
+        'Hazel',
+        'Hilda',
+    ];
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     const toggleTheme = () => {
         setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
     };
 
-    /* -------------------------------------------------------------------------- */
-    /*                                   EFFECT                                   */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
+
     useEffect(() => {
         document.body.classList.add(theme);
 
@@ -98,7 +121,6 @@ const Navbar: React.FC = () => {
             py-3 sm:justify-around sm:border sm:border-bdCustom"
         >
             <h1 className="font-body text-lg font-bold text-textCustom sm:hidden">LearnLangs24h</h1>
-
             {/* Search */}
             <div className="sm:hidden">
                 <InputGroup inside>
@@ -132,7 +154,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Message */}
-                <Link to="/messages" aria-label="Messages">
+                <Link to={`/messages/${chatId || myChats.data?.chats[0]._id}`} aria-label="Messages">
                     <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
                 </Link>
 

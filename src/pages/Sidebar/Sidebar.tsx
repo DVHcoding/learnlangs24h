@@ -1,20 +1,20 @@
+// ##################################
+// #       IMPORT Npm
+// ##################################
 import { useState, useEffect } from 'react';
+import { Sidenav, Nav } from 'rsuite';
+import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
+import { SquareLibrary, Medal, Headphones, Shell, ContactRound, CircleDollarSign, BookOpenText } from 'lucide-react';
+import { useNavigate, useLocation, Link } from 'react-router-dom';
+
 // ##################################
 // #       IMPORT Components
 // ##################################
 import Logo from '@assets/logo.png';
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType } from 'types/api-types';
-
-// ##################################
-// #       IMPORT Npm
-// ##################################
-import { Sidenav, Nav } from 'rsuite';
-import DashboardIcon from '@rsuite/icons/legacy/Dashboard';
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import StyleOutlinedIcon from '@mui/icons-material/StyleOutlined';
-import { SquareLibrary, Medal, Headphones, Shell, ContactRound, CircleDollarSign, BookOpenText } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
 
 const Sidebar: React.FC = () => {
     // Redirect with React Router Dom v6
@@ -69,14 +69,16 @@ const Sidebar: React.FC = () => {
                 <Sidenav.Body>
                     <Nav activeKey="1">
                         <li>
-                            <img
-                                width={16}
-                                height={16}
-                                src={Logo}
-                                alt="logo"
-                                className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''} 
+                            <Link to="/">
+                                <img
+                                    width={16}
+                                    height={16}
+                                    src={Logo}
+                                    alt="logo"
+                                    className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''} 
                                 sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
-                            />
+                                />
+                            </Link>
                         </li>
 
                         {/*=========================================*/}

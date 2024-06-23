@@ -87,7 +87,6 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-
     const handleRedirectChatId = async (userId: string) => {
         try {
             const response = await getChatById({ _id: userId, name: 'New chat', members: [userId] });
@@ -216,6 +215,10 @@ const Messenger: React.FC = () => {
     useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollTo(0, bottomRef.current.scrollHeight);
+        }
+
+        if (chatId) {
+            localStorage.setItem('chatId', chatId);
         }
     }, [chatId]);
 
