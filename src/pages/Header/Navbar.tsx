@@ -154,7 +154,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Message */}
-                <Link to={`/messages/${chatId || myChats.data?.chats[0]._id}`} aria-label="Messages">
+                <Link to={`/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}`} aria-label="Messages">
                     <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
                 </Link>
 

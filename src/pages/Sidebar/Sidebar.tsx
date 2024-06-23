@@ -15,12 +15,15 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import Logo from '@assets/logo.png';
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType } from 'types/api-types';
+import { useGetMyChatsQuery } from '@store/api/chatApi';
 
 const Sidebar: React.FC = () => {
     // Redirect with React Router Dom v6
     const navigate = useNavigate();
     const location = useLocation();
     const { data, isLoading } = useGetAllCoursesQuery();
+    const myChats = useGetMyChatsQuery();
+    const chatId = localStorage.getItem('chatId');
 
     // Style sidebar
     const panelStyles: React.CSSProperties = {
@@ -130,8 +133,11 @@ const Sidebar: React.FC = () => {
 
                         {/*=========================================*/}
                         <Nav.Item
-                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                                    before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            className={`${
+                                activePage === `/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}` ? 'before:h-8' : 'before:h-0'
+                            } bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                          before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                            onClick={() => redirect(`/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}`)}
                             eventKey="4"
                             icon={<GroupsOutlinedIcon color="action" fontSize="small" className="absolute left-5 text-textSidebar" />}
                         >
