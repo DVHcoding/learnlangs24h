@@ -27,6 +27,7 @@ module.exports = {
                 textCustomGray: 'var(--text-custom-gray)',
                 textBlackGray: 'var(--text-black-gray)',
                 bdCustom: 'var(--border-custom)',
+                bdCustom2: 'var(--border-custom-2)',
             },
         },
     },

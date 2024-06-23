@@ -225,14 +225,14 @@ const Messenger: React.FC = () => {
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
-            <div className="w-[22rem] overflow-auto border-r border-t border-[#e5e5e5]">
+            <div className="w-[22rem] overflow-auto border-r border-t border-bdCustom2">
                 <h2 className="font-bold text-textBlackGray">Đoạn chat</h2>
 
                 {/* search */}
                 <div className="mb-4 flex items-center gap-1">
                     {searchVisible && (
                         <div className="rounded-full p-2 hover:bg-bgHoverGrayDark">
-                            <GoArrowLeft size={20} />
+                            <GoArrowLeft size={20} className="text-textCustom" />
                         </div>
                     )}
 
@@ -304,7 +304,7 @@ const Messenger: React.FC = () => {
             {/* Content  */}
 
             {!chatDetails.data?.success && !chatDetails.isLoading ? (
-                <div className="grid w-full items-center border-t">
+                <div className="grid w-full items-center border-t border-bdCustom2">
                     <div>
                         <img src={NoMessageLight} alt="NoMessage" style={{ margin: 'auto' }} />
                         <h2 className="mx-auto max-w-max text-center font-bold leading-tight text-textCustom">Chưa có đoạn chat nào!</h2>
@@ -313,7 +313,7 @@ const Messenger: React.FC = () => {
             ) : (
                 <div className="w-full">
                     {/* Header */}
-                    <div className="flex items-center gap-2 border-t px-2 shadow">
+                    <div className="flex items-center gap-2 border-t border-bdCustom2 px-2 shadow">
                         <div className="relative">
                             <Avatar src={receiver?.photo.url} size={45} />
                             <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
