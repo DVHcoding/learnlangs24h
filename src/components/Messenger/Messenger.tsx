@@ -28,6 +28,7 @@ import { ADD_USER, NEW_MESSAGE } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
 import { AddMemberSocketResponse, Message, NewMessageSocketResponse, MessageSocketResponse } from 'types/chatApi-types';
+import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -298,78 +299,88 @@ const Messenger: React.FC = () => {
             </div>
 
             {/* Content  */}
-            <div className="w-full">
-                {/* Header */}
-                <div className="flex items-center gap-2 border-t px-2 shadow">
-                    <div className="relative">
-                        <Avatar src={receiver?.photo.url} size={45} />
-                        <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
-                    </div>
-                    <div className="flex-1 select-none py-2">
-                        <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
-                        <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+
+            {!chatDetails.data?.success && !chatDetails.isLoading ? (
+                <div className="grid w-full items-center border-t">
+                    <div>
+                        <img src={NoMessageLight} alt="NoMessage" style={{ margin: 'auto' }} />
+                        <h2 className="mx-auto max-w-max text-center font-bold leading-tight text-textCustom">Chưa có đoạn chat nào!</h2>
                     </div>
                 </div>
-
-                {/* Body */}
-
-                <ul
-                    className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
-                    style={{ height: 'calc(100% - 6.3rem)' }}
-                    ref={bottomRef}
-                >
-                    {(oldMessagesChunk.isLoading || oldMessagesChunk.isFetching) && <Spin indicator={<LoadingOutlined spin />} />}
-
-                    {allMessages.map((message: Message) => (
-                        <li className="mr-2 flex gap-2" key={message._id}>
-                            {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
-
-                            <p
-                                className={`max-w-[33rem] ${
-                                    userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
-                                } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
-                            >
-                                {message.content}
-                            </p>
-                        </li>
-                    ))}
-                </ul>
-
-                {/* Chat bar */}
-                <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
-                    {/* File Media */}
-                    <div>
-                        <GoFileMedia size={20} color="#3798f2" className="cursor-pointer" />
+            ) : (
+                <div className="w-full">
+                    {/* Header */}
+                    <div className="flex items-center gap-2 border-t px-2 shadow">
+                        <div className="relative">
+                            <Avatar src={receiver?.photo.url} size={45} />
+                            <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
+                        </div>
+                        <div className="flex-1 select-none py-2">
+                            <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
+                            <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+                        </div>
                     </div>
 
-                    <div className="relative flex w-full">
-                        <input
-                            type="text"
-                            className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
-                            value={message}
-                            onFocus={() => setEmojiShow(false)}
-                            onChange={(e) => setMessage(e.target.value)}
-                            placeholder="Aa"
-                        />
-                        <MdOutlineAddReaction
-                            className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
-                            size={18}
-                            color="#3798f2"
-                            onClick={() => setEmojiShow(!emojiShow)}
-                        />
+                    {/* Body */}
 
-                        {emojiShow && (
-                            <div className="absolute bottom-12 right-0">
-                                <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" />
-                            </div>
-                        )}
-                    </div>
+                    <ul
+                        className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
+                        style={{ height: 'calc(100% - 6.3rem)' }}
+                        ref={bottomRef}
+                    >
+                        {(oldMessagesChunk.isLoading || oldMessagesChunk.isFetching) && <Spin indicator={<LoadingOutlined spin />} />}
 
-                    <button type="submit">
-                        <IoMdSend size={25} color="#3798f2" />
-                    </button>
-                </form>
-            </div>
+                        {allMessages.map((message: Message) => (
+                            <li className="mr-2 flex gap-2" key={message._id}>
+                                {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
+
+                                <p
+                                    className={`max-w-[33rem] ${
+                                        userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
+                                    } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                                >
+                                    {message.content}
+                                </p>
+                            </li>
+                        ))}
+                    </ul>
+
+                    {/* Chat bar */}
+                    <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
+                        {/* File Media */}
+                        <div>
+                            <GoFileMedia size={20} color="#3798f2" className="cursor-pointer" />
+                        </div>
+
+                        <div className="relative flex w-full">
+                            <input
+                                type="text"
+                                className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
+                                value={message}
+                                onFocus={() => setEmojiShow(false)}
+                                onChange={(e) => setMessage(e.target.value)}
+                                placeholder="Aa"
+                            />
+                            <MdOutlineAddReaction
+                                className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
+                                size={18}
+                                color="#3798f2"
+                                onClick={() => setEmojiShow(!emojiShow)}
+                            />
+
+                            {emojiShow && (
+                                <div className="absolute bottom-12 right-0 select-none">
+                                    <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" />
+                                </div>
+                            )}
+                        </div>
+
+                        <button type="submit">
+                            <IoMdSend size={25} color="#3798f2" />
+                        </button>
+                    </form>
+                </div>
+            )}
         </div>
     );
 };
