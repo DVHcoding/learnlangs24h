@@ -32,6 +32,7 @@ export interface Member {
 export interface AddMemberSocketResponse {
     userId: string;
     socketId: string;
+    lastSeen?: string;
 }
 
 export interface NewMessageSocketResponse {

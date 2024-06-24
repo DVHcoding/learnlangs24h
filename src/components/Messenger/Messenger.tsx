@@ -24,11 +24,12 @@ import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi'
 import { toastError } from '@components/Toast/Toasts';
 import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMessagesQuery, useGetMyChatsQuery } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
-import { ADD_USER, NEW_MESSAGE } from '@constants/events';
+import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
 import { AddMemberSocketResponse, Message, NewMessageSocketResponse, MessageSocketResponse } from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
+import { formatTimeAgo } from '@utils/formatTimeAgo';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -55,13 +56,20 @@ const Messenger: React.FC = () => {
 
     const [emojiShow, setEmojiShow] = useState<boolean>(false);
     const [onlineUsers, setOnlineUsers] = useState<AddMemberSocketResponse[]>([]);
+    const [offlineUsers, setOfflineUsers] = useState<AddMemberSocketResponse[]>([]);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
     const oldMessagesChunk = useGetMessagesQuery({ chatId: chatId || 'undefined', page: page });
     const { data: userDetails } = useUserDetailsQuery();
-    const { data: myChats, isError: myChatsIsError, error: myChatsError, isLoading: myChatsLoading } = useGetMyChatsQuery();
+    const {
+        data: myChats,
+        isError: myChatsIsError,
+        error: myChatsError,
+        isLoading: myChatsLoading,
+        refetch: myChatsRefetch,
+    } = useGetMyChatsQuery();
     const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
@@ -150,6 +158,11 @@ const Messenger: React.FC = () => {
         [chatId]
     );
 
+    const offlineUserListener = useCallback((data: AddMemberSocketResponse[]) => {
+        console.log('OFFLINE_USER:', data);
+        setOfflineUsers(data);
+    }, []);
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
@@ -171,6 +184,7 @@ const Messenger: React.FC = () => {
     const eventHandler = {
         [ADD_USER]: addUserListener,
         [NEW_MESSAGE]: newMessageListener,
+        [OFFLINE_USERS]: offlineUserListener,
     };
 
     useSocketEvents(socket, eventHandler);
@@ -226,17 +240,10 @@ const Messenger: React.FC = () => {
         if (chatId) {
             localStorage.setItem('chatId', chatId);
         }
+
+        myChatsRefetch();
     }, [chatId]);
 
-    useEffect(() => {
-        const shouldNavigate = (!oldMessagesChunk.data?.success && !oldMessagesChunk.isLoading) || (!myChats?.success && !myChatsLoading);
-
-        if (shouldNavigate) {
-            navigate('/messages/new');
-        }
-    }, [myChats?.success, oldMessagesChunk.data?.success, navigate]);
-
-    console.log(onlineUsers);
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
@@ -342,10 +349,15 @@ const Messenger: React.FC = () => {
                         </div>
                         <div className="flex-1 select-none py-2">
                             <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
-                            {online ? (
-                                <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
-                            ) : (
-                                <p className="text-[0.8rem] font-normal text-textBlackGray">Offline</p>
+                            {online && <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>}
+
+                            {offlineUsers.map(
+                                (offlineUser) =>
+                                    offlineUser.userId === receiver?._id && (
+                                        <p className="text-[0.8rem] font-normal text-textBlackGray" key={offlineUser.userId}>
+                                            Hoạt động {formatTimeAgo(offlineUser.lastSeen as string)}
+                                        </p>
+                                    )
                             )}
                         </div>
                     </div>
