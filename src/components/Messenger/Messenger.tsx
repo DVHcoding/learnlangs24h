@@ -224,15 +224,6 @@ const Messenger: React.FC = () => {
     }, [messages]);
 
     useEffect(() => {
-        return () => {
-            setMessage('');
-            setMessages([]);
-            setOldMessages([]);
-            setPage(0);
-        };
-    }, [chatId]);
-
-    useEffect(() => {
         if (bottomRef.current) {
             bottomRef.current.scrollTo(0, bottomRef.current.scrollHeight);
         }
@@ -242,6 +233,13 @@ const Messenger: React.FC = () => {
         }
 
         myChatsRefetch();
+
+        return () => {
+            setMessage('');
+            setMessages([]);
+            setOldMessages([]);
+            setPage(0);
+        };
     }, [chatId]);
 
     return (
