@@ -71,6 +71,14 @@ const Navbar: React.FC = () => {
     /* ########################################################################## */
     const chatId = localStorage.getItem('chatId');
 
+    let targetChatId: string = 'new'; // Giá trị mặc định là 'new'
+
+    if (chatId) {
+        targetChatId = chatId;
+    } else if (myChats?.data?.success && myChats.data.chats.length > 0) {
+        targetChatId = myChats.data.chats[0]._id;
+    }
+
     const data: string[] = [
         'Eugenia',
         'Bryan',
@@ -154,7 +162,7 @@ const Navbar: React.FC = () => {
                 </div>
 
                 {/* Message */}
-                <Link to={`/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}`} aria-label="Messages">
+                <Link to={`/messages/${targetChatId}`} aria-label="Messages">
                     <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
                 </Link>
 

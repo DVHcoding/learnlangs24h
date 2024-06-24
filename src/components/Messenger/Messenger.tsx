@@ -54,6 +54,7 @@ const Messenger: React.FC = () => {
     const [page, setPage] = useState<number>(1);
 
     const [emojiShow, setEmojiShow] = useState<boolean>(false);
+    const [onlineUsers, setOnlineUsers] = useState<AddMemberSocketResponse[]>([]);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -71,6 +72,10 @@ const Messenger: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
+
+    const online = useMemo(() => {
+        return onlineUsers.find((onlineUser) => onlineUser.userId === receiver?._id);
+    }, [userId, chatDetails.data, onlineUsers]);
 
     const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
         bottomRef,
@@ -132,6 +137,7 @@ const Messenger: React.FC = () => {
 
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
+        setOnlineUsers(data);
     }, []);
 
     const newMessageListener = useCallback(
@@ -222,6 +228,15 @@ const Messenger: React.FC = () => {
         }
     }, [chatId]);
 
+    useEffect(() => {
+        const shouldNavigate = (!oldMessagesChunk.data?.success && !oldMessagesChunk.isLoading) || (!myChats?.success && !myChatsLoading);
+
+        if (shouldNavigate) {
+            navigate('/messages/new');
+        }
+    }, [myChats?.success, oldMessagesChunk.data?.success, navigate]);
+
+    console.log(onlineUsers);
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Sidebar */}
@@ -277,7 +292,7 @@ const Messenger: React.FC = () => {
                 {/* Chat Sidebar */}
                 {!searchVisible && !myChatsLoading && (
                     <ul>
-                        {myChats?.chats.map((chat: Chat) => (
+                        {myChats?.chats?.map((chat: Chat) => (
                             <Link to={`/messages/${chat._id}`} key={chat._id} style={{ textDecoration: 'none' }}>
                                 <li
                                     className={`flex cursor-pointer items-center gap-3 rounded-md ${
@@ -286,7 +301,12 @@ const Messenger: React.FC = () => {
                                 >
                                     <Avatar.Group>
                                         {chat.avatar.map((avatar, index: number) => (
-                                            <Avatar src={avatar} size={45} key={index} />
+                                            <div key={index} className="relative">
+                                                <Avatar src={avatar} size={45} />
+                                                {onlineUsers.find((onlineUser) => chat.members.includes(onlineUser.userId)) && (
+                                                    <div className="absolute bottom-0.5 right-1 h-2 w-2 rounded-full bg-green-400 outline outline-white"></div>
+                                                )}
+                                            </div>
                                         ))}
                                     </Avatar.Group>
 
@@ -316,11 +336,17 @@ const Messenger: React.FC = () => {
                     <div className="flex items-center gap-2 border-t border-bdCustom2 px-2 shadow">
                         <div className="relative">
                             <Avatar src={receiver?.photo.url} size={45} />
-                            <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
+                            {online && (
+                                <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
+                            )}
                         </div>
                         <div className="flex-1 select-none py-2">
                             <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
-                            <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+                            {online ? (
+                                <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+                            ) : (
+                                <p className="text-[0.8rem] font-normal text-textBlackGray">Offline</p>
+                            )}
                         </div>
                     </div>
 

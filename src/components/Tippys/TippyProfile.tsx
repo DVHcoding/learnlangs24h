@@ -19,6 +19,10 @@ const TippyProfile: React.FC = () => {
 
     const logoutHandler = async (): Promise<void> => {
         try {
+            if (localStorage.getItem('chatId')) {
+                localStorage.removeItem('chatId');
+            }
+
             const { data: dataLogoutResponse }: any = await logoutUser();
 
             if (dataLogoutResponse?.success) {

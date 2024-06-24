@@ -25,6 +25,14 @@ const Sidebar: React.FC = () => {
     const myChats = useGetMyChatsQuery();
     const chatId = localStorage.getItem('chatId');
 
+    let targetChatId: string = 'new'; // Giá trị mặc định là 'new'
+
+    if (chatId) {
+        targetChatId = chatId;
+    } else if (myChats?.data?.success && myChats.data.chats.length > 0) {
+        targetChatId = myChats.data.chats[0]._id;
+    }
+
     // Style sidebar
     const panelStyles: React.CSSProperties = {
         textTransform: 'uppercase',
@@ -134,10 +142,10 @@ const Sidebar: React.FC = () => {
                         {/*=========================================*/}
                         <Nav.Item
                             className={`${
-                                activePage === `/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}` ? 'before:h-8' : 'before:h-0'
+                                activePage === `/messages/${targetChatId}` ? 'before:h-8' : 'before:h-0'
                             } bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                           before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
-                            onClick={() => redirect(`/messages/${chatId || myChats.data?.chats[0]?._id || 'new'}`)}
+                            onClick={() => redirect(`/messages/${targetChatId}`)}
                             eventKey="4"
                             icon={<GroupsOutlinedIcon color="action" fontSize="small" className="absolute left-5 text-textSidebar" />}
                         >
