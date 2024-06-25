@@ -99,14 +99,8 @@ const Messenger: React.FC = () => {
     const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
         bottomRef,
         oldMessagesChunk.data?.totalPages as number,
-        page,
-        () => {
-            if (page === 0) {
-                setPage(2);
-            } else {
-                setPage((prev) => prev + 1);
-            }
-        },
+        1,
+        setPage,
         oldMessagesChunk.data?.messages as Message[]
     );
 
