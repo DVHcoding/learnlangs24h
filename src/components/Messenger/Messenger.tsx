@@ -345,6 +345,7 @@ const Messenger: React.FC = () => {
                                 <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>
                             )}
                         </div>
+
                         <div className="flex-1 select-none py-2">
                             <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
                             {online && <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>}
@@ -361,7 +362,6 @@ const Messenger: React.FC = () => {
                     </div>
 
                     {/* Body */}
-
                     <ul
                         className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
                         style={{ height: 'calc(100% - 6.3rem)' }}

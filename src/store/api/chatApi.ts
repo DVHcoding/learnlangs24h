@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { ChatDetailsResponse, GetMessageResponse } from 'types/chatApi-types';
+import { ChatDetailsResponse, ChatUserStatusResponse, GetMessageResponse } from 'types/chatApi-types';
 import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
 export const chatApi = createApi({
@@ -44,6 +44,10 @@ export const chatApi = createApi({
             keepUnusedDataFor: 0, // Sử dụng để không lưu cached. Giúp dữ liệu luôn mới nhưng sẽ làm hệ thống chịu tải nhiều hơn
         }),
 
+        getUserStatus: builder.query<ChatUserStatusResponse, { userId: string }>({
+            query: ({ userId }) => `/chat/user/status?userId=${userId}`,
+        }),
+
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
@@ -67,4 +71,11 @@ export const chatApi = createApi({
     }),
 });
 
-export const { useGetMyChatsQuery, useGetChatDetailsQuery, useGetMessagesQuery, useNewGroupMutation, useGetChatByIdMutation } = chatApi;
+export const {
+    useGetMyChatsQuery,
+    useGetChatDetailsQuery,
+    useGetMessagesQuery,
+    useGetUserStatusQuery,
+    useNewGroupMutation,
+    useGetChatByIdMutation,
+} = chatApi;

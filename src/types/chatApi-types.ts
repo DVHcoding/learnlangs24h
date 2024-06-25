@@ -9,6 +9,18 @@ export interface GetMessageResponse {
     totalPages: number;
 }
 
+export interface ChatUserStatusResponse {
+    success: boolean;
+    userStatus: UserStatus;
+}
+
+export interface UserStatus {
+    _id: string;
+    userId: string;
+    lastOnline: Date;
+    __v: number;
+}
+
 export interface Chat {
     _id: string;
     name: string;
