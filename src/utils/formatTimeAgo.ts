@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 
 function formatTimeAgo(timestamp: string) {
-    if (!timestamp.trim()) {
+    if (!timestamp) {
         return;
     }
 

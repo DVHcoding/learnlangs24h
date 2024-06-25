@@ -22,7 +22,13 @@ import userDebounce from '@hooks/userDebounce';
 import { Chat, UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
-import { useGetChatByIdMutation, useGetChatDetailsQuery, useGetMessagesQuery, useGetMyChatsQuery } from '@store/api/chatApi';
+import {
+    useGetChatByIdMutation,
+    useGetChatDetailsQuery,
+    useGetMessagesQuery,
+    useGetMyChatsQuery,
+    useGetUserStatusQuery,
+} from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS } from '@constants/events';
 import { useSocket } from '@utils/socket';
@@ -80,6 +86,7 @@ const Messenger: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
+    const { data: userStatus } = useGetUserStatusQuery({ userId: receiver?._id || 'undefined' });
 
     const online = useMemo(() => {
         return onlineUsers.find((onlineUser) => onlineUser.userId === receiver?._id);
@@ -96,6 +103,10 @@ const Messenger: React.FC = () => {
     const allMessages = useMemo(() => {
         return [...(oldMessages as Message[]), ...(messages as Message[])];
     }, [oldMessages, messages]);
+
+    const lastOnlineTime = useMemo(() => {
+        return offlineUsers.find((offlineUser) => offlineUser.userId === receiver?._id)?.lastSeen || userStatus?.userStatus?.lastOnline;
+    }, [receiver, offlineUsers, userStatus]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -348,15 +359,12 @@ const Messenger: React.FC = () => {
 
                         <div className="flex-1 select-none py-2">
                             <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
-                            {online && <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>}
-
-                            {offlineUsers.map(
-                                (offlineUser) =>
-                                    offlineUser.userId === receiver?._id && (
-                                        <p className="text-[0.8rem] font-normal text-textBlackGray" key={offlineUser.userId}>
-                                            Hoạt động {formatTimeAgo(offlineUser.lastSeen as string)}
-                                        </p>
-                                    )
+                            {online ? (
+                                <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
+                            ) : (
+                                <p className="text-[0.8rem] font-normal text-textBlackGray">
+                                    Hoạt động {formatTimeAgo(lastOnlineTime as string)}
+                                </p>
                             )}
                         </div>
                     </div>
