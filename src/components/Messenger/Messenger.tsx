@@ -67,8 +67,10 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
-    const oldMessagesChunk = useGetMessagesQuery({ chatId: chatId || 'undefined', page: page });
+    const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page }, { skip: !chatId });
+
     const { data: userDetails } = useUserDetailsQuery();
+
     const {
         data: myChats,
         isError: myChatsIsError,
@@ -76,7 +78,8 @@ const Messenger: React.FC = () => {
         isLoading: myChatsLoading,
         refetch: myChatsRefetch,
     } = useGetMyChatsQuery();
-    const chatDetails = useGetChatDetailsQuery({ chatId, skip: !chatId });
+
+    const chatDetails = useGetChatDetailsQuery({ chatId }, { skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
 
@@ -86,7 +89,7 @@ const Messenger: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
-    const { data: userStatus } = useGetUserStatusQuery({ userId: receiver?._id || 'undefined' });
+    const { data: userStatus } = useGetUserStatusQuery({ userId: receiver?._id }, { skip: !receiver?._id });
 
     const online = useMemo(() => {
         return onlineUsers.find((onlineUser) => onlineUser.userId === receiver?._id);
@@ -313,22 +316,17 @@ const Messenger: React.FC = () => {
                                 <li
                                     className={`flex cursor-pointer items-center gap-3 rounded-md ${
                                         chatId === chat._id ? 'bg-bgHoverGrayDark' : ''
-                                    } hover:bg-bgHoverGrayDark`}
+                                    } py-1 hover:bg-bgHoverGrayDark`}
                                 >
                                     <Avatar.Group>
-                                        {chat.avatar.map((avatar, index: number) => (
-                                            <div key={index} className="relative">
-                                                <Avatar src={avatar} size={45} />
-                                                {onlineUsers.find((onlineUser) => chat.members.includes(onlineUser.userId)) && (
-                                                    <div className="absolute bottom-0.5 right-1 h-2 w-2 rounded-full bg-green-400 outline outline-white"></div>
-                                                )}
-                                            </div>
+                                        {chat.avatar.map((avatar: string, index: number) => (
+                                            <Avatar src={avatar} size={45} key={index} />
                                         ))}
                                     </Avatar.Group>
 
                                     <div className="flex-1 select-none py-2">
                                         <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
-                                        <p className="text-textBlackGray">.....</p>
+                                        <p className="text-textBlackGray">Tin nhắn mới nhất!</p>
                                     </div>
                                 </li>
                             </Link>

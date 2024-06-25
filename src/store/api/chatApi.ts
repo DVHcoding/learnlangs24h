@@ -34,17 +34,17 @@ export const chatApi = createApi({
             providesTags: ['Chat'],
         }),
 
-        getChatDetails: builder.query<ChatDetailsResponse, { chatId: string | undefined; skip: boolean }>({
+        getChatDetails: builder.query<ChatDetailsResponse, { chatId: string | undefined }>({
             query: ({ chatId }) => `/chat/details/${chatId}`,
             providesTags: ['Chat'],
         }),
 
-        getMessages: builder.query<GetMessageResponse, { chatId: string; page: number }>({
+        getMessages: builder.query<GetMessageResponse, { chatId: string | undefined; page: number }>({
             query: ({ chatId, page }) => `/message/${chatId}?page=${page}`,
             keepUnusedDataFor: 0, // Sử dụng để không lưu cached. Giúp dữ liệu luôn mới nhưng sẽ làm hệ thống chịu tải nhiều hơn
         }),
 
-        getUserStatus: builder.query<ChatUserStatusResponse, { userId: string }>({
+        getUserStatus: builder.query<ChatUserStatusResponse, { userId: string | undefined }>({
             query: ({ userId }) => `/chat/user/status?userId=${userId}`,
         }),
 
