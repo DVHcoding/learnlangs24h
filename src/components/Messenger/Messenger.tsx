@@ -36,6 +36,7 @@ import useSocketEvents from '@hooks/useSocketEvents';
 import { AddMemberSocketResponse, Message, NewMessageSocketResponse, MessageSocketResponse } from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import { formatTimeAgo } from '@utils/formatTimeAgo';
+import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -99,7 +100,13 @@ const Messenger: React.FC = () => {
         bottomRef,
         oldMessagesChunk.data?.totalPages as number,
         page,
-        setPage,
+        () => {
+            if (page === 0) {
+                setPage(2);
+            } else {
+                setPage((prev) => prev + 1);
+            }
+        },
         oldMessagesChunk.data?.messages as Message[]
     );
 
@@ -160,12 +167,23 @@ const Messenger: React.FC = () => {
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
         setOnlineUsers(data);
+
+        return () => {
+            socket.off(ADD_USER);
+        };
     }, []);
 
     const newMessageListener = useCallback(
         (data: NewMessageSocketResponse) => {
             console.log(data);
             if (data.chatId !== chatId) return;
+
+            ////////////////////////////////////////////////////
+            const sound = new Audio(newMessageSound);
+            if (data.sender !== userId) {
+                sound.play();
+            }
+            ////////////////////////////////////////////////////
 
             setMessages((prev) => [...prev, data.message]);
         },
@@ -175,6 +193,10 @@ const Messenger: React.FC = () => {
     const offlineUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('OFFLINE_USER:', data);
         setOfflineUsers(data);
+
+        return () => {
+            socket.off(OFFLINE_USERS);
+        };
     }, []);
 
     /* ########################################################################## */
@@ -238,10 +260,6 @@ const Messenger: React.FC = () => {
     }, [messages]);
 
     useEffect(() => {
-        if (bottomRef.current) {
-            bottomRef.current.scrollTo(0, bottomRef.current.scrollHeight);
-        }
-
         if (chatId) {
             localStorage.setItem('chatId', chatId);
         }

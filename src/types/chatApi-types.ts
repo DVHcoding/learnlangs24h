@@ -50,6 +50,7 @@ export interface AddMemberSocketResponse {
 export interface NewMessageSocketResponse {
     chatId: string;
     message: MessageSocketResponse;
+    sender: string;
 }
 
 export interface MessageSocketResponse {
