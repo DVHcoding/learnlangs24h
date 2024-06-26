@@ -132,6 +132,11 @@ const Messenger: React.FC = () => {
     const lastMessageId = useMemo(() => {
         return allMessages[allMessages.length - 1]?._id;
     }, [allMessages]);
+
+    const lastSenderId = useMemo(() => {
+        return allMessages[allMessages.length - 1]?.sender._id;
+    }, [allMessages]);
+
     ////////////////////////////////////////////////////////////////////////////////
 
     /* ########################################################################## */
@@ -300,7 +305,13 @@ const Messenger: React.FC = () => {
 
     useEffect(() => {
         setTimeout(() => {
-            socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+            if (lastMessage.seen) {
+                return;
+            }
+
+            if (lastSenderId !== userId) {
+                socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+            }
         }, 1000);
     }, [chatId, messages]);
 
