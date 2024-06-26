@@ -78,7 +78,7 @@ const Messenger: React.FC = () => {
     /* ########################################################################## */
     const oldMessagesChunk = useGetMessagesQuery({ chatId, page: page }, { skip: !chatId });
 
-    const { data: userDetails } = useUserDetailsQuery();
+    const { data: userDetails, refetch: userDetailsRefetch } = useUserDetailsQuery();
 
     const {
         data: myChats,
@@ -176,6 +176,7 @@ const Messenger: React.FC = () => {
 
         socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
         setMessage('');
+        setLastMessage({ sender: '', seen: false });
     };
 
     const addEmoji = (emojiData: any) => {
@@ -195,7 +196,7 @@ const Messenger: React.FC = () => {
     }, []);
 
     const newMessageListener = useCallback(
-        (data: NewMessageSocketResponse) => {
+        async (data: NewMessageSocketResponse) => {
             if (data.chatId !== chatId) return;
 
             ////////////////////////////////////////////////////
@@ -207,8 +208,15 @@ const Messenger: React.FC = () => {
             ////////////////////////////////////////////////////
 
             setMessages((prev) => [...prev, data.message]);
+
+            ////////////////////////////////////////////////////
+            if (data.sender !== userId && data.chatId === chatId) {
+                await userDetailsRefetch();
+                socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+            }
+            ////////////////////////////////////////////////////
         },
-        [chatId]
+        [chatId, members]
     );
 
     const offlineUserListener = useCallback((data: AddMemberSocketResponse[]) => {
@@ -222,7 +230,8 @@ const Messenger: React.FC = () => {
 
     const seenMessageListener = useCallback(
         (data: SeenMessageSocketResponse) => {
-            console.log(data);
+            if (data.chatId !== chatId) return;
+            setLastMessage({ sender: data.lastMessage.sender, seen: data.lastMessage.seen });
         },
         [chatId]
     );
@@ -304,16 +313,17 @@ const Messenger: React.FC = () => {
     }, [chatId]);
 
     useEffect(() => {
-        setTimeout(() => {
+        setTimeout(async () => {
             if (lastMessage.seen) {
                 return;
             }
 
             if (lastSenderId !== userId) {
+                await userDetailsRefetch();
                 socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
             }
         }, 1000);
-    }, [chatId, messages]);
+    }, [chatId, messages, members, lastSenderId]);
 
     useEffect(() => {
         const lastMessage = chatDetails.data?.chat?.lastMessage;
@@ -448,7 +458,7 @@ const Messenger: React.FC = () => {
                                 <div
                                     className={`max-w-[33rem] ${
                                         userDetails?.user._id === message.sender._id ? 'ml-auto' : ''
-                                    } flex flex-col items-center`}
+                                    } flex flex-col items-end`}
                                 >
                                     <p
                                         className={`max-w-[33rem] ${
@@ -459,9 +469,8 @@ const Messenger: React.FC = () => {
                                     </p>
 
                                     {message._id === lastMessageId && (
-                                        <p className="mt-1 max-w-max text-xs leading-tight">
-                                            {message.sender._id === userId &&
-                                                (lastMessage.sender === message.sender._id && lastMessage.seen ? 'Đã xem' : 'Đã gửi')}
+                                        <p className="mr-1 mt-1 max-w-max text-xs leading-tight text-textCustom">
+                                            {message.sender._id === userId && (lastMessage.seen ? 'Đã xem' : 'Đã gửi')}
                                         </p>
                                     )}
                                 </div>
