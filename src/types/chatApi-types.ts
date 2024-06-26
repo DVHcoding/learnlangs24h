@@ -27,6 +27,11 @@ export interface Chat {
     groupChat: boolean;
     creator: string;
     members: Member[];
+    lastMessage?: {
+        content?: string;
+        seen: boolean;
+        sender: string;
+    };
     createdAt: Date;
     updatedAt: Date;
     __v: number;
@@ -44,7 +49,16 @@ export interface Member {
 export interface AddMemberSocketResponse {
     userId: string;
     socketId: string;
-    lastSeen?: string;
+    lastOnline?: string;
+}
+
+export interface SeenMessageSocketResponse {
+    chatId: string;
+    lastMessage: {
+        _id: string;
+        sender: string;
+        seen: boolean;
+    };
 }
 
 export interface NewMessageSocketResponse {

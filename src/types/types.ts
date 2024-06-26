@@ -54,3 +54,8 @@ export interface GetUnitLessonIdByUserProcessResponseType {
     userProcessStatus?: UserProcessStatus;
     message?: string;
 }
+
+export interface LastMessageStatusType {
+    sender: string | undefined;
+    seen: boolean | undefined;
+}

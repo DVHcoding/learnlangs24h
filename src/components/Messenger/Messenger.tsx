@@ -30,13 +30,20 @@ import {
     useGetUserStatusQuery,
 } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
-import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS } from '@constants/events';
+import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS, SEEN_MESSAGE } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
-import { AddMemberSocketResponse, Message, NewMessageSocketResponse, MessageSocketResponse } from 'types/chatApi-types';
+import {
+    AddMemberSocketResponse,
+    Message,
+    NewMessageSocketResponse,
+    MessageSocketResponse,
+    SeenMessageSocketResponse,
+} from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import { formatTimeAgo } from '@utils/formatTimeAgo';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
+import { LastMessageStatusType } from 'types/types';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -59,6 +66,7 @@ const Messenger: React.FC = () => {
     const [friends, setFriends] = useState<UserDetailsType[]>([]);
     const [message, setMessage] = useState<string>('');
     const [messages, setMessages] = useState<MessageSocketResponse[]>([]);
+    const [lastMessage, setLastMessage] = useState<LastMessageStatusType>({ sender: '', seen: false });
     const [page, setPage] = useState<number>(1);
 
     const [emojiShow, setEmojiShow] = useState<boolean>(false);
@@ -90,12 +98,11 @@ const Messenger: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
     const members = useMemo(() => chatDetails.data?.chat?.members.map((member) => member._id), [chatDetails.data]);
     const receiver = useMemo(() => chatDetails.data?.chat?.members.find((member) => member._id !== userId), [chatDetails.data, userId]);
+
+    ////////////////////////////////////////////////////////////////////////////////
     const { data: userStatus } = useGetUserStatusQuery({ userId: receiver?._id }, { skip: !receiver?._id });
 
-    const online = useMemo(() => {
-        return onlineUsers.find((onlineUser) => onlineUser.userId === receiver?._id);
-    }, [userId, chatDetails.data, onlineUsers]);
-
+    ////////////////////////////////////////////////////////////////////////////////
     const { data: oldMessages, setData: setOldMessages } = useInfiniteScrollTop(
         bottomRef,
         oldMessagesChunk.data?.totalPages as number,
@@ -103,14 +110,29 @@ const Messenger: React.FC = () => {
         setPage,
         oldMessagesChunk.data?.messages as Message[]
     );
+    ////////////////////////////////////////////////////////////////////////////////
 
+    ////////////////////////////////////////////////////////////////////////////////
+    // Tìm tất cả những người nhận tin nhắn đang online
+    const online = useMemo(() => {
+        return onlineUsers.find((onlineUser) => onlineUser.userId === receiver?._id);
+    }, [userId, chatDetails.data, onlineUsers]);
+
+    // Lấy tất cả tin nhắn từ database + với tin nhắn socket
     const allMessages = useMemo(() => {
         return [...(oldMessages as Message[]), ...(messages as Message[])];
     }, [oldMessages, messages]);
 
+    // Lấy thời gian online lần cuối
     const lastOnlineTime = useMemo(() => {
-        return offlineUsers.find((offlineUser) => offlineUser.userId === receiver?._id)?.lastSeen || userStatus?.userStatus?.lastOnline;
+        return offlineUsers.find((offlineUser) => offlineUser.userId === receiver?._id)?.lastOnline || userStatus?.userStatus?.lastOnline;
     }, [receiver, offlineUsers, userStatus]);
+
+    // Lấy ra id của tin nhắn cuối cùng
+    const lastMessageId = useMemo(() => {
+        return allMessages[allMessages.length - 1]?._id;
+    }, [allMessages]);
+    ////////////////////////////////////////////////////////////////////////////////
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -169,11 +191,11 @@ const Messenger: React.FC = () => {
 
     const newMessageListener = useCallback(
         (data: NewMessageSocketResponse) => {
-            console.log(data);
             if (data.chatId !== chatId) return;
 
             ////////////////////////////////////////////////////
             const sound = new Audio(newMessageSound);
+
             if (data.sender !== userId) {
                 sound.play();
             }
@@ -192,6 +214,13 @@ const Messenger: React.FC = () => {
             socket.off(OFFLINE_USERS);
         };
     }, []);
+
+    const seenMessageListener = useCallback(
+        (data: SeenMessageSocketResponse) => {
+            console.log(data);
+        },
+        [chatId]
+    );
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -215,6 +244,7 @@ const Messenger: React.FC = () => {
         [ADD_USER]: addUserListener,
         [NEW_MESSAGE]: newMessageListener,
         [OFFLINE_USERS]: offlineUserListener,
+        [SEEN_MESSAGE]: seenMessageListener,
     };
 
     useSocketEvents(socket, eventHandler);
@@ -267,6 +297,19 @@ const Messenger: React.FC = () => {
             setPage(0);
         };
     }, [chatId]);
+
+    useEffect(() => {
+        setTimeout(() => {
+            socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+        }, 1000);
+    }, [chatId, messages]);
+
+    useEffect(() => {
+        const lastMessage = chatDetails.data?.chat?.lastMessage;
+        if (lastMessage) {
+            setLastMessage({ sender: lastMessage.sender, seen: lastMessage.seen });
+        }
+    }, [chatDetails]);
 
     return (
         <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -391,13 +434,26 @@ const Messenger: React.FC = () => {
                             <li className="mr-2 flex gap-2" key={message._id}>
                                 {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
 
-                                <p
+                                <div
                                     className={`max-w-[33rem] ${
-                                        userDetails?.user._id === message.sender._id ? 'ml-auto bg-blue-500 text-white' : ''
-                                    } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                                        userDetails?.user._id === message.sender._id ? 'ml-auto' : ''
+                                    } flex flex-col items-center`}
                                 >
-                                    {message.content}
-                                </p>
+                                    <p
+                                        className={`max-w-[33rem] ${
+                                            userDetails?.user._id === message.sender._id ? ' bg-blue-500 text-white' : ''
+                                        } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                                    >
+                                        {message.content}
+                                    </p>
+
+                                    {message._id === lastMessageId && (
+                                        <p className="mt-1 max-w-max text-xs leading-tight">
+                                            {message.sender._id === userId &&
+                                                (lastMessage.sender === message.sender._id && lastMessage.seen ? 'Đã xem' : 'Đã gửi')}
+                                        </p>
+                                    )}
+                                </div>
                             </li>
                         ))}
                     </ul>
