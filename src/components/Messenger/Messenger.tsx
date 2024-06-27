@@ -1,6 +1,6 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+/* ########################################################################## */
+/*                                 IMPORT NPM                                 */
+/* ########################################################################## */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
@@ -14,9 +14,9 @@ import { LoadingOutlined } from '@ant-design/icons';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+/* ########################################################################## */
+/*                              IMPORT COMPONENTS                             */
+/* ########################################################################## */
 import TippyProvider from '@components/Tippys/TippyProvider';
 import userDebounce from '@hooks/userDebounce';
 import { Chat, UserDetailsType } from 'types/api-types';
