@@ -52,32 +52,6 @@ export interface AddMemberSocketResponse {
     lastOnline?: string;
 }
 
-export interface SeenMessageSocketResponse {
-    chatId: string;
-    lastMessage: {
-        _id: string;
-        sender: string;
-        seen: boolean;
-    };
-}
-
-export interface NewMessageSocketResponse {
-    chatId: string;
-    message: MessageSocketResponse;
-    sender: string;
-}
-
-export interface MessageSocketResponse {
-    _id: string;
-    chat: string;
-    content: string;
-    createdAt: Date;
-    sender: {
-        name: string;
-        _id: string;
-    };
-}
-
 export interface Message {
     content: string;
     _id: string;
