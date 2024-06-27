@@ -13,6 +13,7 @@ import { useInfiniteScrollTop } from '6pp';
 import { LoadingOutlined } from '@ant-design/icons';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
+import { FaArrowsLeftRight } from 'react-icons/fa6';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -72,6 +73,8 @@ const Messenger: React.FC = () => {
     const [emojiShow, setEmojiShow] = useState<boolean>(false);
     const [onlineUsers, setOnlineUsers] = useState<AddMemberSocketResponse[]>([]);
     const [offlineUsers, setOfflineUsers] = useState<AddMemberSocketResponse[]>([]);
+
+    const [isOpen, setIsOpen] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -186,6 +189,7 @@ const Messenger: React.FC = () => {
         setMessage(message + emoji);
     };
 
+    ///////////////////////////////////////////////////////////////////////////////
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
         setOnlineUsers(data);
@@ -235,6 +239,7 @@ const Messenger: React.FC = () => {
         },
         [chatId]
     );
+    ///////////////////////////////////////////////////////////////////////////////
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -333,9 +338,19 @@ const Messenger: React.FC = () => {
     }, [chatDetails]);
 
     return (
-        <div className="flex overflow-hidden" style={{ height: 'calc(100% - 3.8rem)' }}>
+        <div className="flex overflow-hidden pm:block" style={{ height: 'calc(100% - 3.8rem)' }}>
+            <div className="btn-primary fixed top-4 hidden select-none sm:block" onClick={() => setIsOpen(!isOpen)}>
+                <FaArrowsLeftRight />
+            </div>
+
             {/* Sidebar */}
-            <div className="w-[22rem] overflow-auto border-r border-t border-bdCustom2">
+            <div
+                className={`w-[22rem] overflow-auto border-r border-t border-bdCustom2 bg-bgCustom sm:fixed 
+                sm:z-10 sm:h-full sm:w-[60%] pm:fixed pm:z-10 pm:h-full pm:w-[40%] tablet:w-[40%] ${
+                    isOpen ? 'sm:translate-x-0 pm:translate-x-0 ' : 'sm:translate-x-[-110%] pm:translate-x-[-110%]'
+                } 
+                transition-all duration-300 `}
+            >
                 <h2 className="font-bold text-textBlackGray">Đoạn chat</h2>
 
                 {/* search */}
@@ -393,6 +408,7 @@ const Messenger: React.FC = () => {
                                     className={`flex cursor-pointer items-center gap-3 rounded-md ${
                                         chatId === chat._id ? 'bg-bgHoverGrayDark' : ''
                                     } py-1 hover:bg-bgHoverGrayDark`}
+                                    onClick={() => setIsOpen(false)}
                                 >
                                     <Avatar.Group>
                                         {chat.avatar.map((avatar: string, index: number) => (
@@ -412,7 +428,6 @@ const Messenger: React.FC = () => {
             </div>
 
             {/* Content  */}
-
             {!chatDetails.data?.success && !chatDetails.isLoading ? (
                 <div className="grid w-full items-center border-t border-bdCustom2">
                     <div>
@@ -446,14 +461,14 @@ const Messenger: React.FC = () => {
                     {/* Body */}
                     <ul
                         className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
-                        style={{ height: 'calc(100% - 6.3rem)' }}
                         ref={bottomRef}
+                        style={{ height: 'calc(100vh - 11.5rem)' }}
                     >
                         {(oldMessagesChunk.isLoading || oldMessagesChunk.isFetching) && <Spin indicator={<LoadingOutlined spin />} />}
 
                         {allMessages.map((message: Message) => (
                             <li className="mr-2 flex gap-2" key={message._id}>
-                                {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} />}
+                                {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} className="min-w-8" />}
 
                                 <div
                                     className={`max-w-[33rem] ${
