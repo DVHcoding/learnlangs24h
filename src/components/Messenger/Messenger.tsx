@@ -14,6 +14,7 @@ import { LoadingOutlined } from '@ant-design/icons';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import { FaArrowsLeftRight } from 'react-icons/fa6';
+import Lottie from 'lottie-react';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -31,7 +32,7 @@ import {
     useGetUserStatusQuery,
 } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
-import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS, SEEN_MESSAGE } from '@constants/events';
+import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS, SEEN_MESSAGE, START_TYPING, STOP_TYPING } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
 import {
@@ -45,6 +46,7 @@ import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import { formatTimeAgo } from '@utils/formatTimeAgo';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
 import { LastMessageStatusType } from 'types/types';
+import TypingAnimation from '@assets/messenger/Typing.json';
 
 const Messenger: React.FC = () => {
     const socket = useSocket();
@@ -52,6 +54,7 @@ const Messenger: React.FC = () => {
     /*                                    HOOK                                    */
     /* ########################################################################## */
     const bottomRef = useRef<HTMLUListElement>(null);
+    const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -75,6 +78,8 @@ const Messenger: React.FC = () => {
     const [offlineUsers, setOfflineUsers] = useState<AddMemberSocketResponse[]>([]);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
+    const [IamTyping, setIamTyping] = useState<boolean>(false);
+    const [userTyping, setUserTyping] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -189,6 +194,22 @@ const Messenger: React.FC = () => {
         setMessage(message + emoji);
     };
 
+    const messageOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setMessage(e.target.value);
+
+        if (!IamTyping) {
+            socket.emit(START_TYPING, { senderId: userId, chatId, members });
+            setIamTyping(true);
+        }
+
+        if (typingTimeout.current) clearTimeout(typingTimeout.current);
+
+        typingTimeout.current = setTimeout(() => {
+            socket.emit(STOP_TYPING, { senderId: userId, chatId, members });
+            setIamTyping(false);
+        }, 1500);
+    };
+
     ///////////////////////////////////////////////////////////////////////////////
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
@@ -235,10 +256,28 @@ const Messenger: React.FC = () => {
     const seenMessageListener = useCallback(
         (data: SeenMessageSocketResponse) => {
             if (data.chatId !== chatId) return;
-            setLastMessage({ sender: data.lastMessage.sender, seen: data.lastMessage.seen });
+            setLastMessage({ sender: data.lastMessage?.sender, seen: data?.lastMessage?.seen });
         },
         [chatId]
     );
+
+    const startTypingListener = useCallback(
+        (data: { chatId: string }) => {
+            if (data.chatId !== chatId) return;
+            setUserTyping(true);
+        },
+        [chatId]
+    );
+
+    const stopTypingListener = useCallback(
+        (data: { chatId: string }) => {
+            if (data.chatId !== chatId) return;
+
+            setUserTyping(false);
+        },
+        [chatId]
+    );
+
     ///////////////////////////////////////////////////////////////////////////////
 
     /* ########################################################################## */
@@ -264,6 +303,8 @@ const Messenger: React.FC = () => {
         [NEW_MESSAGE]: newMessageListener,
         [OFFLINE_USERS]: offlineUserListener,
         [SEEN_MESSAGE]: seenMessageListener,
+        [START_TYPING]: startTypingListener,
+        [STOP_TYPING]: stopTypingListener,
     };
 
     useSocketEvents(socket, eventHandler);
@@ -300,7 +341,7 @@ const Messenger: React.FC = () => {
         if (bottomRef.current) {
             bottomRef.current.scrollTop = bottomRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, userTyping]);
 
     useEffect(() => {
         if (chatId) {
@@ -491,6 +532,12 @@ const Messenger: React.FC = () => {
                                 </div>
                             </li>
                         ))}
+
+                        {userTyping && (
+                            <div className="w-14">
+                                <Lottie animationData={TypingAnimation} />
+                            </div>
+                        )}
                     </ul>
 
                     {/* Chat bar */}
@@ -506,7 +553,7 @@ const Messenger: React.FC = () => {
                                 className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
                                 value={message}
                                 onFocus={() => setEmojiShow(false)}
-                                onChange={(e) => setMessage(e.target.value)}
+                                onChange={messageOnChange}
                                 placeholder="Aa"
                             />
                             <MdOutlineAddReaction

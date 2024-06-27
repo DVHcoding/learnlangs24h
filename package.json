@@ -33,6 +33,7 @@
         "firebase": "^10.10.0",
         "froala-editor": "^4.1.4",
         "html-react-parser": "^5.1.8",
+        "lottie-react": "^2.4.0",
         "lucide-react": "^0.354.0",
         "react": "^18.2.0",
         "react-calendar-heatmap": "^1.9.0",
