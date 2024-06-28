@@ -25,6 +25,7 @@ import {
     deleteUnitLessonAndFillBlankExerciseReducer,
     deleteLessonAndUnitLessonReducer,
 } from './reducer/courseReducer';
+import { miscReducer } from './reducer/miscReducer';
 
 // ##########################
 export const store = configureStore({
@@ -47,6 +48,8 @@ export const store = configureStore({
         deleteUnitLessonAndVideoLectureContent: deleteUnitLessonAndVideoLectureContentReducer,
         deleteUnitLessonAndFillBlankExercise: deleteUnitLessonAndFillBlankExerciseReducer,
         deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
+
+        misc: miscReducer,
     },
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(userApi.middleware, courseApi.middleware, chatApi.middleware),
 });

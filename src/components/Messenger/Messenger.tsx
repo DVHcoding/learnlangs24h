@@ -2,20 +2,16 @@
 /*                                 IMPORT NPM                                 */
 /* ########################################################################## */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-
 import { IoSearchSharp } from 'react-icons/io5';
 import { GoArrowLeft } from 'react-icons/go';
 import { IoMdSend } from 'react-icons/io';
 import { GoFileMedia } from 'react-icons/go';
 import { FaArrowsLeftRight } from 'react-icons/fa6';
 import { MdOutlineAddReaction } from 'react-icons/md';
-
 import { Avatar, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
-
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteScrollTop } from '6pp';
-
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
 import Lottie from 'lottie-react';

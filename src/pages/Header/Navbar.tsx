@@ -2,11 +2,13 @@
 // #       IMPORT Npm
 // ##################################
 import React, { useEffect, useState } from 'react';
+import { Badge } from 'antd';
 import { AutoComplete, InputGroup, Toggle } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import { MessageCircleMore, Sun } from 'lucide-react';
 import { Link } from 'react-router-dom';
+import { useSelector } from 'react-redux';
 
 // ##################################
 // #       IMPORT Components
@@ -14,19 +16,15 @@ import { Link } from 'react-router-dom';
 import TippyNotify from '@components/Tippys/TippyNotify';
 import TippyProfile from '@components/Tippys/TippyProfile';
 import { useGetMyChatsQuery } from '@store/api/chatApi';
+import { RootState } from '@store/store';
 
 // ##################################
 const Navbar: React.FC = () => {
     type Theme = 'light' | 'dark';
 
     /* ########################################################################## */
-    /*                               REACT ROUTE DOM                              */
-    /* ########################################################################## */
-
-    /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-
     const [theme, setTheme] = useState<Theme>(() => {
         const themeLocal = localStorage.getItem('theme');
 
@@ -63,7 +61,7 @@ const Navbar: React.FC = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
-
+    const { notificationCount } = useSelector((state: RootState) => state.misc);
     const myChats = useGetMyChatsQuery();
 
     /* ########################################################################## */
@@ -163,7 +161,9 @@ const Navbar: React.FC = () => {
 
                 {/* Message */}
                 <Link to={`/messages/${targetChatId}`} aria-label="Messages">
-                    <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
+                    <Badge count={notificationCount} size="small" offset={[1, 3]} color="#f44336l">
+                        <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
+                    </Badge>
                 </Link>
 
                 {/* Notification */}
