@@ -12,7 +12,7 @@ import { adminRoute, protectedRoute, publicRoute } from './routes/routes';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import DefaultLayout from './layouts/DefaultLayout/DefaultLayout';
+import DefaultLayout from '@layouts/DefaultLayout/DefaultLayout';
 import AdminDefaultLayout from '@layouts/AdminDefaultLayout/AdminDefaultLayout';
 import { SocketProvider } from '@utils/socket';
 

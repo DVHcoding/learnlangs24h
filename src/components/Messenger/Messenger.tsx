@@ -568,7 +568,7 @@ const Messenger: React.FC = () => {
 
                             {emojiShow && (
                                 <div className="absolute bottom-12 right-0 select-none">
-                                    <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" />
+                                    <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" emojiButtonSize={30} />
                                 </div>
                             )}
                         </div>
