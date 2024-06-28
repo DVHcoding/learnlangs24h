@@ -20,7 +20,7 @@ const useErrors = (errors: Error[] = []) => {
         errors.forEach(({ isError, error, fallback }) => {
             if (isError || error) {
                 if (fallback) fallback();
-                else toastError('Something went wrong');
+                else toastError(`${isError || error}`);
             }
         });
     }, [errors]);
