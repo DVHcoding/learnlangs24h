@@ -1,14 +1,14 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { Badge } from 'antd';
 import { AutoComplete, InputGroup, Toggle } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
 import NightlightIcon from '@mui/icons-material/Nightlight';
 import { MessageCircleMore, Sun } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { useSelector } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ##################################
 // #       IMPORT Components
@@ -16,18 +16,25 @@ import { useSelector } from 'react-redux';
 import TippyNotify from '@components/Tippys/TippyNotify';
 import TippyProfile from '@components/Tippys/TippyProfile';
 import { useGetMyChatsQuery } from '@store/api/chatApi';
-import { RootState } from '@store/store';
+import { AppDispatch, RootState } from '@store/store';
+import { useSocket } from '@utils/socket';
+import useSocketEvents from '@hooks/useSocketEvents';
+import { NEW_MESSAGE } from '@constants/events';
+import { NewMessageSocketResponse } from 'types/types';
+import { increaseNotification } from '@store/reducer/miscReducer';
+import { useUserDetailsQuery } from '@store/api/userApi';
 
 // ##################################
 const Navbar: React.FC = () => {
-    type Theme = 'light' | 'dark';
-
+    const socket = useSocket();
+    const dispatch: AppDispatch = useDispatch();
+    const { chatId: chatIdParams } = useParams<string>();
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    type Theme = 'light' | 'dark';
     const [theme, setTheme] = useState<Theme>(() => {
         const themeLocal = localStorage.getItem('theme');
-
         let themeBoolean: Theme = 'light';
 
         if (themeLocal === 'false') {
@@ -62,6 +69,7 @@ const Navbar: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { notificationCount } = useSelector((state: RootState) => state.misc);
+    const userDetails = useUserDetailsQuery();
     const myChats = useGetMyChatsQuery();
 
     /* ########################################################################## */
@@ -69,13 +77,17 @@ const Navbar: React.FC = () => {
     /* ########################################################################## */
     const chatId = localStorage.getItem('chatId');
 
-    let targetChatId: string = 'new'; // Giá trị mặc định là 'new'
-
+    ////////////////////////////////////////////////////////////////////////////////
+    // Nếu đã lưu chatId ở localStorage thì lấy nó ra.
+    // Nếu không có ở local thì lấy ra chatId ở myChats đầu tiên
+    // Nếu k thỏa mãn 2 trường hợp trên luôn thì mặc định route = new
+    let targetChatId: string = 'new'; // Giá trị mặc định là 'new
     if (chatId) {
         targetChatId = chatId;
     } else if (myChats?.data?.success && myChats.data.chats.length > 0) {
         targetChatId = myChats.data.chats[0]._id;
     }
+    ////////////////////////////////////////////////////////////////////////////////
 
     const data: string[] = [
         'Eugenia',
@@ -105,14 +117,28 @@ const Navbar: React.FC = () => {
         setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
     };
 
+    const newMessageListener = useCallback(
+        (data: NewMessageSocketResponse) => {
+            // Nếu người nhận đang ở trong đoạn chat thì không được thêm thông báo
+            // Nếu người nhận đang ở một route nào đó hoặc ở một đoạn chat khác thì thông báo
+            if (data.sender !== userDetails?.data?.user?._id && (data.chatId !== chatIdParams || !chatIdParams)) {
+                dispatch(increaseNotification());
+            }
+        },
+        [chatIdParams, chatId]
+    );
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
+    const eventHandler = {
+        [NEW_MESSAGE]: newMessageListener,
+    };
+    useSocketEvents(socket, eventHandler);
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-
     useEffect(() => {
         document.body.classList.add(theme);
 
@@ -161,8 +187,8 @@ const Navbar: React.FC = () => {
 
                 {/* Message */}
                 <Link to={`/messages/${targetChatId}`} aria-label="Messages">
-                    <Badge count={notificationCount} size="small" offset={[1, 3]} color="#f44336l">
-                        <MessageCircleMore strokeWidth={1.6} size={22} className="cursor-pointer text-textCustom" />
+                    <Badge count={notificationCount} size="small" offset={[1, 7]} color="#f44336l">
+                        <MessageCircleMore strokeWidth={1.6} size={22} className="mt-1 cursor-pointer text-textCustom" />
                     </Badge>
                 </Link>
 

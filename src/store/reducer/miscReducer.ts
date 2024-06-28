@@ -8,7 +8,7 @@ import { createSlice } from '@reduxjs/toolkit';
 /* ########################################################################## */
 
 const initialState = {
-    notificationCount: 0,
+    notificationCount: parseInt(localStorage.getItem('notificationCount') || '0', 10) || 0,
 };
 
 export const miscSlice = createSlice({
@@ -17,9 +17,14 @@ export const miscSlice = createSlice({
     reducers: {
         increaseNotification: (state) => {
             state.notificationCount += 1;
+            localStorage.setItem('notificationCount', state.notificationCount.toString());
         },
-        decreaseNotification: (state, action) => {
-            state.notificationCount -= action.payload;
+        decreaseNotification: (state) => {
+            state.notificationCount -= 1;
+            if (state.notificationCount < 0) {
+                state.notificationCount = 0;
+            }
+            localStorage.setItem('notificationCount', state.notificationCount.toString());
         },
         resetNotification: (state) => {
             state.notificationCount = 0;

@@ -41,10 +41,15 @@ import { formatTimeAgo } from '@utils/formatTimeAgo';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
 import { LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
 import TypingAnimation from '@assets/messenger/Typing.json';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@store/store';
+import { decreaseNotification } from '@store/reducer/miscReducer';
+import TypingSound from '@assets/messenger/typingSound.mp3';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
     const socket = useSocket();
+    const dispatch: AppDispatch = useDispatch();
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
@@ -137,7 +142,7 @@ const Messenger: React.FC = () => {
     }, [allMessages]);
 
     const lastSenderId = useMemo(() => {
-        return allMessages[allMessages.length - 1]?.sender._id;
+        return allMessages[allMessages.length - 1]?.sender?._id;
     }, [allMessages]);
 
     ////////////////////////////////////////////////////////////////////////////////
@@ -219,10 +224,10 @@ const Messenger: React.FC = () => {
         async (data: NewMessageSocketResponse) => {
             if (data.chatId !== chatId) return;
 
-            ////////////////////////////////////////////////////
-            const sound = new Audio(newMessageSound);
+            ///////////////////////////////////////////////////
 
             if (data.sender !== userId) {
+                const sound = new Audio(newMessageSound);
                 sound.play();
             }
             ////////////////////////////////////////////////////
@@ -260,6 +265,8 @@ const Messenger: React.FC = () => {
         (data: { chatId: string }) => {
             if (data.chatId !== chatId) return;
             setUserTyping(true);
+            const typingSound = new Audio(TypingSound);
+            typingSound.play();
         },
         [chatId]
     );
@@ -358,14 +365,17 @@ const Messenger: React.FC = () => {
     }, [chatId]);
 
     useEffect(() => {
+        const senderId = lastSenderId;
+
         setTimeout(async () => {
             if (lastMessage.seen) {
                 return;
             }
 
-            if (lastSenderId !== userId) {
+            if (senderId !== userId && senderId) {
                 await userDetailsRefetch();
                 socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+                dispatch(decreaseNotification());
             }
         }, 1000);
     }, [chatId, messages, members, lastSenderId]);
