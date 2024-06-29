@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 
-function formatTimeAgo(timestamp: string) {
+function formatTimeAgo(timestamp: Date) {
     if (!timestamp) {
         return;
     }
