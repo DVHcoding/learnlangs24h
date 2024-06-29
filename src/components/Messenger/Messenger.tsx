@@ -15,7 +15,6 @@ import { useDispatch } from 'react-redux';
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
 /* ########################################################################## */
-
 import userDebounce from '@hooks/userDebounce';
 import { UserDetailsType } from 'types/api-types';
 import { useLazySearchUserQuery, useUserDetailsQuery } from '@store/api/userApi';
@@ -35,14 +34,13 @@ import { AddMemberSocketResponse, Message } from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
 import { LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
-
 import { AppDispatch } from '@store/store';
 import { decreaseNotification } from '@store/reducer/miscReducer';
 import TypingSound from '@assets/messenger/typingSound.mp3';
-import ChatSideBar from './ChatSideBar';
-import SearchBar from './SearchBar';
-import ChatHeader from './ChatHeader';
-import ChatContent from './ChatContent';
+import ChatSideBar from '@components/Messenger/ChatSideBar';
+import SearchBar from '@components/Messenger/SearchBar';
+import ChatHeader from '@components/Messenger/ChatHeader';
+import ChatContent from '@components/Messenger/ChatContent';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
