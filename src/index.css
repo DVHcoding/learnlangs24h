@@ -38,6 +38,7 @@
   /* CSS cho thanh cuộn */
   .scrollbar-mess::-webkit-scrollbar {
     width: 8px;
+    height: 8px;
   }
 
   /* CSS cho nút cuộn (thumb) của thanh cuộn */

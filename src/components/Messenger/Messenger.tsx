@@ -6,6 +6,8 @@ import { IoMdSend } from 'react-icons/io';
 import { GoFileMedia } from 'react-icons/go';
 import { FaArrowsLeftRight } from 'react-icons/fa6';
 import { MdOutlineAddReaction } from 'react-icons/md';
+// import { IoMdClose } from 'react-icons/io';
+import { Tooltip } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteScrollTop } from '6pp';
 import data from '@emoji-mart/data';
@@ -50,6 +52,7 @@ const Messenger: React.FC = () => {
     /*                                    HOOK                                    */
     /* ########################################################################## */
     const bottomRef = useRef<HTMLUListElement>(null);
+    const textAreaRef = useRef<HTMLTextAreaElement>(null);
     const typingTimeout = useRef<ReturnType<typeof setTimeout> | null>(null);
 
     /* ########################################################################## */
@@ -76,6 +79,8 @@ const Messenger: React.FC = () => {
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [IamTyping, setIamTyping] = useState<boolean>(false);
     const [userTyping, setUserTyping] = useState<boolean>(false);
+
+    const [fileInputKey, setFileInputKey] = useState(0);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -174,8 +179,8 @@ const Messenger: React.FC = () => {
         setSearchInputValue('');
     };
 
-    const submitHandler: (e: React.FormEvent<HTMLFormElement>) => void = (e) => {
-        e.preventDefault();
+    const submitHandler: (e?: React.FormEvent<HTMLFormElement>) => void = (e) => {
+        if (e) e.preventDefault();
         if (!message.trim()) return;
 
         socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
@@ -190,7 +195,7 @@ const Messenger: React.FC = () => {
         setMessage(message + emoji);
     };
 
-    const messageOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const messageOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.target.value);
 
         if (!IamTyping) {
@@ -204,6 +209,20 @@ const Messenger: React.FC = () => {
             socket.emit(STOP_TYPING, { senderId: userId, chatId, members });
             setIamTyping(false);
         }, 1500);
+    };
+
+    // Xử lý FILES
+    const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        // Xử lý file ở đây
+        console.log('Đã chọn file:', file);
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+            submitHandler();
+        }
     };
 
     ///////////////////////////////////////////////////////////////////////////////
@@ -383,6 +402,14 @@ const Messenger: React.FC = () => {
         }
     }, [chatDetails]);
 
+    useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.style.height = '2rem';
+            textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 126) + 'px';
+            textAreaRef.current.style.overflowY = textAreaRef.current.scrollHeight > 126 ? 'auto' : 'hidden';
+        }
+    }, [message]);
+
     return (
         <div className="flex overflow-hidden pm:block" style={{ height: 'calc(100% - 3.8rem)' }}>
             <div className="btn-primary fixed top-4 hidden select-none sm:block" onClick={() => setIsOpen(!isOpen)}>
@@ -449,28 +476,53 @@ const Messenger: React.FC = () => {
                     {/* Chat bar */}
                     <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
                         {/* File Media */}
-                        <div>
-                            <GoFileMedia size={20} color="#3798f2" className="cursor-pointer" />
-                        </div>
+                        <Tooltip title="Đính kèm file">
+                            <label htmlFor="file-upload" className="cursor-pointer">
+                                <GoFileMedia size={20} color="#3798f2" onClick={() => setFileInputKey((prevKey) => prevKey + 1)} />
+                            </label>
+                            <input id="file-upload" type="file" className="hidden" key={fileInputKey} onChange={handleFileInputChange} />
+                        </Tooltip>
 
-                        <div className="relative flex w-full">
-                            <input
-                                type="text"
-                                className="w-full rounded-full bg-bgHoverGrayDark p-2 text-textCustom"
-                                value={message}
-                                onFocus={() => setEmojiShow(false)}
-                                onChange={messageOnChange}
-                                placeholder="Aa"
-                            />
+                        <div className="flex w-full items-end rounded-lg bg-bgHoverGrayDark">
+                            <div className="relative h-full w-full">
+                                {/* <div className="p-2">
+                                    <div className="relative h-12 w-12 select-none rounded-md">
+                                        <div
+                                            className="absolute right-[-0.5rem] top-[-0.5rem] flex h-5 w-5 cursor-pointer 
+                                            items-center justify-center rounded-full bg-bgCustom text-textCustom 
+                                            hover:bg-bgHoverGrayDark"
+                                        >
+                                            <IoMdClose size={13} className="" />
+                                        </div>
+                                        <img
+                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiDJOWtNm7FMFlZPfBLXy53ssnh8xEWg9ugg&s"
+                                            alt=""
+                                            className="h-full w-full rounded-md object-cover"
+                                        />
+                                    </div>
+                                </div> */}
+
+                                <textarea
+                                    className={`w-full select-none resize-none place-content-center 
+                                    bg-transparent px-2 text-textCustom outline-none`}
+                                    onFocus={() => setEmojiShow(false)}
+                                    value={message}
+                                    onChange={messageOnChange}
+                                    onKeyDown={handleKeyDown}
+                                    ref={textAreaRef}
+                                    placeholder="Aa"
+                                />
+                            </div>
+
                             <MdOutlineAddReaction
-                                className="absolute bottom-0 right-2 translate-y-[-50%] cursor-pointer"
+                                className="mb-2 mr-1 cursor-pointer"
                                 size={18}
                                 color="#3798f2"
                                 onClick={() => setEmojiShow(!emojiShow)}
                             />
 
                             {emojiShow && (
-                                <div className="absolute bottom-12 right-0 select-none">
+                                <div className="absolute bottom-14 right-0 select-none">
                                     <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" emojiButtonSize={30} />
                                 </div>
                             )}
