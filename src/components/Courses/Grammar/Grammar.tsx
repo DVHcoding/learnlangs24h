@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
+
 import { IoIosHelpCircle } from 'react-icons/io';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
@@ -13,9 +14,9 @@ import { Empty } from 'antd';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
 const GrammarLessonCard = loadable(() => import('./GrammarLessonCard'));
 const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
@@ -35,14 +36,14 @@ const Grammar: React.FC = () => {
     let id = searchParams.get('id');
 
     const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
-    const { data: allUnitLessonData, isLoading: allUnitLessonLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || 'undefined');
-    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || 'undefined');
+    const { data: allUnitLessonData, isLoading: allUnitLessonLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const userId = userDetailsData?.user?._id ?? 'undefined';
     const {
         data: userProcessStatusData,
         isLoading: userProcessStatusLoading,
         refetch: userProcessRefetch,
-    } = useGetUserProcessStatusesQuery(userId);
+    } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
     // ##########################
     // #    STATE MANAGEMENT    #

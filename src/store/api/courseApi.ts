@@ -37,18 +37,18 @@ export const courseApi = createApi({
             providesTags: ['Lesson'],
         }),
         // get All Unit Lesson By Course Id
-        getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string>({
-            query: (id: string) => `unitLessons/${id}`,
+        getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string | undefined>({
+            query: (id) => `unitLessons/${id}`,
             providesTags: ['UnitLesson'],
         }),
         // get All Unit Lesson By Lessons Id
-        getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string>({
-            query: (id: string) => `unitLessonsByLessonId/${id}`,
+        getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string | undefined>({
+            query: (id) => `unitLessonsByLessonId/${id}`,
             providesTags: ['UnitLesson'],
         }),
         // get Unit Lesson By Id
-        getUnitLessonById: builder.query<UnitLessonResponseType, string>({
-            query: (id: string) => `unitLesson/${id}`,
+        getUnitLessonById: builder.query<UnitLessonResponseType, string | null>({
+            query: (id) => `unitLesson/${id}`,
             providesTags: ['UnitLesson'],
         }),
         // get Video Lecture Content
@@ -62,8 +62,8 @@ export const courseApi = createApi({
             providesTags: ['Exercise'],
         }),
         // get User Process Status + populate unitLessonStatus
-        getUserProcessStatuses: builder.query<UserProcessStatusResponse, string>({
-            query: (id: string) => `userProcessStatuses/${id}`,
+        getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined>({
+            query: (userId) => `userProcessStatuses/${userId}`,
             providesTags: ['UnitLesson'],
         }),
     }),
