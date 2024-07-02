@@ -71,3 +71,8 @@ export interface Sender {
     _id: string;
     name: string;
 }
+
+export interface SendAttachmentsResponse {
+    success: boolean;
+    message: Message;
+}

@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################
 // #    IMPORT Components   #
 // ##########################
-import { ChatDetailsResponse, ChatUserStatusResponse, GetMessageResponse } from 'types/chatApi-types';
+import { ChatDetailsResponse, ChatUserStatusResponse, GetMessageResponse, SendAttachmentsResponse } from 'types/chatApi-types';
 import { GetChatByIdRequest, GetChatByIdResponse, MessageResponse, MyChatResponse, NewGroupRequest } from 'types/api-types';
 
 export const chatApi = createApi({
@@ -68,6 +68,13 @@ export const chatApi = createApi({
 
             invalidatesTags: ['Chat'],
         }),
+        sendAttachments: builder.mutation<SendAttachmentsResponse, FormData>({
+            query: (data) => ({
+                url: '/chat/message',
+                method: 'POST',
+                body: data,
+            }),
+        }),
     }),
 });
 
@@ -76,6 +83,8 @@ export const {
     useGetChatDetailsQuery,
     useGetMessagesQuery,
     useGetUserStatusQuery,
+
     useNewGroupMutation,
     useGetChatByIdMutation,
+    useSendAttachmentsMutation,
 } = chatApi;
