@@ -5,7 +5,6 @@ import { Fragment } from 'react';
 import { Avatar, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Lottie from 'lottie-react';
-import { Box } from '@mui/material';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
