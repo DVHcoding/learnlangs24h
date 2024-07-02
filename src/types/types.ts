@@ -1,3 +1,5 @@
+import { Attachments } from './chatApi-types';
+
 export interface UserType {
     name: string;
     email: string;
@@ -63,6 +65,7 @@ export interface LastMessageStatusType {
 export interface MessageSocketResponse {
     _id: string;
     chat: string;
+    attachments?: Attachments[];
     content: string;
     createdAt: Date;
     sender: {
