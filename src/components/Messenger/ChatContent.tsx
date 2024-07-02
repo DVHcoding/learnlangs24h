@@ -58,7 +58,7 @@ const ChatContent: React.FC<ChatContentProps> = ({
                                 userDetails?.user._id === message.sender._id ? 'ml-auto' : ''
                             } flex flex-col items-end`}
                         >
-                            {message.attachments.length > 0 &&
+                            {message.attachments &&
                                 message.attachments.map((attachment: Attachments, index: number) => {
                                     const url = attachment.url;
                                     const file = fileFormat(url);

@@ -9,6 +9,7 @@ import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     notificationCount: parseInt(localStorage.getItem('notificationCount') || '0', 10) || 0,
+    uploadingLoader: false,
 };
 
 export const miscSlice = createSlice({
@@ -29,8 +30,11 @@ export const miscSlice = createSlice({
         resetNotification: (state) => {
             state.notificationCount = 0;
         },
+        setUploadingLoader: (state, action) => {
+            state.uploadingLoader = action.payload;
+        },
     },
 });
 
-export const { increaseNotification, decreaseNotification, resetNotification } = miscSlice.actions;
+export const { increaseNotification, decreaseNotification, resetNotification, setUploadingLoader } = miscSlice.actions;
 export const miscReducer = miscSlice.reducer;

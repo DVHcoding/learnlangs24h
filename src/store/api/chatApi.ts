@@ -69,10 +69,13 @@ export const chatApi = createApi({
             invalidatesTags: ['Chat'],
         }),
         sendAttachments: builder.mutation<SendAttachmentsResponse, FormData>({
-            query: (data) => ({
-                url: '/chat/message',
+            query: (myForm) => ({
+                url: '/message',
                 method: 'POST',
-                body: data,
+                body: myForm,
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
             }),
         }),
     }),

@@ -88,3 +88,5 @@ export interface SeenMessageSocketResponse {
         seen: boolean;
     };
 }
+
+export type FileType = 'file' | 'image' | 'video' | 'audio';

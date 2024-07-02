@@ -6,13 +6,13 @@ import { IoMdSend } from 'react-icons/io';
 import { GoFileMedia } from 'react-icons/go';
 import { FaArrowsLeftRight } from 'react-icons/fa6';
 import { MdOutlineAddReaction } from 'react-icons/md';
-// import { IoMdClose } from 'react-icons/io';
+import { IoMdClose } from 'react-icons/io';
 import { Tooltip } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteScrollTop } from '6pp';
 import data from '@emoji-mart/data';
 import Picker from '@emoji-mart/react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -27,27 +27,33 @@ import {
     useGetMessagesQuery,
     useGetMyChatsQuery,
     useGetUserStatusQuery,
+    useSendAttachmentsMutation,
 } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS, SEEN_MESSAGE, START_TYPING, STOP_TYPING } from '@constants/events';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
-import { AddMemberSocketResponse, Message } from 'types/chatApi-types';
+import { AddMemberSocketResponse, Message, SendAttachmentsResponse } from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
-import { LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
-import { AppDispatch } from '@store/store';
-import { decreaseNotification } from '@store/reducer/miscReducer';
+import { FileType, LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
+import { AppDispatch, RootState } from '@store/store';
+import { decreaseNotification, setUploadingLoader } from '@store/reducer/miscReducer';
 import TypingSound from '@assets/messenger/typingSound.mp3';
 import ChatSideBar from '@components/Messenger/ChatSideBar';
 import SearchBar from '@components/Messenger/SearchBar';
 import ChatHeader from '@components/Messenger/ChatHeader';
 import ChatContent from '@components/Messenger/ChatContent';
+import { getFileType } from '@utils/getFileType';
+import RenderFile from '@components/Shared/RenderFile';
+import { Loader } from 'rsuite';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
     const socket = useSocket();
     const dispatch: AppDispatch = useDispatch();
+    const { uploadingLoader } = useSelector((state: RootState) => state.misc);
+
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
@@ -80,6 +86,7 @@ const Messenger: React.FC = () => {
     const [IamTyping, setIamTyping] = useState<boolean>(false);
     const [userTyping, setUserTyping] = useState<boolean>(false);
 
+    const [files, setFiles] = useState<File[]>([]);
     const [fileInputKey, setFileInputKey] = useState(0);
 
     /* ########################################################################## */
@@ -100,6 +107,7 @@ const Messenger: React.FC = () => {
     const chatDetails = useGetChatDetailsQuery({ chatId }, { skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
+    const [sendAttachments] = useSendAttachmentsMutation();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -174,27 +182,75 @@ const Messenger: React.FC = () => {
         }
     };
 
+    /////////////////////////////////////////////////////////////////
     const handleCloseSearch: () => void = () => {
         setSearchVisible(false);
         setSearchInputValue('');
     };
-
-    const submitHandler: (e?: React.FormEvent<HTMLFormElement>) => void = (e) => {
-        if (e) e.preventDefault();
-        if (!message.trim()) return;
-
-        socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
+    /////////////////////////////////////////////////////////////////
+    const resetMessageState = () => {
+        setFiles([]);
         setMessage('');
         setLastMessage({ sender: '', seen: false });
     };
+    /////////////////////////////////////////////////////////////////
+    const sendMessage = () => {
+        socket.emit(NEW_MESSAGE, { senderId: userId, chatId, members, message });
+        resetMessageState();
+    };
+    /////////////////////////////////////////////////////////////////
+    const handleFileUpload = async () => {
+        try {
+            dispatch(setUploadingLoader(true));
+            const myForm = new FormData();
+            myForm.append('chatId', chatId || '');
+            myForm.append('message', message);
+            files.forEach((file) => myForm.append('attachments', file));
 
+            // Gửi request từ client
+            fetch('/api/v1/message', {
+                method: 'POST',
+                body: myForm, // myForm là đối tượng FormData đã chuẩn bị
+            })
+                .then((response) => {
+                    return response.json();
+                })
+                .then((data: SendAttachmentsResponse) => {
+                    if (!data.success) {
+                        toastError(`${data.message}`);
+                    }
+
+                    dispatch(setUploadingLoader(false));
+                })
+                .catch((error) => {
+                    toastError(`${error}`);
+                });
+
+            resetMessageState();
+        } catch (error) {
+            toastError(`Có lỗi xảy ra! ${error}`);
+        }
+    };
+
+    /////////////////////////////////////////////////////////////////
+    const submitHandler: (e?: React.FormEvent<HTMLFormElement>) => void = async (e) => {
+        if (e) e.preventDefault();
+
+        if (files.length > 0) {
+            handleFileUpload();
+        } else {
+            if (!message.trim()) return;
+            sendMessage();
+        }
+    };
+    /////////////////////////////////////////////////////////////////
     const addEmoji = (emojiData: any) => {
         const unicodeStrings = emojiData.unified.split('_');
         const codePoints = unicodeStrings.map((el: string) => parseInt(el, 16));
         const emoji = String.fromCodePoint(...codePoints);
         setMessage(message + emoji);
     };
-
+    /////////////////////////////////////////////////////////////////
     const messageOnChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
         setMessage(e.target.value);
 
@@ -210,21 +266,64 @@ const Messenger: React.FC = () => {
             setIamTyping(false);
         }, 1500);
     };
-
+    /////////////////////////////////////////////////////////////////
+    const isValidFileType = (fileType: FileType): boolean => {
+        const allowedTypes: FileType[] = ['file', 'image', 'video', 'audio'];
+        return allowedTypes.includes(fileType);
+    };
+    /////////////////////////////////////////////////////////////////
     // Xử lý FILES
     const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        // Xử lý file ở đây
-        console.log('Đã chọn file:', file);
-    };
+        const selectedFiles = e.target.files;
 
+        // Kiểm tra và cập nhật danh sách các file đã chọn
+        if (selectedFiles) {
+            const newFiles: File[] = Array.from(selectedFiles);
+            const validFiles: File[] = [];
+
+            // Kiểm tra số lượng file và kích thước của từng file
+            for (let i = 0; i < newFiles.length; i++) {
+                const file = newFiles[i];
+
+                const fileType = getFileType(file);
+
+                if (!isValidFileType(fileType)) {
+                    toastError(`Loại file này không được hỗ trợ!.`);
+                    return;
+                }
+
+                if (file.size <= 20 * 1024 * 1024) {
+                    // 20MB limit
+                    validFiles.push(file);
+                } else {
+                    toastError(`Vui lòng chọn file có kích thước <= 20MB.`);
+                }
+
+                // Kiểm tra số lượng file đã chọn và giới hạn chỉ cho phép tối đa 5 file
+                if (files.length + validFiles.length > 5) {
+                    toastError('Bạn chỉ có thể chọn tối đa 5 file.');
+                    validFiles.length = 0; // Đặt validFiles về rỗng
+                    break;
+                }
+            }
+
+            // Cập nhật danh sách các file đã chọn
+            setFiles([...files, ...validFiles]);
+        }
+    };
+    /////////////////////////////////////////////////////////////////
+    const handleRemoveFile = (fileIndex: number) => {
+        const updatedFiles = [...files];
+        updatedFiles.splice(fileIndex, 1);
+        setFiles(updatedFiles);
+    };
+    /////////////////////////////////////////////////////////////////
     const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
             submitHandler();
         }
     };
-
     ///////////////////////////////////////////////////////////////////////////////
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
@@ -294,7 +393,6 @@ const Messenger: React.FC = () => {
         },
         [chatId]
     );
-
     ///////////////////////////////////////////////////////////////////////////////
 
     /* ########################################################################## */
@@ -480,27 +578,38 @@ const Messenger: React.FC = () => {
                             <label htmlFor="file-upload" className="cursor-pointer">
                                 <GoFileMedia size={20} color="#3798f2" onClick={() => setFileInputKey((prevKey) => prevKey + 1)} />
                             </label>
-                            <input id="file-upload" type="file" className="hidden" key={fileInputKey} onChange={handleFileInputChange} />
+
+                            <input
+                                id="file-upload"
+                                type="file"
+                                className="hidden"
+                                key={fileInputKey}
+                                onChange={handleFileInputChange}
+                                multiple
+                                accept="image/*, video/*, audio/*"
+                            />
                         </Tooltip>
 
                         <div className="flex w-full items-end rounded-lg bg-bgHoverGrayDark">
                             <div className="relative h-full w-full">
-                                {/* <div className="p-2">
-                                    <div className="relative h-12 w-12 select-none rounded-md">
-                                        <div
-                                            className="absolute right-[-0.5rem] top-[-0.5rem] flex h-5 w-5 cursor-pointer 
-                                            items-center justify-center rounded-full bg-bgCustom text-textCustom 
-                                            hover:bg-bgHoverGrayDark"
-                                        >
-                                            <IoMdClose size={13} className="" />
-                                        </div>
-                                        <img
-                                            src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRiDJOWtNm7FMFlZPfBLXy53ssnh8xEWg9ugg&s"
-                                            alt=""
-                                            className="h-full w-full rounded-md object-cover"
-                                        />
-                                    </div>
-                                </div> */}
+                                {uploadingLoader && <Loader />}
+
+                                <ul className={`items-center gap-2 p-2 ${files.length > 0 ? 'flex' : 'hidden'}`}>
+                                    {files.map((file, index) => (
+                                        <li className="relative h-12 w-12 select-none rounded-md" key={index}>
+                                            <div
+                                                className="absolute right-[-0.5rem] top-[-0.5rem] flex h-5 w-5 cursor-pointer 
+                                                items-center justify-center rounded-full bg-bgCustom text-textCustom 
+                                                hover:bg-bgHoverGrayDark"
+                                                onClick={() => handleRemoveFile(index)}
+                                            >
+                                                <IoMdClose size={13} className="" />
+                                            </div>
+
+                                            {RenderFile(file, URL.createObjectURL(file))}
+                                        </li>
+                                    ))}
+                                </ul>
 
                                 <textarea
                                     className={`w-full select-none resize-none place-content-center 
