@@ -27,7 +27,6 @@ import {
     useGetMessagesQuery,
     useGetMyChatsQuery,
     useGetUserStatusQuery,
-    useSendAttachmentsMutation,
 } from '@store/api/chatApi';
 import useErrors from '@hooks/useErrors';
 import { ADD_USER, NEW_MESSAGE, OFFLINE_USERS, SEEN_MESSAGE, START_TYPING, STOP_TYPING } from '@constants/events';
@@ -107,7 +106,6 @@ const Messenger: React.FC = () => {
     const chatDetails = useGetChatDetailsQuery({ chatId }, { skip: !chatId });
     const [searchUser] = useLazySearchUserQuery();
     const [getChatById] = useGetChatByIdMutation();
-    const [sendAttachments] = useSendAttachmentsMutation();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
