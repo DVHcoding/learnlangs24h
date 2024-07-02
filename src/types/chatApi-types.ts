@@ -57,10 +57,15 @@ export interface Message {
     _id: string;
     sender: Sender;
     chat: string;
-    attachments: string[];
+    attachments: Attachments[];
     createdAt: Date;
     updatedAt: Date;
 }
+
+export type Attachments = {
+    public_id: string;
+    url: string;
+};
 
 export interface Sender {
     _id: string;

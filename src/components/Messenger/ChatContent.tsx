@@ -5,6 +5,7 @@ import { Fragment } from 'react';
 import { Avatar, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Lottie from 'lottie-react';
+import { Box } from '@mui/material';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -12,8 +13,10 @@ import Lottie from 'lottie-react';
 import TypingAnimation from '@assets/messenger/Typing.json';
 import { APIResponse } from 'types/api-types';
 import { LastMessageStatusType } from 'types/types';
-import { Member, Message } from 'types/chatApi-types';
+import { Attachments, Member, Message } from 'types/chatApi-types';
 import { useGetMessagesQuery } from '@store/api/chatApi';
+import { fileFormat } from '@utils/fileFormat';
+import RenderAttachment from '@components/Shared/RenderAttachment';
 
 interface ChatContentProps {
     userId: string | undefined;
@@ -56,13 +59,27 @@ const ChatContent: React.FC<ChatContentProps> = ({
                                 userDetails?.user._id === message.sender._id ? 'ml-auto' : ''
                             } flex flex-col items-end`}
                         >
-                            <p
-                                className={`max-w-[33rem] ${
-                                    userDetails?.user._id === message.sender._id ? ' bg-blue-500 text-white' : ''
-                                } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
-                            >
-                                {message.content}
-                            </p>
+                            {message.attachments.length > 0 &&
+                                message.attachments.map((attachment: Attachments, index: number) => {
+                                    const url = attachment.url;
+                                    const file = fileFormat(url);
+
+                                    return (
+                                        <div key={index} className="max-w-[20rem] overflow-hidden rounded-lg phone:max-w-full">
+                                            {RenderAttachment(file, url)}
+                                        </div>
+                                    );
+                                })}
+
+                            {message.content.trim() !== '' && (
+                                <p
+                                    className={`max-w-[33rem] ${
+                                        userDetails?.user._id === message.sender._id ? ' bg-blue-500 text-white' : ''
+                                    } rounded-2xl bg-bgHoverGrayDark p-2 text-textCustom`}
+                                >
+                                    {message.content}
+                                </p>
+                            )}
 
                             {message._id === lastMessageId && (
                                 <p className="mr-1 mt-1 max-w-max text-xs leading-tight text-textCustom">
