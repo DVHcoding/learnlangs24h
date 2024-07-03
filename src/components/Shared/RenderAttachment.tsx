@@ -12,7 +12,7 @@ type FileType = 'file' | 'image' | 'video' | 'audio';
 const RenderAttachment = (file: FileType, url: string) => {
     switch (file) {
         case 'video':
-            return <video src={url} preload="none" width={'200px'} controls />;
+            return <video src={url} preload="none" controls className="h-full w-full" />;
 
         case 'image':
             return <Image src={url} height={'100%'} alt="Photo" className="h-full w-full rounded-lg" />;
