@@ -59,18 +59,13 @@ const ChatContent: React.FC<ChatContentProps> = ({
                             } flex flex-col items-end`}
                         >
                             {message.attachments && (
-                                <div className={`grid  ${message.attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-4`}>
+                                <div className={`grid  ${message.attachments.length > 1 ? 'grid-cols-2' : 'grid-cols-1'} gap-2`}>
                                     {message.attachments.map((attachment: Attachments, index: number) => {
                                         const url = attachment.url;
                                         const file = fileFormat(url);
 
                                         return (
-                                            <div
-                                                key={index}
-                                                className={`max-h-[15rem] max-w-[20rem] overflow-hidden rounded-lg ${
-                                                    index === 2 || index === 3 ? 'col-span-2 justify-self-end' : ''
-                                                }`}
-                                            >
+                                            <div key={index} className={`max-h-[15rem] max-w-[20rem] overflow-hidden rounded-lg`}>
                                                 {RenderAttachment(file, url)}
                                             </div>
                                         );

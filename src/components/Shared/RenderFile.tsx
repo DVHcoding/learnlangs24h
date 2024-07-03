@@ -13,7 +13,7 @@ const RenderFile = (file: File, url: string) => {
 
     switch (fileType) {
         case 'video':
-            return <video src={url} preload="none" width={'200px'} controls />;
+            return <video src={url} preload="none" className="h-full w-full" />;
 
         case 'image':
             return <img src={url} alt="Photo" className="mt-2 h-full w-full rounded-lg object-cover" loading="lazy" />;
