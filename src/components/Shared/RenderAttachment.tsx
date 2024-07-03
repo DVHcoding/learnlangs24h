@@ -15,7 +15,7 @@ const RenderAttachment = (file: FileType, url: string) => {
             return <video src={url} preload="none" width={'200px'} controls />;
 
         case 'image':
-            return <Image src={url} alt="Photo" className="mt-2 h-full w-full rounded-lg" />;
+            return <Image src={url} height={'100%'} alt="Photo" className="h-full w-full rounded-lg" />;
 
         case 'audio':
             return <audio src={url} preload="none" controls />;

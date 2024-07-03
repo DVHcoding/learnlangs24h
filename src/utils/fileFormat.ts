@@ -1,3 +1,11 @@
+import { FileType } from 'types/types';
+
+/////////////////////////////////////////////////////////////////
+const isValidFileType = (fileType: FileType): boolean => {
+    const allowedTypes: FileType[] = ['image', 'video', 'audio'];
+    return allowedTypes.includes(fileType);
+};
+/////////////////////////////////////////////////////////////////
 const fileFormat = (url = '') => {
     const fileExt = url.split('.').pop();
 
@@ -8,5 +16,6 @@ const fileFormat = (url = '') => {
 
     return 'file';
 };
+/////////////////////////////////////////////////////////////////
 
-export { fileFormat };
+export { fileFormat, isValidFileType };

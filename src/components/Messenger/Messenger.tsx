@@ -35,7 +35,7 @@ import useSocketEvents from '@hooks/useSocketEvents';
 import { AddMemberSocketResponse, Message, SendAttachmentsResponse } from 'types/chatApi-types';
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
-import { FileType, LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
+import { LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
 import { AppDispatch, RootState } from '@store/store';
 import { decreaseNotification, setUploadingLoader } from '@store/reducer/miscReducer';
 import TypingSound from '@assets/messenger/typingSound.mp3';
@@ -46,6 +46,7 @@ import ChatContent from '@components/Messenger/ChatContent';
 import { getFileType } from '@utils/getFileType';
 import RenderFile from '@components/Shared/RenderFile';
 import { Loader } from 'rsuite';
+import { isValidFileType } from '@utils/fileFormat';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
@@ -264,11 +265,7 @@ const Messenger: React.FC = () => {
             setIamTyping(false);
         }, 1500);
     };
-    /////////////////////////////////////////////////////////////////
-    const isValidFileType = (fileType: FileType): boolean => {
-        const allowedTypes: FileType[] = ['file', 'image', 'video', 'audio'];
-        return allowedTypes.includes(fileType);
-    };
+
     /////////////////////////////////////////////////////////////////
     // Xử lý FILES
     const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -471,6 +468,7 @@ const Messenger: React.FC = () => {
             setMessage('');
             setMessages([]);
             setOldMessages([]);
+            setUserTyping(false);
             setPage(0);
         };
     }, [chatId]);
