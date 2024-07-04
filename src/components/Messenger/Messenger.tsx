@@ -2,17 +2,11 @@
 /*                                 IMPORT NPM                                 */
 /* ########################################################################## */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { IoMdSend } from 'react-icons/io';
-import { GoFileMedia } from 'react-icons/go';
 import { FaArrowsLeftRight } from 'react-icons/fa6';
-import { MdOutlineAddReaction } from 'react-icons/md';
-import { IoMdClose } from 'react-icons/io';
-import { Tooltip } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useInfiniteScrollTop } from '6pp';
 import data from '@emoji-mart/data';
-import Picker from '@emoji-mart/react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -36,7 +30,7 @@ import { AddMemberSocketResponse, Message, SendAttachmentsResponse } from 'types
 import NoMessageLight from '@assets/messenger/NoMessageLight.png';
 import newMessageSound from '@assets/messenger/SoundNewMessage.mp3';
 import { LastMessageStatusType, MessageSocketResponse, NewMessageSocketResponse, SeenMessageSocketResponse } from 'types/types';
-import { AppDispatch, RootState } from '@store/store';
+import { AppDispatch } from '@store/store';
 import { decreaseNotification, setUploadingLoader } from '@store/reducer/miscReducer';
 import TypingSound from '@assets/messenger/typingSound.mp3';
 import ChatSideBar from '@components/Messenger/ChatSideBar';
@@ -44,15 +38,13 @@ import SearchBar from '@components/Messenger/SearchBar';
 import ChatHeader from '@components/Messenger/ChatHeader';
 import ChatContent from '@components/Messenger/ChatContent';
 import { getFileType } from '@utils/getFileType';
-import RenderFile from '@components/Shared/RenderFile';
-import { Loader } from 'rsuite';
 import { isValidFileType } from '@utils/fileFormat';
+import ChatBar from './ChatBar';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
     const socket = useSocket();
     const dispatch: AppDispatch = useDispatch();
-    const { uploadingLoader } = useSelector((state: RootState) => state.misc);
 
     /* ########################################################################## */
     /*                                    HOOK                                    */
@@ -87,7 +79,7 @@ const Messenger: React.FC = () => {
     const [userTyping, setUserTyping] = useState<boolean>(false);
 
     const [files, setFiles] = useState<File[]>([]);
-    const [fileInputKey, setFileInputKey] = useState(0);
+    const [fileInputKey, setFileInputKey] = useState<number>(0);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -205,6 +197,7 @@ const Messenger: React.FC = () => {
             myForm.append('chatId', chatId || '');
             myForm.append('message', message);
             files.forEach((file) => myForm.append('attachments', file));
+            resetMessageState();
 
             // Gửi request từ client
             fetch('/api/v1/message', {
@@ -224,8 +217,6 @@ const Messenger: React.FC = () => {
                 .catch((error) => {
                     toastError(`${error}`);
                 });
-
-            resetMessageState();
         } catch (error) {
             toastError(`Có lỗi xảy ra! ${error}`);
         }
@@ -568,75 +559,21 @@ const Messenger: React.FC = () => {
                     />
 
                     {/* Chat bar */}
-                    <form onSubmit={submitHandler} className="sticky bottom-0 flex items-center gap-2 bg-bgCustom px-2 pb-1">
-                        {/* File Media */}
-                        <Tooltip title="Đính kèm file">
-                            <label htmlFor="file-upload" className="cursor-pointer">
-                                <GoFileMedia size={20} color="#3798f2" onClick={() => setFileInputKey((prevKey) => prevKey + 1)} />
-                            </label>
-
-                            <input
-                                id="file-upload"
-                                type="file"
-                                className="hidden"
-                                key={fileInputKey}
-                                onChange={handleFileInputChange}
-                                multiple
-                                accept="image/*, video/*, audio/*"
-                            />
-                        </Tooltip>
-
-                        <div className="flex w-full items-end rounded-lg bg-bgHoverGrayDark">
-                            <div className="relative h-full w-full">
-                                {uploadingLoader && <Loader />}
-
-                                <ul className={`items-center gap-2 p-2 ${files.length > 0 ? 'flex' : 'hidden'}`}>
-                                    {files.map((file, index) => (
-                                        <li className="relative h-12 w-12 select-none rounded-md" key={index}>
-                                            <div
-                                                className="absolute right-[-0.5rem] top-[-0.5rem] flex h-5 w-5 cursor-pointer 
-                                                items-center justify-center rounded-full bg-bgCustom text-textCustom 
-                                                hover:bg-bgHoverGrayDark"
-                                                onClick={() => handleRemoveFile(index)}
-                                            >
-                                                <IoMdClose size={13} className="" />
-                                            </div>
-
-                                            {RenderFile(file, URL.createObjectURL(file))}
-                                        </li>
-                                    ))}
-                                </ul>
-
-                                <textarea
-                                    className={`w-full select-none resize-none place-content-center 
-                                    bg-transparent px-2 text-textCustom outline-none`}
-                                    onFocus={() => setEmojiShow(false)}
-                                    value={message}
-                                    onChange={messageOnChange}
-                                    onKeyDown={handleKeyDown}
-                                    ref={textAreaRef}
-                                    placeholder="Aa"
-                                />
-                            </div>
-
-                            <MdOutlineAddReaction
-                                className="mb-2 mr-1 cursor-pointer"
-                                size={18}
-                                color="#3798f2"
-                                onClick={() => setEmojiShow(!emojiShow)}
-                            />
-
-                            {emojiShow && (
-                                <div className="absolute bottom-14 right-0 select-none">
-                                    <Picker data={data} onEmojiSelect={addEmoji} previewPosition="none" emojiButtonSize={30} />
-                                </div>
-                            )}
-                        </div>
-
-                        <button type="submit">
-                            <IoMdSend size={25} color="#3798f2" />
-                        </button>
-                    </form>
+                    <ChatBar
+                        files={files}
+                        fileInputKey={fileInputKey}
+                        message={message}
+                        emojiShow={emojiShow}
+                        textAreaRef={textAreaRef}
+                        submitHandler={submitHandler}
+                        setFileInputKey={setFileInputKey}
+                        handleFileInputChange={handleFileInputChange}
+                        handleRemoveFile={handleRemoveFile}
+                        setEmojiShow={setEmojiShow}
+                        addEmoji={addEmoji}
+                        handleKeyDown={handleKeyDown}
+                        messageOnChange={messageOnChange}
+                    />
                 </div>
             )}
         </div>
