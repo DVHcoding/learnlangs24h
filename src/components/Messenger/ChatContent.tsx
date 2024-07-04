@@ -1,7 +1,7 @@
 /* ########################################################################## */
 /*                                 IMPORT NPM                                 */
 /* ########################################################################## */
-import { Fragment, useEffect, useRef } from 'react';
+import { Fragment, useEffect } from 'react';
 import { Avatar, Spin, Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Lottie from 'lottie-react';
