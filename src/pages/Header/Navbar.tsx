@@ -1,7 +1,7 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { Badge } from 'antd';
 import { AutoComplete, InputGroup, Toggle } from 'rsuite';
 import SearchIcon from '@rsuite/icons/Search';
@@ -69,13 +69,14 @@ const Navbar: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { notificationCount } = useSelector((state: RootState) => state.misc);
-    const userDetails = useUserDetailsQuery();
+    const { data: userDetails } = useUserDetailsQuery();
     const myChats = useGetMyChatsQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
     const chatId = localStorage.getItem('chatId');
+    const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user._id]);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Nếu đã lưu chatId ở localStorage thì lấy nó ra.
@@ -121,7 +122,7 @@ const Navbar: React.FC = () => {
         (data: NewMessageSocketResponse) => {
             // Nếu người nhận đang ở trong đoạn chat thì không được thêm thông báo
             // Nếu người nhận đang ở một route nào đó hoặc ở một đoạn chat khác thì thông báo
-            if (data.sender !== userDetails?.data?.user?._id && (data.chatId !== chatIdParams || !chatIdParams)) {
+            if (data.sender !== userId && (data.chatId !== chatIdParams || !chatIdParams)) {
                 dispatch(increaseNotification());
             }
         },

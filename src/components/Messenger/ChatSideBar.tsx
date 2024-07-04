@@ -1,6 +1,7 @@
 // ##########################
 // #      IMPORT NPM        #
 // #########################
+import { MessageSocketResponse } from 'types/types';
 import { Avatar } from 'antd';
 import { Link } from 'react-router-dom';
 import { Fragment } from 'react/jsx-runtime';
@@ -15,10 +16,11 @@ interface SidebarProps {
     searchVisible: boolean;
     myChatsLoading: boolean;
     myChats: MyChatResponse | undefined;
+    newMessage: MessageSocketResponse;
     setIsOpen: (isOpen: boolean) => void;
 }
 
-const ChatSideBar: React.FC<SidebarProps> = ({ chatId, searchVisible, myChatsLoading, myChats, setIsOpen }) => {
+const ChatSideBar: React.FC<SidebarProps> = ({ chatId, searchVisible, myChatsLoading, myChats, newMessage, setIsOpen }) => {
     return (
         <Fragment>
             {!searchVisible && !myChatsLoading && (
@@ -37,9 +39,13 @@ const ChatSideBar: React.FC<SidebarProps> = ({ chatId, searchVisible, myChatsLoa
                                     ))}
                                 </Avatar.Group>
 
-                                <div className="flex-1 select-none py-2">
+                                <div className="flex-1 select-none overflow-hidden py-2">
                                     <h3 className="font-semibold leading-tight text-textCustom">{chat.name}</h3>
-                                    <p className="text-textBlackGray">Tin nhắn mới nhất!</p>
+                                    <p className="w-[100%] overflow-hidden overflow-ellipsis whitespace-nowrap text-textBlackGray  ">
+                                        {newMessage.chat === chat._id && newMessage.content !== ''
+                                            ? newMessage.content
+                                            : (chat.lastMessage && chat.lastMessage.content) || 'New message...'}
+                                    </p>
                                 </div>
                             </li>
                         </Link>

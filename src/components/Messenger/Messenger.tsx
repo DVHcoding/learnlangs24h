@@ -80,6 +80,13 @@ const Messenger: React.FC = () => {
 
     const [files, setFiles] = useState<File[]>([]);
     const [fileInputKey, setFileInputKey] = useState<number>(0);
+    const [newMessage, setNewMessage] = useState<MessageSocketResponse>({
+        _id: '',
+        chat: '',
+        content: '',
+        sender: { _id: '', name: '' },
+        createdAt: new Date(),
+    });
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -322,6 +329,7 @@ const Messenger: React.FC = () => {
 
     const newMessageListener = useCallback(
         async (data: NewMessageSocketResponse) => {
+            setNewMessage(data.message);
             if (data.chatId !== chatId) return;
 
             ///////////////////////////////////////////////////
@@ -452,7 +460,7 @@ const Messenger: React.FC = () => {
         if (chatId) {
             localStorage.setItem('chatId', chatId);
         }
-
+        // Khi tôi logout ra và đăng nhập nick khác phải làm mới lại
         myChatsRefetch();
 
         return () => {
@@ -467,18 +475,11 @@ const Messenger: React.FC = () => {
     useEffect(() => {
         const senderId = lastSenderId;
 
-        setTimeout(async () => {
-            if (lastMessage.seen) {
-                return;
-            }
-
-            if (senderId !== userId && senderId) {
-                await userDetailsRefetch();
-                socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
-                dispatch(decreaseNotification());
-            }
-        }, 1000);
-    }, [chatId, messages, members, lastSenderId]);
+        if (senderId !== userId && senderId) {
+            socket.emit(SEEN_MESSAGE, { senderId: userId, chatId, members });
+            dispatch(decreaseNotification());
+        }
+    }, [chatId, messages, members, lastSenderId, dispatch]);
 
     useEffect(() => {
         const lastMessage = chatDetails.data?.chat?.lastMessage;
@@ -528,6 +529,7 @@ const Messenger: React.FC = () => {
                     myChats={myChats}
                     myChatsLoading={myChatsLoading}
                     searchVisible={searchVisible}
+                    newMessage={newMessage}
                     setIsOpen={setIsOpen}
                 />
             </div>

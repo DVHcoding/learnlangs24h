@@ -20,6 +20,11 @@ export interface Chat {
     avatar: string[];
     name: string;
     members: string[];
+    lastMessage: {
+        content: string;
+        sender: string;
+        seen: boolean;
+    };
 }
 
 export interface NewGroupRequest {
