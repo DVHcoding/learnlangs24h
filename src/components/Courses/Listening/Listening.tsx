@@ -8,11 +8,18 @@ import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Breadcrumb } from 'antd';
 import { Link, useParams } from 'react-router-dom';
+import { Alert } from 'antd';
+import { ArrowLeft, ArrowRight } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { FaEdit } from 'react-icons/fa';
+import { RiQuestionAnswerFill } from 'react-icons/ri';
+import { MdOutlineTranslate } from 'react-icons/md';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
 const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
+import Flashcard from '@components/Courses/Listening/FlashCard';
 import { useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
 
@@ -35,6 +42,19 @@ const Listening: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [open, setOpen] = useState<boolean>(false);
+    const [activeCard, setActiveCard] = useState<number>(1);
+    const [direction, setDirection] = useState<number>(1);
+
+    const flashArrays = [
+        {
+            frontContent: 'Clever',
+            backContent: 'Thông minh',
+        },
+        {
+            frontContent: 'Friendly',
+            backContent: 'Thân thiện',
+        },
+    ];
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -47,8 +67,30 @@ const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const handleToggleLesson = () => {
+    const handleToggleLesson = (): void => {
         setOpen(!open);
+    };
+
+    const handlePrevCard = () => {
+        setActiveCard((prev) => {
+            if (prev - 1 <= 0) {
+                return 1;
+            }
+            return prev - 1;
+        });
+
+        setDirection(-1);
+    };
+
+    const handleNextCard = () => {
+        setActiveCard((prev) => {
+            if (prev + 1 >= flashArrays.length) {
+                return flashArrays.length;
+            }
+            return prev + 1;
+        });
+
+        setDirection(1);
     };
 
     /* ########################################################################## */
@@ -90,101 +132,92 @@ const Listening: React.FC = () => {
                 {/* content */}
                 <div
                     className="scrollbar-mess relative h-full w-full overflow-auto 
-                    rounded-tl-lg border-l border-t"
+                    rounded-tl-lg border-l border-t bg-[#f6f7fb]"
                 >
                     {/* {unitLessonByIdLoading && <Spin />} */}
-
                     {/* {!unitLessonByIdLoading && unitLessonData?.success === false ? <Empty /> : ''} */}
+                    <Alert
+                        message="Các bạn cần học thuộc các từ vựng này để có thể nghe được bài học tiếp theo. Khi kiểm tra thành công, bài tiếp theo sẽ tự động mở!"
+                        banner
+                        className="bg-bgCustomProcess text-textCustom"
+                    />
 
-                    <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium obcaecati facere maxime commodi. Quidem
-                        in molestiae at hic, excepturi a sed consequatur ut eos, et sapiente. Placeat, eius aut Lorem, ipsum dolor sit amet
-                        consectetur adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde eos magni vero officiis eum
-                        dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos, alias adipisci officia hic et ipsa?
-                        Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                        quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate, explicabo nam laboriosam facere quasi
-                        nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-                        eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto. Quasi aperiam dolorem ad aliquid vero
-                        nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt temporibus veniam
-                        placeat dolores eum architecto ipsa odit quos possimus. Provident voluptates ducimus, minus nobis ipsam fugiat simi
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium obcaecati facere maxime commodi. Quidem i
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium obcaecati facere maxime commodi. Quidem
-                        in molestiae at hic, excepturi a sed consequatur ut eos, et sapiente. Placeat, eius aut Lorem, ipsum dolor sit amet
-                        consectetur adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde eos magni vero officiis eum
-                        dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos, alias adipisci officia hic et ipsa?
-                        Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                        quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate, explicabo nam laboriosam facere quasi
-                        nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-                        eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto. Quasi aperiam dolorem ad aliquid vero
-                        nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt temporibus veniam
-                        placeat dolores eum architecto ipsa odit quos possimus. Provident voluptates ducimus, minus nobis ipsam fugiat
-                        similique aperiam! Cumque, dolore?n molestiae at hic, excepturi a sed consequatur ut eos, et sapiente. Placeat, eius
-                        aut Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde
-                        eos magni vero officiis eum dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos, alias
-                        adipisci officia hic et ipsa? Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Vero quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate,
-                        explicabo nam laboriosam facere quasi nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Facere eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto.
-                        Quasi aperiam dolorem ad aliquid vero nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Deserunt temporibus veniam placeat dolores eum architecto ipsa odit quos possimus. Provident
-                        voluptates ducimus, minus nobis ipsam fugiat similique aperiam! Cumque, dolore?lique aperiam! Cumque, dolore? Lorem
-                        ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium obcaecati facere maxime commodi. Quidem in
-                        molestiae at hic, excepturi a sed consequatur ut eos, et sapiente. Placeat, eius aut Lorem, ipsum dolor sit amet
-                        consectetur adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde eos magni vero officiis eum
-                        dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                        Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos, alias adipisci officia hic et ipsa?
-                        Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero
-                        quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate, explicabo nam laboriosam facere quasi
-                        nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere
-                        eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto. Quasi aperiam dolorem ad aliquid vero
-                        nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt temporibus veniam
-                        placeat dolores eum architecto ipsa odit quos possimus. Provident voluptates ducimus, minus nobis ipsam fugiat
-                        similique aperiam! Cumque, dolore? Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium
-                        obcaecati facere maxime commodi. Quidem in molestiae at hic, excepturi a sed consequatur ut eos, et sapiente.
-                        Placeat, eius aut Lorem, ipsum dolor sit amet consectetur adipisicing elit. Delectus dolorem alias maiores sequi,
-                        quisquam, unde eos magni vero officiis eum dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor
-                        sit amet consectetur adipisicing elit. Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos,
-                        alias adipisci officia hic et ipsa? Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Vero quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate,
-                        explicabo nam laboriosam facere quasi nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Facere eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto.
-                        Quasi aperiam dolorem ad aliquid vero nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Deserunt temporibus veniam placeat dolores eum architecto ipsa odit quos possimus. Provident
-                        voluptates ducimus, minus nobis ipsam fugiat similique aperiam! Cumque, dolore? Lorem ipsum dolor sit amet
-                        consectetur adipisicing elit. Illum accusantium obcaecati facere maxime commodi. Quidem in molestiae at hic,
-                        excepturi a sed consequatur ut eos, et sapiente. Placeat, eius aut Lorem, ipsum dolor sit amet consectetur
-                        adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde eos magni vero officiis eum dolore ea omnis
-                        dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur, ratione
-                        nam quibusdam vero optio eius assumenda dignissimos, alias adipisci officia hic et ipsa? Asperiores, rerum hic
-                        dignissimos libero illo odit! Lorem ipsum dolor sit amet consectetur adipisicing elit. Vero quidem accusantium
-                        ratione, ullam enim pariatur officia! Quod, est? Voluptate, explicabo nam laboriosam facere quasi nostrum sit quos
-                        porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet consectetur adipisicing elit. Facere eveniet incidunt
-                        repudiandae nulla ad culpa libero placeat in possimus iusto. Quasi aperiam dolorem ad aliquid vero nesciunt harum.
-                        Temporibus, aut. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt temporibus veniam placeat dolores
-                        eum architecto ipsa odit quos possimus. Provident voluptates ducimus, minus nobis ipsam fugiat similique aperiam!
-                        commodi. Quidem in molestiae at hic, excepturi a sed consequatur ut eos, et sapiente. Placeat, eius aut Lorem, ipsum
-                        dolor sit amet consectetur adipisicing elit. Delectus dolorem alias maiores sequi, quisquam, unde eos magni vero
-                        Cumque, dolore? Lorem ipsum dolor sit amet consectetur adipisicing elit. Illum accusantium obcaecati facere maxime
-                        officiis eum dolore ea omnis dicta optio autem a facere quod fugit.! Lorem ipsum dolor sit amet consectetur
-                        adipisicing elit. Aspernatur, ratione nam quibusdam vero optio eius assumenda dignissimos, alias adipisci officia
-                        hic et ipsa? Asperiores, rerum hic dignissimos libero illo odit! Lorem ipsum dolor sit amet consectetur adipisicing
-                        elit. Vero quidem accusantium ratione, ullam enim pariatur officia! Quod, est? Voluptate, explicabo nam laboriosam
-                        facere quasi nostrum sit quos porro deleniti dicta!Loremlorem Lorem ipsum dolor sit amet consectetur adipisicing
-                        elit. Facere eveniet incidunt repudiandae nulla ad culpa libero placeat in possimus iusto. Quasi aperiam dolorem ad
-                        aliquid vero nesciunt harum. Temporibus, aut. Lorem ipsum dolor sit amet consectetur adipisicing elit. Deserunt
-                        temporibus veniam placeat dolores eum architecto ipsa odit quos possimus. Provident voluptates ducimus, minus nobis
-                        ipsam fugiat similique aperiam! Cumque, dolore?
-                    </p>
+                    <ul className="grid grid-cols-3 gap-2 overflow-hidden p-2">
+                        <li
+                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
+                            font-segoe text-base transition-all hover:shadow-md"
+                        >
+                            <div className="flex items-center justify-center gap-2">
+                                <FaEdit size={20} color="#16a815" />
+                                <p className="text-lg">Viết</p>
+                            </div>
+                        </li>
+
+                        <li
+                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
+                            font-segoe text-base transition-all hover:shadow-md"
+                        >
+                            <div className="flex items-center justify-center gap-2">
+                                <MdOutlineTranslate size={20} color="#16a815" />
+                                <p className="text-lg">Dịch cả câu</p>
+                            </div>
+                        </li>
+
+                        <li
+                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
+                            font-segoe text-base transition-all hover:shadow-md"
+                        >
+                            <div className="flex items-center justify-center gap-2">
+                                <RiQuestionAnswerFill size={20} color="#16a815" />
+                                <p className="text-lg">Kiểm tra</p>
+                            </div>
+                        </li>
+
+                        <li className="col-span-3">
+                            {flashArrays.map((item, index) => (
+                                <motion.div
+                                    key={index}
+                                    className={`${index + 1 === activeCard ? '' : 'hidden'}`}
+                                    animate={{
+                                        opacity: index + 1 === activeCard ? 1 : 0,
+                                        x: index + 1 === activeCard ? 0 : direction === 1 ? '-30%' : '30%',
+                                    }}
+                                    transition={{ duration: 0.2, type: 'spring', stiffness: 200 }}
+                                >
+                                    <Flashcard frontContent={item.frontContent} backContent={item.backContent} />
+                                </motion.div>
+                            ))}
+                        </li>
+                    </ul>
+
+                    <div className="flex items-center justify-center gap-4">
+                        <div
+                            className="cursor-pointer rounded-full bg-white p-2 transition-all 
+                            hover:bg-bgHoverGrayDark"
+                            onClick={handlePrevCard}
+                        >
+                            <ArrowLeft size={20} />
+                        </div>
+
+                        <h4 className="select-none font-segoe text-base">
+                            {activeCard}/{flashArrays.length}
+                        </h4>
+
+                        <div
+                            className="cursor-pointer rounded-full bg-white p-2 transition-all 
+                            hover:bg-bgHoverGrayDark"
+                            onClick={handleNextCard}
+                        >
+                            <ArrowRight size={20} />
+                        </div>
+                    </div>
 
                     <div
                         className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center 
                         gap-2 rounded-lg bg-slate-100 p-2 shadow-md"
                     >
                         <IoIosHelpCircle className="text-orange-400" size={20} />
-                        <p className="text-title text-nowrap font-bold">Hỏi đáp</p>
+                        <p className="text-title select-none text-nowrap font-bold">Hỏi đáp</p>
                     </div>
                 </div>
 
