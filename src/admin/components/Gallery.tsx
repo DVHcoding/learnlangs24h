@@ -36,11 +36,7 @@ const Gallery: React.FC<{ imageUrl: string; index: number }> = ({ imageUrl, inde
             }}
         />
     ) : (
-        <img
-            ref={ref}
-            style={{ width: '200px', height: '200px', backgroundColor: 'green' }}
-            alt=""
-        />
+        <img ref={ref} style={{ width: '200px', height: '200px', backgroundColor: 'green' }} alt="" />
     );
 };
 

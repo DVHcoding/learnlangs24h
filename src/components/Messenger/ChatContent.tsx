@@ -5,6 +5,7 @@ import { Fragment, useEffect } from 'react';
 import { Avatar, Spin, Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Lottie from 'lottie-react';
+import { useSelector } from 'react-redux';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
@@ -16,7 +17,6 @@ import { Attachments, Member, Message } from 'types/chatApi-types';
 import { useGetMessagesQuery } from '@store/api/chatApi';
 import { fileFormat } from '@utils/fileFormat';
 import RenderAttachment from '@components/Shared/RenderAttachment';
-import { useSelector } from 'react-redux';
 import { RootState } from '@store/store';
 
 interface ChatContentProps {
