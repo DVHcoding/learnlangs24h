@@ -9,6 +9,7 @@ import loadable from '@loadable/component';
 // ##########################
 const Home = loadable(() => import('@components/Home/Home'));
 const Grammar = loadable(() => import('@components/Courses/Grammar/Grammar'));
+const Listening = loadable(() => import('@components/Courses/Listening/Listening'));
 const Profile = loadable(() => import('@components/Profile/Profile'));
 
 /* -------------------------------------------------------------------------- */
@@ -50,6 +51,10 @@ const protectedRoute: ProtectedRouteType[] = [
     {
         path: '/grammar/:id',
         component: Grammar,
+    },
+    {
+        path: '/listening/:id',
+        component: Listening,
     },
     {
         path: '/profile/:nickname',

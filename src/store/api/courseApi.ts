@@ -32,7 +32,7 @@ export const courseApi = createApi({
             providesTags: ['Course'],
         }),
         // get All Lessons By Course Id
-        getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | null>({
+        getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | undefined>({
             query: (id: string) => `lessons/${id}`,
             providesTags: ['Lesson'],
         }),
