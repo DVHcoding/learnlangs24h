@@ -16,7 +16,7 @@ const RenderFile = (file: File, url: string) => {
             return <video src={url} preload="none" className="h-full w-full" />;
 
         case 'image':
-            return <img src={url} alt="Photo" className=" h-full w-full rounded-lg object-cover" loading="lazy" />;
+            return <img src={url} alt="Photo" className=" h-full w-full rounded-lg object-cover" />;
 
         case 'audio':
             return <audio src={url} preload="none" controls />;
