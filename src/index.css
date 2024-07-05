@@ -125,6 +125,8 @@ body {
   --bg-custom: #fff;
   --bg-custom-process: #dcf6cb;
   --bg-custom-group: #fff;
+  --bg-custom-card: #f6f7fb;
+  --bg-custom-card-item: #fff;
   --bgHover-gray-dark: rgb(241 245 249);
   --bg-sidebar: #e5e5ea;
   --bg-btnPrimary: #0d73d4;
@@ -164,6 +166,8 @@ body {
   --bg-custom: #1e293b;
   --bg-custom-process: #8b8d9b;
   --bg-custom-group: #9aabab47;
+  --bg-custom-card: #1e293b;
+  --bg-custom-card-item: #2e3856;
   --bgHover-gray-dark: #3e42647d;
   --bg-sidebar: #2f3c55;
   --bg-btnPrimary: rgb(144, 202, 249);
@@ -376,7 +380,6 @@ label[data-shrink=false]+.MuiInputBase-formControl .css-1t8l2tu-MuiInputBase-inp
   background-color: var(--bgHover-gray-dark);
   color: var(--text-custom);
 }
-
 
 
 /* Table Antd */

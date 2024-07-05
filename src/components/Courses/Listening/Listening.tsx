@@ -131,7 +131,7 @@ const Listening: React.FC = () => {
                 {/* content */}
                 <div
                     className="scrollbar-mess relative h-full w-full overflow-auto 
-                    rounded-tl-lg border-l border-t bg-[#f6f7fb]"
+                    rounded-tl-lg  bg-bgCustomCard"
                 >
                     {/* {unitLessonByIdLoading && <Spin />} */}
                     {/* {!unitLessonByIdLoading && unitLessonData?.success === false ? <Empty /> : ''} */}
@@ -141,37 +141,38 @@ const Listening: React.FC = () => {
                         className="bg-bgCustomProcess text-textCustom"
                     />
 
-                    <ul className="grid grid-cols-3 gap-2 overflow-hidden p-2">
+                    <ul className="grid grid-cols-3 gap-2 overflow-hidden p-2 phone:grid-cols-1">
                         <li
-                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
-                            font-segoe text-base transition-all hover:shadow-md"
+                            className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
+                            text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                         >
                             <div className="flex items-center justify-center gap-2">
                                 <FaEdit size={20} color="#16a815" />
-                                <p className="text-lg">Viết</p>
+                                <p className="text-lg text-textCustom sm:text-base">Viết</p>
                             </div>
                         </li>
 
                         <li
-                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
-                            font-segoe text-base transition-all hover:shadow-md"
+                            className="cursor-pointer select-none rounded-md bg-bgCustomCardItem p-3 text-center 
+                            font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                         >
-                            <div className="flex items-center justify-center gap-2">
+                            <div className="flex content-center items-center justify-center gap-2">
                                 <MdOutlineTranslate size={20} color="#16a815" />
-                                <p className="text-lg">Dịch cả câu</p>
+                                <p className="text-lg text-textCustom sm:text-base">Dịch cả câu</p>
                             </div>
                         </li>
 
                         <li
-                            className="cursor-pointer select-none rounded-md bg-white p-3 text-center 
-                            font-segoe text-base transition-all hover:shadow-md"
+                            className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
+                            text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                         >
                             <div className="flex items-center justify-center gap-2">
                                 <RiQuestionAnswerFill size={20} color="#16a815" />
-                                <p className="text-lg">Kiểm tra</p>
+                                <p className="text-lg text-textCustom sm:text-base">Kiểm tra</p>
                             </div>
                         </li>
 
+                        {/* FlashCard */}
                         <li className="col-span-3">
                             {flashArrays.map((item, index) => (
                                 <motion.div
@@ -189,28 +190,30 @@ const Listening: React.FC = () => {
                         </li>
                     </ul>
 
+                    {/* Handle (Next-Prev) FlashCard */}
                     <div className="flex items-center justify-center gap-4">
                         <div
-                            className="cursor-pointer rounded-full bg-white p-2 transition-all 
+                            className="cursor-pointer rounded-full bg-bgCustomCardItem p-2 transition-all 
                             hover:bg-bgHoverGrayDark"
                             onClick={handlePrevCard}
                         >
-                            <ArrowLeft size={20} />
+                            <ArrowLeft size={20} className="text-textCustom" />
                         </div>
 
-                        <h4 className="select-none font-segoe text-base">
+                        <h4 className="select-none font-segoe text-base text-textCustom">
                             {activeCard}/{flashArrays.length}
                         </h4>
 
                         <div
-                            className="cursor-pointer rounded-full bg-white p-2 transition-all 
+                            className="cursor-pointer rounded-full bg-bgCustomCardItem p-2 transition-all 
                             hover:bg-bgHoverGrayDark"
                             onClick={handleNextCard}
                         >
-                            <ArrowRight size={20} />
+                            <ArrowRight size={20} className="text-textCustom" />
                         </div>
                     </div>
 
+                    {/* Hỏi đáp */}
                     <div
                         className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center 
                         gap-2 rounded-lg bg-slate-100 p-2 shadow-md"
@@ -222,13 +225,13 @@ const Listening: React.FC = () => {
 
                 {/* Sidebar */}
                 <div
-                    className={`min-w-[17rem] border lg:static ${
+                    className={`h-full min-w-[17rem] border-b border-l border-t border-bdCustom lg:static ${
                         open
                             ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                             : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
                     } 
-                                scrollbar overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0 sm:top-24  
-                                sm:h-[85%] sm:rounded-md md:fixed md:right-0 md:top-24 md:h-[85%] lg:block lg:max-w-full lg:translate-x-0 xl:h-full`}
+                    scrollbar overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0 sm:top-24  
+                    sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
                 >
                     <div className="scrollbar h-full w-full overflow-auto ">
                         <ListeningLessonCard

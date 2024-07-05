@@ -18,6 +18,8 @@ module.exports = {
                 bgCustom: 'var(--bg-custom)',
                 bgCustomProcess: 'var(--bg-custom-process)',
                 bgCustomGroup: 'var(--bg-custom-group)',
+                bgCustomCard: 'var(--bg-custom-card)',
+                bgCustomCardItem: 'var(--bg-custom-card-item)',
                 bgHoverGrayDark: 'var(--bgHover-gray-dark)',
                 textCustom: 'var(--text-custom)',
                 textSidebar: 'var(--text-sidebar)',
