@@ -1,26 +1,20 @@
-import React, { useState } from 'react';
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-
+import { useState } from 'react';
 import { IoIosHelpCircle } from 'react-icons/io';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
-import { Spin } from 'antd';
 import { Breadcrumb } from 'antd';
-import { Link, useParams, useNavigate } from 'react-router-dom';
-import { Empty } from 'antd';
-import { useDispatch } from 'react-redux';
+import { Link, useParams } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-
+const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
 import { useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import { AppDispatch } from '@store/store';
-import ListeningLessonCard from '@components/Courses/Listening/ListeningLessonCard';
 
 // #########################################################################
 const Listening: React.FC = () => {
@@ -29,7 +23,7 @@ const Listening: React.FC = () => {
     let id = searchParams.get('id');
 
     const { data: userDetailsData } = useUserDetailsQuery();
-    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const userId = userDetailsData?.user?._id ?? 'undefined';
     const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
