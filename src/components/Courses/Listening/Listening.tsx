@@ -43,7 +43,6 @@ const Listening: React.FC = () => {
     /* ########################################################################## */
     const [open, setOpen] = useState<boolean>(false);
     const [activeCard, setActiveCard] = useState<number>(1);
-    const [direction, setDirection] = useState<number>(1);
 
     const flashArrays = [
         {
@@ -53,6 +52,10 @@ const Listening: React.FC = () => {
         {
             frontContent: 'Friendly',
             backContent: 'Thân thiện',
+        },
+        {
+            frontContent: 'Cheerful',
+            backContent: 'Vui vẻ',
         },
     ];
 
@@ -78,8 +81,6 @@ const Listening: React.FC = () => {
             }
             return prev - 1;
         });
-
-        setDirection(-1);
     };
 
     const handleNextCard = () => {
@@ -89,8 +90,6 @@ const Listening: React.FC = () => {
             }
             return prev + 1;
         });
-
-        setDirection(1);
     };
 
     /* ########################################################################## */
@@ -180,7 +179,7 @@ const Listening: React.FC = () => {
                                     className={`${index + 1 === activeCard ? '' : 'hidden'}`}
                                     animate={{
                                         opacity: index + 1 === activeCard ? 1 : 0,
-                                        x: index + 1 === activeCard ? 0 : direction === 1 ? '-30%' : '30%',
+                                        x: index + 1 === activeCard ? 0 : index === activeCard ? '20%' : '-20%',
                                     }}
                                     transition={{ duration: 0.2, type: 'spring', stiffness: 200 }}
                                 >
