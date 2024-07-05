@@ -76,7 +76,7 @@ const Navbar: React.FC = () => {
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
     const chatId = localStorage.getItem('chatId');
-    const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user._id]);
+    const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user?._id]);
 
     ////////////////////////////////////////////////////////////////////////////////
     // Nếu đã lưu chatId ở localStorage thì lấy nó ra.
