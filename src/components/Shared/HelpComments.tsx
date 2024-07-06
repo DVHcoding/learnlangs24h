@@ -3,13 +3,14 @@
 // ##########################################################################
 import { Fragment, useState } from 'react';
 import { IoIosHelpCircle } from 'react-icons/io';
-import { Drawer } from 'antd';
+import { Avatar, Drawer } from 'antd';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { APIResponse } from 'types/api-types';
 
-const HelpComments = () => {
+const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ userDetailsData }) => {
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
@@ -48,6 +49,7 @@ const HelpComments = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+
     return (
         <Fragment>
             <div
@@ -59,7 +61,12 @@ const HelpComments = () => {
                 <p className="text-title select-none text-nowrap font-bold">Hỏi đáp</p>
             </div>
 
-            <Drawer onClose={onClose} open={open} width={600} styles={headerDrawerStyles}></Drawer>
+            <Drawer onClose={onClose} open={open} width={600} styles={headerDrawerStyles}>
+                <div className="flex items-center gap-2">
+                    <Avatar src={userDetailsData?.user?.photo?.url} />
+                    <input type="text" className="w-full rounded-md bg-[#f6f7fb] p-2" placeholder="Nhập bình luận tại đây" />
+                </div>
+            </Drawer>
         </Fragment>
     );
 };

@@ -98,7 +98,7 @@ const Listening: React.FC = () => {
                     <VocaExercise />
 
                     {/* Hỏi đáp */}
-                    <HelpComments />
+                    <HelpComments userDetailsData={userDetailsData} />
                 </div>
 
                 {/* Sidebar */}

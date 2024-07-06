@@ -1,3 +1,7 @@
 .ant-drawer-body {
     padding-top: 0px !important;
 }
+
+.ant-drawer-header-title .ant-drawer-close svg {
+    color: #000 !important;
+}
