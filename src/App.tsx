@@ -1,13 +1,13 @@
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Fragment, useEffect } from 'react';
 import loadable from '@loadable/component';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import { adminRoute, protectedRoute, publicRoute } from './routes/routes';
 import ProtectedRoute from '@components/ProtectedRoute/ProtectedRoute';
 import RedirectToHome from '@components/ProtectedRoute/RedirectToHome';
@@ -16,7 +16,12 @@ import DefaultLayout from '@layouts/DefaultLayout/DefaultLayout';
 import AdminDefaultLayout from '@layouts/AdminDefaultLayout/AdminDefaultLayout';
 import { SocketProvider } from '@utils/socket';
 
-// ##################################
+/* -------------------------------------------------------------------------- */
+/*                                   MODULES                                  */
+/* -------------------------------------------------------------------------- */
+import '@components/Modules/Antd/Drawer.css';
+
+////////////////////////////////////////////////////////////////////////////////
 const NotFound = loadable(() => import('@pages/NotFound/NotFound'));
 const Loader = loadable(() => import('@pages/Loader/Loader'));
 const Login = loadable(() => import('@features/Authentication/Login'), {
