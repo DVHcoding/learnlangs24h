@@ -61,7 +61,7 @@ const VocaExercise = () => {
             <ul className="grid grid-cols-3 gap-2 overflow-hidden p-2 phone:grid-cols-1">
                 <li
                     className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
-                                text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                 >
                     <div className="flex items-center justify-center gap-2">
                         <FaEdit size={20} color="#16a815" />
@@ -71,7 +71,7 @@ const VocaExercise = () => {
 
                 <li
                     className="cursor-pointer select-none rounded-md bg-bgCustomCardItem p-3 text-center 
-                                font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                 >
                     <div className="flex content-center items-center justify-center gap-2">
                         <MdOutlineTranslate size={20} color="#16a815" />
@@ -81,7 +81,7 @@ const VocaExercise = () => {
 
                 <li
                     className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
-                                text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
                 >
                     <div className="flex items-center justify-center gap-2">
                         <RiQuestionAnswerFill size={20} color="#16a815" />
@@ -111,7 +111,7 @@ const VocaExercise = () => {
             <div className="flex items-center justify-center gap-4">
                 <div
                     className="cursor-pointer rounded-full bg-bgCustomCardItem p-2 transition-all 
-                                hover:bg-bgHoverGrayDark"
+                    hover:bg-bgHoverGrayDark"
                     onClick={handlePrevCard}
                 >
                     <ArrowLeft size={20} className="text-textCustom" />
@@ -123,7 +123,7 @@ const VocaExercise = () => {
 
                 <div
                     className="cursor-pointer rounded-full bg-bgCustomCardItem p-2 transition-all 
-                                hover:bg-bgHoverGrayDark"
+                    hover:bg-bgHoverGrayDark"
                     onClick={handleNextCard}
                 >
                     <ArrowRight size={20} className="text-textCustom" />

@@ -1,0 +1,20 @@
+{
+    "success": "true",
+    "vocabulary": [
+        {
+            "_id": "1",
+            "frontContent": "Clever",
+            "backContent": "Thong minh"
+        },
+        {
+            "_id": "2",
+            "frontContent": "Friendly",
+            "backContent": "Than thien"
+        },
+        {
+            "_id": "3",
+            "frontContent": "Cheerful",
+            "backContent": "Vui ve"
+        }
+    ]
+}
