@@ -4,7 +4,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { ChevronsLeft } from 'lucide-react';
 import { Breadcrumb, Modal, Switch } from 'antd';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
 import { Progress } from 'antd';
 import type { ProgressProps } from 'antd';
@@ -14,11 +14,15 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 
 const WriteVocaExercise = () => {
+    /* ########################################################################## */
+    /*                                    HOOK                                    */
+    /* ########################################################################## */
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const navigate = useNavigate();
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -108,6 +112,7 @@ const WriteVocaExercise = () => {
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
+                            onClick={() => navigate(-1)}
                         >
                             <Undo2 size={20} className="text-textCustom" />
                         </div>

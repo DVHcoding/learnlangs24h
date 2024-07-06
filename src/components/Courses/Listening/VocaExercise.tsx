@@ -13,10 +13,31 @@ import { MdOutlineTranslate } from 'react-icons/md';
 // ##########################################################################
 import Flashcard from '@components/Courses/Listening/FlashCard';
 import { Fragment, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const VocaExercise = () => {
+    /* ########################################################################## */
+    /*                                    HOOK                                    */
+    /* ########################################################################## */
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
     const [activeCard, setActiveCard] = useState<number>(1);
 
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
     const flashArrays = [
         {
             frontContent: 'Clever',
@@ -32,6 +53,9 @@ const VocaExercise = () => {
         },
     ];
 
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     const handlePrevCard = () => {
         setActiveCard((prev) => {
             if (prev - 1 <= 0) {
@@ -50,6 +74,19 @@ const VocaExercise = () => {
         });
     };
 
+    const handleRedirectWrite = () => {
+        const newPath = `${location.pathname}/write`;
+        navigate(newPath);
+    };
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
+
     return (
         <Fragment>
             <Alert
@@ -62,6 +99,7 @@ const VocaExercise = () => {
                 <li
                     className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
                     text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    onClick={handleRedirectWrite}
                 >
                     <div className="flex items-center justify-center gap-2">
                         <FaEdit size={20} color="#16a815" />
