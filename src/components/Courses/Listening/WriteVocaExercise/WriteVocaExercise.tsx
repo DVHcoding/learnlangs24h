@@ -2,7 +2,6 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { useEffect, useRef, useState } from 'react';
-import { ChevronsLeft } from 'lucide-react';
 import { Breadcrumb, Modal, Switch } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
@@ -27,7 +26,6 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [open, setOpen] = useState<boolean>(false);
     const [answer, setAnswer] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
@@ -46,10 +44,6 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const handleToggleLesson = (): void => {
-        setOpen(!open);
-    };
-
     const showModal = () => {
         setIsModalOpen(true);
     };
@@ -78,7 +72,7 @@ const WriteVocaExercise = () => {
     }, [answer]);
 
     return (
-        <div className="overflow-hidden pl-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
+        <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Breadcrumb */}
             <div className="flex justify-between">
                 <Breadcrumb
@@ -94,14 +88,6 @@ const WriteVocaExercise = () => {
                         },
                     ]}
                 />
-
-                <button aria-label="expandButton" onClick={handleToggleLesson} className="rounded-md bg-bgHoverGrayDark p-[4px] lg:hidden">
-                    <ChevronsLeft
-                        className={`text-textCustom ${open ? 'rotate-[-180deg]' : 'rotate-0'} 
-                        transition-all duration-300`}
-                        size={20}
-                    />
-                </button>
             </div>
 
             {/* Body */}
@@ -137,7 +123,7 @@ const WriteVocaExercise = () => {
                         <form action="">
                             <textarea
                                 className="mt-10 w-full resize-none border-b-4 border-b-green-200 
-                                bg-transparent p-1 text-lg outline-none"
+                                bg-transparent p-1 text-justify text-lg outline-none"
                                 value={answer}
                                 onChange={(e) => setAnswer(e.target.value)}
                                 placeholder=""
