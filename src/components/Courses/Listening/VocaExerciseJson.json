@@ -3,18 +3,35 @@
     "vocabulary": [
         {
             "_id": "1",
-            "frontContent": "Clever",
-            "backContent": "Thong minh"
+            "english": "Clever",
+            "vietnamese": "Thong minh"
         },
         {
             "_id": "2",
-            "frontContent": "Friendly",
-            "backContent": "Than thien"
+            "english": "Friendly",
+            "vietnamese": "Than thien"
         },
         {
             "_id": "3",
-            "frontContent": "Cheerful",
-            "backContent": "Vui ve"
+            "english": "Cheerful",
+            "vietnamese": "Vui ve"
+        }
+    ],
+    "sentence": [
+        {
+            "_id": "1",
+            "english": "You are very clever",
+            "vietnamese": "Ban rat thong minh"
+        },
+        {
+            "_id": "2",
+            "english": "You are very Friendly",
+            "vietnamese": "Ban rat than thien"
+        },
+        {
+            "_id": "3",
+            "english": "are you cheerful ?",
+            "vietnamese": "Ban co vui ve khong ?"
         }
     ]
 }
