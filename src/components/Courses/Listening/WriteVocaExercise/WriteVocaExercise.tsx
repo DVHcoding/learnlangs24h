@@ -164,6 +164,11 @@ const WriteVocaExercise = () => {
                             <h3>Đọc nội dung</h3>
                             <Switch size="small" />
                         </li>
+
+                        <li className="flex items-center justify-between">
+                            <h3>Ẩn nội dung (Nên bật đọc nội dung để nghe và điền từ)</h3>
+                            <Switch size="small" />
+                        </li>
                     </ul>
                 </Modal>
             </div>
