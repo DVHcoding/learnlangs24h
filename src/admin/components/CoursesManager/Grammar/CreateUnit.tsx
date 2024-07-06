@@ -48,7 +48,7 @@ const CreateUnit: React.FC<{
     const [exerciseType, setExerciseType] = useState<string>('');
     const [questions, setQuestions] = useState<QuestionType[]>([]);
 
-    const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || null);
+    const { data: lessons, isLoading: allLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
 
     // #############################
     // #      FUNCTION MANAGER     #
