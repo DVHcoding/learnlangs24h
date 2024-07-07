@@ -1,5 +1,14 @@
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
+import { FaPlay } from 'react-icons/fa6';
+import { TbPlayerStopFilled } from 'react-icons/tb';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 
 const AudioWaveform: React.FC = () => {
     /* ########################################################################## */
@@ -17,6 +26,7 @@ const AudioWaveform: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [answer, setAnswer] = useState<string>('');
+    const [isPlaying, setIsPlaying] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -64,6 +74,14 @@ const AudioWaveform: React.FC = () => {
             wavesurfer.current.load(
                 'http://res.cloudinary.com/dvwdfsdkp/video/upload/v1720341352/messenger_attachments/pjrhmg2jd9b1rshtl5ae.mp3'
             );
+
+            wavesurfer.current.on('play', () => {
+                setIsPlaying(true);
+            });
+
+            wavesurfer.current.on('pause', () => {
+                setIsPlaying(false);
+            });
         }
 
         return () => {
@@ -77,9 +95,13 @@ const AudioWaveform: React.FC = () => {
         <Fragment>
             <div className="p-2">
                 <div className="flex items-center gap-4">
-                    <button className="btn-primary" onClick={handlePlayPause}>
-                        Play
-                    </button>
+                    <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
+                        {isPlaying ? (
+                            <TbPlayerStopFilled size={10} className="text-textCustom" />
+                        ) : (
+                            <FaPlay size={10} className="text-textCustom" />
+                        )}
+                    </div>
 
                     <div className="h-max-content flex w-[30rem] flex-col justify-center">
                         <div ref={waveformRef} />
@@ -88,6 +110,7 @@ const AudioWaveform: React.FC = () => {
                     <button className="btn-disabled">1x</button>
                 </div>
 
+                {/* Form */}
                 <form className="mt-2 w-[36.5rem]">
                     <textarea
                         className="w-full resize-none rounded-md p-2 text-justify text-base shadow outline-none"
