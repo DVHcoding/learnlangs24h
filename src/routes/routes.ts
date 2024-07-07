@@ -22,6 +22,7 @@ const UnitLesson = loadable(() => import('@admin/components/CoursesManager/UnitL
 const GrammarManagement = loadable(() => import('@admin/components/CoursesManager/Grammar/Update/Grammar'));
 const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 const WriteVocaExercise = loadable(() => import('@components/Courses/Listening/WriteVocaExercise/WriteVocaExercise'));
+const WriteSentenceExercise = loadable(() => import('@components/Courses/Listening/WriteSentenceExercise/WriteSentenceExercise'));
 
 interface PublicRouteType {
     path: string;
@@ -60,6 +61,10 @@ const protectedRoute: ProtectedRouteType[] = [
     {
         path: '/listening/:id/write',
         component: WriteVocaExercise,
+    },
+    {
+        path: '/listening/:id/write/sentence',
+        component: WriteSentenceExercise,
     },
     {
         path: '/profile/:nickname',
