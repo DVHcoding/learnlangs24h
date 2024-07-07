@@ -21,7 +21,7 @@ const useSocket = (): Socket => {
 
 // Tạo contextProvider
 const SocketProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
-    const socket = useMemo(() => io(import.meta.env.VITE_BACKEND_URL, { withCredentials: true }), []);
+    const socket = useMemo(() => io(import.meta.env.VITE_BACKEND_URL, { transports: ['websocket'], withCredentials: true }), []);
 
     return <SocketContext.Provider value={socket}>{children}</SocketContext.Provider>;
 };

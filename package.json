@@ -48,11 +48,13 @@
         "react-router-dom": "^6.22.2",
         "react-toastify": "^10.0.4",
         "react-virtualized-auto-sizer": "^1.0.24",
+        "react-wavesurfer": "^0.8.6",
         "react-window": "^1.8.10",
         "rsuite": "^5.55.1",
         "slate": "^0.103.0",
         "slate-react": "^0.106.0",
-        "socket.io-client": "^4.7.5"
+        "socket.io-client": "^4.7.5",
+        "wavesurfer.js": "^7.8.1"
     },
     "devDependencies": {
         "@types/loadable__component": "^5.13.9",

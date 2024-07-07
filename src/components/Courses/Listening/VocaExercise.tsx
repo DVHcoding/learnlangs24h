@@ -121,6 +121,7 @@ const VocaExercise = () => {
                 <li
                     className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
                     text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    onClick={() => handleRedirectExercise('quiz')}
                 >
                     <div className="flex items-center justify-center gap-2">
                         <RiQuestionAnswerFill size={20} color="#16a815" />
