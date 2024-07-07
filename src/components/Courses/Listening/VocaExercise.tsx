@@ -74,8 +74,8 @@ const VocaExercise = () => {
         });
     };
 
-    const handleRedirectWrite = () => {
-        const newPath = `${location.pathname}/write`;
+    const handleRedirectExercise: (route: string) => void = (route) => {
+        const newPath = `${location.pathname}/${route}`;
         navigate(newPath);
     };
 
@@ -99,7 +99,7 @@ const VocaExercise = () => {
                 <li
                     className="cursor-pointer select-none content-center rounded-md bg-bgCustomCardItem p-3 
                     text-center font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
-                    onClick={handleRedirectWrite}
+                    onClick={() => handleRedirectExercise('write')}
                 >
                     <div className="flex items-center justify-center gap-2">
                         <FaEdit size={20} color="#16a815" />
@@ -110,6 +110,7 @@ const VocaExercise = () => {
                 <li
                     className="cursor-pointer select-none rounded-md bg-bgCustomCardItem p-3 text-center 
                     font-segoe text-base transition-all hover:shadow-md phone:col-span-3"
+                    onClick={() => handleRedirectExercise('write/sentence')}
                 >
                     <div className="flex content-center items-center justify-center gap-2">
                         <MdOutlineTranslate size={20} color="#16a815" />
