@@ -161,13 +161,13 @@ const AudioWaveform: React.FC = () => {
                 </div>
 
                 {/* Form */}
-                <form className="mt-2 max-w-[36.5rem]">
+                <form className="mt-2 ">
                     <textarea
                         className="w-full resize-none rounded-md bg-bgCustomCardItem p-2 text-justify text-base 
                         text-textCustom shadow outline-none placeholder:select-none"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
-                        placeholder="Nhập nghĩa tiếng việt..."
+                        placeholder="Nhập những gì bạn nghe thấy..."
                         ref={textAreaRef}
                     />
                 </form>

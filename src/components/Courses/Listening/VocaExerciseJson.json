@@ -1,37 +1,56 @@
 {
     "success": "true",
-    "vocabulary": [
+    "vocabularies": [
         {
             "_id": "1",
             "english": "Clever",
-            "vietnamese": "Thong minh"
+            "vietnamese": "Thông minh"
         },
         {
             "_id": "2",
             "english": "Friendly",
-            "vietnamese": "Than thien"
+            "vietnamese": "Thân thiện"
         },
         {
             "_id": "3",
             "english": "Cheerful",
-            "vietnamese": "Vui ve"
+            "vietnamese": "Vui vẻ"
         }
     ],
-    "sentence": [
+    "sentences": [
         {
             "_id": "1",
             "english": "You are very clever",
-            "vietnamese": "Ban rat thong minh"
+            "vietnamese": "Bạn rất thông minh."
         },
         {
             "_id": "2",
             "english": "You are very Friendly",
-            "vietnamese": "Ban rat than thien"
+            "vietnamese": "Bạn rất thân thiện."
         },
         {
             "_id": "3",
             "english": "are you cheerful ?",
-            "vietnamese": "Ban co vui ve khong ?"
+            "vietnamese": "Bạn có vui vẻ không ?"
+        }
+    ],
+    "quiz": [
+        {
+            "_id": "1",
+            "audio": [
+                {
+                    "public_id": "abc",
+                    "url": "http://res.cloudinary.com/dvwdfsdkp/video/upload/v1720341352/messenger_attachments/pjrhmg2jd9b1rshtl5ae.mp3",
+                    "content": ["where is jane?"],
+                    "short_content": ["where's jane?"]
+                },
+                {
+                    "public_id": "abc",
+                    "url": "http://res.cloudinary.com/dvwdfsdkp/video/upload/v1720341352/messenger_attachments/pjrhmg2jd9b1rshtl5ae.mp3",
+                    "content": ["where is jane?"],
+                    "short_content": ["where's jane?"]
+                }
+            ]
         }
     ]
 }

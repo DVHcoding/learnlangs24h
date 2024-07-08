@@ -1,21 +1,28 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
+import { Fragment, useState } from 'react';
 import { Alert } from 'antd';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { FaEdit } from 'react-icons/fa';
 import { RiQuestionAnswerFill } from 'react-icons/ri';
 import { MdOutlineTranslate } from 'react-icons/md';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
 import Flashcard from '@components/Courses/Listening/FlashCard';
-import { Fragment, useState } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import VocaExerciseData from './VocaExerciseJson.json';
 
-const VocaExercise = () => {
+interface VocabularyType {
+    _id: string;
+    english: string;
+    vietnamese: string;
+}
+
+const VocaExercise: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
@@ -52,6 +59,8 @@ const VocaExercise = () => {
             backContent: 'Vui vẻ',
         },
     ];
+
+    const { vocabularies } = VocaExerciseData;
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -131,9 +140,9 @@ const VocaExercise = () => {
 
                 {/* FlashCard */}
                 <li className="col-span-3">
-                    {flashArrays.map((item, index) => (
+                    {vocabularies.map((vocabulary: VocabularyType, index: number) => (
                         <motion.div
-                            key={index}
+                            key={vocabulary._id}
                             className={`${index + 1 === activeCard ? '' : 'hidden'}`}
                             animate={{
                                 opacity: index + 1 === activeCard ? 1 : 0,
@@ -141,7 +150,7 @@ const VocaExercise = () => {
                             }}
                             transition={{ duration: 0.2, type: 'spring', stiffness: 200 }}
                         >
-                            <Flashcard frontContent={item.frontContent} backContent={item.backContent} />
+                            <Flashcard frontContent={vocabulary.english} backContent={vocabulary.vietnamese} />
                         </motion.div>
                     ))}
                 </li>

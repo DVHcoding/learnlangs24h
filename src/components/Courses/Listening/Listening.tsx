@@ -20,14 +20,12 @@ import { useUserDetailsQuery } from '@store/api/userApi';
 
 // #########################################################################
 const Listening: React.FC = () => {
+    /* ########################################################################## */
+    /*                                   HOOKS                                    */
+    /* ########################################################################## */
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams<{ id: string }>();
     let id = searchParams.get('id');
-
-    const { data: userDetailsData } = useUserDetailsQuery();
-    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
-    const userId = userDetailsData?.user?._id ?? 'undefined';
-    const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -41,6 +39,10 @@ const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const userId = userDetailsData?.user?._id ?? 'undefined';
+    const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
