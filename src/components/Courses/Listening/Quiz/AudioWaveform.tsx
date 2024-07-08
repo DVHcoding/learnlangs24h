@@ -5,6 +5,7 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { FaPlay } from 'react-icons/fa6';
 import { TbPlayerStopFilled } from 'react-icons/tb';
+import TippyProvider from '@components/Tippys/TippyProvider';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -27,6 +28,8 @@ const AudioWaveform: React.FC = () => {
     /* ########################################################################## */
     const [answer, setAnswer] = useState<string>('');
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
+    const [visible, setVisible] = useState<boolean>(false);
+    const [audioSpeed, setAudioSpeed] = useState<number>(1);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -48,6 +51,11 @@ const AudioWaveform: React.FC = () => {
             }
         }
     };
+    const hide = () => setVisible(false);
+    const handleSelectAudioSpeed = (speed: number) => {
+        setAudioSpeed(speed);
+        setVisible(false);
+    };
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -64,7 +72,6 @@ const AudioWaveform: React.FC = () => {
                 barRadius: 3,
                 barGap: 2,
                 cursorWidth: 1,
-                backend: 'WebAudio',
                 height: 40,
                 progressColor: '#FE6E00',
                 waveColor: '#C4C4C4',
@@ -91,9 +98,19 @@ const AudioWaveform: React.FC = () => {
         };
     }, []);
 
+    useEffect(() => {
+        if (wavesurfer.current) {
+            wavesurfer.current.pause();
+            // Đối số thứ 2 là Preserve pitch (true là giữ nguyên bản giọng nói)
+            wavesurfer.current.setPlaybackRate(audioSpeed, true);
+            wavesurfer.current.seekTo(0);
+        }
+    }, [audioSpeed]);
+
     return (
         <Fragment>
             <div className="p-2">
+                {/* Audio */}
                 <div className="flex items-center gap-4">
                     <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
                         {isPlaying ? (
@@ -107,13 +124,39 @@ const AudioWaveform: React.FC = () => {
                         <div ref={waveformRef} />
                     </div>
 
-                    <button className="btn-disabled">1x</button>
+                    <TippyProvider
+                        visible={visible}
+                        placement="bottom"
+                        onClickOutside={hide}
+                        content={
+                            <div className="rounded-md bg-white p-4 shadow-md">
+                                <h3 className="select-none">Audio Speed</h3>
+
+                                <ul className="flex flex-col gap-2">
+                                    {[0.25, 0.5, 0.75, 1, 1.25, 1.75, 2].map((speed: number) => (
+                                        <li
+                                            key={speed}
+                                            className="cursor-pointer select-none text-base hover:font-bold"
+                                            onClick={() => handleSelectAudioSpeed(speed)}
+                                        >
+                                            {speed}x
+                                        </li>
+                                    ))}
+                                </ul>
+                            </div>
+                        }
+                    >
+                        <button className="rounded-md bg-gray-200 px-4 py-2" onClick={() => setVisible(!visible)}>
+                            {audioSpeed}x
+                        </button>
+                    </TippyProvider>
                 </div>
 
                 {/* Form */}
                 <form className="mt-2 w-[36.5rem]">
                     <textarea
-                        className="w-full resize-none rounded-md p-2 text-justify text-base shadow outline-none"
+                        className="w-full resize-none rounded-md p-2 text-justify text-base shadow 
+                        outline-none placeholder:select-none"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
                         placeholder="Nhập nghĩa tiếng việt..."
