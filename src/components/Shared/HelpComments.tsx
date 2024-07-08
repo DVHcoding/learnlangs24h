@@ -63,7 +63,7 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
 
             <Drawer onClose={onClose} open={open} width={600} styles={headerDrawerStyles}>
                 <div className="flex items-center gap-2">
-                    <Avatar src={userDetailsData?.user?.photo?.url} />
+                    <Avatar src={userDetailsData?.user?.photo?.url} className="min-h-10 min-w-10 object-cover" />
                     <input type="text" className="w-full rounded-md bg-[#f6f7fb] p-2" placeholder="Nhập bình luận tại đây" />
                 </div>
             </Drawer>
