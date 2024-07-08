@@ -115,7 +115,7 @@ const AudioWaveform: React.FC = () => {
 
     return (
         <Fragment>
-            <div className="max-w-max p-2">
+            <div className="mx-auto max-w-max p-2">
                 {/* Audio */}
                 <div className="flex max-w-max items-center gap-4">
                     <div>
@@ -163,8 +163,8 @@ const AudioWaveform: React.FC = () => {
                 {/* Form */}
                 <form className="mt-2 max-w-[36.5rem]">
                     <textarea
-                        className="w-full resize-none rounded-md p-2 text-justify text-base shadow 
-                        outline-none placeholder:select-none"
+                        className="w-full resize-none rounded-md bg-bgCustomCardItem p-2 text-justify text-base 
+                        text-textCustom shadow outline-none placeholder:select-none"
                         value={answer}
                         onChange={(e) => setAnswer(e.target.value)}
                         placeholder="Nhập nghĩa tiếng việt..."

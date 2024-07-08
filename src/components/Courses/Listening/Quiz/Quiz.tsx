@@ -114,11 +114,12 @@ const Quiz: React.FC = () => {
                     </div>
 
                     {/* AudioWaveform */}
-                    <ul className="mt-4 flex flex-col items-center">
-                        <li>
-                            <AudioWaveform />
-                        </li>
-
+                    <ul className="mt-4">
+                        {[...Array(5)].map((_, index) => (
+                            <li key={index}>
+                                <AudioWaveform />
+                            </li>
+                        ))}
                         <li>
                             <AudioWaveform />
                         </li>
@@ -135,8 +136,8 @@ const Quiz: React.FC = () => {
                             ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                             : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
                     } 
-                    scrollbar overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0 sm:top-24  
-                    sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
+                    scrollbar z-10 overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0  
+                    sm:top-24 sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
                 >
                     <div className="scrollbar h-full w-full overflow-auto ">
                         <ListeningLessonCard
