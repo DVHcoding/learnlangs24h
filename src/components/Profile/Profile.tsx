@@ -243,7 +243,11 @@ const Profile: React.FC = () => {
                     >
                         <div className="ml-4 flex gap-4 phone:flex-col">
                             <div className="relative flex h-24 w-24 select-none flex-col gap-2 rounded-full phone:flex-row phone:items-center phone:gap-4">
-                                <img src={AvatarFrame} alt="" className="absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]" />
+                                <img
+                                    src={AvatarFrame}
+                                    alt="Khung avatar"
+                                    className="pointer-events-none absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]"
+                                />
                                 <img src={dataUserByNickName?.user?.photo?.url} alt="Avatar" className="min-w-[6rem] rounded-full" />
 
                                 {dataUserDetails.user._id !== dataUserByNickName.user._id && (
