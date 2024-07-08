@@ -5,7 +5,7 @@ import { useState } from 'react';
 import { ChevronsLeft, Undo2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import loadable from '@loadable/component';
-import { Alert, Breadcrumb } from 'antd';
+import { Alert, Breadcrumb, Button } from 'antd';
 import { Link } from 'react-router-dom';
 
 // ##########################################################################
@@ -101,15 +101,20 @@ const Quiz: React.FC = () => {
                         className="bg-bgCustomProcess text-textCustom"
                     />
 
-                    <div
-                        className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
+                    <div className="mt-2 flex items-center justify-between px-2">
+                        <div
+                            className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
-                        onClick={() => navigate(-1)}
-                    >
-                        <Undo2 size={20} className="text-textCustom" />
+                            onClick={() => navigate(-1)}
+                        >
+                            <Undo2 size={20} className="text-textCustom" />
+                        </div>
+
+                        <Button type="primary">Nộp bài</Button>
                     </div>
 
-                    <ul className="mt-4">
+                    {/* AudioWaveform */}
+                    <ul className="mt-4 flex flex-col items-center">
                         <li>
                             <AudioWaveform />
                         </li>

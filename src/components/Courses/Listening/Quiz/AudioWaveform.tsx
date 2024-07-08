@@ -89,6 +89,12 @@ const AudioWaveform: React.FC = () => {
             wavesurfer.current.on('pause', () => {
                 setIsPlaying(false);
             });
+
+            wavesurfer.current.on('finish', () => {
+                wavesurfer.current?.seekTo(0);
+                wavesurfer.current?.pause();
+                setIsPlaying(false);
+            });
         }
 
         return () => {
@@ -109,15 +115,17 @@ const AudioWaveform: React.FC = () => {
 
     return (
         <Fragment>
-            <div className="p-2">
+            <div className="max-w-max p-2">
                 {/* Audio */}
-                <div className="flex items-center gap-4">
-                    <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
-                        {isPlaying ? (
-                            <TbPlayerStopFilled size={10} className="text-textCustom" />
-                        ) : (
-                            <FaPlay size={10} className="text-textCustom" />
-                        )}
+                <div className="flex max-w-max items-center gap-4">
+                    <div>
+                        <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
+                            {isPlaying ? (
+                                <TbPlayerStopFilled size={10} className="text-textCustom" />
+                            ) : (
+                                <FaPlay size={10} className="text-textCustom" />
+                            )}
+                        </div>
                     </div>
 
                     <div className="h-max-content flex w-[30rem] flex-col justify-center">
@@ -153,7 +161,7 @@ const AudioWaveform: React.FC = () => {
                 </div>
 
                 {/* Form */}
-                <form className="mt-2 w-[36.5rem]">
+                <form className="mt-2 max-w-[36.5rem]">
                     <textarea
                         className="w-full resize-none rounded-md p-2 text-justify text-base shadow 
                         outline-none placeholder:select-none"
