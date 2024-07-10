@@ -1,7 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { useEffect, useRef, useState } from 'react';
+import { useRef, useState } from 'react';
 import { Breadcrumb, Modal, Switch } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
@@ -11,12 +11,56 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import removeVietnameseTones from '@utils/regexVietnamese';
+import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
+
+export interface VocaExerciseResponseType {
+    success: string;
+    vocabularies: Sentence[];
+    sentences: Sentence[];
+    quiz: Quiz[];
+}
+
+export interface Quiz {
+    _id: string;
+    audio: Audio[];
+}
+
+export interface Audio {
+    public_id: string;
+    url: string;
+    content: string[];
+    short_content: string[];
+}
+
+export interface Sentence {
+    _id: string;
+    english: string;
+    vietnamese: string;
+}
+
+interface GameStateType {
+    answer: string;
+    correctWord: string[];
+    wordToShow: Sentence[];
+    activeCard: number;
+    remainWord: Sentence[];
+    inCorrectWord: IncorrectWordType[];
+}
+
+interface IncorrectWordType {
+    _id: string;
+    word: string;
+    count: number;
+    isFirstCorrect: boolean;
+}
 
 const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
+    const { vocabularies }: { vocabularies: Sentence[] } = VocaExerciseData;
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -26,8 +70,18 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [answer, setAnswer] = useState<string>('');
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+
+    const lastWordIndex: number = vocabularies.length - 1;
+    const [gameState, setGameState] = useState<GameStateType>({
+        answer: '',
+        correctWord: [],
+        wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies.slice(0, lastWordIndex),
+        activeCard: Math.floor(Math.random() * (lastWordIndex >= 10 ? 10 : vocabularies.length)),
+        remainWord: lastWordIndex >= 10 ? vocabularies.slice(10, vocabularies.length) : [],
+
+        inCorrectWord: [],
+    });
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -48,12 +102,120 @@ const WriteVocaExercise = () => {
         setIsModalOpen(true);
     };
 
-    const handleOk = () => {
-        setIsModalOpen(false);
+    const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setGameState((prevState) => ({
+            ...prevState,
+            answer: e.target.value,
+        }));
     };
 
-    const handleCancel = () => {
-        setIsModalOpen(false);
+    const handleSubmit = (_id: string, vietnamese: string, indexAnswer: number) => {
+        if (gameState.answer.trim() === '') return;
+
+        const vietnameseRemoveTone = removeVietnameseTones(vietnamese.toLowerCase());
+        const answerRemoveTone = removeVietnameseTones(gameState.answer.toLowerCase());
+        // random ra vị trí index của mảng wordToShow. Giả sử mảng có chiều dài là 10
+        // Tức là chạy từ (0 - 9). Hàm Math sẽ random từ 0 -> nhỏ hơn 10 (Tức chiều dài của mảng)
+        const randomDisplayIndex = Math.floor(Math.random() * gameState.wordToShow.length);
+
+        if (vietnameseRemoveTone === answerRemoveTone) {
+            setGameState((prevState) => {
+                const newWordToShow = [...prevState.wordToShow];
+                const newRemainWord = [...prevState.remainWord];
+                const newCorrectWord = [...prevState.correctWord, vietnameseRemoveTone];
+
+                // Từ nào đúng rồi thì cắt ra bỏ vào newCorrectWord
+                newWordToShow.splice(indexAnswer, 1);
+
+                // Nếu remainWord không rỗng, lấy một từ ngẫu nhiên từ remainWord và thêm vào wordToShow
+                if (newRemainWord.length > 0) {
+                    // random ra vị trí index của mảng dự trữ
+                    const randomRemainIndex = Math.floor(Math.random() * newRemainWord.length);
+
+                    // random ra word từ vị trí index lấy ở trên
+                    const randomRemainWord = newRemainWord[randomRemainIndex];
+                    // Chèn từ mới từ kho dự trữ vào
+                    newWordToShow.splice(randomDisplayIndex, 0, randomRemainWord);
+                    // Từ ở kho dự chữ được chén vào trong mảng hiển thị rồi thì cần loại bỏ ra
+                    // khỏi mảng dự trữ
+                    newRemainWord.splice(randomRemainIndex, 1);
+                }
+
+                return {
+                    ...prevState,
+                    correctWord: newCorrectWord,
+                    wordToShow: shuffleArray(newWordToShow),
+                    remainWord: newRemainWord,
+                    answer: '',
+                };
+            });
+        } else {
+            setGameState((prevState) => {
+                const updatedInCorrectWord = [...prevState.inCorrectWord];
+                /**
+                 * Dùng findIndex để tìm vị trí của từ trong updatedInCorrectWord dựa
+                 * trên _id của từ từ prevState.wordToShow[indexAnswer].
+                 *
+                 * Nếu wordIndex bằng -1, tức là từ chưa tồn tại trong danh sách updatedInCorrectWord,
+                 * ta thêm từ mới vào danh sách với _id, word, và count bằng 1.
+                 *
+                 * Nếu wordIndex khác -1, tức là từ đã tồn tại trong danh sách, ta tăng
+                 * giá trị count lên 1 cho từ tại vị trí wordIndex.
+                 */
+                const wordIndex = updatedInCorrectWord.findIndex((word) => word._id === prevState.wordToShow[indexAnswer]._id);
+
+                if (wordIndex === -1) {
+                    updatedInCorrectWord.push({
+                        _id: prevState.wordToShow[indexAnswer]._id,
+                        word: prevState.wordToShow[indexAnswer].english,
+                        count: 1,
+                        isFirstCorrect: false,
+                    });
+                } else {
+                    updatedInCorrectWord[wordIndex].count += 1;
+                }
+
+                // Lấy lại các word trong mảng cũ
+                const newWordToShow = [...prevState.wordToShow];
+                // Lấy word không chính xác ra bỏ vào biến này split sẽ cắt ra thành 1 mảng
+                // chỉ có 1 phần tử nên ta có thể [0] để lấy ra từ đó luôn
+                // Ví dụ (["example"]) thì [0] sẽ ra từ "example"
+                const incorrectWord = newWordToShow.splice(indexAnswer, 1)[0];
+                // random ra vị trí mới trong khoảng từ 0 đến độ dài của mảng display
+                const randomIndex = Math.floor(Math.random() * newWordToShow.length);
+                // Nối word không chính xác vào mảng hiển thị nhưng với vị trí khác (random)
+                newWordToShow.splice(randomIndex, 0, incorrectWord);
+                return {
+                    ...prevState,
+                    wordToShow: shuffleArray(newWordToShow),
+                    inCorrectWord: updatedInCorrectWord,
+                    answer: '',
+                };
+            });
+        }
+    };
+
+    console.log(gameState);
+
+    // Hàm random vị trí các từ trong mảng
+    const shuffleArray = (sentences: Sentence[]): Sentence[] => {
+        // Bắt đầu từ phần tử cuối cùng và lặp ngược lại
+        for (let currentIndex = sentences.length - 1; currentIndex > 0; currentIndex--) {
+            // Chọn một chỉ số ngẫu nhiên từ 0 đến currentIndex
+            const randomIndex = Math.floor(Math.random() * (currentIndex + 1));
+
+            // Hoán đổi phần tử ở currentIndex với phần tử ở randomIndex
+            [sentences[currentIndex], sentences[randomIndex]] = [sentences[randomIndex], sentences[currentIndex]];
+        }
+        return sentences;
+    };
+
+    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, _id: string, vietnamese: string, indexAnswer: number) => {
+        if (event.key === 'Enter' && !event.shiftKey) {
+            event.preventDefault();
+
+            handleSubmit(_id, vietnamese, indexAnswer);
+        }
     };
 
     /* ########################################################################## */
@@ -63,13 +225,6 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-    useEffect(() => {
-        if (textAreaRef.current) {
-            textAreaRef.current.style.height = '2rem';
-            textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 126) + 'px';
-            textAreaRef.current.style.overflowY = textAreaRef.current.scrollHeight > 126 ? 'auto' : 'hidden';
-        }
-    }, [answer]);
 
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -103,7 +258,10 @@ const WriteVocaExercise = () => {
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
 
-                        <Progress percent={0} strokeColor={twoColors} />
+                        <Progress
+                            percent={Math.round((gameState.correctWord.length / vocabularies.length) * 100)}
+                            strokeColor={twoColors}
+                        />
 
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
@@ -114,27 +272,38 @@ const WriteVocaExercise = () => {
                         </div>
                     </div>
 
-                    <div className="rounded-md p-2 shadow-md">
-                        <div className="flex items-center justify-between border-b-2 border-b-bdCustom py-4">
-                            <h2 className="font-segoe text-2xl">Clever</h2>
-                            <button className="min-w-max">Khong biet</button>
-                        </div>
+                    {gameState.wordToShow.map((vocabulary, index) => (
+                        <div className={`rounded-md p-2 shadow-md ${index === gameState.activeCard ? '' : 'hidden'}`} key={vocabulary._id}>
+                            <div className="border-b-2 border-b-bdCustom py-4">
+                                <div className="flex items-center justify-between">
+                                    <h2 className="font-segoe text-2xl">{vocabulary?.english}</h2>
+                                    <a className="min-w-max cursor-pointer">Không biết</a>
+                                </div>
 
-                        <form action="">
-                            <textarea
-                                className="mt-10 w-full resize-none border-b-4 border-b-green-200 
-                                bg-transparent p-1 text-justify text-lg outline-none"
-                                value={answer}
-                                onChange={(e) => setAnswer(e.target.value)}
-                                placeholder=""
-                                ref={textAreaRef}
-                            />
-                        </form>
-                        <h4 className=" text-gray-500 ">Nhập bằng tiếng việt</h4>
-                    </div>
+                                {/* <p className="mt-2 text-base font-semibold text-green-500">Đáp án đúng</p>
+                                <p className="font-segoe text-base"> Trung thực</p> */}
+                            </div>
+
+                            <form>
+                                <textarea
+                                    className="mt-10 w-full resize-none border-b-4 border-b-green-200 
+                                        bg-transparent p-1 text-justify text-lg outline-none"
+                                    value={gameState.answer}
+                                    onChange={handleChange}
+                                    onKeyDown={(e) => handleKeyDown(e, vocabulary._id, vocabulary?.vietnamese, index)}
+                                    rows={1}
+                                    ref={textAreaRef}
+                                />
+                            </form>
+                            <h4 className=" text-gray-500 ">Nhập bằng tiếng việt</h4>
+                            {/* <h4 className="font-semibold text-red-500">Nhập lại đáp án đúng!</h4> */}
+                        </div>
+                    ))}
+
+                    {gameState.wordToShow.length <= 0 && <p>Ban da hoan thanh</p>}
                 </div>
 
-                <Modal title="Settings" open={isModalOpen} onOk={handleOk} onCancel={handleCancel}>
+                <Modal title="Settings" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)}>
                     <div className="grid grid-cols-2 gap-1">
                         <button className="btn-disabled">Hoc het</button>
                         <button className="btn-primary">Học các thuật ngữ có dấu sao</button>

@@ -15,6 +15,106 @@
             "_id": "3",
             "english": "Cheerful",
             "vietnamese": "Vui vẻ"
+        },
+        {
+            "_id": "4",
+            "english": "Brave",
+            "vietnamese": "Dũng cảm"
+        },
+        {
+            "_id": "5",
+            "english": "Generous",
+            "vietnamese": "Hào phóng"
+        },
+        {
+            "_id": "6",
+            "english": "Honest",
+            "vietnamese": "Trung thực"
+        },
+        {
+            "_id": "7",
+            "english": "Kind",
+            "vietnamese": "Tốt bụng"
+        },
+        {
+            "_id": "8",
+            "english": "Lazy",
+            "vietnamese": "Lười biếng"
+        },
+        {
+            "_id": "9",
+            "english": "Polite",
+            "vietnamese": "Lịch sự"
+        },
+        {
+            "_id": "10",
+            "english": "Rude",
+            "vietnamese": "Thô lỗ"
+        },
+        {
+            "_id": "11",
+            "english": "Sad",
+            "vietnamese": "Buồn"
+        },
+        {
+            "_id": "12",
+            "english": "Sincere",
+            "vietnamese": "Chân thành"
+        },
+        {
+            "_id": "13",
+            "english": "Shy",
+            "vietnamese": "Nhút nhát"
+        },
+        {
+            "_id": "14",
+            "english": "Tidy",
+            "vietnamese": "Ngăn nắp"
+        },
+        {
+            "_id": "15",
+            "english": "Calm",
+            "vietnamese": "Bình tĩnh"
+        },
+        {
+            "_id": "16",
+            "english": "Confident",
+            "vietnamese": "Tự tin"
+        },
+        {
+            "_id": "17",
+            "english": "Creative",
+            "vietnamese": "Sáng tạo"
+        },
+        {
+            "_id": "18",
+            "english": "Curious",
+            "vietnamese": "Tò mò"
+        },
+        {
+            "_id": "19",
+            "english": "Energetic",
+            "vietnamese": "Năng động"
+        },
+        {
+            "_id": "20",
+            "english": "Optimistic",
+            "vietnamese": "Lạc quan"
+        },
+        {
+            "_id": "21",
+            "english": "Punctual",
+            "vietnamese": "Đúng giờ"
+        },
+        {
+            "_id": "22",
+            "english": "Reliable",
+            "vietnamese": "Đáng tin cậy"
+        },
+        {
+            "_id": "23",
+            "english": "Sensitive",
+            "vietnamese": "Nhạy cảm"
         }
     ],
     "sentences": [
