@@ -77,7 +77,7 @@ const WriteVocaExercise = () => {
         answer: '',
         correctWord: [],
         wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies.slice(0, lastWordIndex),
-        activeCard: Math.floor(Math.random() * (lastWordIndex >= 10 ? 10 : vocabularies.length)),
+        activeCard: 0,
         remainWord: lastWordIndex >= 10 ? vocabularies.slice(10, vocabularies.length) : [],
         inCorrectWord: [],
         isWaiting: false,
@@ -110,8 +110,6 @@ const WriteVocaExercise = () => {
     };
 
     const handleSubmit = (_id: string, vietnamese: string, indexAnswer: number) => {
-        if (gameState.answer.trim() === '') return;
-
         const vietnameseRemoveTone = removeVietnameseTones(vietnamese.toLowerCase());
         const answerRemoveTone = removeVietnameseTones(gameState.answer.toLowerCase());
         // random ra vị trí index của mảng wordToShow. Giả sử mảng có chiều dài là 10
@@ -191,7 +189,14 @@ const WriteVocaExercise = () => {
                         count: 1,
                     });
                 } else {
-                    updatedInCorrectWord[wordIndex].count += 1;
+                    // Nếu trường hợp isWaiting === false (Tức là lần đầu sai thì mới)
+                    // được tăng lên 1
+
+                    // Còn nếu trường hợp người dùng nhập sai rồi và nhập lại vẫn cố tình sai
+                    // thì sẽ không tăng
+                    if (!prevState.isWaiting) {
+                        updatedInCorrectWord[wordIndex].count += 1;
+                    }
                 }
 
                 return {
@@ -295,7 +300,12 @@ const WriteVocaExercise = () => {
                                 <div className="border-b-2 border-b-bdCustom py-4">
                                     <div className="flex items-center justify-between">
                                         <h2 className="font-segoe text-2xl">{vocabulary?.english}</h2>
-                                        <a className="min-w-max cursor-pointer">Không biết</a>
+                                        <a
+                                            className="min-w-max cursor-pointer"
+                                            onClick={() => handleSubmit(vocabulary?._id, vocabulary?.vietnamese, index)}
+                                        >
+                                            Không biết
+                                        </a>
                                     </div>
                                     {isWaiting ? (
                                         <>
