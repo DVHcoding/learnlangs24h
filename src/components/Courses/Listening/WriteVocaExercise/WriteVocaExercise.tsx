@@ -46,13 +46,13 @@ interface GameStateType {
     activeCard: number;
     remainWord: Sentence[];
     inCorrectWord: IncorrectWordType[];
+    isWaiting: boolean;
 }
 
 interface IncorrectWordType {
     _id: string;
     word: string;
     count: number;
-    isFirstCorrect: boolean;
 }
 
 const WriteVocaExercise = () => {
@@ -79,8 +79,8 @@ const WriteVocaExercise = () => {
         wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies.slice(0, lastWordIndex),
         activeCard: Math.floor(Math.random() * (lastWordIndex >= 10 ? 10 : vocabularies.length)),
         remainWord: lastWordIndex >= 10 ? vocabularies.slice(10, vocabularies.length) : [],
-
         inCorrectWord: [],
+        isWaiting: false,
     });
 
     /* ########################################################################## */
@@ -118,38 +118,58 @@ const WriteVocaExercise = () => {
         // Tức là chạy từ (0 - 9). Hàm Math sẽ random từ 0 -> nhỏ hơn 10 (Tức chiều dài của mảng)
         const randomDisplayIndex = Math.floor(Math.random() * gameState.wordToShow.length);
 
-        if (vietnameseRemoveTone === answerRemoveTone) {
+        const handleCorrectWord = (): void => {
             setGameState((prevState) => {
                 const newWordToShow = [...prevState.wordToShow];
                 const newRemainWord = [...prevState.remainWord];
                 const newCorrectWord = [...prevState.correctWord, vietnameseRemoveTone];
 
-                // Từ nào đúng rồi thì cắt ra bỏ vào newCorrectWord
-                newWordToShow.splice(indexAnswer, 1);
+                if (!prevState.isWaiting) {
+                    // Từ nào đúng rồi thì cắt ra bỏ vào newCorrectWord
+                    newWordToShow.splice(indexAnswer, 1);
 
-                // Nếu remainWord không rỗng, lấy một từ ngẫu nhiên từ remainWord và thêm vào wordToShow
-                if (newRemainWord.length > 0) {
-                    // random ra vị trí index của mảng dự trữ
-                    const randomRemainIndex = Math.floor(Math.random() * newRemainWord.length);
+                    // Nếu remainWord không rỗng, lấy một từ ngẫu nhiên từ remainWord và thêm vào wordToShow
+                    if (newRemainWord.length > 0) {
+                        // random ra vị trí index của mảng dự trữ
+                        const randomRemainIndex = Math.floor(Math.random() * newRemainWord.length);
 
-                    // random ra word từ vị trí index lấy ở trên
-                    const randomRemainWord = newRemainWord[randomRemainIndex];
-                    // Chèn từ mới từ kho dự trữ vào
-                    newWordToShow.splice(randomDisplayIndex, 0, randomRemainWord);
-                    // Từ ở kho dự chữ được chén vào trong mảng hiển thị rồi thì cần loại bỏ ra
-                    // khỏi mảng dự trữ
-                    newRemainWord.splice(randomRemainIndex, 1);
+                        // random ra word từ vị trí index lấy ở trên
+                        const randomRemainWord = newRemainWord[randomRemainIndex];
+                        // Chèn từ mới từ kho dự trữ vào
+                        newWordToShow.splice(randomDisplayIndex, 0, randomRemainWord);
+                        // Từ ở kho dự chữ được chén vào trong mảng hiển thị rồi thì cần loại bỏ ra
+                        // khỏi mảng dự trữ
+                        newRemainWord.splice(randomRemainIndex, 1);
+                    }
+
+                    return {
+                        ...prevState,
+                        correctWord: newCorrectWord,
+                        wordToShow: shuffleArray(newWordToShow),
+                        remainWord: newRemainWord,
+                        answer: '',
+                        isWaiting: false,
+                    };
+                } else {
+                    // Lấy word không chính xác ra bỏ vào biến này split sẽ cắt ra thành 1 mảng
+                    // chỉ có 1 phần tử nên ta có thể [0] để lấy ra từ đó luôn
+                    // Ví dụ (["example"]) thì [0] sẽ ra từ "example"
+                    const incorrectWord = newWordToShow.splice(indexAnswer, 1)[0];
+                    // random ra vị trí mới trong khoảng từ 0 đến độ dài của mảng display
+                    const randomIndex = Math.floor(Math.random() * newWordToShow.length);
+                    // Nối word không chính xác vào mảng hiển thị nhưng với vị trí khác (random)
+                    newWordToShow.splice(randomIndex, 0, incorrectWord);
+                    return {
+                        ...prevState,
+                        wordToShow: shuffleArray(newWordToShow),
+                        answer: '',
+                        isWaiting: false,
+                    };
                 }
-
-                return {
-                    ...prevState,
-                    correctWord: newCorrectWord,
-                    wordToShow: shuffleArray(newWordToShow),
-                    remainWord: newRemainWord,
-                    answer: '',
-                };
             });
-        } else {
+        };
+
+        const handleIncorrectWord = (): void => {
             setGameState((prevState) => {
                 const updatedInCorrectWord = [...prevState.inCorrectWord];
                 /**
@@ -169,33 +189,26 @@ const WriteVocaExercise = () => {
                         _id: prevState.wordToShow[indexAnswer]._id,
                         word: prevState.wordToShow[indexAnswer].english,
                         count: 1,
-                        isFirstCorrect: false,
                     });
                 } else {
                     updatedInCorrectWord[wordIndex].count += 1;
                 }
 
-                // Lấy lại các word trong mảng cũ
-                const newWordToShow = [...prevState.wordToShow];
-                // Lấy word không chính xác ra bỏ vào biến này split sẽ cắt ra thành 1 mảng
-                // chỉ có 1 phần tử nên ta có thể [0] để lấy ra từ đó luôn
-                // Ví dụ (["example"]) thì [0] sẽ ra từ "example"
-                const incorrectWord = newWordToShow.splice(indexAnswer, 1)[0];
-                // random ra vị trí mới trong khoảng từ 0 đến độ dài của mảng display
-                const randomIndex = Math.floor(Math.random() * newWordToShow.length);
-                // Nối word không chính xác vào mảng hiển thị nhưng với vị trí khác (random)
-                newWordToShow.splice(randomIndex, 0, incorrectWord);
                 return {
                     ...prevState,
-                    wordToShow: shuffleArray(newWordToShow),
                     inCorrectWord: updatedInCorrectWord,
                     answer: '',
+                    isWaiting: true,
                 };
             });
+        };
+
+        if (vietnameseRemoveTone === answerRemoveTone) {
+            handleCorrectWord();
+        } else {
+            handleIncorrectWord();
         }
     };
-
-    console.log(gameState);
 
     // Hàm random vị trí các từ trong mảng
     const shuffleArray = (sentences: Sentence[]): Sentence[] => {
@@ -272,33 +285,47 @@ const WriteVocaExercise = () => {
                         </div>
                     </div>
 
-                    {gameState.wordToShow.map((vocabulary, index) => (
-                        <div className={`rounded-md p-2 shadow-md ${index === gameState.activeCard ? '' : 'hidden'}`} key={vocabulary._id}>
-                            <div className="border-b-2 border-b-bdCustom py-4">
-                                <div className="flex items-center justify-between">
-                                    <h2 className="font-segoe text-2xl">{vocabulary?.english}</h2>
-                                    <a className="min-w-max cursor-pointer">Không biết</a>
+                    {gameState.wordToShow.map((vocabulary, index) => {
+                        const isCardActive = index === gameState.activeCard;
+                        const isWaiting = gameState.isWaiting;
+                        const hasCorrectAnswer = !isWaiting && vocabulary?.vietnamese === gameState.answer;
+
+                        return (
+                            <div key={vocabulary._id} className={`rounded-md p-2 shadow-md ${isCardActive ? '' : 'hidden'}`}>
+                                <div className="border-b-2 border-b-bdCustom py-4">
+                                    <div className="flex items-center justify-between">
+                                        <h2 className="font-segoe text-2xl">{vocabulary?.english}</h2>
+                                        <a className="min-w-max cursor-pointer">Không biết</a>
+                                    </div>
+                                    {isWaiting ? (
+                                        <>
+                                            <p className="mt-2 text-base font-semibold text-green-500">Đáp án đúng</p>
+                                            <p className="font-segoe text-base">{vocabulary?.vietnamese}</p>
+                                        </>
+                                    ) : null}
                                 </div>
 
-                                {/* <p className="mt-2 text-base font-semibold text-green-500">Đáp án đúng</p>
-                                <p className="font-segoe text-base"> Trung thực</p> */}
-                            </div>
+                                <form>
+                                    <textarea
+                                        className={`mt-10 w-full resize-none border-b-4 border-b-green-200 bg-transparent p-1 text-justify text-lg outline-none ${
+                                            hasCorrectAnswer ? 'border-b-4 border-green-500' : ''
+                                        }`}
+                                        value={gameState.answer}
+                                        onChange={handleChange}
+                                        onKeyDown={(e) => handleKeyDown(e, vocabulary._id, vocabulary?.vietnamese, index)}
+                                        rows={1}
+                                        ref={textAreaRef}
+                                    />
+                                </form>
 
-                            <form>
-                                <textarea
-                                    className="mt-10 w-full resize-none border-b-4 border-b-green-200 
-                                        bg-transparent p-1 text-justify text-lg outline-none"
-                                    value={gameState.answer}
-                                    onChange={handleChange}
-                                    onKeyDown={(e) => handleKeyDown(e, vocabulary._id, vocabulary?.vietnamese, index)}
-                                    rows={1}
-                                    ref={textAreaRef}
-                                />
-                            </form>
-                            <h4 className=" text-gray-500 ">Nhập bằng tiếng việt</h4>
-                            {/* <h4 className="font-semibold text-red-500">Nhập lại đáp án đúng!</h4> */}
-                        </div>
-                    ))}
+                                {isWaiting ? (
+                                    <h4 className="font-semibold text-red-500">Nhập lại đáp án đúng!</h4>
+                                ) : (
+                                    <h4 className=" text-gray-500 ">Nhập bằng tiếng việt</h4>
+                                )}
+                            </div>
+                        );
+                    })}
 
                     {gameState.wordToShow.length <= 0 && <p>Ban da hoan thanh</p>}
                 </div>

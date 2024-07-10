@@ -20,6 +20,7 @@ import { SocketProvider } from '@utils/socket';
 /*                                   MODULES                                  */
 /* -------------------------------------------------------------------------- */
 import '@components/Modules/Antd/Drawer.css';
+import DesktopNotification from '@components/Shared/DesktopNotification';
 
 ////////////////////////////////////////////////////////////////////////////////
 const NotFound = loadable(() => import('@pages/NotFound/NotFound'));
@@ -79,6 +80,9 @@ function App() {
         <Router>
             <SocketProvider>
                 <div className="App">
+                    {/* Sử dụng để thông báo từ vựng */}
+                    <DesktopNotification />
+
                     <Routes>
                         {/*#################################*/}
                         {/*#          PUBLIC ROUTE          */}
