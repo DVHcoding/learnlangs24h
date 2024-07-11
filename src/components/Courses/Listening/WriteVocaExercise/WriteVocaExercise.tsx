@@ -7,6 +7,8 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
 import { Progress } from 'antd';
 import { IoMdVolumeHigh } from 'react-icons/io';
+import { useSpeechSynthesis } from 'react-speech-kit';
+import Rating from '@mui/material/Rating';
 import type { ProgressProps } from 'antd';
 
 // ##########################################################################
@@ -14,7 +16,6 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 import removeVietnameseTones from '@utils/regexVietnamese';
 import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
-import Rating from '@mui/material/Rating';
 
 export interface VocaExerciseResponseType {
     success: string;
@@ -79,6 +80,7 @@ const WriteVocaExercise = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const lastWordIndex: number = vocabularies.length - 1;
+
     const initialGameState = {
         answer: '',
         correctWord: [],
@@ -91,6 +93,7 @@ const WriteVocaExercise = () => {
 
     const [gameState, setGameState] = useState<GameStateType>(initialGameState);
     const [rating, setRating] = useState<number | null>(0);
+    const [activeSpeak, setActiveSpeak] = useState<string | null>(null);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -266,9 +269,18 @@ const WriteVocaExercise = () => {
         setGameState(initialGameState);
     };
 
+    const handleSpeakText = (value: string, _id: string): void => {
+        setActiveSpeak(_id);
+
+        speak({
+            text: value,
+        });
+    };
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
+    const { speak, speaking } = useSpeechSynthesis();
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
@@ -279,7 +291,11 @@ const WriteVocaExercise = () => {
         }
     }, []);
 
-    console.log(gameState);
+    useEffect(() => {
+        if (!speaking) {
+            setActiveSpeak(null);
+        }
+    }, [speaking]);
 
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -415,9 +431,24 @@ const WriteVocaExercise = () => {
 
                                         <div className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
                                             <div className="flex items-center justify-between">
-                                                <h3 className="text-textCustom">{vocabulary.english}</h3>
+                                                <h3
+                                                    className={`text-textCustom ${activeSpeak === vocabulary._id ? 'text-yellow-500' : ''}`}
+                                                >
+                                                    {vocabulary.english}
+                                                </h3>
+
                                                 <div className="flex items-center gap-2">
-                                                    <IoMdVolumeHigh size={20} className="cursor-pointer text-textCustom" />
+                                                    <button
+                                                        onClick={() => handleSpeakText(vocabulary.english, vocabulary._id)}
+                                                        disabled={speaking}
+                                                    >
+                                                        <IoMdVolumeHigh
+                                                            size={20}
+                                                            className={`cursor-pointer text-textCustom ${
+                                                                activeSpeak === vocabulary._id ? 'text-yellow-500' : ''
+                                                            }`}
+                                                        />
+                                                    </button>
 
                                                     <Rating
                                                         name="incorrect-rating"
@@ -445,9 +476,27 @@ const WriteVocaExercise = () => {
                                             gameState.inCorrectWord.find((incorrect: IncorrectWordType) => incorrect._id !== word._id) ? (
                                                 <div key={word._id} className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
                                                     <div className="flex items-center justify-between">
-                                                        <h3 className="text-textCustom">{word.english}</h3>
+                                                        <h3
+                                                            className={`text-textCustom ${
+                                                                activeSpeak === word._id ? 'text-yellow-500' : ''
+                                                            }`}
+                                                        >
+                                                            {word.english}
+                                                        </h3>
+
                                                         <div className="flex items-center gap-2">
-                                                            <IoMdVolumeHigh size={20} className="cursor-pointer text-textCustom" />
+                                                            <button
+                                                                onClick={() => handleSpeakText(word.english, word._id)}
+                                                                disabled={speaking}
+                                                            >
+                                                                <IoMdVolumeHigh
+                                                                    size={20}
+                                                                    className={`cursor-pointer text-textCustom ${
+                                                                        activeSpeak === word._id ? 'text-yellow-500' : ''
+                                                                    }`}
+                                                                />
+                                                            </button>
+
                                                             <Rating
                                                                 name="correct-rating"
                                                                 defaultValue={1}
