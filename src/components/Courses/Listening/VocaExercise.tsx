@@ -45,20 +45,6 @@ const VocaExercise: React.FC = () => {
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
-    const flashArrays = [
-        {
-            frontContent: 'Clever',
-            backContent: 'Thông minh',
-        },
-        {
-            frontContent: 'Friendly',
-            backContent: 'Thân thiện',
-        },
-        {
-            frontContent: 'Cheerful',
-            backContent: 'Vui vẻ',
-        },
-    ];
 
     const { vocabularies } = VocaExerciseData;
 
@@ -76,8 +62,8 @@ const VocaExercise: React.FC = () => {
 
     const handleNextCard = () => {
         setActiveCard((prev) => {
-            if (prev + 1 >= flashArrays.length) {
-                return flashArrays.length;
+            if (prev + 1 >= vocabularies.length) {
+                return vocabularies.length;
             }
             return prev + 1;
         });
@@ -167,7 +153,7 @@ const VocaExercise: React.FC = () => {
                 </div>
 
                 <h4 className="select-none font-segoe text-base text-textCustom">
-                    {activeCard}/{flashArrays.length}
+                    {activeCard}/{vocabularies.length}
                 </h4>
 
                 <div
