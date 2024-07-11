@@ -279,6 +279,8 @@ const WriteVocaExercise = () => {
         }
     }, []);
 
+    console.log(gameState);
+
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Breadcrumb */}
@@ -406,7 +408,7 @@ const WriteVocaExercise = () => {
                                 </button>
                             </div>
 
-                            <ul className="mt-4 flex flex-col items-center gap-4">
+                            <ul className="mt-4 flex flex-col items-center gap-4 px-2">
                                 {gameState.inCorrectWord.map((vocabulary) => (
                                     <li className="w-1/2" key={vocabulary._id}>
                                         <h3 className="font-bold text-red-400">Sai {vocabulary.count} lần!</h3>
@@ -434,12 +436,13 @@ const WriteVocaExercise = () => {
                                     </li>
                                 ))}
 
-                                <li className="w-1/2">
+                                <li className="w-1/2 sm:w-full">
                                     <h3 className="font-bold text-green-400">Chưa sai câu nào!</h3>
 
                                     <div className="flex flex-col items-center gap-4">
-                                        {gameState.correctWord.map((word) =>
-                                            gameState.inCorrectWord.find((incorrect) => incorrect._id !== word._id) ? (
+                                        {gameState.correctWord.map((word: CorrectWordType) =>
+                                            gameState.inCorrectWord.length === 0 ||
+                                            gameState.inCorrectWord.find((incorrect: IncorrectWordType) => incorrect._id !== word._id) ? (
                                                 <div key={word._id} className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
                                                     <div className="flex items-center justify-between">
                                                         <h3 className="text-textCustom">{word.english}</h3>
