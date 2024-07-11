@@ -1,11 +1,12 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { useRef, useState } from 'react';
+import { Fragment, useEffect, useRef, useState } from 'react';
 import { Breadcrumb, Modal, Switch } from 'antd';
 import { Link, useNavigate } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
 import { Progress } from 'antd';
+import { IoMdVolumeHigh } from 'react-icons/io';
 import type { ProgressProps } from 'antd';
 
 // ##########################################################################
@@ -13,6 +14,7 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 import removeVietnameseTones from '@utils/regexVietnamese';
 import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
+import Rating from '@mui/material/Rating';
 
 export interface VocaExerciseResponseType {
     success: string;
@@ -41,7 +43,7 @@ export interface Sentence {
 
 interface GameStateType {
     answer: string;
-    correctWord: string[];
+    correctWord: CorrectWordType[];
     wordToShow: Sentence[];
     activeCard: number;
     remainWord: Sentence[];
@@ -51,9 +53,13 @@ interface GameStateType {
 
 interface IncorrectWordType {
     _id: string;
-    word: string;
+    english: string;
+    vietnamese: string;
+
     count: number;
 }
+
+type CorrectWordType = Omit<IncorrectWordType, 'count'>;
 
 const WriteVocaExercise = () => {
     /* ########################################################################## */
@@ -73,7 +79,7 @@ const WriteVocaExercise = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const lastWordIndex: number = vocabularies.length - 1;
-    const [gameState, setGameState] = useState<GameStateType>({
+    const initialGameState = {
         answer: '',
         correctWord: [],
         wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies.slice(0, lastWordIndex),
@@ -81,7 +87,10 @@ const WriteVocaExercise = () => {
         remainWord: lastWordIndex >= 10 ? vocabularies.slice(10, vocabularies.length) : [],
         inCorrectWord: [],
         isWaiting: false,
-    });
+    };
+
+    const [gameState, setGameState] = useState<GameStateType>(initialGameState);
+    const [rating, setRating] = useState<number | null>(0);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -109,7 +118,7 @@ const WriteVocaExercise = () => {
         }));
     };
 
-    const handleSubmit = (_id: string, vietnamese: string, indexAnswer: number) => {
+    const handleSubmit = (_id: string, english: string, vietnamese: string, indexAnswer: number) => {
         const vietnameseRemoveTone = removeVietnameseTones(vietnamese.toLowerCase());
         const answerRemoveTone = removeVietnameseTones(gameState.answer.toLowerCase());
         // random ra vị trí index của mảng wordToShow. Giả sử mảng có chiều dài là 10
@@ -117,10 +126,12 @@ const WriteVocaExercise = () => {
         const randomDisplayIndex = Math.floor(Math.random() * gameState.wordToShow.length);
 
         const handleCorrectWord = (): void => {
+            textAreaRef.current?.focus();
+
             setGameState((prevState) => {
                 const newWordToShow = [...prevState.wordToShow];
                 const newRemainWord = [...prevState.remainWord];
-                const newCorrectWord = [...prevState.correctWord, vietnameseRemoveTone];
+                const newCorrectWord = [...prevState.correctWord, { _id, english, vietnamese }];
 
                 if (!prevState.isWaiting) {
                     // Từ nào đúng rồi thì cắt ra bỏ vào newCorrectWord
@@ -185,7 +196,8 @@ const WriteVocaExercise = () => {
                 if (wordIndex === -1) {
                     updatedInCorrectWord.push({
                         _id: prevState.wordToShow[indexAnswer]._id,
-                        word: prevState.wordToShow[indexAnswer].english,
+                        english: prevState.wordToShow[indexAnswer].english,
+                        vietnamese: prevState.wordToShow[indexAnswer].vietnamese,
                         count: 1,
                     });
                 } else {
@@ -213,6 +225,14 @@ const WriteVocaExercise = () => {
         } else {
             handleIncorrectWord();
         }
+
+        // Khi sử dụng setTimeout để gọi focus vào textarea, bạn thực sự đang khai thác
+        // một tính năng của JavaScript và React để đảm bảo rằng việc focus vào phần tử
+        // diễn ra sau khi một số công việc khác, như việc cập nhật state và render, đã hoàn tất.
+        // Dưới đây là một cái nhìn sâu hơn về lý do tại sao setTimeout có thể cần thiết và các giải pháp thay thế.
+        setTimeout(() => {
+            textAreaRef.current?.focus();
+        }, 0);
     };
 
     // Hàm random vị trí các từ trong mảng
@@ -228,12 +248,22 @@ const WriteVocaExercise = () => {
         return sentences;
     };
 
-    const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>, _id: string, vietnamese: string, indexAnswer: number) => {
+    const handleKeyDown = (
+        event: React.KeyboardEvent<HTMLTextAreaElement>,
+        _id: string,
+        english: string,
+        vietnamese: string,
+        indexAnswer: number
+    ) => {
         if (event.key === 'Enter' && !event.shiftKey) {
             event.preventDefault();
 
-            handleSubmit(_id, vietnamese, indexAnswer);
+            handleSubmit(_id, english, vietnamese, indexAnswer);
         }
+    };
+
+    const handleResetGameState = (): void => {
+        setGameState(initialGameState);
     };
 
     /* ########################################################################## */
@@ -243,6 +273,11 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+    useEffect(() => {
+        if (textAreaRef.current) {
+            textAreaRef.current.focus();
+        }
+    }, []);
 
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -267,6 +302,7 @@ const WriteVocaExercise = () => {
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
                 {/* Box */}
                 <div className="w-full">
+                    {/* Navigate & Progress & Setting iCion */}
                     <div className="flex items-center justify-between gap-4">
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
@@ -290,41 +326,45 @@ const WriteVocaExercise = () => {
                         </div>
                     </div>
 
+                    {/* Cards */}
                     {gameState.wordToShow.map((vocabulary, index) => {
                         const isCardActive = index === gameState.activeCard;
                         const isWaiting = gameState.isWaiting;
-                        const hasCorrectAnswer = !isWaiting && vocabulary?.vietnamese === gameState.answer;
 
                         return (
                             <div key={vocabulary._id} className={`rounded-md p-2 shadow-md ${isCardActive ? '' : 'hidden'}`}>
                                 <div className="border-b-2 border-b-bdCustom py-4">
                                     <div className="flex items-center justify-between">
-                                        <h2 className="font-segoe text-2xl">{vocabulary?.english}</h2>
+                                        <h2 className="font-segoe text-2xl text-textCustom">{vocabulary?.english}</h2>
                                         <a
-                                            className="min-w-max cursor-pointer"
-                                            onClick={() => handleSubmit(vocabulary?._id, vocabulary?.vietnamese, index)}
+                                            className="min-w-max cursor-pointer text-textCustom"
+                                            onClick={() =>
+                                                handleSubmit(vocabulary?._id, vocabulary?.english, vocabulary?.vietnamese, index)
+                                            }
                                         >
                                             Không biết
                                         </a>
                                     </div>
                                     {isWaiting ? (
-                                        <>
+                                        <Fragment>
                                             <p className="mt-2 text-base font-semibold text-green-500">Đáp án đúng</p>
-                                            <p className="font-segoe text-base">{vocabulary?.vietnamese}</p>
-                                        </>
+                                            <p className="font-segoe text-base text-textCustom">{vocabulary?.vietnamese}</p>
+                                        </Fragment>
                                     ) : null}
                                 </div>
 
                                 <form>
                                     <textarea
-                                        className={`mt-10 w-full resize-none border-b-4 border-b-green-200 bg-transparent p-1 text-justify text-lg outline-none ${
-                                            hasCorrectAnswer ? 'border-b-4 border-green-500' : ''
-                                        }`}
+                                        className="mt-10 w-full resize-none border-b-4 border-b-green-200 
+                                        bg-transparent p-1 text-justify text-lg text-textCustom outline-none"
                                         value={gameState.answer}
                                         onChange={handleChange}
-                                        onKeyDown={(e) => handleKeyDown(e, vocabulary._id, vocabulary?.vietnamese, index)}
+                                        onKeyDown={(e) =>
+                                            handleKeyDown(e, vocabulary._id, vocabulary?.english, vocabulary?.vietnamese, index)
+                                        }
                                         rows={1}
-                                        ref={textAreaRef}
+                                        ref={index === gameState.activeCard ? textAreaRef : null}
+                                        spellCheck={false}
                                     />
                                 </form>
 
@@ -337,9 +377,98 @@ const WriteVocaExercise = () => {
                         );
                     })}
 
-                    {gameState.wordToShow.length <= 0 && <p>Ban da hoan thanh</p>}
+                    {/* Completed */}
+                    {gameState.wordToShow.length <= 0 && (
+                        <div
+                            className="scrollbar-mess overflow-auto rounded-md bg-bgCustomCard py-4"
+                            style={{ height: 'calc(100% - 2.3rem)' }}
+                        >
+                            <div className="mx-auto max-w-max">
+                                <Progress
+                                    type="dashboard"
+                                    steps={8}
+                                    percent={Math.round(
+                                        ((vocabularies.length - gameState.inCorrectWord.length) / vocabularies.length) * 100
+                                    )}
+                                    trailColor="rgba(0, 0, 0, 0.06)"
+                                    strokeWidth={15}
+                                    size={150}
+                                />
+
+                                <h2 className="text-center font-segoe text-textCustom">Tỉ lệ chính xác</h2>
+
+                                <button
+                                    className="mx-auto rounded-sm bg-blue-400 px-8 py-2 
+                                    text-base text-white transition-all hover:scale-105"
+                                    onClick={handleResetGameState}
+                                >
+                                    Bắt đầu lại
+                                </button>
+                            </div>
+
+                            <ul className="mt-4 flex flex-col items-center gap-4">
+                                {gameState.inCorrectWord.map((vocabulary) => (
+                                    <li className="w-1/2" key={vocabulary._id}>
+                                        <h3 className="font-bold text-red-400">Sai {vocabulary.count} lần!</h3>
+
+                                        <div className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
+                                            <div className="flex items-center justify-between">
+                                                <h3 className="text-textCustom">{vocabulary.english}</h3>
+                                                <div className="flex items-center gap-2">
+                                                    <IoMdVolumeHigh size={20} className="cursor-pointer text-textCustom" />
+
+                                                    <Rating
+                                                        name="incorrect-rating"
+                                                        defaultValue={1}
+                                                        value={rating}
+                                                        max={1}
+                                                        onChange={(_, newValue) => {
+                                                            setRating(newValue);
+                                                        }}
+                                                        className="mb-[2px]"
+                                                    />
+                                                </div>
+                                            </div>
+                                            <h3 className="text-textCustom">{vocabulary.vietnamese}</h3>
+                                        </div>
+                                    </li>
+                                ))}
+
+                                <li className="w-1/2">
+                                    <h3 className="font-bold text-green-400">Chưa sai câu nào!</h3>
+
+                                    <div className="flex flex-col items-center gap-4">
+                                        {gameState.correctWord.map((word) =>
+                                            gameState.inCorrectWord.find((incorrect) => incorrect._id !== word._id) ? (
+                                                <div key={word._id} className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
+                                                    <div className="flex items-center justify-between">
+                                                        <h3 className="text-textCustom">{word.english}</h3>
+                                                        <div className="flex items-center gap-2">
+                                                            <IoMdVolumeHigh size={20} className="cursor-pointer text-textCustom" />
+                                                            <Rating
+                                                                name="correct-rating"
+                                                                defaultValue={1}
+                                                                max={1}
+                                                                value={rating}
+                                                                onChange={(_, newValue) => {
+                                                                    setRating(newValue);
+                                                                }}
+                                                                className="mb-[2px]"
+                                                            />
+                                                        </div>
+                                                    </div>
+                                                    <h3 className="text-textCustom">{word.vietnamese}</h3>
+                                                </div>
+                                            ) : null
+                                        )}
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    )}
                 </div>
 
+                {/* Settings */}
                 <Modal title="Settings" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)}>
                     <div className="grid grid-cols-2 gap-1">
                         <button className="btn-disabled">Hoc het</button>

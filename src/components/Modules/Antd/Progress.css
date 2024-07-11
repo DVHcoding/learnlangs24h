@@ -1,0 +1,5 @@
+@import '../../../index.css';
+
+.ant-progress-text {
+    color: var(--text-custom) !important;
+}

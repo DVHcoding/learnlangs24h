@@ -20,6 +20,7 @@ import { SocketProvider } from '@utils/socket';
 /*                                   MODULES                                  */
 /* -------------------------------------------------------------------------- */
 import '@components/Modules/Antd/Drawer.css';
+import '@components/Modules/Antd/Progress.css';
 import DesktopNotification from '@components/Shared/DesktopNotification';
 
 ////////////////////////////////////////////////////////////////////////////////
