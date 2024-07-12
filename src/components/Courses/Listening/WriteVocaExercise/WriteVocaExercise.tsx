@@ -62,6 +62,14 @@ interface IncorrectWordType {
 
 type CorrectWordType = Omit<IncorrectWordType, 'count'>;
 
+interface SettingTypes {
+    learnAll: boolean;
+    learnStar: boolean;
+    displayFirstEnglish: boolean;
+    textToSpeech: boolean;
+    hideWord: boolean;
+}
+
 const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
@@ -94,6 +102,13 @@ const WriteVocaExercise = () => {
     const [gameState, setGameState] = useState<GameStateType>(initialGameState);
     const [rating, setRating] = useState<number | null>(0);
     const [activeSpeak, setActiveSpeak] = useState<string | null>(null);
+    const [settings, setSettings] = useState<SettingTypes>({
+        learnAll: true,
+        learnStar: false,
+        displayFirstEnglish: true,
+        hideWord: false,
+        textToSpeech: false,
+    });
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -523,24 +538,47 @@ const WriteVocaExercise = () => {
                 {/* Settings */}
                 <Modal title="Settings" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)}>
                     <div className="grid grid-cols-2 gap-1">
-                        <button className="btn-disabled">Hoc het</button>
-                        <button className="btn-primary">Học các thuật ngữ có dấu sao</button>
+                        <button
+                            className={`rounded-md p-2 ${settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setSettings((preState) => ({ ...preState, learnAll: true, learnStar: false }))}
+                        >
+                            Hoc het
+                        </button>
+
+                        <button
+                            className={`rounded-md p-2 ${settings.learnStar ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            onClick={() => setSettings((preState) => ({ ...preState, learnStar: true, learnAll: false }))}
+                        >
+                            Học các thuật ngữ có dấu sao
+                        </button>
                     </div>
 
                     <ul className="mt-2">
                         <li className="flex items-center justify-between">
                             <h3>Hiển thị tiếng anh đầu tiên</h3>
-                            <Switch size="small" defaultChecked />
+                            <Switch
+                                size="small"
+                                checked={settings.displayFirstEnglish}
+                                onChange={(checked) => setSettings((preState) => ({ ...preState, displayFirstEnglish: checked }))}
+                            />
                         </li>
 
                         <li className="flex items-center justify-between">
                             <h3>Đọc nội dung</h3>
-                            <Switch size="small" />
+                            <Switch
+                                size="small"
+                                checked={settings.textToSpeech}
+                                onChange={(checked) => setSettings((preState) => ({ ...preState, textToSpeech: checked }))}
+                            />
                         </li>
 
                         <li className="flex items-center justify-between">
                             <h3>Ẩn nội dung (Nên bật đọc nội dung để nghe và điền từ)</h3>
-                            <Switch size="small" />
+                            <Switch
+                                size="small"
+                                checked={settings.hideWord}
+                                onChange={(checked) => setSettings((preState) => ({ ...preState, hideWord: checked }))}
+                            />
                         </li>
                     </ul>
                 </Modal>
