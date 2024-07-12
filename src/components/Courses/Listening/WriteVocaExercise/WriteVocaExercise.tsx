@@ -16,6 +16,7 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 import removeVietnameseTones from '@utils/regexVietnamese';
 import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
+import { toastError } from '@components/Toast/Toasts';
 
 export interface VocaExerciseResponseType {
     success: string;
@@ -56,11 +57,12 @@ interface IncorrectWordType {
     _id: string;
     english: string;
     vietnamese: string;
-
     count: number;
 }
 
 type CorrectWordType = Omit<IncorrectWordType, 'count'>;
+
+type VocabularyStarsType = CorrectWordType;
 
 interface SettingTypes {
     learnAll: boolean;
@@ -88,7 +90,6 @@ const WriteVocaExercise = () => {
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
     const lastWordIndex: number = vocabularies.length - 1;
-
     const initialGameState = {
         answer: '',
         correctWord: [],
@@ -100,7 +101,8 @@ const WriteVocaExercise = () => {
     };
 
     const [gameState, setGameState] = useState<GameStateType>(initialGameState);
-    const [rating, setRating] = useState<number | null>(0);
+    const [rating, setRating] = useState<{ [key: string]: number }>({});
+    const [vocabularyStars, setVocabularyStars] = useState<VocabularyStarsType[]>([]);
     const [activeSpeak, setActiveSpeak] = useState<string | null>(null);
     const [settings, setSettings] = useState<SettingTypes>({
         learnAll: true,
@@ -137,6 +139,7 @@ const WriteVocaExercise = () => {
     };
 
     const handleSubmit = (_id: string, english: string, vietnamese: string, indexAnswer: number) => {
+        const englishRemoveTone = removeVietnameseTones(english.toLowerCase());
         const vietnameseRemoveTone = removeVietnameseTones(vietnamese.toLowerCase());
         const answerRemoveTone = removeVietnameseTones(gameState.answer.toLowerCase());
         // random ra vị trí index của mảng wordToShow. Giả sử mảng có chiều dài là 10
@@ -238,7 +241,11 @@ const WriteVocaExercise = () => {
             });
         };
 
-        if (vietnameseRemoveTone === answerRemoveTone) {
+        // Nếu settings là hiển thị tiếng anh đầu tiên thì kiểm tra xem chữ nhập vào có bằng với kết quả tiếng việt ko
+        // Nếu settings là hiển thị tiếng việt đầu tiên thì kiểm tra xem chữ nhập vào có bằng với kết quả tiếng anh ko
+        const correctVietnameseAnswer: boolean = vietnameseRemoveTone === answerRemoveTone;
+        const correctEnglishAnswer: boolean = englishRemoveTone === answerRemoveTone;
+        if (settings.displayFirstEnglish ? correctVietnameseAnswer : correctEnglishAnswer) {
             handleCorrectWord();
         } else {
             handleIncorrectWord();
@@ -290,6 +297,93 @@ const WriteVocaExercise = () => {
         speak({
             text: value,
         });
+    };
+
+    const handleRatingChange = (vocabulary: VocabularyStarsType, newValue: number | null) => {
+        if (newValue === 1) {
+            // Chỉ thêm vào vocabularyStars khi giá trị là 1
+            setVocabularyStars((prev) => [
+                ...prev,
+                { _id: vocabulary._id, english: vocabulary.english, vietnamese: vocabulary.vietnamese },
+            ]);
+        } else {
+            // Loại bỏ khỏi vocabularyStars khi giá trị không phải là 1
+            setVocabularyStars((prev) => prev.filter((item) => item._id !== vocabulary._id));
+        }
+        setRating((prev) => ({ ...prev, [vocabulary._id]: newValue || 0 }));
+    };
+
+    const cancelAllStars = () => {
+        setRating({});
+        setVocabularyStars([]);
+    };
+
+    const handleChangeSettings = (): void => {
+        if (vocabularyStars.length <= 0 && settings.learnStar) {
+            toastError('Bạn chưa lưu thuật ngữ nào!');
+            return;
+        }
+
+        const numberOfWordsToShow = 10; // Số lượng từ cần hiển thị
+
+        // Khởi tạo biến chứa danh sách từ vựng và từ còn lại
+        let wordsToShow: Sentence[] = [];
+        let remainWords: Sentence[] = [];
+
+        // Xác định chế độ học tất cả từ vựng và số lượng từ hiện có
+        switch (true) {
+            case settings.learnAll && lastWordIndex >= numberOfWordsToShow:
+                // Nếu chế độ học tất cả từ vựng và số lượng từ >= 10
+                wordsToShow = vocabularies.slice(0, numberOfWordsToShow);
+                remainWords = vocabularies.slice(numberOfWordsToShow);
+                break;
+            case settings.learnAll:
+                // Nếu chế độ học tất cả từ vựng nhưng số lượng từ < 10
+                wordsToShow = vocabularies.slice(0, lastWordIndex);
+                remainWords = [];
+                break;
+            case !settings.learnAll && lastWordIndex >= numberOfWordsToShow:
+                // Nếu không phải chế độ học tất cả từ vựng và số lượng từ >= 10
+                wordsToShow = vocabularyStars.slice(0, numberOfWordsToShow);
+                remainWords = vocabularyStars.slice(numberOfWordsToShow);
+                break;
+            default:
+                // Nếu không phải chế độ học tất cả từ vựng và số lượng từ < 10
+                wordsToShow = vocabularyStars.slice(0, lastWordIndex);
+                remainWords = [];
+                break;
+        }
+
+        setGameState({
+            answer: '',
+            correctWord: [],
+            wordToShow: wordsToShow,
+            activeCard: 0,
+            remainWord: remainWords,
+            inCorrectWord: [],
+            isWaiting: false,
+        });
+        setIsModalOpen(false);
+    };
+
+    const handleCancelSettings = (): void => {
+        setSettings((preState) => ({
+            ...preState,
+            learnAll: true,
+            learnStar: false,
+        }));
+
+        setGameState(initialGameState);
+        setIsModalOpen(false);
+    };
+
+    const handleStartAgain = (): void => {
+        if (settings.learnAll || vocabularyStars.length === 0) {
+            handleResetGameState();
+            handleCancelSettings();
+        } else {
+            handleChangeSettings();
+        }
     };
 
     /* ########################################################################## */
@@ -346,7 +440,11 @@ const WriteVocaExercise = () => {
                         </div>
 
                         <Progress
-                            percent={Math.round((gameState.correctWord.length / vocabularies.length) * 100)}
+                            percent={Math.round(
+                                // Nếu đang học chế độ học tất cả thì lấy vocabularies. Nếu đang học chế độ sao thì lấy vocabularyStars
+                                // Tính phần trăm hoàn thành bằng cách lấy tổng số từ đúng chia cho tống số lượng từ * 100
+                                (gameState.correctWord.length / (settings.learnAll ? vocabularies.length : vocabularyStars.length)) * 100
+                            )}
                             strokeColor={twoColors}
                         />
 
@@ -368,7 +466,10 @@ const WriteVocaExercise = () => {
                             <div key={vocabulary._id} className={`rounded-md p-2 shadow-md ${isCardActive ? '' : 'hidden'}`}>
                                 <div className="border-b-2 border-b-bdCustom py-4">
                                     <div className="flex items-center justify-between">
-                                        <h2 className="font-segoe text-2xl text-textCustom">{vocabulary?.english}</h2>
+                                        <h2 className={`font-segoe text-2xl text-textCustom ${settings.hideWord ? 'opacity-0' : ''}`}>
+                                            {settings.displayFirstEnglish ? vocabulary?.english : vocabulary.vietnamese}
+                                        </h2>
+
                                         <a
                                             className="min-w-max cursor-pointer text-textCustom"
                                             onClick={() =>
@@ -381,7 +482,9 @@ const WriteVocaExercise = () => {
                                     {isWaiting ? (
                                         <Fragment>
                                             <p className="mt-2 text-base font-semibold text-green-500">Đáp án đúng</p>
-                                            <p className="font-segoe text-base text-textCustom">{vocabulary?.vietnamese}</p>
+                                            <p className="font-segoe text-base text-textCustom">
+                                                {settings.displayFirstEnglish ? vocabulary?.vietnamese : vocabulary.english}
+                                            </p>
                                         </Fragment>
                                     ) : null}
                                 </div>
@@ -433,11 +536,15 @@ const WriteVocaExercise = () => {
                                 <button
                                     className="mx-auto rounded-sm bg-blue-400 px-8 py-2 
                                     text-base text-white transition-all hover:scale-105"
-                                    onClick={handleResetGameState}
+                                    onClick={handleStartAgain}
                                 >
                                     Bắt đầu lại
                                 </button>
                             </div>
+
+                            <button className="btn-success mx-auto mt-4" onClick={cancelAllStars}>
+                                Hủy tất cả dấu ⭐
+                            </button>
 
                             <ul className="mt-4 flex flex-col items-center gap-4 px-2">
                                 {gameState.inCorrectWord.map((vocabulary) => (
@@ -466,13 +573,10 @@ const WriteVocaExercise = () => {
                                                     </button>
 
                                                     <Rating
-                                                        name="incorrect-rating"
-                                                        defaultValue={1}
-                                                        value={rating}
+                                                        name={`incorrect-rating-${vocabulary._id}`}
+                                                        value={rating[vocabulary._id] || 0}
                                                         max={1}
-                                                        onChange={(_, newValue) => {
-                                                            setRating(newValue);
-                                                        }}
+                                                        onChange={(_, newValue) => handleRatingChange(vocabulary, newValue)}
                                                         className="mb-[2px]"
                                                     />
                                                 </div>
@@ -513,13 +617,10 @@ const WriteVocaExercise = () => {
                                                             </button>
 
                                                             <Rating
-                                                                name="correct-rating"
-                                                                defaultValue={1}
+                                                                name={`correct-rating-${word._id}`}
                                                                 max={1}
-                                                                value={rating}
-                                                                onChange={(_, newValue) => {
-                                                                    setRating(newValue);
-                                                                }}
+                                                                value={rating[word._id] || 0}
+                                                                onChange={(_, newValue) => handleRatingChange(word, newValue)}
                                                                 className="mb-[2px]"
                                                             />
                                                         </div>
@@ -536,7 +637,7 @@ const WriteVocaExercise = () => {
                 </div>
 
                 {/* Settings */}
-                <Modal title="Settings" open={isModalOpen} onOk={() => setIsModalOpen(false)} onCancel={() => setIsModalOpen(false)}>
+                <Modal title="Settings" open={isModalOpen} onOk={handleChangeSettings} onCancel={handleCancelSettings}>
                     <div className="grid grid-cols-2 gap-1">
                         <button
                             className={`rounded-md p-2 ${settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
