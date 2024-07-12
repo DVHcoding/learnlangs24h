@@ -93,7 +93,7 @@ const WriteVocaExercise = () => {
     const initialGameState = {
         answer: '',
         correctWord: [],
-        wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies.slice(0, lastWordIndex),
+        wordToShow: lastWordIndex >= 10 ? vocabularies.slice(0, 10) : vocabularies,
         activeCard: 0,
         remainWord: lastWordIndex >= 10 ? vocabularies.slice(10, vocabularies.length) : [],
         inCorrectWord: [],
@@ -339,7 +339,7 @@ const WriteVocaExercise = () => {
                 break;
             case settings.learnAll:
                 // Nếu chế độ học tất cả từ vựng nhưng số lượng từ < 10
-                wordsToShow = vocabularies.slice(0, lastWordIndex);
+                wordsToShow = vocabularies;
                 remainWords = [];
                 break;
             case !settings.learnAll && lastWordIndex >= numberOfWordsToShow:
@@ -349,7 +349,7 @@ const WriteVocaExercise = () => {
                 break;
             default:
                 // Nếu không phải chế độ học tất cả từ vựng và số lượng từ < 10
-                wordsToShow = vocabularyStars.slice(0, lastWordIndex);
+                wordsToShow = vocabularyStars;
                 remainWords = [];
                 break;
         }
