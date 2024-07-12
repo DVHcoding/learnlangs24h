@@ -386,6 +386,13 @@ const WriteVocaExercise = () => {
         }
     };
 
+    // Hàm xử lý âm thanh khi bật setting text to speech
+    const textToSpeech = (): void => {
+        if (settings.textToSpeech) {
+            speak({ text: gameState?.wordToShow?.[0]?.english });
+        }
+    };
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
@@ -405,6 +412,10 @@ const WriteVocaExercise = () => {
             setActiveSpeak(null);
         }
     }, [speaking]);
+
+    useEffect(() => {
+        textToSpeech();
+    }, [gameState.wordToShow, settings.textToSpeech]);
 
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
@@ -643,7 +654,7 @@ const WriteVocaExercise = () => {
                             className={`rounded-md p-2 ${settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
                             onClick={() => setSettings((preState) => ({ ...preState, learnAll: true, learnStar: false }))}
                         >
-                            Hoc het
+                            Học tất cả
                         </button>
 
                         <button
