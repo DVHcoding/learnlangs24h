@@ -243,8 +243,8 @@ const WriteVocaExercise = () => {
 
         // Nếu settings là hiển thị tiếng anh đầu tiên thì kiểm tra xem chữ nhập vào có bằng với kết quả tiếng việt ko
         // Nếu settings là hiển thị tiếng việt đầu tiên thì kiểm tra xem chữ nhập vào có bằng với kết quả tiếng anh ko
-        const correctVietnameseAnswer: boolean = vietnameseRemoveTone === answerRemoveTone;
-        const correctEnglishAnswer: boolean = englishRemoveTone === answerRemoveTone;
+        const correctVietnameseAnswer: boolean = vietnameseRemoveTone.trim() === answerRemoveTone.trim();
+        const correctEnglishAnswer: boolean = englishRemoveTone.trim() === answerRemoveTone.trim();
         if (settings.displayFirstEnglish ? correctVietnameseAnswer : correctEnglishAnswer) {
             handleCorrectWord();
         } else {
