@@ -16,7 +16,7 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 import removeVietnameseTones from '@utils/regexVietnamese';
 import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
-import { toastError } from '@components/Toast/Toasts';
+import { toastInfo } from '@components/Toast/Toasts';
 
 export interface VocaExerciseResponseType {
     success: string;
@@ -320,7 +320,7 @@ const WriteVocaExercise = () => {
 
     const handleChangeSettings = (): void => {
         if (vocabularyStars.length <= 0 && settings.learnStar) {
-            toastError('Bạn chưa lưu thuật ngữ nào!');
+            toastInfo('Bạn chưa lưu thuật ngữ nào!');
             return;
         }
 

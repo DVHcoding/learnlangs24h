@@ -13,6 +13,19 @@ export const toastError = (message: string) => {
     });
 };
 
+export const toastInfo = (message: string) => {
+    return toast.info(message, {
+        position: `top-center`,
+        autoClose: 1500,
+        hideProgressBar: true,
+        closeOnClick: false,
+        pauseOnHover: true,
+        draggable: true,
+        theme: 'light',
+        transition: Bounce,
+    });
+};
+
 export const toastSuccess = (message: string) => {
     return toast.success(message, {
         position: `top-center`,
