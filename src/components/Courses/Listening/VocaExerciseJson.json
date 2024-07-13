@@ -120,18 +120,118 @@
     "sentences": [
         {
             "_id": "1",
-            "english": "You are very clever",
-            "vietnamese": "Bạn rất thông minh."
+            "english": "Are you clever enough to solve this?",
+            "vietnamese": "Bạn có đủ thông minh để giải quyết cái này không?"
         },
         {
             "_id": "2",
-            "english": "You are very Friendly",
-            "vietnamese": "Bạn rất thân thiện."
+            "english": "She is very friendly.",
+            "vietnamese": "Cô ấy rất thân thiện."
         },
         {
             "_id": "3",
-            "english": "are you cheerful ?",
-            "vietnamese": "Bạn có vui vẻ không ?"
+            "english": "Why is he so cheerful?",
+            "vietnamese": "Tại sao anh ấy lại vui vẻ như vậy?"
+        },
+        {
+            "_id": "4",
+            "english": "He is a brave man.",
+            "vietnamese": "Anh ấy là một người dũng cảm."
+        },
+        {
+            "_id": "5",
+            "english": "Is she generous with her time?",
+            "vietnamese": "Cô ấy có hào phóng về thời gian không?"
+        },
+        {
+            "_id": "6",
+            "english": "He is always honest.",
+            "vietnamese": "Anh ấy luôn trung thực."
+        },
+        {
+            "_id": "7",
+            "english": "She is kind to everyone.",
+            "vietnamese": "Cô ấy tốt bụng với mọi người."
+        },
+        {
+            "_id": "8",
+            "english": "Why is he so lazy?",
+            "vietnamese": "Tại sao anh ấy lại lười biếng như vậy?"
+        },
+        {
+            "_id": "9",
+            "english": "She is very polite.",
+            "vietnamese": "Cô ấy rất lịch sự."
+        },
+        {
+            "_id": "10",
+            "english": "He can be rude sometimes.",
+            "vietnamese": "Đôi khi anh ấy có thể thô lỗ."
+        },
+        {
+            "_id": "11",
+            "english": "She looks sad today.",
+            "vietnamese": "Hôm nay cô ấy trông buồn."
+        },
+        {
+            "_id": "12",
+            "english": "He is sincere in his words.",
+            "vietnamese": "Anh ấy chân thành trong lời nói."
+        },
+        {
+            "_id": "13",
+            "english": "Is she always this shy?",
+            "vietnamese": "Cô ấy luôn nhút nhát như vậy sao?"
+        },
+        {
+            "_id": "14",
+            "english": "She keeps her room tidy.",
+            "vietnamese": "Cô ấy giữ cho phòng mình ngăn nắp."
+        },
+        {
+            "_id": "15",
+            "english": "He remains calm under pressure.",
+            "vietnamese": "Anh ấy giữ bình tĩnh khi chịu áp lực."
+        },
+        {
+            "_id": "16",
+            "english": "Are you confident?",
+            "vietnamese": "Bạn có tự tin không?"
+        },
+        {
+            "_id": "17",
+            "english": "She is very creative.",
+            "vietnamese": "Cô ấy rất sáng tạo."
+        },
+        {
+            "_id": "18",
+            "english": "He is curious about everything.",
+            "vietnamese": "Anh ấy tò mò về mọi thứ."
+        },
+        {
+            "_id": "19",
+            "english": "She is so energetic.",
+            "vietnamese": "Cô ấy rất năng động."
+        },
+        {
+            "_id": "20",
+            "english": "Why is he so optimistic?",
+            "vietnamese": "Tại sao anh ấy lại lạc quan như vậy?"
+        },
+        {
+            "_id": "21",
+            "english": "She is always punctual.",
+            "vietnamese": "Cô ấy luôn đúng giờ."
+        },
+        {
+            "_id": "22",
+            "english": "Can you rely on him?",
+            "vietnamese": "Bạn có thể tin cậy vào anh ấy không?"
+        },
+        {
+            "_id": "23",
+            "english": "She is very sensitive.",
+            "vietnamese": "Cô ấy rất nhạy cảm."
         }
     ],
     "quiz": [
