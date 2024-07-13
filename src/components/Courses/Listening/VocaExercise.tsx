@@ -149,7 +149,7 @@ const VocaExercise: React.FC = () => {
                     hover:bg-bgHoverGrayDark"
                     onClick={handlePrevCard}
                 >
-                    <ArrowLeft size={20} className="text-textCustom" />
+                    <ArrowLeft size={20} className="select-none text-textCustom" />
                 </div>
 
                 <h4 className="select-none font-segoe text-base text-textCustom">
@@ -161,7 +161,7 @@ const VocaExercise: React.FC = () => {
                     hover:bg-bgHoverGrayDark"
                     onClick={handleNextCard}
                 >
-                    <ArrowRight size={20} className="text-textCustom" />
+                    <ArrowRight size={20} className="select-none text-textCustom" />
                 </div>
             </div>
         </Fragment>
