@@ -607,7 +607,7 @@ const WriteSentenceExercise = () => {
                                     <div className="flex flex-col items-center gap-4">
                                         {gameState.correctWord.map((word: CorrectWordType) =>
                                             gameState.inCorrectWord.length === 0 ||
-                                            gameState.inCorrectWord.find((incorrect: IncorrectWordType) => incorrect._id !== word._id) ? (
+                                            !gameState.inCorrectWord.some((incorrect: IncorrectWordType) => incorrect._id === word._id) ? (
                                                 <div key={word._id} className="w-full rounded-md bg-bgCustomCardItem p-2 shadow-md">
                                                     <div className="flex items-center justify-between">
                                                         <h3
