@@ -196,7 +196,7 @@ const Quiz: React.FC = () => {
                         className="bg-bgCustomProcess text-textCustom"
                     />
 
-                    <div className="mt-2 flex items-center justify-between px-2">
+                    <div className="sticky top-0 z-10 mt-2 flex items-center justify-between px-2">
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
@@ -211,7 +211,7 @@ const Quiz: React.FC = () => {
                     </div>
 
                     {/* AudioWaveform */}
-                    <ul className="mt-4">
+                    <ul className="mt-4 ">
                         {quiz.audio.map((item) => (
                             <li key={item._id}>
                                 <AudioWaveform audio={item} answers={answers} setAnswers={setAnswers} />

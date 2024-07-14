@@ -23,8 +23,11 @@
   }
 
   .scrollbar-small::-webkit-scrollbar {
+    height: 3px;
     width: 3px;
   }
+
+
 
   .scrollbar-small::-webkit-scrollbar-track {
     display: none;

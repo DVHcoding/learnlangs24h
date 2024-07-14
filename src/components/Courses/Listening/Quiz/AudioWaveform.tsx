@@ -191,7 +191,7 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
                         </Tooltip>
                     </div>
 
-                    <div className="h-max-content flex w-[30rem] flex-col justify-center">
+                    <div className="h-max-content flex w-[30rem] flex-col justify-center overflow-auto">
                         <div ref={waveformRef} />
                     </div>
 
