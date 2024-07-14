@@ -84,14 +84,14 @@ const Quiz: React.FC = () => {
             const otherAnswerData = audio.otherAnswer.toLowerCase().trim();
 
             if (!answerValue) {
-                updates[audio._id] = { value: '', border: 'border-red-400 border text-red-600' };
+                updates[audio._id] = { value: '', border: 'border-red-400 border-2 text-red-600' };
             } else if (
                 removeNonLetters(answerValue) === removeNonLetters(answerData) ||
                 removeNonLetters(answerValue) === removeNonLetters(otherAnswerData)
             ) {
-                updates[audio._id] = { value: audio.answer, border: 'border-green-400 border text-green-600' };
+                updates[audio._id] = { value: audio.answer, border: 'border-green-400 border-2 text-green-600' };
             } else {
-                updates[audio._id] = { value: answerValue, border: 'border-red-400 border text-red-600' };
+                updates[audio._id] = { value: answerValue, border: 'border-red-400 border-2 text-red-600' };
             }
         }
 

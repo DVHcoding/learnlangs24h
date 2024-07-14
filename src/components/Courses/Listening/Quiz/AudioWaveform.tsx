@@ -227,7 +227,9 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
                 <form className="mt-2">
                     <textarea
                         className={`w-full resize-none rounded-md bg-bgCustomCardItem p-2 text-justify 
-                        text-base text-textCustom shadow outline-none placeholder:select-none ${answers[audio._id]?.border}`}
+                        text-base shadow outline-none placeholder:select-none ${
+                            answers?.[audio._id]?.border ? answers[audio._id].border : 'text-textCustom'
+                        }`}
                         value={answers[audio._id]?.value}
                         onChange={handleChangeAnswer}
                         placeholder="Nhập những gì bạn nghe thấy..."
