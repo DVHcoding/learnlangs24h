@@ -6,6 +6,7 @@ import WaveSurfer from 'wavesurfer.js';
 import { FaPlay } from 'react-icons/fa6';
 import { TbPlayerStopFilled } from 'react-icons/tb';
 import TippyProvider from '@components/Tippys/TippyProvider';
+import { Tooltip } from 'antd';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -142,19 +143,48 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
         }
     }, [audioSpeed]);
 
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.ctrlKey) {
+                handlePlayPause();
+            }
+        };
+
+        const inputElement = textAreaRef.current;
+        if (inputElement) {
+            const handleFocus = () => {
+                inputElement.addEventListener('keydown', handleKeyDown);
+            };
+
+            const handleBlur = () => {
+                inputElement.removeEventListener('keydown', handleKeyDown);
+            };
+
+            inputElement.addEventListener('focus', handleFocus);
+            inputElement.addEventListener('blur', handleBlur);
+
+            return () => {
+                inputElement.removeEventListener('focus', handleFocus);
+                inputElement.removeEventListener('blur', handleBlur);
+            };
+        }
+    }, []);
+
     return (
         <Fragment>
             <div className="mx-auto max-w-max p-2">
                 {/* Audio */}
                 <div className="flex max-w-max items-center gap-4">
                     <div>
-                        <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
-                            {isPlaying ? (
-                                <TbPlayerStopFilled size={10} className="text-textCustom" />
-                            ) : (
-                                <FaPlay size={10} className="text-textCustom" />
-                            )}
-                        </div>
+                        <Tooltip placement="top" title={'You can press "Ctrl" to replay!'}>
+                            <div className="cursor-pointer rounded-md border border-[#6c757d] p-3" onClick={handlePlayPause}>
+                                {isPlaying ? (
+                                    <TbPlayerStopFilled size={10} className="text-textCustom" />
+                                ) : (
+                                    <FaPlay size={10} className="text-textCustom" />
+                                )}
+                            </div>
+                        </Tooltip>
                     </div>
 
                     <div className="h-max-content flex w-[30rem] flex-col justify-center">

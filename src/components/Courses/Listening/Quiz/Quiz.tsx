@@ -77,12 +77,18 @@ const Quiz: React.FC = () => {
 
         // Duyệt qua mảng `quiz.audio` và chỉ thêm các cập nhật cần thiết vào đối tượng `updates`.
         for (const audio of quiz.audio) {
+            // Dữ liệu của người dùng nhập
             const answerValue = answers[audio._id]?.value.toLowerCase().trim();
+            // Dữ liệu từ api
             const answerData = audio.answer.toLowerCase().trim();
+            const otherAnswerData = audio.otherAnswer.toLowerCase().trim();
 
             if (!answerValue) {
                 updates[audio._id] = { value: '', border: 'border-red-400 border text-red-600' };
-            } else if (removeNonLetters(answerData) === removeNonLetters(answerValue)) {
+            } else if (
+                removeNonLetters(answerValue) === removeNonLetters(answerData) ||
+                removeNonLetters(answerValue) === removeNonLetters(otherAnswerData)
+            ) {
                 updates[audio._id] = { value: audio.answer, border: 'border-green-400 border text-green-600' };
             } else {
                 updates[audio._id] = { value: answerValue, border: 'border-red-400 border text-red-600' };
@@ -119,17 +125,21 @@ const Quiz: React.FC = () => {
     // Hàm kiểm tra xem answer của tất cả cả ô có chính xác không
     const isCorrectAnswer = (): boolean => {
         return quiz.audio.every((audio: AudioType) => {
-            const answerValue = answers[audio._id]?.value?.toLowerCase();
-            const answerData = audio?.answer?.toLowerCase();
+            // Dữ liệu của người dùng nhập
+            const answerValue = answers[audio._id]?.value?.toLowerCase().trim();
+            // Dữ liệu từ api
+            const answerData = audio?.answer?.toLowerCase().trim();
+            const otherAnswerData = audio.otherAnswer.toLowerCase().trim();
 
-            if (answerValue === undefined || answerData === undefined) {
+            if (answerValue === undefined || answerData === undefined || otherAnswerData === undefined) {
                 return false; // or handle it as per your requirement
             }
 
             const cleanAnswerValue = removeNonLetters(answerValue);
             const cleanAnswerData = removeNonLetters(answerData);
+            const cleanOtherAnswerData = removeNonLetters(otherAnswerData);
 
-            return cleanAnswerValue.trim() === cleanAnswerData.trim();
+            return cleanAnswerValue === cleanAnswerData || cleanAnswerValue === cleanOtherAnswerData;
         });
     };
 
