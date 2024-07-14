@@ -11,7 +11,34 @@ import TippyProvider from '@components/Tippys/TippyProvider';
 // #                           IMPORT Components                            #
 // ##########################################################################
 
-const AudioWaveform: React.FC = () => {
+interface AudioType {
+    _id: string;
+    public_id: string;
+    url: string;
+    answer: string;
+    otherAnswer: string;
+}
+
+interface AudioProps {
+    audio: AudioType;
+    answers: {
+        [key: string]: {
+            value: string;
+            border: string;
+        };
+    };
+
+    setAnswers: React.Dispatch<
+        React.SetStateAction<{
+            [key: string]: {
+                value: string;
+                border: string;
+            };
+        }>
+    >;
+}
+
+const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => {
     /* ########################################################################## */
     /*                                   HOOKS                                    */
     /* ########################################################################## */
@@ -26,7 +53,6 @@ const AudioWaveform: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [answer, setAnswer] = useState<string>('');
     const [isPlaying, setIsPlaying] = useState<boolean>(false);
     const [visible, setVisible] = useState<boolean>(false);
     const [audioSpeed, setAudioSpeed] = useState<number>(1);
@@ -42,6 +68,7 @@ const AudioWaveform: React.FC = () => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
+    const hide = () => setVisible(false);
     const handlePlayPause = () => {
         if (wavesurfer.current) {
             if (wavesurfer.current.isPlaying()) {
@@ -51,10 +78,13 @@ const AudioWaveform: React.FC = () => {
             }
         }
     };
-    const hide = () => setVisible(false);
     const handleSelectAudioSpeed = (speed: number) => {
         setAudioSpeed(speed);
         setVisible(false);
+    };
+
+    const handleChangeAnswer = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        setAnswers((preState) => ({ ...preState, [audio._id]: { value: e.target.value, border: '' } }));
     };
 
     /* ########################################################################## */
@@ -68,19 +98,18 @@ const AudioWaveform: React.FC = () => {
         if (waveformRef.current) {
             wavesurfer.current = WaveSurfer.create({
                 container: waveformRef.current,
-                barWidth: 2,
-                barRadius: 3,
+                barWidth: 1,
+                barRadius: 2,
                 barGap: 2,
                 cursorWidth: 1,
                 height: 40,
                 progressColor: '#FE6E00',
                 waveColor: '#C4C4C4',
                 cursorColor: 'transparent',
+                minPxPerSec: 100,
             });
 
-            wavesurfer.current.load(
-                'http://res.cloudinary.com/dvwdfsdkp/video/upload/v1720341352/messenger_attachments/pjrhmg2jd9b1rshtl5ae.mp3'
-            );
+            wavesurfer.current.load(audio.url);
 
             wavesurfer.current.on('play', () => {
                 setIsPlaying(true);
@@ -161,14 +190,15 @@ const AudioWaveform: React.FC = () => {
                 </div>
 
                 {/* Form */}
-                <form className="mt-2 ">
+                <form className="mt-2">
                     <textarea
-                        className="w-full resize-none rounded-md bg-bgCustomCardItem p-2 text-justify text-base 
-                        text-textCustom shadow outline-none placeholder:select-none"
-                        value={answer}
-                        onChange={(e) => setAnswer(e.target.value)}
+                        className={`w-full resize-none rounded-md bg-bgCustomCardItem p-2 text-justify 
+                        text-base text-textCustom shadow outline-none placeholder:select-none ${answers[audio._id]?.border}`}
+                        value={answers[audio._id]?.value}
+                        onChange={handleChangeAnswer}
                         placeholder="Nhập những gì bạn nghe thấy..."
                         ref={textAreaRef}
+                        spellCheck={false}
                     />
                 </form>
             </div>

@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Alert, Breadcrumb, Button } from 'antd';
 import { Link } from 'react-router-dom';
+import Lottie from 'lottie-react';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -17,6 +18,17 @@ const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 import { useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import AudioWaveform from './AudioWaveform';
+import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
+import Congratulations from '@assets/animations/Congratulations.json';
+import { removeNonLetters } from '@utils/Helpers';
+
+interface AudioType {
+    _id: string;
+    public_id: string;
+    url: string;
+    answer: string;
+    otherAnswer: string;
+}
 
 // #########################################################################
 const Quiz: React.FC = () => {
@@ -33,6 +45,9 @@ const Quiz: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [open, setOpen] = useState<boolean>(false);
+    const { quiz } = VocaExerciseData;
+    const [answers, setAnswers] = useState<{ [key: string]: { value: string; border: string } }>({});
+    const [showAnimation, setShowAnimation] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -51,6 +66,76 @@ const Quiz: React.FC = () => {
     /* ########################################################################## */
     const handleToggleLesson = (): void => {
         setOpen(!open);
+    };
+
+    const handleSubmit = (): void => {
+        const validAllFields = isFormValid();
+        const correctAllFields = isCorrectAnswer();
+
+        // Khởi tạo đối tượng để lưu trữ các bản cập nhật cho trạng thái `answers`.
+        const updates: Record<string, { value: string; border: string }> = {};
+
+        // Duyệt qua mảng `quiz.audio` và chỉ thêm các cập nhật cần thiết vào đối tượng `updates`.
+        for (const audio of quiz.audio) {
+            const answerValue = answers[audio._id]?.value.toLowerCase().trim();
+            const answerData = audio.answer.toLowerCase().trim();
+
+            if (!answerValue) {
+                updates[audio._id] = { value: '', border: 'border-red-400 border text-red-600' };
+            } else if (removeNonLetters(answerData) === removeNonLetters(answerValue)) {
+                updates[audio._id] = { value: audio.answer, border: 'border-green-400 border text-green-600' };
+            } else {
+                updates[audio._id] = { value: answerValue, border: 'border-red-400 border text-red-600' };
+            }
+        }
+
+        /**
+         * const updates = {
+         *   '1': { value: 'Hello', border: 'border-green-400 border text-green-600' },
+         *   '2': { value: 'World', border: 'border-red-400 border text-red-600' }
+         * };
+         *   console.log(Object.keys(updates))
+         *   ['1', '2']
+         */
+
+        // Chỉ cập nhật trạng thái `answers` nếu có ít nhất một bản cập nhật cần thiết.
+        if (Object.keys(updates).length > 0) {
+            setAnswers((prevState) => ({
+                ...prevState,
+                ...updates,
+            }));
+        }
+
+        if (validAllFields && correctAllFields) {
+            setShowAnimation(true);
+        }
+    };
+
+    // Hàm kiểm tra xem tất cả các ô có được điền không
+    const isFormValid = (): boolean => {
+        return quiz.audio.every((audio: AudioType) => answers[audio._id] && answers[audio._id].value.trim() !== '');
+    };
+
+    // Hàm kiểm tra xem answer của tất cả cả ô có chính xác không
+    const isCorrectAnswer = (): boolean => {
+        return quiz.audio.every((audio: AudioType) => {
+            const answerValue = answers[audio._id]?.value?.toLowerCase();
+            const answerData = audio?.answer?.toLowerCase();
+
+            if (answerValue === undefined || answerData === undefined) {
+                return false; // or handle it as per your requirement
+            }
+
+            const cleanAnswerValue = removeNonLetters(answerValue);
+            const cleanAnswerData = removeNonLetters(answerData);
+
+            return cleanAnswerValue.trim() === cleanAnswerData.trim();
+        });
+    };
+
+    // Hàm xử lý khi animation hoàn tất
+    const handleAnimationComplete = () => {
+        setShowAnimation(false);
     };
 
     /* ########################################################################## */
@@ -90,10 +175,10 @@ const Quiz: React.FC = () => {
 
             {/* Body */}
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
-                {/* content */}
+                {/* answer */}
                 <div
                     className="scrollbar-mess relative h-full w-full overflow-auto 
-                    rounded-tl-lg  bg-bgCustomCard"
+                    rounded-tl-lg bg-bgCustomCard"
                 >
                     <Alert
                         message="Cố gắng nghe thật kĩ và điền nghĩa tiếng việt vào nhé!"
@@ -110,20 +195,30 @@ const Quiz: React.FC = () => {
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
 
-                        <Button type="primary">Nộp bài</Button>
+                        <Button type="primary" onClick={handleSubmit}>
+                            Nộp bài
+                        </Button>
                     </div>
 
                     {/* AudioWaveform */}
                     <ul className="mt-4">
-                        {[...Array(5)].map((_, index) => (
-                            <li key={index}>
-                                <AudioWaveform />
+                        {quiz.audio.map((item) => (
+                            <li key={item._id}>
+                                <AudioWaveform audio={item} answers={answers} setAnswers={setAnswers} />
                             </li>
                         ))}
-                        <li>
-                            <AudioWaveform />
-                        </li>
                     </ul>
+
+                    {/* Congratulations animation*/}
+                    {showAnimation && (
+                        <div className="fixed left-1/2 top-1/2 z-10 h-[200px] w-[200px] -translate-x-1/2 -translate-y-1/2 transform">
+                            <Lottie
+                                animationData={Congratulations}
+                                loop={false}
+                                onComplete={handleAnimationComplete} // Khi animation hoàn tất, gọi handleAnimationComplete
+                            />
+                        </div>
+                    )}
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />

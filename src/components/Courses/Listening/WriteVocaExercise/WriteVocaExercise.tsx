@@ -417,8 +417,6 @@ const WriteVocaExercise = () => {
         textToSpeech();
     }, [gameState.wordToShow, settings.textToSpeech]);
 
-    console.log(gameState);
-
     return (
         <div className="overflow-hidden px-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Breadcrumb */}
