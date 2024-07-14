@@ -144,6 +144,7 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
     }, [audioSpeed]);
 
     useEffect(() => {
+        // Hàm thực hiện khi người dùng nhấn phím
         const handleKeyDown = (event: KeyboardEvent) => {
             if (event.ctrlKey) {
                 handlePlayPause();
@@ -151,6 +152,7 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
         };
 
         const inputElement = textAreaRef.current;
+
         if (inputElement) {
             const handleFocus = () => {
                 inputElement.addEventListener('keydown', handleKeyDown);
@@ -160,7 +162,9 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
                 inputElement.removeEventListener('keydown', handleKeyDown);
             };
 
+            // Nếu người dùng click vào ô input (textArea) thì chạy hàm handleKeyDown
             inputElement.addEventListener('focus', handleFocus);
+            // Nếu người dùng blur ra khỏi ô input thì chạy hàm handleBlur
             inputElement.addEventListener('blur', handleBlur);
 
             return () => {

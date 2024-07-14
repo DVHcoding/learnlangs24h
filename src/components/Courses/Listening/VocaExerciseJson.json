@@ -4,7 +4,7 @@
         {
             "_id": "1",
             "english": "Lottery money",
-            "vietnamese": "Tiền sổ số"
+            "vietnamese": "Tiền xổ số"
         },
         {
             "_id": "2",
@@ -187,7 +187,7 @@
                 "public_id": "messenger_attachments/rem6khlyjobxd60ej2ga",
                 "url": "https://res.cloudinary.com/dvwdfsdkp/video/upload/v1720942437/listening_attachments/tskhch5mdecxy3qzicpt.mp3",
                 "answer": "I'm going to buy new furniture for her room. She'll love that.",
-                "otherAnswer": "I going to buy new furniture for her room. She'll love that."
+                "otherAnswer": "I am going to buy new furniture for her room. She'll love that."
             }
         ]
     }

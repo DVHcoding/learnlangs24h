@@ -444,7 +444,7 @@ const WriteSentenceExercise = () => {
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
                 {/* Box */}
                 <div className="w-full">
-                    {/* Navigate & Progress & Setting iCion */}
+                    {/* Navigate & Progress & Setting Icon */}
                     <div className="flex items-center justify-between gap-4">
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 

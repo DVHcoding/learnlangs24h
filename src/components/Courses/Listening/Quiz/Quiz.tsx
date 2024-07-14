@@ -191,7 +191,7 @@ const Quiz: React.FC = () => {
                     rounded-tl-lg bg-bgCustomCard"
                 >
                     <Alert
-                        message="Cố gắng nghe thật kĩ và điền nghĩa tiếng việt vào nhé!"
+                        message="Cố gắng nghe thật kĩ và điền tiếng anh vào nhé!. Nếu bạn không nghe được có thể vào phần hỏi đáp để nhờ sự trợ giúp!"
                         banner
                         className="bg-bgCustomProcess text-textCustom"
                     />
