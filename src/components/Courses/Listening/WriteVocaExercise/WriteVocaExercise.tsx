@@ -87,8 +87,8 @@ const WriteVocaExercise = () => {
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
     const navigate = useNavigate();
-    const [searchParams] = useSearchParams();
     const { id: courseId } = useParams<{ id: string }>();
+    const [searchParams] = useSearchParams();
     let id = searchParams.get('id');
 
     /* ########################################################################## */
@@ -462,7 +462,7 @@ const WriteVocaExercise = () => {
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
-                            onClick={() => navigate(-2)}
+                            onClick={() => navigate(`/listening/${courseId}?id=${id}`)}
                         >
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
@@ -498,14 +498,26 @@ const WriteVocaExercise = () => {
                                             {settings.displayFirstEnglish ? vocabulary?.english : vocabulary.vietnamese}
                                         </h2>
 
-                                        <a
-                                            className="min-w-max cursor-pointer text-textCustom"
-                                            onClick={() =>
-                                                handleSubmit(vocabulary?._id, vocabulary?.english, vocabulary?.vietnamese, index)
-                                            }
-                                        >
-                                            Không biết
-                                        </a>
+                                        <div className="flex items-center gap-4">
+                                            {settings.textToSpeech && (
+                                                // Khi setting bật chức năng textToSpeech thì mới được hiển thị button này
+                                                <button onClick={textToSpeech} disabled={speaking}>
+                                                    <IoMdVolumeHigh
+                                                        size={20}
+                                                        className={`cursor-pointer text-textCustom ${speaking ? 'text-yellow-500' : ''}`}
+                                                    />
+                                                </button>
+                                            )}
+
+                                            <a
+                                                className="min-w-max cursor-pointer text-textCustom"
+                                                onClick={() =>
+                                                    handleSubmit(vocabulary?._id, vocabulary?.english, vocabulary?.vietnamese, index)
+                                                }
+                                            >
+                                                Không biết
+                                            </a>
+                                        </div>
                                     </div>
                                     {isWaiting ? (
                                         <Fragment>

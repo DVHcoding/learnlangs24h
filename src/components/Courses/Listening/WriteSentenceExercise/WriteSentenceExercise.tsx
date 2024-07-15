@@ -3,7 +3,7 @@
 // ##########################################################################
 import { Fragment, useEffect, useRef, useState } from 'react';
 import { Breadcrumb, Modal, Switch } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
 import { Progress } from 'antd';
 import { IoMdVolumeHigh } from 'react-icons/io';
@@ -84,6 +84,9 @@ const WriteSentenceExercise = () => {
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
     const navigate = useNavigate();
+    const { id: courseId } = useParams<{ id: string }>();
+    const [searchParams] = useSearchParams();
+    let id = searchParams.get('id');
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -431,10 +434,13 @@ const WriteSentenceExercise = () => {
                             title: <Link to="/">Home</Link>,
                         },
                         {
-                            title: <Link to={`/listening/`}>Listening</Link>,
+                            title: <Link to={`/listening/${courseId}`}>Listening</Link>,
                         },
                         {
-                            title: 'write',
+                            title: 'Write',
+                        },
+                        {
+                            title: 'Sentence',
                         },
                     ]}
                 />
@@ -449,7 +455,7 @@ const WriteSentenceExercise = () => {
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate(`/listening/${courseId}?id=${id}`)}
                         >
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
@@ -485,14 +491,26 @@ const WriteSentenceExercise = () => {
                                             {settings.displayFirstEnglish ? vocabulary?.english : vocabulary.vietnamese}
                                         </h2>
 
-                                        <a
-                                            className="min-w-max cursor-pointer text-textCustom"
-                                            onClick={() =>
-                                                handleSubmit(vocabulary?._id, vocabulary?.english, vocabulary?.vietnamese, index)
-                                            }
-                                        >
-                                            Không biết
-                                        </a>
+                                        <div className="flex items-center gap-4">
+                                            {settings.textToSpeech && (
+                                                // Khi setting bật chức năng textToSpeech thì mới được hiển thị button này
+                                                <button onClick={textToSpeech} disabled={speaking}>
+                                                    <IoMdVolumeHigh
+                                                        size={20}
+                                                        className={`cursor-pointer text-textCustom ${speaking ? 'text-yellow-500' : ''}`}
+                                                    />
+                                                </button>
+                                            )}
+
+                                            <a
+                                                className="min-w-max cursor-pointer text-textCustom"
+                                                onClick={() =>
+                                                    handleSubmit(vocabulary?._id, vocabulary?.english, vocabulary?.vietnamese, index)
+                                                }
+                                            >
+                                                Không biết
+                                            </a>
+                                        </div>
                                     </div>
                                     {isWaiting ? (
                                         <Fragment>
