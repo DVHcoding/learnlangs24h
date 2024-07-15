@@ -8,13 +8,13 @@ import { motion } from 'framer-motion';
 import { FaEdit } from 'react-icons/fa';
 import { RiQuestionAnswerFill } from 'react-icons/ri';
 import { MdOutlineTranslate } from 'react-icons/md';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
 import Flashcard from '@components/Courses/Listening/FlashCard';
-import VocaExerciseData from './VocaExerciseJson.json';
+import { useGetVocaExerciseQuery } from '@store/api/courseApi';
 
 interface VocabularyType {
     _id: string;
@@ -28,6 +28,8 @@ const VocaExercise: React.FC = () => {
     /* ########################################################################## */
     const navigate = useNavigate();
     const location = useLocation();
+    const [searchParams] = useSearchParams();
+    let id = searchParams.get('id');
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -41,12 +43,12 @@ const VocaExercise: React.FC = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: vocaExerciseData } = useGetVocaExerciseQuery(id, { skip: !id });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
-
-    const { vocabularies } = VocaExerciseData;
+    const { vocabularies = [] } = vocaExerciseData?.vocaExercise || {};
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */

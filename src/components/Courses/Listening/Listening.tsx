@@ -98,7 +98,7 @@ const Listening: React.FC = () => {
                 {/* content */}
                 <div
                     className="scrollbar-mess relative h-full w-full overflow-auto 
-                    rounded-tl-lg bg-bgCustomCard"
+                    rounded-tl-lg bg-bgCustomCard phone:pb-10"
                 >
                     {renderContent(unitLessonData?.unitLesson)}
 
