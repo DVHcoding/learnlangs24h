@@ -301,3 +301,38 @@ export interface UpdateUnitLessonAndFillBlankExercisePayloadType {
     lesson: string;
     questions: QuestionType[];
 }
+
+///////////////////////////////////////////////////////////////////////////////
+export interface VocaExerciseResponseTypes {
+    success: boolean;
+    vocaExercise: VocaExercise;
+}
+
+export interface VocaExercise {
+    _id: string;
+    vocabularies: Sentence[];
+    sentences: Sentence[];
+    quiz: Quiz;
+    unitLesson: string;
+}
+
+export interface Quiz {
+    audio: Audio[];
+    _id: string;
+}
+
+export interface Audio {
+    _id: string;
+    public_id: string;
+    url: string;
+    answer: string;
+    otherAnswer: string;
+}
+
+export interface Sentence {
+    _id: string;
+    english: string;
+    vietnamese: string;
+}
+
+///////////////////////////////////////////////////////////////////////////////

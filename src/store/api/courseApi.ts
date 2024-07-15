@@ -9,6 +9,7 @@ import {
     UnitLessonResponseType,
     UserProcessStatusResponse,
     VideoLectureContentResponseType,
+    VocaExerciseResponseTypes,
 } from 'types/api-types';
 
 // ##########################
@@ -61,6 +62,9 @@ export const courseApi = createApi({
             query: (id: string) => `fillBlankExercise/${id}`,
             providesTags: ['Exercise'],
         }),
+        getVocaExercise: builder.query<VocaExerciseResponseTypes, string | null>({
+            query: (id: string) => `course/unitlesson/vocaexercise/${id}`,
+        }),
         // get User Process Status + populate unitLessonStatus
         getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined>({
             query: (userId) => `userProcessStatuses/${userId}`,
@@ -77,5 +81,6 @@ export const {
     useGetUnitLessonByIdQuery,
     useGetVideoLectureContentQuery,
     useGetFillBlankExerciseQuery,
+    useGetVocaExerciseQuery,
     useGetUserProcessStatusesQuery,
 } = courseApi;
