@@ -31,9 +31,12 @@ const useUnitLessonProcess = ({ userId, id, allUnitLessonData, userProcessRefetc
         const unitLessonId = id || allUnitLessonData?.unitLessons[0]?._id;
         if (!userId || !unitLessonId) return;
 
+        const userEncode = encodeURIComponent(userId);
+        const unitLessonIdEncode = encodeURIComponent(unitLessonId);
+
         const handleUnitLessonProcess = async () => {
             try {
-                const { data } = await unitLessonByUserProcess({ userId, unitLessonId });
+                const { data } = await unitLessonByUserProcess({ userId: userEncode, unitLessonId: unitLessonIdEncode });
 
                 if (data?.success) {
                     navigate(`?id=${unitLessonId}`);
