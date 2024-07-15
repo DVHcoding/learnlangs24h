@@ -2,9 +2,7 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { Accordion } from 'rsuite';
-import { PencilLine } from 'lucide-react';
 import { FaCheckCircle, FaLock } from 'react-icons/fa';
-import { IoPlayCircleSharp } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
@@ -16,6 +14,7 @@ import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } 
 import { LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
 import { ListeningLessonCardProps } from '@components/Courses/Listening/Listening.types';
 import headerSidebar from '@components/Shared/HeaderSidebar.courses';
+import RenderIcon from '@components/Shared/RenderIcon.courses';
 
 const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, userProcessStatusData }) => {
     /* ########################################################################## */
@@ -156,6 +155,7 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
                 >
                     <ul className="flex flex-col gap-2">
                         {unitLessonsData?.unitLessons?.map((unitLesson: UnitLessonType) => {
+                            ////////////////////////////////////////////////////////////////////////////
                             // Lấy các unitLesson sao cho đúng với từng lesson tương ứng
                             if (unitLesson.lesson !== lesson._id) return null;
 
@@ -168,6 +168,7 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
 
                             // Khóa học đã unlock thì khi hover vào sẽ là pointer. Ngược lại sẽ là default
                             const isClickable = isCompletedOrUnlocked ? 'cursor-pointer' : 'cursor-default bg-bgHoverGrayDark';
+                            ////////////////////////////////////////////////////////////////////////////
 
                             return (
                                 <li
@@ -180,13 +181,8 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
                                     {/* Phần xử lý icon */}
                                     <div>
                                         <h4 className="mb-2 font-sans text-sm font-normal text-textCustom">{unitLesson.title}</h4>
-
                                         <div className="flex items-center gap-2">
-                                            {unitLesson.icon === 'videoLecture' ? (
-                                                <IoPlayCircleSharp className="text-sm text-orange-400" />
-                                            ) : (
-                                                <PencilLine className="text-orange-400" size={13} />
-                                            )}
+                                            {RenderIcon(unitLesson?.icon)}
                                             <p className="font-sans text-xs font-normal text-textCustom">{unitLesson.time}</p>
                                         </div>
                                     </div>
