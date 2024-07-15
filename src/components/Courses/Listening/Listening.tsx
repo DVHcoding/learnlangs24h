@@ -113,12 +113,11 @@ const Listening: React.FC = () => {
                             ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                             : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
                     } 
-                    scrollbar flex-1 overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0  
-                    sm:top-24 sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:translate-x-0`}
+                    scrollbar flex-1 overflow-auto bg-bgCustom transition-all  
+                    duration-300 sm:fixed sm:right-0 sm:rounded-md md:fixed md:right-0 lg:block
+                    lg:translate-x-0`}
                 >
-                    <div className="scrollbar h-full w-full overflow-auto ">
-                        <ListeningLessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
-                    </div>
+                    <ListeningLessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
                 </div>
             </div>
         </div>

@@ -53,7 +53,7 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     return (
         <Fragment>
             <div
-                className="sticky bottom-2 ml-auto mr-2 flex max-w-max cursor-pointer items-center 
+                className="sticky bottom-8 ml-auto mr-2 flex max-w-max cursor-pointer items-center 
                 gap-2 rounded-lg bg-slate-100 p-2 shadow-md"
                 onClick={showDrawer}
             >

@@ -143,7 +143,7 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
     }, [lessonsData?.success]);
 
     return (
-        <Accordion>
+        <Accordion className="sm:mb-28 md:mb-28 lg:mb-0 phone:mb-36">
             {lessonsData?.lessons?.map((lesson: LessonType) => (
                 <Accordion.Panel
                     header={headerSidebar({
