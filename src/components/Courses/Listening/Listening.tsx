@@ -1,9 +1,9 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ChevronsLeft } from 'lucide-react';
-import { useSearchParams } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Breadcrumb } from 'antd';
 import { Link, useParams } from 'react-router-dom';
@@ -15,14 +15,25 @@ const ListeningLessonCard = loadable(() => import('@components/Courses/Listening
 const VocaExercise = loadable(() => import('@components/Courses/Listening/VocaExercise'));
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 
-import { useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
+import {
+    useGetAllUnitLessonsByCourseIdQuery,
+    useGetUnitLessonByIdQuery,
+    useGetUserProcessStatusesQuery,
+    useLazyGetUnitLessonIdByUserProcessQuery,
+} from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
+import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '@store/store';
+import { toastError } from '@components/Toast/Toasts';
 
 // #########################################################################
 const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                                   HOOKS                                    */
     /* ########################################################################## */
+    const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams<{ id: string }>();
     let id = searchParams.get('id');
@@ -40,9 +51,12 @@ const Listening: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
     const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
-    const userId = userDetailsData?.user?._id ?? 'undefined';
-    const { data: userProcessStatusData } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -62,6 +76,31 @@ const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+    useEffect(() => {
+        const unitLessonId = id || allUnitLessonData?.unitLessons[0]._id;
+
+        if (!userId || !unitLessonId) {
+            return;
+        }
+
+        unitLessonByUserProcess({ userId, unitLessonId })
+            .then(({ data }) => {
+                if (data?.success) {
+                    navigate(`?id=${unitLessonId}`);
+                } else {
+                    if (!id) {
+                        dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
+                        navigate(`?id=${unitLessonId}`);
+                        userProcessRefetch();
+                    } else {
+                        navigate('/notfound');
+                    }
+                }
+            })
+            .catch(() => {
+                toastError('Có lỗi xảy ra!');
+            });
+    }, [navigate, dispatch, id, userId, allUnitLessonData?.unitLessons]);
 
     return (
         <div className="overflow-hidden pl-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>

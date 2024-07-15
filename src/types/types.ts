@@ -57,6 +57,11 @@ export interface GetUnitLessonIdByUserProcessResponseType {
     message?: string;
 }
 
+export interface GetUnitLessonIdByUserProcessPayload {
+    userId: string | undefined;
+    unitLessonId: string | undefined;
+}
+
 export interface LastMessageStatusType {
     sender: string | undefined;
     seen: boolean | undefined;

@@ -1,6 +1,11 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import {
     AllCoursesResponseType,
     AllLessonsResponseType,
@@ -11,11 +16,7 @@ import {
     VideoLectureContentResponseType,
     VocaExerciseResponseTypes,
 } from 'types/api-types';
-
-// ##########################
-// #    IMPORT Components   #
-// ##########################
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { GetUnitLessonIdByUserProcessPayload, GetUnitLessonIdByUserProcessResponseType } from 'types/types';
 
 export const courseApi = createApi({
     reducerPath: 'courseApi',
@@ -70,6 +71,10 @@ export const courseApi = createApi({
             query: (userId) => `userProcessStatuses/${userId}`,
             providesTags: ['UnitLesson'],
         }),
+        getUnitLessonIdByUserProcess: builder.query<GetUnitLessonIdByUserProcessResponseType, GetUnitLessonIdByUserProcessPayload>({
+            query: ({ userId, unitLessonId }) => `unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${unitLessonId}`,
+            providesTags: ['UnitLesson'],
+        }),
     }),
 });
 
@@ -83,4 +88,5 @@ export const {
     useGetFillBlankExerciseQuery,
     useGetVocaExerciseQuery,
     useGetUserProcessStatusesQuery,
+    useLazyGetUnitLessonIdByUserProcessQuery,
 } = courseApi;
