@@ -27,8 +27,6 @@
     width: 3px;
   }
 
-
-
   .scrollbar-small::-webkit-scrollbar-track {
     display: none;
   }
@@ -55,10 +53,6 @@
     border-radius: 10px;
     margin-bottom: 10px;
   }
-
-
-
-
 }
 
 * {
@@ -74,9 +68,6 @@ blockquote {
   margin-left: 1.3rem;
   background-color: var(--bg-blockquote);
 }
-
-/* Dark green */
-
 
 tr,
 td {
@@ -100,7 +91,6 @@ h3 {
 h4 {
   font-size: 1em;
 }
-
 
 html {
   scroll-behavior: smooth;

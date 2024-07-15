@@ -52,6 +52,7 @@
         "react-virtualized-auto-sizer": "^1.0.24",
         "react-wavesurfer": "^0.8.6",
         "react-window": "^1.8.10",
+        "redux-persist": "^6.0.0",
         "rsuite": "^5.55.1",
         "slate": "^0.103.0",
         "slate-react": "^0.106.0",

@@ -1,12 +1,6 @@
-// ##################################
-// #       IMPORT Components
-// ##################################
-import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
-import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
-
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Accordion } from 'rsuite';
 import { PencilLine } from 'lucide-react';
 import { FaCheckCircle, FaLock } from 'react-icons/fa';
@@ -15,25 +9,43 @@ import { useNavigate } from 'react-router-dom';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useEffect } from 'react';
 
-const headerSidebar: React.FC<{ title: string; process: string; totalTime: string }> = ({ title, process, totalTime }) => {
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
+import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
+
+interface HeaderSidebarProps {
+    title: string;
+    process: string;
+    totalTime: string;
+}
+
+const headerSidebar: React.FC<HeaderSidebarProps> = ({ title, process, totalTime }) => {
     return (
         <div>
-            <h4 className="font-body text-base font-bold text-textCustom">{title}</h4>
+            <h4 className="font-sans text-base font-medium tracking-tight text-textCustom">{title}</h4>
 
             <div className="flex items-center gap-2">
-                <span className="text-xs text-textCustom">{process}</span>
-                <p className="mb-[1px] text-xs text-textCustom">|</p>
-                <span className="text-xs text-textCustom">{totalTime}</span>
+                <span className="font-sans text-xs font-normal text-textCustom">{process}</span>
+                <p className="mb-[1px] font-sans text-xs font-light text-textCustom">|</p>
+                <span className="font-sans text-xs font-normal text-textCustom">{totalTime}</span>
             </div>
         </div>
     );
 };
 
-const ListeningLessonCard: React.FC<{
+interface ListeningLessonCardProps {
     handleToggleLesson: () => void;
     userProcessStatusData: UserProcessStatusResponse | undefined;
     userProcessStatusLoading: boolean;
-}> = ({ handleToggleLesson, userProcessStatusData, userProcessStatusLoading }) => {
+}
+
+const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
+    handleToggleLesson,
+    userProcessStatusData,
+    userProcessStatusLoading,
+}) => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
@@ -67,7 +79,7 @@ const ListeningLessonCard: React.FC<{
         );
 
         if (isUnitLessonUnlocked) {
-            navigate(`/grammar/${id}?id=${unitLessonId}`);
+            navigate(`/listening/${id}?id=${unitLessonId}`);
             handleToggleLesson(); // sử dụng cái này dành cho màn hình nhỏ. Khi chuyển bài thì phải đóng sidebar lại
         }
     };
@@ -194,14 +206,14 @@ const ListeningLessonCard: React.FC<{
                                               onClick={() => handleRedirect(unitLesson._id)}
                                           >
                                               <div>
-                                                  <h4 className="mb-2 text-sm font-semibold text-textCustom">{unitLesson.title}</h4>
+                                                  <h4 className="mb-2 font-sans text-sm font-normal text-textCustom">{unitLesson.title}</h4>
                                                   <div className="flex items-center gap-2">
                                                       {unitLesson.icon === 'videoLecture' ? (
                                                           <IoPlayCircleSharp className="text-sm text-orange-400" />
                                                       ) : (
                                                           <PencilLine className="text-orange-400" size={13} />
                                                       )}
-                                                      <p className="text-xs text-textCustom">{unitLesson.time}</p>
+                                                      <p className="font-sans text-xs font-normal text-textCustom">{unitLesson.time}</p>
                                                   </div>
                                               </div>
 
@@ -216,8 +228,6 @@ const ListeningLessonCard: React.FC<{
                                                 ) ? null : ( // Nếu điều kiện cho LockIcon được đáp ứng, không hiển thị gì cả
                                                   <FaLock className="text-xs text-gray-400" />
                                               )}
-
-                                              <p>lorem</p>
                                           </li>
                                       ) : (
                                           ''
