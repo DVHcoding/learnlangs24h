@@ -1,9 +1,9 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { Fragment, useEffect, useRef, useState } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { Breadcrumb, Modal, Switch } from 'antd';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { Undo2, Settings } from 'lucide-react';
 import { Progress } from 'antd';
 import { IoMdVolumeHigh } from 'react-icons/io';
@@ -14,9 +14,13 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { toastInfo } from '@components/Toast/Toasts';
 import removeVietnameseTones from '@utils/regexVietnamese';
 import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
-import { toastInfo } from '@components/Toast/Toasts';
+import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
+import { useUserDetailsQuery } from '@store/api/userApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
+import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
 
 export interface VocaExerciseResponseType {
     success: string;
@@ -83,6 +87,9 @@ const WriteVocaExercise = () => {
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
     const navigate = useNavigate();
+    const [searchParams] = useSearchParams();
+    const { id: courseId } = useParams<{ id: string }>();
+    let id = searchParams.get('id');
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -115,6 +122,11 @@ const WriteVocaExercise = () => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
+    const { refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -397,6 +409,8 @@ const WriteVocaExercise = () => {
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
     const { speak, speaking } = useSpeechSynthesis();
+    useUnitLessonProcess({ userId, id, allUnitLessonData, userProcessRefetch });
+    useAutoResizeTextArea(textAreaRef, gameState.answer);
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
@@ -427,10 +441,13 @@ const WriteVocaExercise = () => {
                             title: <Link to="/">Home</Link>,
                         },
                         {
-                            title: <Link to={`/listening/`}>Listening</Link>,
+                            title: <Link to={`/listening/${courseId}`}>Listening</Link>,
                         },
                         {
-                            title: 'write',
+                            title: 'Write',
+                        },
+                        {
+                            title: 'Vocabulary',
                         },
                     ]}
                 />
@@ -445,7 +462,7 @@ const WriteVocaExercise = () => {
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate(-2)}
                         >
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
@@ -651,14 +668,18 @@ const WriteVocaExercise = () => {
                 <Modal title="Settings" open={isModalOpen} onOk={handleChangeSettings} onCancel={handleCancelSettings}>
                     <div className="grid grid-cols-2 gap-1">
                         <button
-                            className={`rounded-md p-2 ${settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`rounded-md p-2 ${
+                                settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                            } text-nowrap phone:text-xs`}
                             onClick={() => setSettings((preState) => ({ ...preState, learnAll: true, learnStar: false }))}
                         >
                             Học tất cả
                         </button>
 
                         <button
-                            className={`rounded-md p-2 ${settings.learnStar ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`rounded-md p-2 ${
+                                settings.learnStar ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                            } text-nowrap phone:text-xs`}
                             onClick={() => setSettings((preState) => ({ ...preState, learnStar: true, learnAll: false }))}
                         >
                             Học các thuật ngữ có dấu sao
@@ -685,7 +706,7 @@ const WriteVocaExercise = () => {
                         </li>
 
                         <li className="flex items-center justify-between">
-                            <h3>Ẩn nội dung (Nên bật đọc nội dung để nghe và điền từ)</h3>
+                            <h3>Ẩn nội dung </h3>
                             <Switch
                                 size="small"
                                 checked={settings.hideWord}

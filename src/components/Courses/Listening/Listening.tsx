@@ -1,9 +1,9 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronsLeft } from 'lucide-react';
-import { useNavigate, useSearchParams } from 'react-router-dom';
+import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Breadcrumb } from 'antd';
 import { Link, useParams } from 'react-router-dom';
@@ -14,26 +14,16 @@ import { Link, useParams } from 'react-router-dom';
 const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 
-import {
-    useGetAllUnitLessonsByCourseIdQuery,
-    useGetUnitLessonByIdQuery,
-    useGetUserProcessStatusesQuery,
-    useLazyGetUnitLessonIdByUserProcessQuery,
-} from '@store/api/courseApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '@store/store';
-import { toastError } from '@components/Toast/Toasts';
 import renderContent from '@components/Shared/RenderContent.courses';
+import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
 
 // #########################################################################
 const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                                   HOOKS                                    */
     /* ########################################################################## */
-    const dispatch: AppDispatch = useDispatch();
-    const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const { id: courseId } = useParams<{ id: string }>();
     let id = searchParams.get('id');
@@ -56,7 +46,6 @@ const Listening: React.FC = () => {
     const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
     const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
-    const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -72,35 +61,11 @@ const Listening: React.FC = () => {
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
+    useUnitLessonProcess({ userId, id, allUnitLessonData, userProcessRefetch });
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-    useEffect(() => {
-        const unitLessonId = id || allUnitLessonData?.unitLessons[0]?._id;
-        if (!userId || !unitLessonId) return;
-
-        const handleUnitLessonProcess = async () => {
-            try {
-                const { data } = await unitLessonByUserProcess({ userId, unitLessonId });
-
-                if (data?.success) {
-                    navigate(`?id=${unitLessonId}`);
-                } else if (!id) {
-                    dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
-                    navigate(`?id=${unitLessonId}`);
-                    userProcessRefetch();
-                } else {
-                    navigate('/notfound');
-                }
-            } catch (error) {
-                toastError('Có lỗi xảy ra!');
-            }
-        };
-
-        handleUnitLessonProcess();
-    }, [navigate, dispatch, id, userId, allUnitLessonData?.unitLessons]);
-
     return (
         <div className="overflow-hidden pl-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
             {/* Breadcrumb */}

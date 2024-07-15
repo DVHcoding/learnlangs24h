@@ -70,7 +70,7 @@ const VocaExercise: React.FC = () => {
     };
 
     const handleRedirectExercise: (route: string) => void = (route) => {
-        const newPath = `${location.pathname}/${route}`;
+        const newPath = `${location.pathname}/${route}${location.search}`;
         navigate(newPath);
     };
 

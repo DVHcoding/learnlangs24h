@@ -655,14 +655,18 @@ const WriteSentenceExercise = () => {
                 <Modal title="Settings" open={isModalOpen} onOk={handleChangeSettings} onCancel={handleCancelSettings}>
                     <div className="grid grid-cols-2 gap-1">
                         <button
-                            className={`rounded-md p-2 ${settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`rounded-md p-2 ${
+                                settings.learnAll ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                            } text-nowrap phone:text-xs`}
                             onClick={() => setSettings((preState) => ({ ...preState, learnAll: true, learnStar: false }))}
                         >
                             Học tất cả
                         </button>
 
                         <button
-                            className={`rounded-md p-2 ${settings.learnStar ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                            className={`rounded-md p-2 ${
+                                settings.learnStar ? 'bg-blue-500 text-white' : 'bg-gray-200'
+                            } text-nowrap phone:text-xs`}
                             onClick={() => setSettings((preState) => ({ ...preState, learnStar: true, learnAll: false }))}
                         >
                             Học các thuật ngữ có dấu sao
@@ -689,7 +693,7 @@ const WriteSentenceExercise = () => {
                         </li>
 
                         <li className="flex items-center justify-between">
-                            <h3>Ẩn nội dung (Nên bật đọc nội dung để nghe và điền từ)</h3>
+                            <h3>Ẩn nội dung </h3>
                             <Switch
                                 size="small"
                                 checked={settings.hideWord}
