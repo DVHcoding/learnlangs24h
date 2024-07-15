@@ -55,7 +55,7 @@ const Quiz: React.FC = () => {
     const { data: userDetailsData } = useUserDetailsQuery();
 
     const userId = userDetailsData?.user?._id ?? 'undefined';
-    const { data: userProcessStatusData, isLoading: userProcessStatusLoading } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: userProcessStatusData } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -245,11 +245,7 @@ const Quiz: React.FC = () => {
                     sm:top-24 sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
                 >
                     <div className="scrollbar h-full w-full overflow-auto ">
-                        <ListeningLessonCard
-                            handleToggleLesson={handleToggleLesson}
-                            userProcessStatusData={userProcessStatusData}
-                            userProcessStatusLoading={userProcessStatusLoading}
-                        />
+                        <ListeningLessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
                     </div>
                 </div>
             </div>

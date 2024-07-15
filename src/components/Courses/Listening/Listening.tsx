@@ -12,7 +12,6 @@ import { Link, useParams } from 'react-router-dom';
 // #                           IMPORT Components                            #
 // ##########################################################################
 const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
-const VocaExercise = loadable(() => import('@components/Courses/Listening/VocaExercise'));
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 
 import {
@@ -26,6 +25,7 @@ import { createNewUserProcessStatus } from '@store/reducer/courseReducer';
 import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@store/store';
 import { toastError } from '@components/Toast/Toasts';
+import renderContent from '@components/Shared/RenderContent.courses';
 
 // #########################################################################
 const Listening: React.FC = () => {
@@ -77,29 +77,28 @@ const Listening: React.FC = () => {
     /*                                  useEffect                                 */
     /* ########################################################################## */
     useEffect(() => {
-        const unitLessonId = id || allUnitLessonData?.unitLessons[0]._id;
+        const unitLessonId = id || allUnitLessonData?.unitLessons[0]?._id;
+        if (!userId || !unitLessonId) return;
 
-        if (!userId || !unitLessonId) {
-            return;
-        }
+        const handleUnitLessonProcess = async () => {
+            try {
+                const { data } = await unitLessonByUserProcess({ userId, unitLessonId });
 
-        unitLessonByUserProcess({ userId, unitLessonId })
-            .then(({ data }) => {
                 if (data?.success) {
                     navigate(`?id=${unitLessonId}`);
+                } else if (!id) {
+                    dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
+                    navigate(`?id=${unitLessonId}`);
+                    userProcessRefetch();
                 } else {
-                    if (!id) {
-                        dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
-                        navigate(`?id=${unitLessonId}`);
-                        userProcessRefetch();
-                    } else {
-                        navigate('/notfound');
-                    }
+                    navigate('/notfound');
                 }
-            })
-            .catch(() => {
-                toastError('Có lỗi xảy ra!');
-            });
+            } catch (error) {
+                toastError('Có lỗi xảy ra!');
+            }
+        };
+
+        handleUnitLessonProcess();
     }, [navigate, dispatch, id, userId, allUnitLessonData?.unitLessons]);
 
     return (
@@ -136,7 +135,7 @@ const Listening: React.FC = () => {
                     className="scrollbar-mess relative h-full w-full overflow-auto 
                     rounded-tl-lg bg-bgCustomCard"
                 >
-                    <VocaExercise />
+                    {renderContent(unitLessonData?.unitLesson)}
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />
