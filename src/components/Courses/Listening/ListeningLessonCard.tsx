@@ -13,39 +13,11 @@ import { useEffect } from 'react';
 // #                           IMPORT Components                            #
 // ##########################################################################
 import { useGetAllUnitLessonsByCourseIdQuery, useGetAllLessonsByCourseIdQuery } from '@store/api/courseApi';
-import { LessonType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
+import { LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
+import { ListeningLessonCardProps } from '@components/Courses/Listening/Listening.types';
+import headerSidebar from '@components/Shared/HeaderSidebar.courses';
 
-interface HeaderSidebarProps {
-    title: string;
-    process: string;
-    totalTime: string;
-}
-
-const headerSidebar: React.FC<HeaderSidebarProps> = ({ title, process, totalTime }) => {
-    return (
-        <div>
-            <h4 className="font-sans text-base font-medium tracking-tight text-textCustom">{title}</h4>
-
-            <div className="flex items-center gap-2">
-                <span className="font-sans text-xs font-normal text-textCustom">{process}</span>
-                <p className="mb-[1px] font-sans text-xs font-light text-textCustom">|</p>
-                <span className="font-sans text-xs font-normal text-textCustom">{totalTime}</span>
-            </div>
-        </div>
-    );
-};
-
-interface ListeningLessonCardProps {
-    handleToggleLesson: () => void;
-    userProcessStatusData: UserProcessStatusResponse | undefined;
-    userProcessStatusLoading: boolean;
-}
-
-const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
-    handleToggleLesson,
-    userProcessStatusData,
-    userProcessStatusLoading,
-}) => {
+const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, userProcessStatusData }) => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
@@ -66,8 +38,8 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
-    const { data, isLoading } = useGetAllLessonsByCourseIdQuery(id, { skip: !id });
-    const { data: dataUnitLesson } = useGetAllUnitLessonsByCourseIdQuery(id, { skip: !id });
+    const { data: lessonsData } = useGetAllLessonsByCourseIdQuery(id, { skip: !id });
+    const { data: unitLessonsData } = useGetAllUnitLessonsByCourseIdQuery(id, { skip: !id });
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -88,22 +60,23 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
         let process: number = 0;
         let completed: number = 0;
 
-        if (dataUnitLesson?.unitLessons) {
-            dataUnitLesson?.unitLessons.forEach((unitLesson: UnitLessonType) => {
-                if (unitLesson.lesson === lessonId) {
-                    process++;
+        // Sử dụng reduce để tính số liệu
+        unitLessonsData?.unitLessons?.reduce((accumulator: number, unitLesson: UnitLessonType) => {
+            if (unitLesson.lesson === lessonId) {
+                process++;
 
-                    // Đếm số unitLesson đã hoàn thành
-                    const isCompleted = userProcessStatusData?.unitLessonStatus?.find(
-                        (status: UnitLessonStatus) => status.unitLessonId._id === unitLesson._id && status.status === 'completed'
-                    );
+                // Kiểm tra xem unitLesson có được hoàn thành không
+                const isCompleted = userProcessStatusData?.unitLessonStatus?.some(
+                    (status: UnitLessonStatus) => status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                );
 
-                    if (isCompleted) {
-                        completed++;
-                    }
+                if (isCompleted) {
+                    completed++;
                 }
-            });
-        }
+            }
+
+            return accumulator; // Không cần trả về gì từ reduce
+        }, 0);
 
         return `${completed}/${process}`;
     };
@@ -113,31 +86,27 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
         let totalMinutes = 0;
         let totalSeconds = 0;
 
-        if (dataUnitLesson) {
-            // Duyệt qua từng phần tử trong mảng unitLessons
-            dataUnitLesson?.unitLessons?.forEach((unitLesson: UnitLessonType) => {
-                // Kiểm tra nếu lesson của unitLesson trùng khớp với lessonId
-                if (unitLesson.lesson === lessonId) {
-                    // Tách chuỗi thời gian (dạng 'hh:mm:ss') thành mảng các phần tử [hours, minutes, seconds]
-                    const timeParts = unitLesson.time.split(':');
-                    // Chuyển đổi các phần tử từ chuỗi sang số nguyên
-                    const hours = parseInt(timeParts[0]);
-                    const minutes = parseInt(timeParts[1]);
-                    const seconds = parseInt(timeParts[2]);
+        // Sử dụng reduce để tính tổng thời gian
+        unitLessonsData?.unitLessons?.reduce((accumulator: number, unitLesson: UnitLessonType) => {
+            if (unitLesson.lesson === lessonId) {
+                const timeParts = unitLesson.time.split(':');
+                const hours = parseInt(timeParts[0]);
+                const minutes = parseInt(timeParts[1]);
+                const seconds = parseInt(timeParts[2]);
 
-                    // Cộng dồn giờ, phút và giây vào tổng số giờ, phút và giây
-                    totalHours += hours;
-                    totalMinutes += minutes;
-                    totalSeconds += seconds;
-                }
-            });
+                totalHours += hours;
+                totalMinutes += minutes;
+                totalSeconds += seconds;
+            }
 
-            // Chuyển đổi phút và giây thành giờ nếu cần
-            totalMinutes += Math.floor(totalSeconds / 60);
-            totalSeconds %= 60;
-            totalHours += Math.floor(totalMinutes / 60);
-            totalMinutes %= 60;
-        }
+            return accumulator; // Không cần trả về gì từ reduce
+        }, 0);
+
+        // Chuyển đổi phút và giây thành giờ nếu cần
+        totalMinutes += Math.floor(totalSeconds / 60);
+        totalSeconds %= 60;
+        totalHours += Math.floor(totalMinutes / 60);
+        totalMinutes %= 60;
 
         return `${totalHours.toString().padStart(2, '0')}:${totalMinutes.toString().padStart(2, '0')}:${totalSeconds
             .toString()
@@ -145,14 +114,17 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
 
         /**
          * totalHours.toString().padStart(2, '0'):
-         *    - Đây là cách chuyển đổi số giờ thành chuỗi và đảm bảo rằng chuỗi này luôn có ít nhất 2 ký tự.
-         *    - .toString(): Chuyển đổi số giờ (totalHours) thành chuỗi.
-         *    - .padStart(2, '0'): Nếu chuỗi có ít hơn 2 ký tự, thêm các ký tự '0' vào đầu chuỗi cho đến khi có đủ 2 ký tự.
-         * :: Đây là ký tự ngăn cách giữa giờ, phút và giây trong định dạng thời gian HH:mm:ss.
+         * - Đây là cách chuyển đổi số giờ thành chuỗi và đảm bảo rằng chuỗi này luôn có ít nhất 2 ký tự.
+         * -.toString(): Chuyển đổi số giờ (totalHours) thành chuỗi.
+         * -.padStart(2, '0'): Nếu chuỗi có ít hơn 2 ký tự, thêm các ký tự '0' vào đầu chuỗi cho đến khi có đủ 2 ký tự.
+         *
+         * - Đây là ký tự ngăn cách giữa giờ, phút và giây trong định dạng thời gian HH:mm:ss.
          * totalMinutes.toString().padStart(2, '0'):
-         *    - Tương tự như trên, đây là cách chuyển đổi số phút thành chuỗi và đảm bảo chuỗi này luôn có ít nhất 2 ký tự.
+         *
+         * - Tương tự như trên, đây là cách chuyển đổi số phút thành chuỗi và đảm bảo chuỗi này luôn có ít nhất 2 ký tự.
          * totalSeconds.toString().padStart(2, '0'):
-         *    - Cũng tương tự như trên, đây là cách chuyển đổi số giây thành chuỗi và đảm bảo chuỗi này luôn có ít nhất 2 ký tự.
+         *
+         * - Cũng tương tự như trên, đây là cách chuyển đổi số giây thành chuỗi và đảm bảo chuỗi này luôn có ít nhất 2 ký tự.
          * ****: Dấu `` là một phần của cú pháp "template literals" trong JavaScript, cho phép chèn biến vào trong chuỗi một cách dễ đọc và dễ hiểu.
          * Trong trường hợp này, nó cho phép chèn các giá trị của totalHours, totalMinutes, và totalSeconds vào trong chuỗi một cách dễ dàng.
          */
@@ -165,78 +137,81 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-
     useEffect(() => {
-        if (data?.success === false) {
+        if (lessonsData?.success === false) {
             navigate('/notfound');
         }
-    }, [data?.success]);
+    }, [lessonsData?.success]);
 
     return (
         <Accordion>
-            {!isLoading &&
-                data?.lessons?.map((lesson: LessonType) => (
-                    <Accordion.Panel
-                        header={headerSidebar({
-                            title: lesson.name,
-                            process: handleGetProcess(lesson._id),
-                            totalTime: handleGetTotalTime(lesson._id),
-                        })}
-                        key={lesson._id}
-                    >
-                        <ul className="flex flex-col gap-2">
-                            {dataUnitLesson && !userProcessStatusLoading
-                                ? dataUnitLesson?.unitLessons?.map((unitLesson: UnitLessonType) =>
-                                      unitLesson.lesson === lesson._id ? (
-                                          <li
-                                              className={`flex items-center justify-between  
-                                                  ${unitLesson._id === unitLessonIdUrl ? 'bg-bgHoverGrayDark' : ''}  
-                                                    ${
-                                                        // UnitLesson nào là completed và unlock thì sẽ không có bg là gray
-                                                        userProcessStatusData?.unitLessonStatus?.find(
-                                                            (status: UnitLessonStatus) =>
-                                                                status.unitLessonId._id === unitLesson._id &&
-                                                                (status.status === 'completed' || status.status === 'unlock')
-                                                        )
-                                                            ? 'cursor-pointer'
-                                                            : 'cursor-default bg-bgHoverGrayDark'
-                                                    }
-                                                  rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
-                                              key={unitLesson._id}
-                                              onClick={() => handleRedirect(unitLesson._id)}
-                                          >
-                                              <div>
-                                                  <h4 className="mb-2 font-sans text-sm font-normal text-textCustom">{unitLesson.title}</h4>
-                                                  <div className="flex items-center gap-2">
-                                                      {unitLesson.icon === 'videoLecture' ? (
-                                                          <IoPlayCircleSharp className="text-sm text-orange-400" />
-                                                      ) : (
-                                                          <PencilLine className="text-orange-400" size={13} />
-                                                      )}
-                                                      <p className="font-sans text-xs font-normal text-textCustom">{unitLesson.time}</p>
-                                                  </div>
-                                              </div>
+            {lessonsData?.lessons?.map((lesson: LessonType) => (
+                <Accordion.Panel
+                    header={headerSidebar({
+                        title: lesson.name,
+                        process: handleGetProcess(lesson._id),
+                        totalTime: handleGetTotalTime(lesson._id),
+                    })}
+                    key={lesson._id}
+                >
+                    <ul className="flex flex-col gap-2">
+                        {unitLessonsData?.unitLessons?.map((unitLesson: UnitLessonType) => {
+                            // Lấy các unitLesson sao cho đúng với từng lesson tương ứng
+                            if (unitLesson.lesson !== lesson._id) return null;
 
-                                              {userProcessStatusData?.unitLessonStatus?.find(
-                                                  (status: UnitLessonStatus) =>
-                                                      status.unitLessonId._id === unitLesson._id && status.status === 'completed'
-                                              ) ? (
-                                                  <FaCheckCircle className="text-xs text-green-500" />
-                                              ) : userProcessStatusData?.unitLessonStatus?.find(
-                                                    (status: UnitLessonStatus) =>
-                                                        status.unitLessonId._id === unitLesson._id && status.status === 'unlock'
-                                                ) ? null : ( // Nếu điều kiện cho LockIcon được đáp ứng, không hiển thị gì cả
-                                                  <FaLock className="text-xs text-gray-400" />
-                                              )}
-                                          </li>
-                                      ) : (
-                                          ''
-                                      )
-                                  )
-                                : ''}
-                        </ul>
-                    </Accordion.Panel>
-                ))}
+                            // Kiểm tra xem unitLesson ở trạng thái nào (completed || unlock)
+                            const isCompletedOrUnlocked = userProcessStatusData?.unitLessonStatus?.some(
+                                (status: UnitLessonStatus) =>
+                                    status.unitLessonId._id === unitLesson._id &&
+                                    (status.status === 'completed' || status.status === 'unlock')
+                            );
+
+                            // Khóa học đã unlock thì khi hover vào sẽ là pointer. Ngược lại sẽ là default
+                            const isClickable = isCompletedOrUnlocked ? 'cursor-pointer' : 'cursor-default bg-bgHoverGrayDark';
+
+                            return (
+                                <li
+                                    key={unitLesson._id}
+                                    className={`flex items-center justify-between rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark 
+                                        ${unitLesson._id === unitLessonIdUrl ? 'bg-bgHoverGrayDark' : ''}
+                                        ${isClickable}`}
+                                    onClick={() => handleRedirect(unitLesson._id)}
+                                >
+                                    {/* Phần xử lý icon */}
+                                    <div>
+                                        <h4 className="mb-2 font-sans text-sm font-normal text-textCustom">{unitLesson.title}</h4>
+
+                                        <div className="flex items-center gap-2">
+                                            {unitLesson.icon === 'videoLecture' ? (
+                                                <IoPlayCircleSharp className="text-sm text-orange-400" />
+                                            ) : (
+                                                <PencilLine className="text-orange-400" size={13} />
+                                            )}
+                                            <p className="font-sans text-xs font-normal text-textCustom">{unitLesson.time}</p>
+                                        </div>
+                                    </div>
+
+                                    {(() => {
+                                        // kiểm tra xem tài khoản user đã hoàn thành unitLesson đó chưa
+                                        const isCompleted = userProcessStatusData?.unitLessonStatus?.some(
+                                            (status: UnitLessonStatus) =>
+                                                status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                                        );
+
+                                        if (isCompleted) {
+                                            return <FaCheckCircle className="text-xs text-green-500" />;
+                                        } else if (!isCompletedOrUnlocked) {
+                                            return <FaLock className="text-xs text-gray-400" />;
+                                        }
+
+                                        return null;
+                                    })()}
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </Accordion.Panel>
+            ))}
         </Accordion>
     );
 };
