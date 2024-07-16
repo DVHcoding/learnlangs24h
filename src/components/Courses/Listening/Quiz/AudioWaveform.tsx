@@ -8,6 +8,7 @@ import { TbPlayerStopFilled } from 'react-icons/tb';
 import TippyProvider from '@components/Tippys/TippyProvider';
 import { Tooltip } from 'antd';
 import { AudioProps } from './Quiz.types';
+import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -65,6 +66,7 @@ const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
+    useAutoResizeTextArea(textAreaRef, answers[audio._id]?.value, '4rem');
 
     /* ########################################################################## */
     /*                                  useEffect                                 */

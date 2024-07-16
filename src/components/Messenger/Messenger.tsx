@@ -40,6 +40,7 @@ import ChatContent from '@components/Messenger/ChatContent';
 import { getFileType } from '@utils/getFileType';
 import { isValidFileType } from '@utils/fileFormat';
 import ChatBar from './ChatBar';
+import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
 
 ////////////////////////////////////////////////////////////////////////////////////
 const Messenger: React.FC = () => {
@@ -421,6 +422,7 @@ const Messenger: React.FC = () => {
     };
 
     useSocketEvents(socket, eventHandler);
+    useAutoResizeTextArea(textAreaRef, message);
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
@@ -487,14 +489,6 @@ const Messenger: React.FC = () => {
             setLastMessage({ sender: lastMessage.sender, seen: lastMessage.seen });
         }
     }, [chatDetails]);
-
-    useEffect(() => {
-        if (textAreaRef.current) {
-            textAreaRef.current.style.height = '2rem';
-            textAreaRef.current.style.height = Math.min(textAreaRef.current.scrollHeight, 126) + 'px';
-            textAreaRef.current.style.overflowY = textAreaRef.current.scrollHeight > 126 ? 'auto' : 'hidden';
-        }
-    }, [message]);
 
     return (
         <div className="flex overflow-hidden pm:block" style={{ height: 'calc(100% - 3.8rem)' }}>
