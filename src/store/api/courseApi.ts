@@ -59,7 +59,7 @@ export const courseApi = createApi({
             providesTags: ['Exercise'],
         }),
         // get Fill Blank Exercise
-        getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string>({
+        getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string | null>({
             query: (id: string) => `fillBlankExercise/${id}`,
             providesTags: ['Exercise'],
         }),
