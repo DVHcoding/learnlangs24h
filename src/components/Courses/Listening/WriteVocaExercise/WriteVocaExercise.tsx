@@ -16,72 +16,18 @@ import type { ProgressProps } from 'antd';
 // ##########################################################################
 import { toastInfo } from '@components/Toast/Toasts';
 import removeVietnameseTones from '@utils/regexVietnamese';
-import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import { useGetAllUnitLessonsByCourseIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUserProcessStatusesQuery, useGetVocaExerciseQuery } from '@store/api/courseApi';
 import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
+import { Sentence } from 'types/api-types';
+import { CorrectWordType, GameStateType, IncorrectWordType, SettingTypes, VocabularyStarsType } from './WriteVocaExercise.types';
 
-export interface VocaExerciseResponseType {
-    success: string;
-    vocabularies: Sentence[];
-    sentences: Sentence[];
-    quiz: Quiz[];
-}
-
-export interface Quiz {
-    _id: string;
-    audio: Audio[];
-}
-
-export interface Audio {
-    public_id: string;
-    url: string;
-    content: string[];
-    short_content: string[];
-}
-
-export interface Sentence {
-    _id: string;
-    english: string;
-    vietnamese: string;
-}
-
-interface GameStateType {
-    answer: string;
-    correctWord: CorrectWordType[];
-    wordToShow: Sentence[];
-    activeCard: number;
-    remainWord: Sentence[];
-    inCorrectWord: IncorrectWordType[];
-    isWaiting: boolean;
-}
-
-interface IncorrectWordType {
-    _id: string;
-    english: string;
-    vietnamese: string;
-    count: number;
-}
-
-type CorrectWordType = Omit<IncorrectWordType, 'count'>;
-
-type VocabularyStarsType = CorrectWordType;
-
-interface SettingTypes {
-    learnAll: boolean;
-    learnStar: boolean;
-    displayFirstEnglish: boolean;
-    textToSpeech: boolean;
-    hideWord: boolean;
-}
-
-const WriteVocaExercise = () => {
+const WriteVocaExercise: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
     const textAreaRef = useRef<HTMLTextAreaElement>(null);
-    const { vocabularies }: { vocabularies: Sentence[] } = VocaExerciseData;
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -90,12 +36,16 @@ const WriteVocaExercise = () => {
     const { id: courseId } = useParams<{ id: string }>();
     const [searchParams] = useSearchParams();
     let id = searchParams.get('id');
+    const { data: vocaExerciseData } = useGetVocaExerciseQuery(id, { skip: !id });
 
     /* ########################################################################## */
-    /*                              STATE MANAGEMENT                              */
+    /*                                  VARIABLES                                 */
     /* ########################################################################## */
-    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
-
+    const twoColors: ProgressProps['strokeColor'] = {
+        '0%': '#108ee9',
+        '100%': '#87d068',
+    };
+    const { vocabularies = [] } = vocaExerciseData?.vocaExercise || {};
     const lastWordIndex: number = vocabularies.length - 1;
     const initialGameState = {
         answer: '',
@@ -107,17 +57,23 @@ const WriteVocaExercise = () => {
         isWaiting: false,
     };
 
-    const [gameState, setGameState] = useState<GameStateType>(initialGameState);
-    const [rating, setRating] = useState<{ [key: string]: number }>({});
-    const [vocabularyStars, setVocabularyStars] = useState<VocabularyStarsType[]>([]);
-    const [activeSpeak, setActiveSpeak] = useState<string | null>(null);
-    const [settings, setSettings] = useState<SettingTypes>({
+    const initialSettings = {
         learnAll: true,
         learnStar: false,
         displayFirstEnglish: true,
         hideWord: false,
         textToSpeech: false,
-    });
+    };
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+    const [gameState, setGameState] = useState<GameStateType>(initialGameState);
+    const [rating, setRating] = useState<{ [key: string]: number }>({});
+    const [vocabularyStars, setVocabularyStars] = useState<VocabularyStarsType[]>([]);
+    const [activeSpeak, setActiveSpeak] = useState<string | null>(null);
+    const [settings, setSettings] = useState<SettingTypes>(initialSettings);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -127,14 +83,6 @@ const WriteVocaExercise = () => {
 
     const { refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
     const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
-
-    /* ########################################################################## */
-    /*                                  VARIABLES                                 */
-    /* ########################################################################## */
-    const twoColors: ProgressProps['strokeColor'] = {
-        '0%': '#108ee9',
-        '100%': '#87d068',
-    };
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
