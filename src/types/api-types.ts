@@ -317,11 +317,11 @@ export interface VocaExercise {
 }
 
 export interface Quiz {
-    audio: Audio[];
+    audio: AudioType[];
     _id: string;
 }
 
-export interface Audio {
+export interface AudioType {
     _id: string;
     public_id: string;
     url: string;

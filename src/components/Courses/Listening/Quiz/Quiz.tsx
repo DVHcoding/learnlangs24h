@@ -1,9 +1,9 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { ChevronsLeft, Undo2 } from 'lucide-react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
 import { Alert, Breadcrumb, Button } from 'antd';
 import { Link } from 'react-router-dom';
@@ -15,20 +15,13 @@ import Lottie from 'lottie-react';
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
 
-import { useGetUserProcessStatusesQuery } from '@store/api/courseApi';
+import { useGetAllUnitLessonsByCourseIdQuery, useGetUserProcessStatusesQuery, useGetVocaExerciseQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import AudioWaveform from './AudioWaveform';
-import VocaExerciseData from '@components/Courses/Listening/VocaExerciseJson.json';
 import Congratulations from '@assets/animations/Congratulations.json';
 import { removeNonLetters } from '@utils/Helpers';
-
-interface AudioType {
-    _id: string;
-    public_id: string;
-    url: string;
-    answer: string;
-    otherAnswer: string;
-}
+import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
+import { AudioType } from 'types/api-types';
 
 // #########################################################################
 const Quiz: React.FC = () => {
@@ -36,16 +29,20 @@ const Quiz: React.FC = () => {
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const navigate = useNavigate();
+    const { id: courseId } = useParams<{ id: string }>();
+    const [searchParams] = useSearchParams();
+    let id = searchParams.get('id');
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const { data: vocaExerciseData } = useGetVocaExerciseQuery(id, { skip: !id });
+    const { quiz = { audio: [], _id: '' } } = vocaExerciseData?.vocaExercise || {};
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [open, setOpen] = useState<boolean>(false);
-    const { quiz } = VocaExerciseData;
     const [answers, setAnswers] = useState<{ [key: string]: { value: string; border: string } }>({});
     const [showAnimation, setShowAnimation] = useState<boolean>(false);
 
@@ -53,9 +50,11 @@ const Quiz: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
 
-    const userId = userDetailsData?.user?._id ?? 'undefined';
     const { data: userProcessStatusData } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -151,6 +150,7 @@ const Quiz: React.FC = () => {
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
+    useUnitLessonProcess({ userId, id, allUnitLessonData, userProcessRefetch });
 
     /* ########################################################################## */
     /*                                  useEffect                                 */
@@ -200,7 +200,7 @@ const Quiz: React.FC = () => {
                         <div
                             className="max-w-max cursor-pointer rounded-full bg-bgCustomCardItem p-2 
                             transition-all hover:bg-bgHoverGrayDark"
-                            onClick={() => navigate(-1)}
+                            onClick={() => navigate(`/listening/${courseId}?id=${id}`)}
                         >
                             <Undo2 size={20} className="text-textCustom" />
                         </div>
@@ -241,12 +241,11 @@ const Quiz: React.FC = () => {
                             ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                             : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
                     } 
-                    scrollbar z-10 overflow-y-auto bg-bgCustom transition-all duration-300 sm:fixed sm:right-0  
-                    sm:top-24 sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
+                    scrollbar flex-1 overflow-auto bg-bgCustom transition-all  
+                    duration-300 sm:fixed sm:right-0 sm:rounded-md md:fixed md:right-0 lg:block
+                    lg:translate-x-0`}
                 >
-                    <div className="scrollbar h-full w-full overflow-auto ">
-                        <LessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
-                    </div>
+                    <LessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
                 </div>
             </div>
         </div>

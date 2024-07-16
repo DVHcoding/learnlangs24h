@@ -7,37 +7,11 @@ import { FaPlay } from 'react-icons/fa6';
 import { TbPlayerStopFilled } from 'react-icons/tb';
 import TippyProvider from '@components/Tippys/TippyProvider';
 import { Tooltip } from 'antd';
+import { AudioProps } from './Quiz.types';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-
-interface AudioType {
-    _id: string;
-    public_id: string;
-    url: string;
-    answer: string;
-    otherAnswer: string;
-}
-
-interface AudioProps {
-    audio: AudioType;
-    answers: {
-        [key: string]: {
-            value: string;
-            border: string;
-        };
-    };
-
-    setAnswers: React.Dispatch<
-        React.SetStateAction<{
-            [key: string]: {
-                value: string;
-                border: string;
-            };
-        }>
-    >;
-}
 
 const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => {
     /* ########################################################################## */
