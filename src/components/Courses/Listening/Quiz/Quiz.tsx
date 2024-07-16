@@ -169,7 +169,7 @@ const Quiz: React.FC = () => {
                             title: <Link to={`/listening/`}>Listening</Link>,
                         },
                         {
-                            title: 'quiz',
+                            title: 'Quiz',
                         },
                     ]}
                 />
