@@ -12,8 +12,8 @@ import Lottie from 'lottie-react';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
+const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
 
 import { useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
@@ -245,7 +245,7 @@ const Quiz: React.FC = () => {
                     sm:top-24 sm:rounded-md md:fixed md:right-0 md:top-24 lg:block lg:max-w-full lg:translate-x-0`}
                 >
                     <div className="scrollbar h-full w-full overflow-auto ">
-                        <ListeningLessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
+                        <LessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
                     </div>
                 </div>
             </div>
