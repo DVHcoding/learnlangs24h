@@ -34,7 +34,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
     /* -------------------------------------------------------------------------- */
     /*                                # API RTK query                             */
     /* -------------------------------------------------------------------------- */
-    const { data: videoLectureContentData, isLoading: videoLectureContentLoading } = useGetVideoLectureContentQuery(unitLessonId, {
+    const { data: videoLectureContentData } = useGetVideoLectureContentQuery(unitLessonId, {
         skip: !unitLessonId,
     });
     const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
@@ -125,7 +125,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
 
     return (
         <div className="rounded-lg pb-2">
-            {!videoLectureContentLoading && videoLectureContentData?.videoLectureContent ? (
+            {videoLectureContentData?.videoLectureContent ? (
                 <Fragment>
                     <div className="h-[27rem] phone:h-[13rem] pm:h-[20rem]">
                         <ReactPlayer
@@ -137,7 +137,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
                         />
                     </div>
                     <div className="overflow-hidden tracking-wide text-textCustom">
-                        {parse(videoLectureContentData.videoLectureContent.description)}
+                        {parse(videoLectureContentData?.videoLectureContent?.description)}
                     </div>
                 </Fragment>
             ) : (

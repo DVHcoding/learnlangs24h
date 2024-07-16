@@ -45,7 +45,7 @@ const useUnitLessonProcess = ({ userId, id, allUnitLessonData, userProcessRefetc
                     navigate(`?id=${unitLessonId}`);
                     userProcessRefetch();
                 } else {
-                    navigate(`?id=${allUnitLessonData?.unitLessons[0]?._id}`);
+                    navigate('/notfound');
                 }
             } catch (error) {
                 toastError('Có lỗi xảy ra!');

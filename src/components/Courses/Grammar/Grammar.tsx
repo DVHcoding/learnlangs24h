@@ -1,25 +1,22 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { ChevronsLeft } from 'lucide-react';
 import { useSearchParams } from 'react-router-dom';
 import loadable from '@loadable/component';
-import { Spin } from 'antd';
 import { Breadcrumb } from 'antd';
 import { Link, useParams } from 'react-router-dom';
-import { Empty } from 'antd';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-const VideoLectureCard = loadable(() => import('./VideoLectureCard'));
-const FillBlankExerciseCard = loadable(() => import('./FillBlankExerciseCard'));
 const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
+const RenderContent = loadable(() => import('@components/Shared/RenderContent.courses'));
+const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 
 import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import HelpComments from '@components/Shared/HelpComments';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
 
 // #########################################################################
@@ -45,14 +42,11 @@ const Grammar: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
     const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
-    const { data: unitLessonData, isLoading: unitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
-    const userId = userDetailsData?.user?._id ?? 'undefined';
-    const {
-        data: userProcessStatusData,
-        isLoading: userProcessStatusLoading,
-        refetch: userProcessRefetch,
-    } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -104,26 +98,12 @@ const Grammar: React.FC = () => {
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
                 {/* Content */}
                 <div className="scrollbar-mess relative h-full w-full overflow-auto rounded-lg ">
-                    {!unitLessonByIdLoading && unitLessonData?.unitLesson && unitLessonData.unitLesson.lectureType === 'exercise' ? (
-                        <FillBlankExerciseCard
-                            userProcessStatusData={userProcessStatusData}
-                            userProcessStatusLoading={userProcessStatusLoading}
-                            userProcessRefetch={userProcessRefetch}
-                            userId={userId}
-                        />
-                    ) : (
-                        ''
-                    )}
-
-                    {!unitLessonByIdLoading && unitLessonData?.unitLesson && unitLessonData.unitLesson.lectureType === 'videoLecture' ? (
-                        <VideoLectureCard unitLessonId={unitLessonData.unitLesson._id} userProcessRefetch={userProcessRefetch} />
-                    ) : (
-                        ''
-                    )}
-
-                    {unitLessonByIdLoading && <Spin />}
-
-                    {!unitLessonByIdLoading && unitLessonData?.success === false ? <Empty /> : ''}
+                    <RenderContent
+                        unitLesson={unitLessonData?.unitLesson}
+                        userProcessRefetch={userProcessRefetch}
+                        userId={userId}
+                        userProcessStatusData={userProcessStatusData}
+                    />
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />

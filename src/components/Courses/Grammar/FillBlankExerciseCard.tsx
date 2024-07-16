@@ -25,10 +25,9 @@ import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/redu
 
 const FillBlankExerciseCard: React.FC<{
     userProcessStatusData: UserProcessStatusResponse | undefined;
-    userProcessStatusLoading: boolean;
     userProcessRefetch: () => void;
     userId: string;
-}> = ({ userProcessStatusData, userProcessStatusLoading, userProcessRefetch, userId }) => {
+}> = ({ userId, userProcessStatusData, userProcessRefetch }) => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
@@ -72,7 +71,7 @@ const FillBlankExerciseCard: React.FC<{
     };
 
     let isCompleted: boolean = false;
-    if (!userProcessStatusLoading && userProcessStatusData?.success) {
+    if (userProcessStatusData?.success) {
         const currentUnitLesson = userProcessStatusData.unitLessonStatus.find((status: UnitLessonStatus) => status.unitLessonId._id === id);
         if (currentUnitLesson?.status === 'completed') isCompleted = true;
     }

@@ -13,10 +13,10 @@ import { Link, useParams } from 'react-router-dom';
 // ##########################################################################
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
+const RenderContent = loadable(() => import('@components/Shared/RenderContent.courses'));
 
 import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import renderContent from '@components/Shared/RenderContent.courses';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
 
 // #########################################################################
@@ -43,8 +43,8 @@ const Listening: React.FC = () => {
     const { data: userDetailsData } = useUserDetailsQuery();
     const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
 
-    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: unitLessonData } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
 
     /* ########################################################################## */
@@ -100,7 +100,7 @@ const Listening: React.FC = () => {
                     className="scrollbar-mess relative h-full w-full overflow-auto 
                     rounded-tl-lg bg-bgCustomCard phone:pb-10"
                 >
-                    {renderContent(unitLessonData?.unitLesson)}
+                    <RenderContent unitLesson={unitLessonData?.unitLesson} userProcessRefetch={userProcessRefetch} />
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />

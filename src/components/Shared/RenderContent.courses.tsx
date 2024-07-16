@@ -1,9 +1,35 @@
-import VocaExercise from '@components/Courses/Listening/VocaExercise';
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Spin } from 'antd';
-import { UnitLessonType } from 'types/api-types';
 
-const renderContent = (unitLesson: UnitLessonType | undefined) => {
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+import { UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
+import FillBlankExerciseCard from '@components/Courses/Grammar/FillBlankExerciseCard';
+import VideoLectureCard from '@components/Courses/Grammar/VideoLectureCard';
+import VocaExercise from '@components/Courses/Listening/VocaExercise';
+
+interface RenderContentProps {
+    unitLesson: UnitLessonType | undefined;
+    userProcessRefetch: () => void;
+    userId?: string;
+    userProcessStatusData?: UserProcessStatusResponse;
+}
+
+const RenderContent: React.FC<RenderContentProps> = ({ unitLesson, userProcessRefetch, userId, userProcessStatusData }) => {
     switch (unitLesson?.lectureType) {
+        case 'videoLecture':
+            return <VideoLectureCard unitLessonId={unitLesson._id} userProcessRefetch={userProcessRefetch} />;
+        case 'exercise':
+            return (
+                <FillBlankExerciseCard
+                    userId={userId as string}
+                    userProcessStatusData={userProcessStatusData}
+                    userProcessRefetch={userProcessRefetch}
+                />
+            );
         case 'vocaExercise':
             return <VocaExercise />;
         default:
@@ -15,4 +41,4 @@ const renderContent = (unitLesson: UnitLessonType | undefined) => {
     }
 };
 
-export default renderContent;
+export default RenderContent;
