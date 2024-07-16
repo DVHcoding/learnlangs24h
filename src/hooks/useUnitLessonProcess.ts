@@ -41,11 +41,11 @@ const useUnitLessonProcess = ({ userId, id, allUnitLessonData, userProcessRefetc
                 if (data?.success) {
                     navigate(`?id=${unitLessonId}`);
                 } else if (!id) {
-                    dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
+                    await dispatch(createNewUserProcessStatus({ userId, unitLessonId }));
                     navigate(`?id=${unitLessonId}`);
                     userProcessRefetch();
                 } else {
-                    navigate('/notfound');
+                    navigate(`?id=${allUnitLessonData?.unitLessons[0]?._id}`);
                 }
             } catch (error) {
                 toastError('Có lỗi xảy ra!');

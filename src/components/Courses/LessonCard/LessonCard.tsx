@@ -3,9 +3,8 @@
 // ##########################################################################
 import { Accordion } from 'rsuite';
 import { FaCheckCircle, FaLock } from 'react-icons/fa';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { useParams, useSearchParams } from 'react-router-dom';
-import { useEffect } from 'react';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -16,15 +15,19 @@ import { ListeningLessonCardProps } from '@components/Courses/Listening/Listenin
 import headerSidebar from '@components/Shared/HeaderSidebar.courses';
 import RenderIcon from '@components/Shared/RenderIcon.courses';
 
-const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, userProcessStatusData }) => {
+const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, userProcessStatusData }) => {
     /* ########################################################################## */
     /*                                    HOOK                                    */
     /* ########################################################################## */
     //  Get id from url
     const navigate = useNavigate();
+    const location = useLocation();
     const [searchParams] = useSearchParams();
     const { id } = useParams<{ id: string }>();
     const unitLessonIdUrl = searchParams.get('id');
+
+    const pathname = location.pathname;
+    const firstSegment = pathname.split('/')[1];
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -50,7 +53,7 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
         );
 
         if (isUnitLessonUnlocked) {
-            navigate(`/listening/${id}?id=${unitLessonId}`);
+            navigate(`/${firstSegment}/${id}?id=${unitLessonId}`);
             handleToggleLesson(); // sử dụng cái này dành cho màn hình nhỏ. Khi chuyển bài thì phải đóng sidebar lại
         }
     };
@@ -136,11 +139,6 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-    useEffect(() => {
-        if (lessonsData?.success === false) {
-            navigate('/notfound');
-        }
-    }, [lessonsData?.success]);
 
     return (
         <Accordion className="sm:mb-28 md:mb-28 lg:mb-0 phone:mb-36">
@@ -212,4 +210,4 @@ const ListeningLessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleL
     );
 };
 
-export default ListeningLessonCard;
+export default LessonCard;

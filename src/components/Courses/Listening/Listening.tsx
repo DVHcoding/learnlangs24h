@@ -11,8 +11,8 @@ import { Link, useParams } from 'react-router-dom';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-const ListeningLessonCard = loadable(() => import('@components/Courses/Listening/ListeningLessonCard'));
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
+const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
 
 import { useGetAllUnitLessonsByCourseIdQuery, useGetUnitLessonByIdQuery, useGetUserProcessStatusesQuery } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
@@ -117,7 +117,7 @@ const Listening: React.FC = () => {
                     duration-300 sm:fixed sm:right-0 sm:rounded-md md:fixed md:right-0 lg:block
                     lg:translate-x-0`}
                 >
-                    <ListeningLessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
+                    <LessonCard handleToggleLesson={handleToggleLesson} userProcessStatusData={userProcessStatusData} />
                 </div>
             </div>
         </div>

@@ -102,6 +102,11 @@ body {
   font-weight: 500;
 }
 
+
+iframe {
+  max-width: 100%;
+}
+
 .light {
   --text-custom: rgb(30 41 59);
   --text-sidebar: #575757;

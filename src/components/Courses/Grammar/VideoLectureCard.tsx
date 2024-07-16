@@ -1,6 +1,18 @@
-// ##################################
-// #       IMPORT Components
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
+import ReactPlayer from 'react-player';
+import parse from 'html-react-parser';
+import { Fragment } from 'react/jsx-runtime';
+import { Empty } from 'antd';
+import { useRef, useState } from 'react';
+import { useParams, useSearchParams } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import axios from 'axios';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import {
     useGetAllLessonsByCourseIdQuery,
     useGetAllUnitLessonsByCourseIdQuery,
@@ -13,19 +25,6 @@ import { useUserDetailsQuery } from '@store/api/userApi';
 import { LessonType, UnitLessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 
-// ##################################
-// #       IMPORT Npm
-// ##################################
-import ReactPlayer from 'react-player';
-import parse from 'html-react-parser';
-import { Fragment } from 'react/jsx-runtime';
-import { Empty } from 'antd';
-import { useRef, useState } from 'react';
-import { useParams, useSearchParams } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
-import axios from 'axios';
-
-// ##################################
 const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () => void }> = ({ unitLessonId, userProcessRefetch }) => {
     const dispatch: AppDispatch = useDispatch();
     const [searchParams] = useSearchParams();
@@ -35,13 +34,15 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
     /* -------------------------------------------------------------------------- */
     /*                                # API RTK query                             */
     /* -------------------------------------------------------------------------- */
-    const { data: videoLectureContentData, isLoading: videoLectureContentLoading } = useGetVideoLectureContentQuery(
-        unitLessonId || 'undefined'
-    );
+    const { data: videoLectureContentData, isLoading: videoLectureContentLoading } = useGetVideoLectureContentQuery(unitLessonId, {
+        skip: !unitLessonId,
+    });
     const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
-    const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId || '');
-    const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id || '');
-    const { data: unitLessons, isLoading: getUnitLessonsByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId || '');
+    const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const { data: unitLessons, isLoading: getUnitLessonsByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId, {
+        skip: !courseId,
+    });
 
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
@@ -123,7 +124,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
     };
 
     return (
-        <div className="w-full rounded-lg pb-2">
+        <div className="rounded-lg pb-2">
             {!videoLectureContentLoading && videoLectureContentData?.videoLectureContent ? (
                 <Fragment>
                     <div className="h-[27rem] phone:h-[13rem] pm:h-[20rem]">
@@ -135,7 +136,9 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
                             onProgress={handleProgress}
                         />
                     </div>
-                    <div className="tracking-wide text-textCustom">{parse(videoLectureContentData.videoLectureContent.description)}</div>
+                    <div className="overflow-hidden tracking-wide text-textCustom">
+                        {parse(videoLectureContentData.videoLectureContent.description)}
+                    </div>
                 </Fragment>
             ) : (
                 <Empty className="mt-4" />
