@@ -1,15 +1,17 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { useSearchParams, useNavigate, useParams } from 'react-router-dom';
 import { useState, Fragment } from 'react';
 import { X, Check } from 'lucide-react';
 import { Empty } from 'antd';
 import dayjs from 'dayjs';
+import axios from 'axios';
+import { useDispatch } from 'react-redux';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import {
     useGetAllLessonsByCourseIdQuery,
     useGetFillBlankExerciseQuery,
@@ -18,8 +20,6 @@ import {
 } from '@store/api/courseApi';
 import { LessonType, QuestionType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
-import axios from 'axios';
-import { useDispatch } from 'react-redux';
 import { AppDispatch } from '@store/store';
 import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
 
@@ -28,15 +28,28 @@ const FillBlankExerciseCard: React.FC<{
     userProcessRefetch: () => void;
     userId: string;
 }> = ({ userId, userProcessStatusData, userProcessRefetch }) => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
     const navigate = useNavigate();
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id'); // ?id=.....
     const { id: courseId } = useParams<{ id: string }>();
 
-    /* -------------------------------------------------------------------------- */
-    /*                               RTK query data                               */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+    const [answers, setAnswers] = useState([]);
+    const [results, setResults] = useState<boolean>(false);
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
     const { data: fillBlankExerciseData, isLoading: fillBlankExerciseLoading } = useGetFillBlankExerciseQuery(id, { skip: !id });
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
     const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
@@ -44,16 +57,18 @@ const FillBlankExerciseCard: React.FC<{
         skip: !courseId,
     });
 
-    // ##########################
-    // #    STATE MANAGEMENT    #
-    // ##########################
-    const [answers, setAnswers] = useState([]);
-    const [results, setResults] = useState<boolean>(false);
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+    let isCompleted: boolean = false;
+    if (userProcessStatusData?.success) {
+        const currentUnitLesson = userProcessStatusData.unitLessonStatus.find((status: UnitLessonStatus) => status.unitLessonId._id === id);
+        if (currentUnitLesson?.status === 'completed') isCompleted = true;
+    }
 
-    // ##########################
-    // #  FUNCTION MANAGEMENT   #
-    // ##########################
-
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     // # Hàm lấy các giá trị người dùng nhập vào và kiểm tra xem đúng không
     const handleSetFillBlankAnswers: (e: React.ChangeEvent<HTMLInputElement>, index: number, questionIndex: number) => void = (
         e,
@@ -72,15 +87,7 @@ const FillBlankExerciseCard: React.FC<{
         setResults(false);
     };
 
-    let isCompleted: boolean = false;
-    if (userProcessStatusData?.success) {
-        const currentUnitLesson = userProcessStatusData.unitLessonStatus.find((status: UnitLessonStatus) => status.unitLessonId._id === id);
-        if (currentUnitLesson?.status === 'completed') isCompleted = true;
-    }
-
-    /* -------------------------------------------------------------------------- */
-    /*                # Hàm check đáp án khi nhấn vào nút kiểm tra                */
-    /* -------------------------------------------------------------------------- */
+    // Hàm check đáp án khi nhấn vào nút kiểm tra
     const handleChecking: () => void = async () => {
         setResults(true);
 
@@ -164,9 +171,7 @@ const FillBlankExerciseCard: React.FC<{
         }
     };
 
-    /* -------------------------------------------------------------------------- */
-    /*                     # Hàm chuyển sang bài học tiếp theo                    */
-    /* -------------------------------------------------------------------------- */
+    // Hàm chuyển sang bài học tiếp theo
     const handleNextUnitLesson: () => void = () => {
         if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
             if (unitLessons?.success && !getUnitLessonsByCourseIdLoading) {
@@ -208,6 +213,14 @@ const FillBlankExerciseCard: React.FC<{
         }
     };
 
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
+
     return (
         <div>
             {unitLesson?.success && (
@@ -222,39 +235,35 @@ const FillBlankExerciseCard: React.FC<{
             </p>
 
             <div className="mt-3">
-                {!fillBlankExerciseLoading && fillBlankExerciseData?.fillBlankExercise
-                    ? fillBlankExerciseData.fillBlankExercise.questions.map((question: QuestionType, questionIndex: number) => (
-                          <div className="mb-2 flex flex-wrap justify-start gap-2" key={question._id}>
-                              {question.sentence.split('______').map((part: string, index: number) => (
-                                  <div key={index} className="flex items-center gap-2">
-                                      <p className="min-w-12 font-body text-base font-medium text-textCustom">{part}</p>
+                {fillBlankExerciseData?.fillBlankExercise?.questions?.map((question: QuestionType, questionIndex: number) => (
+                    <div className="mb-2 flex flex-wrap justify-start gap-2" key={question._id}>
+                        {question.sentence.split('______').map((part: string, index: number) => (
+                            <div key={index} className="flex items-center gap-2">
+                                <p className="min-w-12 font-body text-base font-medium text-textCustom">{part}</p>
 
-                                      {index !== question.sentence.split('______').length - 1 && (
-                                          <Fragment>
-                                              <input
-                                                  className={`w-32 rounded border border-slate-400 bg-bgCustom pl-1 font-body font-bold text-textCustom focus:border-blue-400`}
-                                                  type="text"
-                                                  onChange={(e) => handleSetFillBlankAnswers(e, index, questionIndex)}
-                                              />
-                                              {results ? (
-                                                  question?.correctAnswer?.[index]?.toLowerCase() ===
-                                                      (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ||
-                                                  question?.otherAnswer?.[index]?.toLowerCase() ===
-                                                      (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ? (
-                                                      <Check className="text-green-500" size={18} />
-                                                  ) : (
-                                                      <X className="text-red-500" size={18} />
-                                                  )
-                                              ) : (
-                                                  ''
-                                              )}
-                                          </Fragment>
-                                      )}
-                                  </div>
-                              ))}
-                          </div>
-                      ))
-                    : ''}
+                                {index !== question.sentence.split('______').length - 1 && (
+                                    <Fragment>
+                                        <input
+                                            className={`w-32 rounded border border-slate-400 bg-bgCustom pl-1 font-body font-bold text-textCustom focus:border-blue-400`}
+                                            type="text"
+                                            onChange={(e) => handleSetFillBlankAnswers(e, index, questionIndex)}
+                                        />
+
+                                        {results &&
+                                            (question?.correctAnswer?.[index]?.toLowerCase() ===
+                                                (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ||
+                                            question?.otherAnswer?.[index]?.toLowerCase() ===
+                                                (answers?.[questionIndex] as string)?.[index]?.toLowerCase() ? (
+                                                <Check className="text-green-500" size={18} />
+                                            ) : (
+                                                <X className="text-red-500" size={18} />
+                                            ))}
+                                    </Fragment>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                ))}
             </div>
 
             {!fillBlankExerciseLoading && fillBlankExerciseData?.success ? (
