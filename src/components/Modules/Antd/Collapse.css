@@ -1,0 +1,5 @@
+@import '../../../index.css';
+
+.ant-collapse-content-box {
+    background-color: var(--bg-custom);
+}
