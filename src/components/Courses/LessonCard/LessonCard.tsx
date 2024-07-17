@@ -193,9 +193,17 @@ const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, us
                                         );
 
                                         if (isCompleted) {
-                                            return <FaCheckCircle className="text-xs text-green-500" />;
+                                            return (
+                                                <div>
+                                                    <FaCheckCircle className="text-xs text-green-500" />
+                                                </div>
+                                            );
                                         } else if (!isCompletedOrUnlocked) {
-                                            return <FaLock className="text-xs text-gray-400" />;
+                                            return (
+                                                <div>
+                                                    <FaLock className="text-xs text-gray-400" />
+                                                </div>
+                                            );
                                         }
 
                                         return null;

@@ -8,6 +8,7 @@ import loadable from '@loadable/component';
 import { Alert, Breadcrumb, Button } from 'antd';
 import { Link } from 'react-router-dom';
 import Lottie from 'lottie-react';
+import { useDispatch } from 'react-redux';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -15,13 +16,23 @@ import Lottie from 'lottie-react';
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
 
-import { useGetAllUnitLessonsByCourseIdQuery, useGetUserProcessStatusesQuery, useGetVocaExerciseQuery } from '@store/api/courseApi';
+import {
+    useGetAllLessonsByCourseIdQuery,
+    useGetAllUnitLessonsByCourseIdQuery,
+    useGetUnitLessonByIdQuery,
+    useGetUserProcessStatusesQuery,
+    useGetVocaExerciseQuery,
+    useLazyGetUnitLessonIdByUserProcessQuery,
+} from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import AudioWaveform from './AudioWaveform';
 import Congratulations from '@assets/animations/Congratulations.json';
 import { removeNonLetters } from '@utils/Helpers';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
-import { AudioType } from 'types/api-types';
+import { AudioType, LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
+import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
+import { AppDispatch } from '@store/store';
+import { toastError } from '@components/Toast/Toasts';
 
 // #########################################################################
 const Quiz: React.FC = () => {
@@ -29,6 +40,7 @@ const Quiz: React.FC = () => {
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const navigate = useNavigate();
+    const dispatch: AppDispatch = useDispatch();
     const { id: courseId } = useParams<{ id: string }>();
     const [searchParams] = useSearchParams();
     let id = searchParams.get('id');
@@ -53,12 +65,26 @@ const Quiz: React.FC = () => {
     const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
 
     const { data: userProcessStatusData } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
-    const { refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const { data: unitLesson } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const { data: allUnitLessonData } = useGetAllUnitLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { data: lessons } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
+    const isCompleted = useMemo(() => {
+        if (userProcessStatusData?.success) {
+            const currentUnitLesson = userProcessStatusData.unitLessonStatus.find(
+                (status: UnitLessonStatus) => status.unitLessonId._id === id
+            );
+            return currentUnitLesson?.status === 'completed';
+        }
+        return false;
+    }, [userProcessStatusData, id]);
+
+    console.log(userProcessStatusData);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -67,7 +93,7 @@ const Quiz: React.FC = () => {
         setOpen(!open);
     };
 
-    const handleSubmit = (): void => {
+    const handleSubmit = async () => {
         const validAllFields = isFormValid();
         const correctAllFields = isCorrectAnswer();
 
@@ -113,6 +139,61 @@ const Quiz: React.FC = () => {
 
         if (validAllFields && correctAllFields) {
             setShowAnimation(true);
+
+            if (!userId || !id || isCompleted) {
+                return;
+            }
+
+            // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
+            const currentUnitLessonIndex = allUnitLessonData?.unitLessons.findIndex((unitLesson: UnitLessonType) => {
+                return unitLesson._id === id;
+            });
+
+            // id của unitLesson hiện tại
+            const currentUnitLessonId = allUnitLessonData?.unitLessons[currentUnitLessonIndex as number]?._id as string;
+
+            // # Lấy id của unitLesson tiếp theo (bài học tiếp theo) dựa vào vị trí của bài học trước + 1
+            let nextUnitLessonId = allUnitLessonData?.unitLessons[(currentUnitLessonIndex as number) + 1]?._id;
+
+            try {
+                // # Nếu không phải bài cuối thì mở khóa bài tiếp theo
+                if (nextUnitLessonId) {
+                    await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));
+                    userProcessRefetch();
+                    // kiểm tra xem bài tiếp theo đã completed hay unlock chưa
+                    const { data } = await unitLessonByUserProcess({ userId, unitLessonId: nextUnitLessonId });
+
+                    if (data?.success === false) {
+                        await dispatch(createNewUserProcessStatus({ userId, unitLessonId: nextUnitLessonId }));
+                        await dispatch(updateUserProcessStatus({ userId, unitLessonId: currentUnitLessonId }));
+                        userProcessRefetch();
+                    }
+                } else {
+                    // # Nếu là bài cuối cùng
+                    // # Lấy vị trí của lesson dựa vào unitLesson bài hiện tại . id của lesson
+                    const currentLessonIndex = lessons?.lessons.findIndex((lesson: LessonType) => {
+                        return lesson._id === unitLesson?.unitLesson?.lesson;
+                    });
+
+                    // # Lấy ra id của lesson tiếp theo dựa vào vị trí của lesson trước + 1
+                    const nextLessonId = lessons?.lessons[(currentLessonIndex as number) + 1]?._id;
+
+                    // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
+                    if (!nextLessonId) {
+                        return toastError('Bạn đã học đến bài cuối cùng!');
+                    }
+
+                    // # Lấy ra tất cả unitLesson của bài tiếp theo dựa vào id lesson mới
+                    const allUnitLessonWithNextLessonId = allUnitLessonData?.unitLessons.filter((unitLesson: UnitLessonType) => {
+                        return unitLesson.lesson === nextLessonId;
+                    });
+
+                    // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
+                    nextUnitLessonId = allUnitLessonWithNextLessonId?.[0]?._id;
+                }
+            } catch (error) {
+                toastError('Có lỗi xảy ra!');
+            }
         }
     };
 
@@ -241,7 +322,7 @@ const Quiz: React.FC = () => {
                             ? 'sm:w-[50%] sm:translate-x-0 md:w-[35%] md:translate-x-0 phone:w-[80%]'
                             : 'sm:w-0 sm:translate-x-[100%] md:w-0 md:translate-x-[100%]'
                     } 
-                    scrollbar flex-1 overflow-auto bg-bgCustom transition-all  
+                    scrollbar z-10 flex-1 overflow-auto bg-bgCustom transition-all 
                     duration-300 sm:fixed sm:right-0 sm:rounded-md md:fixed md:right-0 lg:block
                     lg:translate-x-0`}
                 >

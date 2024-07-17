@@ -379,7 +379,7 @@ export const updateUserProcessStatusSlice = createSlice({
             .addCase(updateUserProcessStatus.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
-                toastSuccess('Cập nhật thành công!');
+                toastSuccess('Bài mới đã được mở khóa!');
             })
             .addCase(updateUserProcessStatus.rejected, (state, action) => {
                 state.loading = false;
