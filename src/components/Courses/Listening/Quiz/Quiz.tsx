@@ -29,10 +29,9 @@ import AudioWaveform from './AudioWaveform';
 import Congratulations from '@assets/animations/Congratulations.json';
 import { removeNonLetters } from '@utils/Helpers';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
-import { AudioType, LessonType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
-import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
+import { AudioType, UnitLessonStatus } from 'types/api-types';
 import { AppDispatch } from '@store/store';
-import { toastError } from '@components/Toast/Toasts';
+import { unlockUnitLesson } from '@utils/unlockUnitLesson';
 
 // #########################################################################
 const Quiz: React.FC = () => {
@@ -84,8 +83,6 @@ const Quiz: React.FC = () => {
         return false;
     }, [userProcessStatusData, id]);
 
-    console.log(userProcessStatusData);
-
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
@@ -93,7 +90,7 @@ const Quiz: React.FC = () => {
         setOpen(!open);
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (): Promise<void> => {
         const validAllFields = isFormValid();
         const correctAllFields = isCorrectAnswer();
 
@@ -140,59 +137,18 @@ const Quiz: React.FC = () => {
         if (validAllFields && correctAllFields) {
             setShowAnimation(true);
 
-            if (!userId || !id || isCompleted) {
-                return;
-            }
-
-            // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
-            const currentUnitLessonIndex = allUnitLessonData?.unitLessons.findIndex((unitLesson: UnitLessonType) => {
-                return unitLesson._id === id;
-            });
-
-            // id của unitLesson hiện tại
-            const currentUnitLessonId = allUnitLessonData?.unitLessons[currentUnitLessonIndex as number]?._id as string;
-
-            // # Lấy id của unitLesson tiếp theo (bài học tiếp theo) dựa vào vị trí của bài học trước + 1
-            let nextUnitLessonId = allUnitLessonData?.unitLessons[(currentUnitLessonIndex as number) + 1]?._id;
-
-            try {
-                // # Nếu không phải bài cuối thì mở khóa bài tiếp theo
-                if (nextUnitLessonId) {
-                    await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));
-                    userProcessRefetch();
-                    // kiểm tra xem bài tiếp theo đã completed hay unlock chưa
-                    const { data } = await unitLessonByUserProcess({ userId, unitLessonId: nextUnitLessonId });
-
-                    if (data?.success === false) {
-                        await dispatch(createNewUserProcessStatus({ userId, unitLessonId: nextUnitLessonId }));
-                        await dispatch(updateUserProcessStatus({ userId, unitLessonId: currentUnitLessonId }));
-                        userProcessRefetch();
-                    }
-                } else {
-                    // # Nếu là bài cuối cùng
-                    // # Lấy vị trí của lesson dựa vào unitLesson bài hiện tại . id của lesson
-                    const currentLessonIndex = lessons?.lessons.findIndex((lesson: LessonType) => {
-                        return lesson._id === unitLesson?.unitLesson?.lesson;
-                    });
-
-                    // # Lấy ra id của lesson tiếp theo dựa vào vị trí của lesson trước + 1
-                    const nextLessonId = lessons?.lessons[(currentLessonIndex as number) + 1]?._id;
-
-                    // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
-                    if (!nextLessonId) {
-                        return toastError('Bạn đã học đến bài cuối cùng!');
-                    }
-
-                    // # Lấy ra tất cả unitLesson của bài tiếp theo dựa vào id lesson mới
-                    const allUnitLessonWithNextLessonId = allUnitLessonData?.unitLessons.filter((unitLesson: UnitLessonType) => {
-                        return unitLesson.lesson === nextLessonId;
-                    });
-
-                    // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
-                    nextUnitLessonId = allUnitLessonWithNextLessonId?.[0]?._id;
-                }
-            } catch (error) {
-                toastError('Có lỗi xảy ra!');
+            // Nếu bài học hiện tại chưa hoàn thành thì mới thực hiện hàm bên trong
+            if (!isCompleted) {
+                await unlockUnitLesson({
+                    id,
+                    userId,
+                    unitLesson,
+                    allUnitLessonData,
+                    lessons,
+                    dispatch,
+                    userProcessRefetch,
+                    unitLessonByUserProcess,
+                });
             }
         }
     };
@@ -212,7 +168,7 @@ const Quiz: React.FC = () => {
             const otherAnswerData = audio.otherAnswer.toLowerCase().trim();
 
             if (answerValue === undefined || answerData === undefined || otherAnswerData === undefined) {
-                return false; // or handle it as per your requirement
+                return false;
             }
 
             const cleanAnswerValue = removeNonLetters(answerValue);
