@@ -5,14 +5,14 @@ import React, { Fragment, useEffect, useRef, useState } from 'react';
 import WaveSurfer from 'wavesurfer.js';
 import { FaPlay } from 'react-icons/fa6';
 import { TbPlayerStopFilled } from 'react-icons/tb';
-import TippyProvider from '@components/Tippys/TippyProvider';
 import { Tooltip } from 'antd';
-import { AudioProps } from './Quiz.types';
-import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { AudioProps } from './Quiz.types';
+import { useAutoResizeTextArea } from '@hooks/useAutoResizeTextarea';
+import TippyProvider from '@components/Tippys/TippyProvider';
 
 const AudioWaveform: React.FC<AudioProps> = ({ audio, answers, setAnswers }) => {
     /* ########################################################################## */
