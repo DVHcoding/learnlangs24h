@@ -39,6 +39,7 @@ const ConversationTest: React.FC = () => {
     return (
         <Fragment>
             <ul className="flex flex-col gap-4 rounded-md bg-bgCustomCardItem p-4">
+                {/* Title */}
                 <li className="flex flex-wrap justify-between gap-2">
                     <div>
                         <h3 className="font-sans text-lg leading-tight text-textCustom">Listening Test</h3>
@@ -50,6 +51,7 @@ const ConversationTest: React.FC = () => {
                     <Button type="primary">Kiểm Tra</Button>
                 </li>
 
+                {/* Audio */}
                 <li>
                     <audio controls className="w-full" controlsList="nodownload noplaybackrate">
                         <source
@@ -59,6 +61,7 @@ const ConversationTest: React.FC = () => {
                     </audio>
                 </li>
 
+                {/* Content */}
                 <li className="grid grid-cols-2 gap-8 sm:grid-cols-1">
                     <div>
                         <h3 className="font-sans font-medium leading-tight text-textCustomName">

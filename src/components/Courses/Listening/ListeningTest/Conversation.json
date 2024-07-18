@@ -1,0 +1,23 @@
+{
+    "_id": "2834-2abcetuas-3724s",
+    "title": "Listen to a conversation where people talk about their plans and choose the correct answers.",
+    "audio": {
+        "public_id": "38892347",
+        "url": "https://listening.com"
+    },
+    "questions": [
+        {
+            "_id": "1",
+            "questionTitle": "What is Mark planning to do with the lottery money?",
+            "options": ["Buy a new car", "Plan a family vacation", "Buy new furniture for his daughter"],
+            "answer": "Plan a family vacation"
+        },
+        {
+            "_id": "2",
+            "questionTitle": "Why is Mark not going to buy a new car right now?",
+            "options": ["Because their family car is very old", "Because their family car is very new", "Because he wants to save money"],
+            "answer": "Because their family car is very new"
+        }
+    ],
+    "transcript": "TINA: Mark, what are you going to do with the lottery money? <br/> MARK: I'm going to plan an amazing family vacation. I want to take my wife and kids to an exotic place. It's going to be a surprise. <br/> TINA: Are you going to buy a new car? <br/> MARK: Not now, because our family car is very new, but I'm going to buy a really nice bike for my son, Richy. He loves riding bikes. <br/> TINA: Are you going to buy a new bike for your daughter, too? <br/> MARK: No, she doesn't like bikes. I'm going to buy new furniture for her room. She'll love that."
+}
