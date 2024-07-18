@@ -55,6 +55,9 @@
   }
 }
 
+/*-----------------------------------*\
+ * #RESET CSS
+\*-----------------------------------*/
 * {
   margin: 0;
   padding: 0;
@@ -102,11 +105,21 @@ body {
   font-weight: 500;
 }
 
+input {
+  outline: none;
+}
+
+button {
+  display: block;
+}
 
 iframe {
   max-width: 100%;
 }
 
+/*-----------------------------------*\
+ * # LIGHT THEME
+\*-----------------------------------*/
 .light {
   --text-custom: rgb(30 41 59);
   --text-sidebar: #575757;
@@ -148,6 +161,10 @@ iframe {
 
 }
 
+
+/*-----------------------------------*\
+ * # DARK THEME
+\*-----------------------------------*/
 .dark {
   --text-custom: #fff;
   --text-sidebar: #fff;
@@ -186,6 +203,10 @@ iframe {
   --border-custom-2: rgb(100 116 139);
 }
 
+
+/*-----------------------------------*\
+ * # BUTTON STYLES
+\*-----------------------------------*/
 .btn-primary {
   padding: 0.5rem;
   background-color: var(--bg-btnPrimary);
@@ -222,7 +243,6 @@ iframe {
   transition: 0.25s ease;
 }
 
-
 .btn-primary:hover {
   background-color: var(--bg-btnPrimaryHover);
 }
@@ -232,15 +252,6 @@ iframe {
 }
 
 
-
-/* ###################################### */
-input {
-  outline: none;
-}
-
-button {
-  display: block;
-}
 
 .css-1wuw8dw-MuiBreadcrumbs-separator {
   color: var(--text-custom);
