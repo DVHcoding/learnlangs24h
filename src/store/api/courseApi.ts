@@ -11,6 +11,7 @@ import {
     AllLessonsResponseType,
     AllUnitLessonsResponseType,
     FillBlankExerciseResponseType,
+    ListenExerciseResponseTypes,
     UnitLessonResponseType,
     UserProcessStatusResponse,
     VideoLectureContentResponseType,
@@ -55,16 +56,16 @@ export const courseApi = createApi({
         }),
         // get Video Lecture Content
         getVideoLectureContent: builder.query<VideoLectureContentResponseType, string>({
-            query: (id: string) => `videoLectureContent/${id}`,
+            query: (id) => `videoLectureContent/${id}`,
             providesTags: ['Exercise'],
         }),
         // get Fill Blank Exercise
         getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string | null>({
-            query: (id: string) => `fillBlankExercise/${id}`,
+            query: (id) => `fillBlankExercise/${id}`,
             providesTags: ['Exercise'],
         }),
         getVocaExercise: builder.query<VocaExerciseResponseTypes, string | null>({
-            query: (id: string) => `course/unitlesson/vocaexercise/${id}`,
+            query: (id) => `course/unitlesson/vocaexercise/${id}`,
         }),
         // get User Process Status + populate unitLessonStatus
         getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined>({
@@ -75,6 +76,13 @@ export const courseApi = createApi({
             query: ({ userId, unitLessonId }) => `unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${unitLessonId}`,
             providesTags: ['UnitLesson'],
         }),
+        getListenExercise: builder.query<ListenExerciseResponseTypes, string | null>({
+            query: (id) => `course/unitlesson/listenexercise/${id}`,
+        }),
+
+        /* -------------------------------------------------------------------------- */
+        /*                                   CREATE                                   */
+        /* -------------------------------------------------------------------------- */
     }),
 });
 
@@ -89,4 +97,5 @@ export const {
     useGetVocaExerciseQuery,
     useGetUserProcessStatusesQuery,
     useLazyGetUnitLessonIdByUserProcessQuery,
+    useGetListenExerciseQuery,
 } = courseApi;

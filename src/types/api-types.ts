@@ -336,3 +336,42 @@ export interface Sentence {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+export interface ListenExerciseResponseTypes {
+    success: boolean;
+    listeningExercise: ListeningExercise;
+}
+
+export interface ListeningExercise {
+    _id: string;
+    exerciseType: string;
+    unitLesson: string;
+    createdAt: Date;
+    updatedAt: Date;
+    type: Type;
+}
+
+export interface Type {
+    _id: string;
+    title: string;
+    audio: Audio;
+    questions: Question[];
+    transcript: string;
+}
+
+export interface Audio {
+    public_id: string;
+    url: string;
+}
+
+export interface Question {
+    questionTitle: string;
+    options: Option[];
+    answer: string;
+    _id: string;
+}
+
+export interface Option {
+    image: Audio;
+    text: string;
+    _id: string;
+}
