@@ -5,6 +5,7 @@ import parse from 'html-react-parser';
 import { Button, Radio, Space } from 'antd';
 import { Fragment, useState } from 'react';
 import { Collapse } from 'antd';
+import Lottie from 'lottie-react';
 import type { CollapseProps } from 'antd';
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -13,7 +14,6 @@ import { ListenExerciseResponseTypes, Question } from 'types/api-types';
 import { toastInfo } from '@components/Toast/Toasts';
 import { removeNonLetters } from '@utils/Helpers';
 import Congratulations from '@assets/animations/Congratulations.json';
-import Lottie from 'lottie-react';
 
 interface ConversationTestProps {
     ListenExerciseData: ListenExerciseResponseTypes | undefined;
