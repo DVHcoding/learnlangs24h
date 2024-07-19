@@ -365,7 +365,7 @@ export interface Audio {
 
 export interface Question {
     questionTitle: string;
-    options: Option[];
+    options: Option[] | string[];
     answer: string;
     _id: string;
 }

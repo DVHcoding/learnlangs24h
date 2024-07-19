@@ -28,7 +28,7 @@ const ListenExercise: React.FC = () => {
         case ExerciseType.Conversation:
             return (
                 <div className="p-2">
-                    <ConversationTest />
+                    <ConversationTest ListenExerciseData={ListenExerciseData} />
                 </div>
             );
         case ExerciseType.PicturesTest:
