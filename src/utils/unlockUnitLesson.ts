@@ -1,4 +1,4 @@
-import { toastError } from '@components/Toast/Toasts';
+import { toastError, toastInfo } from '@components/Toast/Toasts';
 import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
 import { AppDispatch } from '@store/store';
 import { AllLessonsResponseType, AllUnitLessonsResponseType, LessonType, UnitLessonResponseType, UnitLessonType } from 'types/api-types';
@@ -64,7 +64,9 @@ const unlockUnitLesson = async ({
 
             // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
             if (!nextLessonId) {
-                toastError('Bạn đã học đến bài cuối cùng!');
+                toastInfo('Bạn đã học đến bài cuối cùng!');
+                await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));
+                userProcessRefetch();
                 return;
             }
 
@@ -75,6 +77,13 @@ const unlockUnitLesson = async ({
 
             // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
             nextUnitLessonId = allUnitLessonWithNextLessonId?.[0]?._id;
+
+            if (!nextUnitLessonId) {
+                toastInfo('Bạn đã học đến bài cuối cùng!');
+                await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));
+                userProcessRefetch();
+                return;
+            }
 
             if (nextUnitLessonId) {
                 await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));

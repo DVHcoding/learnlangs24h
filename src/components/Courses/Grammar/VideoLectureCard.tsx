@@ -5,7 +5,7 @@ import ReactPlayer from 'react-player';
 import parse from 'html-react-parser';
 import { Fragment } from 'react/jsx-runtime';
 import { Empty } from 'antd';
-import { useMemo, useRef } from 'react';
+import { useMemo, useRef, useState } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 
@@ -41,6 +41,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    const [apiCalled, setApiCalled] = useState<boolean>(false);
     const currentTimeRef = useRef<number>(0);
 
     /* ########################################################################## */
@@ -85,7 +86,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) 
         const totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
         if (currentTimeRef.current >= totalSeconds - 100) {
-            if (!isCompleted) {
+            if (!isCompleted && !apiCalled) {
                 await unlockUnitLesson({
                     id,
                     userId,
@@ -96,6 +97,7 @@ const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) 
                     userProcessRefetch,
                     unitLessonByUserProcess,
                 });
+                setApiCalled(true);
             }
         }
     };
