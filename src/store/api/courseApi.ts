@@ -115,7 +115,7 @@ export const courseApi = createApi({
         /* -------------------------------------------------------------------------- */
         deleteUnitLessonAndVideoLectureContentSlice: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
-                url: `deleteUnitLessonAndVideoLectureContent?unitId=${unitId}`,
+                url: `course/unitlesson/videolecture?unitId=${unitId}`,
                 method: 'DELETE',
             }),
             invalidatesTags: ['UnitLesson', 'Lesson', 'Exercise'],

@@ -1,7 +1,6 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
-import { useSelector } from 'react-redux';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Space, Table, Popconfirm, Breadcrumb } from 'antd';
 import { useState } from 'react';
@@ -18,7 +17,6 @@ import {
     useGetAllUnitLessonsByLessonIdQuery,
 } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
-import { RootState } from '@store/store';
 import { toastError } from '@components/Toast/Toasts';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import { LectureType } from '../../../types/types';
@@ -60,15 +58,13 @@ const UnitLesson: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
 
-    const { loading: deleteUnitLessonAndFillBlankExerciseLoading } = useSelector(
-        (state: RootState) => state.deleteUnitLessonAndFillBlankExercise
-    );
-
     const { data } = useGetAllUnitLessonsByLessonIdQuery(id, { skip: !id });
     const [deleteUnitLessonAndVideoLectureContent, deleteUnitLessonAndVideoLectureContentLoading] = useAsyncMutation(
         useDeleteUnitLessonAndVideoLectureContentSliceMutation
     );
-    const [deleteUnitLessonAndGrammarExercise] = useAsyncMutation(useDeleteUnitLessonAndGrammarExerciseMutation);
+    const [deleteUnitLessonAndGrammarExercise, deleteUnitLessonAndGrammarExerciseLoading] = useAsyncMutation(
+        useDeleteUnitLessonAndGrammarExerciseMutation
+    );
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -118,7 +114,7 @@ const UnitLesson: React.FC = () => {
                     </Link>
                     <Popconfirm
                         title="Sure to delete?"
-                        disabled={deleteUnitLessonAndVideoLectureContentLoading || deleteUnitLessonAndFillBlankExerciseLoading}
+                        disabled={deleteUnitLessonAndVideoLectureContentLoading || deleteUnitLessonAndGrammarExerciseLoading}
                         onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id)}
                     >
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>

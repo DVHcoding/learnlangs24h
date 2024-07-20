@@ -21,8 +21,6 @@ import {
     updateUnitLessonAndFillBlankExerciseReducer,
     updateLessonReducer,
     // ######################################
-    deleteUnitLessonAndVideoLectureContentReducer,
-    deleteUnitLessonAndFillBlankExerciseReducer,
     deleteLessonAndUnitLessonReducer,
 } from './reducer/courseReducer';
 import { miscReducer } from './reducer/miscReducer';
@@ -45,8 +43,6 @@ const rootReducer = combineReducers({
     updateUserProcessStatus: updateUserProcessStatusReducer,
     updateLesson: updateLessonReducer,
 
-    deleteUnitLessonAndVideoLectureContent: deleteUnitLessonAndVideoLectureContentReducer,
-    deleteUnitLessonAndFillBlankExercise: deleteUnitLessonAndFillBlankExerciseReducer,
     deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
 
     misc: miscReducer,

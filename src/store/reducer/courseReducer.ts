@@ -156,36 +156,6 @@ export const updateLesson = createAsyncThunk('course/updateLesson', async (paylo
     }
 });
 
-// ##################################
-// #      DELETE ASYNC THUNK        #
-// ##################################
-
-// Hàm asyncThunk xóa unitLesson và videoLectureContent
-export const deleteUnitLessonAndVideoLectureContent = createAsyncThunk(
-    'course/deleteUnitLessonAndVideoLectureContent',
-    async (payload: string, thunkAPI) => {
-        try {
-            const response = await axios.delete<MessageResponse>(`/api/v1/deleteUnitLessonAndVideoLectureContent?unitId=${payload}`);
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
-    }
-);
-
-// Hàm asyncThunk xóa unitLesson và fillBlankExercise
-export const deleteUnitLessonAndFillBlankExercise = createAsyncThunk(
-    'course/deleteUnitLessonAndFillBlankExercise',
-    async (payload: string, thunkAPI) => {
-        try {
-            const response = await axios.delete<MessageResponse>(`/api/v1/deleteUnitLessonAndFillBlankExercise?unitId=${payload}`);
-            return response.data;
-        } catch (error: any) {
-            return thunkAPI.rejectWithValue(error.message);
-        }
-    }
-);
-
 // Hàm asyncThunk xóa lesson và unitLesson
 export const deleteLessonAndUnitLesson = createAsyncThunk('course/deleteLessonAndUnitLesson', async (lessonId: string, thunkAPI) => {
     try {
@@ -428,54 +398,6 @@ export const updateLessonSlice = createSlice({
 /*                                DELETE SLICE                                */
 /* -------------------------------------------------------------------------- */
 
-// Delete UnitLessonAndVideoLectureContent Slice
-export const deleteUnitLessonAndVideoLectureContentSlice = createSlice({
-    name: 'deleteUnitLessonAndVideoLectureContent',
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-            .addCase(deleteUnitLessonAndVideoLectureContent.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteUnitLessonAndVideoLectureContent.fulfilled, (state, action) => {
-                state.loading = false;
-                state.data = action.payload;
-                toastSuccess('Xóa thành công!');
-            })
-            .addCase(deleteUnitLessonAndVideoLectureContent.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload ? action.payload.toString() : 'Unknown error';
-                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
-            });
-    },
-});
-
-// Delete UnitLessonAndFillBlankExercise Slice
-export const deleteUnitLessonAndFillBlankExerciseSlice = createSlice({
-    name: 'deleteUnitLessonAndFillBlankExercise',
-    initialState,
-    reducers: {},
-    extraReducers: (builder) => {
-        builder
-            .addCase(deleteUnitLessonAndFillBlankExercise.pending, (state) => {
-                state.loading = true;
-                state.error = null;
-            })
-            .addCase(deleteUnitLessonAndFillBlankExercise.fulfilled, (state, action) => {
-                state.loading = false;
-                state.data = action.payload;
-                toastSuccess('Xóa thành công!');
-            })
-            .addCase(deleteUnitLessonAndFillBlankExercise.rejected, (state, action) => {
-                state.loading = false;
-                state.error = action.payload ? action.payload.toString() : 'Unknown error';
-                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
-            });
-    },
-});
-
 // Delete LessonAndUnitLesson Slice
 export const deleteLessonAndUnitLessonSlice = createSlice({
     name: 'deleteLessonAndUnitLesson',
@@ -512,6 +434,4 @@ export const updateUnitLessonAndFillBlankExerciseReducer = updateUnitLessonAndFi
 export const updateUserProcessStatusReducer = updateUserProcessStatusSlice.reducer;
 export const updateLessonReducer = updateLessonSlice.reducer;
 
-export const deleteUnitLessonAndVideoLectureContentReducer = deleteUnitLessonAndVideoLectureContentSlice.reducer;
-export const deleteUnitLessonAndFillBlankExerciseReducer = deleteUnitLessonAndFillBlankExerciseSlice.reducer;
 export const deleteLessonAndUnitLessonReducer = deleteLessonAndUnitLessonSlice.reducer;
