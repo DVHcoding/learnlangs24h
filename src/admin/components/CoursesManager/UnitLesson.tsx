@@ -1,22 +1,27 @@
 // ##################################
 // #       IMPORT Npm
 // ##################################
+import { useSelector } from 'react-redux';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Space, Table, Popconfirm, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
-import { useSelector, useDispatch } from 'react-redux';
-import { Link, useParams } from 'react-router-dom';
 import type { TableProps } from 'antd';
 
 // ##################################
 // #       IMPORT Components
 // ##################################
-import CreateUnit from '@admin/components/CoursesManager/Grammar/CreateUnit';
-import { useGetAllUnitLessonsByLessonIdQuery } from '@store/api/courseApi';
+import CreateUnit from '@admin/components/Courses/CreateUnit';
+import {
+    useDeleteUnitLessonAndGrammarExerciseMutation,
+    useDeleteUnitLessonAndVideoLectureContentSliceMutation,
+    useGetAllUnitLessonsByLessonIdQuery,
+} from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
-import handleDeleteUnitLesson from '@admin/components/CoursesManager/Grammar/Delete/DeleteUnit';
-import { AppDispatch, RootState } from '@store/store';
-import { useNavigate } from 'react-router-dom';
+import { RootState } from '@store/store';
+import { toastError } from '@components/Toast/Toasts';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { LectureType } from '../../../types/types';
 
 // ##################################
 // #       IMPORT Components
@@ -35,27 +40,39 @@ interface DataType {
 type TableRowSelection<T> = TableProps<T>['rowSelection'];
 // ##################################
 const UnitLesson: React.FC = () => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
     const { id } = useParams<{ id: string }>();
-    const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
 
-    const { loading: deleteUnitLessonAndVideoLectureContentLoading } = useSelector(
-        (state: RootState) => state.deleteUnitLessonAndVideoLectureContent
-    );
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+
+    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
 
     const { loading: deleteUnitLessonAndFillBlankExerciseLoading } = useSelector(
         (state: RootState) => state.deleteUnitLessonAndFillBlankExercise
     );
 
-    const { data, isLoading, refetch } = useGetAllUnitLessonsByLessonIdQuery(id || 'undefined');
-    // ##########################
-    // #      STATE MANAGER     #
-    // ##########################
-    const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
+    const { data } = useGetAllUnitLessonsByLessonIdQuery(id, { skip: !id });
+    const [deleteUnitLessonAndVideoLectureContent, deleteUnitLessonAndVideoLectureContentLoading] = useAsyncMutation(
+        useDeleteUnitLessonAndVideoLectureContentSliceMutation
+    );
+    const [deleteUnitLessonAndGrammarExercise] = useAsyncMutation(useDeleteUnitLessonAndGrammarExerciseMutation);
 
-    // ##########################
-    // #    FUNCTION MANAGER    #
-    // ##########################
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
     const onSelectChange = (newSelectedRowKeys: React.Key[]) => {
         setSelectedRowKeys(newSelectedRowKeys);
     };
@@ -102,7 +119,7 @@ const UnitLesson: React.FC = () => {
                     <Popconfirm
                         title="Sure to delete?"
                         disabled={deleteUnitLessonAndVideoLectureContentLoading || deleteUnitLessonAndFillBlankExerciseLoading}
-                        onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id, refetch, dispatch)}
+                        onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id)}
                     >
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
                     </Popconfirm>
@@ -125,6 +142,47 @@ const UnitLesson: React.FC = () => {
             createAt: dayjs(unitLesson.createAt).format('DD-MM-YYYY'),
         }));
     }
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
+    const handleDeleteUnitLesson: (lectureType: string, unitId: string) => void = async (lectureType, unitId) => {
+        try {
+            // Nếu không có lectureType hoặc rỗng thì thông báo lỗi
+            if (!lectureType || lectureType === '') {
+                toastError('Có lỗi xảy ra!');
+            }
+
+            switch (lectureType) {
+                case LectureType.videoLecture:
+                    await deleteUnitLessonAndVideoLectureContent(unitId);
+                    break;
+                case LectureType.grammarExercise:
+                    await deleteUnitLessonAndGrammarExercise(unitId);
+                    break;
+                default:
+                    break;
+            }
+
+            // Nếu lectureType === 'videoLecture' thì call api deleteUnitLessonAndVideoLectureContent
+            if (lectureType === 'videoLecture') {
+            }
+
+            // Nếu lectureType === 'exercise' thì call api deleteUnitLessonAndFillBLankExercise
+            if (lectureType === 'exercise') {
+            }
+        } catch (error) {
+            toastError('Có lỗi xảy ra!');
+        }
+    };
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
         <div className="h-full px-4">
@@ -157,7 +215,7 @@ const UnitLesson: React.FC = () => {
                 className="scrollbar mb-4 overflow-auto"
             />
 
-            <CreateUnit data={data} isLoading={isLoading} reloadData={() => refetch()} />
+            <CreateUnit />
         </div>
     );
 };

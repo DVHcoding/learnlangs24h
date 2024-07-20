@@ -49,7 +49,7 @@ const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, us
     const handleRedirect = (unitLessonId: string) => {
         // # Chỉ những unitLesson nào unlock hoặc completed thì mới click được
         const isUnitLessonUnlocked = userProcessStatusData?.unitLessonStatus?.find(
-            (status: UnitLessonStatus) => status.unitLessonId._id === unitLessonId
+            (status: UnitLessonStatus) => status.unitLessonId?._id === unitLessonId
         );
 
         if (isUnitLessonUnlocked) {
@@ -69,7 +69,7 @@ const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, us
 
                 // Kiểm tra xem unitLesson có được hoàn thành không
                 const isCompleted = userProcessStatusData?.unitLessonStatus?.some(
-                    (status: UnitLessonStatus) => status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                    (status: UnitLessonStatus) => status?.unitLessonId?._id === unitLesson?._id && status?.status === 'completed'
                 );
 
                 if (isCompleted) {
@@ -160,8 +160,8 @@ const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, us
                             // Kiểm tra xem unitLesson ở trạng thái nào (completed || unlock)
                             const isCompletedOrUnlocked = userProcessStatusData?.unitLessonStatus?.some(
                                 (status: UnitLessonStatus) =>
-                                    status.unitLessonId._id === unitLesson._id &&
-                                    (status.status === 'completed' || status.status === 'unlock')
+                                    status.unitLessonId?._id === unitLesson?._id &&
+                                    (status?.status === 'completed' || status?.status === 'unlock')
                             );
 
                             // Khóa học đã unlock thì khi hover vào sẽ là pointer. Ngược lại sẽ là default
@@ -189,7 +189,7 @@ const LessonCard: React.FC<ListeningLessonCardProps> = ({ handleToggleLesson, us
                                         // kiểm tra xem tài khoản user đã hoàn thành unitLesson đó chưa
                                         const isCompleted = userProcessStatusData?.unitLessonStatus?.some(
                                             (status: UnitLessonStatus) =>
-                                                status.unitLessonId._id === unitLesson._id && status.status === 'completed'
+                                                status.unitLessonId?._id === unitLesson._id && status.status === 'completed'
                                         );
 
                                         if (isCompleted) {

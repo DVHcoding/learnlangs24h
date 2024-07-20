@@ -11,7 +11,11 @@ import {
     AllLessonsResponseType,
     AllUnitLessonsResponseType,
     FillBlankExerciseResponseType,
+    GrammarExerciseResponseTypes,
     ListenExerciseResponseTypes,
+    MessageResponse,
+    NewUnitLessonAndGrammarExerciseTypes,
+    NewUnitLessonAndVideoLectureContentPayloadType,
     UnitLessonResponseType,
     UserProcessStatusResponse,
     VideoLectureContentResponseType,
@@ -76,6 +80,9 @@ export const courseApi = createApi({
             query: ({ userId, unitLessonId }) => `unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${unitLessonId}`,
             providesTags: ['UnitLesson'],
         }),
+        getGrammarExercise: builder.query<GrammarExerciseResponseTypes, string | null>({
+            query: (id) => `course/unitlesson/grammarexercise/${id}`,
+        }),
         getListenExercise: builder.query<ListenExerciseResponseTypes, string | null>({
             query: (id) => `course/unitlesson/listenexercise/${id}`,
         }),
@@ -83,6 +90,43 @@ export const courseApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                   CREATE                                   */
         /* -------------------------------------------------------------------------- */
+        newUnitLessonAndVideoLectureContent: builder.mutation<MessageResponse, NewUnitLessonAndVideoLectureContentPayloadType>({
+            query: (payload) => ({
+                url: 'newUnitLessonAndVideoLectureContent',
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['UnitLesson', 'Lesson', 'Exercise'],
+        }),
+        newUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, NewUnitLessonAndGrammarExerciseTypes>({
+            query: (payload) => ({
+                url: 'course/unitlesson/grammarexercise',
+                method: 'POST',
+                body: payload,
+            }),
+            invalidatesTags: ['UnitLesson', 'Lesson', 'Exercise'],
+        }),
+        /* -------------------------------------------------------------------------- */
+        /*                                   UPDATE                                   */
+        /* -------------------------------------------------------------------------- */
+
+        /* -------------------------------------------------------------------------- */
+        /*                                   DELETE                                   */
+        /* -------------------------------------------------------------------------- */
+        deleteUnitLessonAndVideoLectureContentSlice: builder.mutation<MessageResponse, string>({
+            query: (unitId) => ({
+                url: `deleteUnitLessonAndVideoLectureContent?unitId=${unitId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['UnitLesson', 'Lesson', 'Exercise'],
+        }),
+        deleteUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, string>({
+            query: (unitId) => ({
+                url: `course/unitlesson/grammarexercise?unitId=${unitId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['UnitLesson', 'Lesson', 'Exercise'],
+        }),
     }),
 });
 
@@ -97,5 +141,23 @@ export const {
     useGetVocaExerciseQuery,
     useGetUserProcessStatusesQuery,
     useLazyGetUnitLessonIdByUserProcessQuery,
+    useGetGrammarExerciseQuery,
     useGetListenExerciseQuery,
+
+    useNewUnitLessonAndVideoLectureContentMutation,
+    useNewUnitLessonAndGrammarExerciseMutation,
+
+    useDeleteUnitLessonAndVideoLectureContentSliceMutation,
+    useDeleteUnitLessonAndGrammarExerciseMutation,
 } = courseApi;
+
+// providesTags: ['UnitLesson']
+// Được sử dụng trong các query endpoints.
+// Nó chỉ ra rằng kết quả của query này cung cấp dữ liệu cho tag 'UnitLesson'.
+// Nó "đánh dấu" cache với tag này, cho biết cache này chứa dữ liệu liên quan đến 'UnitLesson'.
+
+// invalidatesTags: ['UnitLesson', 'Course', 'Lesson']:
+
+// Thường được sử dụng trong các mutation endpoints.
+// Nó chỉ ra rằng khi mutation này thực hiện thành công, nó sẽ làm mất hiệu lực (invalidate) cache của các query có các tag được liệt kê.
+// Điều này có nghĩa là các query có providesTags tương ứng sẽ được coi là "cũ" và cần được fetch lại.

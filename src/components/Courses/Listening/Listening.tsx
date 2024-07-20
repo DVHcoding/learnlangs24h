@@ -100,7 +100,7 @@ const Listening: React.FC = () => {
                     className="scrollbar-mess relative h-full w-full overflow-auto 
                     rounded-tl-lg bg-bgCustomCard phone:pb-10"
                 >
-                    <RenderContent unitLesson={unitLessonData?.unitLesson} userProcessRefetch={userProcessRefetch} />
+                    <RenderContent unitLesson={unitLessonData?.unitLesson} />
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />

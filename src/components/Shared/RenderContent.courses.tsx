@@ -6,34 +6,27 @@ import { Spin } from 'antd';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
-import FillBlankExerciseCard from '@components/Courses/Grammar/FillBlankExerciseCard';
+import { UnitLessonType } from 'types/api-types';
 import VideoLectureCard from '@components/Courses/Grammar/VideoLectureCard';
 import VocaExercise from '@components/Courses/Listening/VocaExercise';
 import ListenExercise from '@components/Courses/Listening/ListenExercise/ListenExercise';
+import GrammarExercise from '@components/Courses/Grammar/GrammarExercise/GrammarExercise';
+//@ts-ignore
+import { LectureType } from '@types/types';
 
 interface RenderContentProps {
     unitLesson: UnitLessonType | undefined;
-    userProcessRefetch: () => void;
-    userId?: string;
-    userProcessStatusData?: UserProcessStatusResponse;
 }
 
-const RenderContent: React.FC<RenderContentProps> = ({ unitLesson, userProcessRefetch, userId, userProcessStatusData }) => {
+const RenderContent: React.FC<RenderContentProps> = ({ unitLesson }) => {
     switch (unitLesson?.lectureType) {
-        case 'videoLecture':
-            return <VideoLectureCard unitLessonId={unitLesson._id} userProcessRefetch={userProcessRefetch} />;
-        case 'exercise':
-            return (
-                <FillBlankExerciseCard
-                    userId={userId as string}
-                    userProcessStatusData={userProcessStatusData}
-                    userProcessRefetch={userProcessRefetch}
-                />
-            );
-        case 'vocaExercise':
+        case LectureType.videoLecture:
+            return <VideoLectureCard unitLessonId={unitLesson._id} />;
+        case LectureType.grammarExercise:
+            return <GrammarExercise />;
+        case LectureType.vocaExercise:
             return <VocaExercise />;
-        case 'listenExercise':
+        case LectureType.listenExercise:
             return <ListenExercise />;
         default:
             return (

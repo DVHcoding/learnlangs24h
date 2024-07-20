@@ -1,3 +1,5 @@
+import { GrammarExerciseTypes } from './types';
+
 export type MessageResponse = {
     success: boolean;
     message: string;
@@ -336,6 +338,33 @@ export interface Sentence {
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+export interface GrammarExerciseResponseTypes {
+    success: boolean;
+    grammarExercise: GrammarExercise;
+}
+
+export interface GrammarExercise {
+    _id: string;
+    type: Type;
+    exerciseType: string;
+    unitLesson: string;
+    createdAt: Date;
+    updatedAt: Date;
+}
+
+export interface Type {
+    _id: string;
+    questions: Question[];
+}
+
+export interface Question {
+    sentence: string;
+    correctAnswer: string[];
+    otherAnswer: string[];
+    _id: string;
+}
+
+///////////////////////////////////////////////////////////////////////////////
 export interface ListenExerciseResponseTypes {
     success: boolean;
     listeningExercise: ListeningExercise;
@@ -374,4 +403,23 @@ export interface Option {
     image: Audio;
     text: string;
     _id: string;
+}
+
+//////////////////////////////////////////////////////////////////
+// new unitLesson and grammarExercise
+export interface NewUnitLessonAndGrammarExerciseTypes {
+    title: string;
+    time: string;
+    icon: string;
+    lectureType: string;
+    exerciseType: GrammarExerciseTypes;
+    lesson: string;
+    course: string;
+    questions?: Question[];
+}
+
+export interface Question {
+    sentence: string;
+    correctAnswer: string[];
+    otherAnswer: string[];
 }

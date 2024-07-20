@@ -61,7 +61,12 @@ export const createNewUnitLessonAndVideoLectureContent = createAsyncThunk(
     async (payload: NewUnitLessonAndVideoLectureContentPayloadType, thunkAPI) => {
         try {
             const response = await axios.post<MessageResponse>('/api/v1/newUnitLessonAndVideoLectureContent', payload);
-            return response.data;
+
+            if (!response.data.success) {
+                return thunkAPI.rejectWithValue(response.data.message);
+            } else {
+                return response.data;
+            }
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
         }
@@ -130,7 +135,11 @@ export const updateUserProcessStatus = createAsyncThunk(
     async (payload: NewUserProcessStatusPayloadType, thunkAPI) => {
         try {
             const response = await axios.put<MessageResponse>('/api/v1/updateUserProcessStatus', payload);
-            return response.data;
+            if (!response.data.success) {
+                return thunkAPI.rejectWithValue(response.data.message);
+            } else {
+                return response.data;
+            }
         } catch (error: any) {
             return thunkAPI.rejectWithValue(error.response.data);
         }
@@ -256,12 +265,14 @@ export const newUnitLessonAndVideoLectureContentSlice = createSlice({
             .addCase(createNewUnitLessonAndVideoLectureContent.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
-                toastSuccess('Tạo thành công!');
+                // Đảm bảo message là một thuộc tính của data nếu có
+                const successMessage = action.payload?.message || 'Tạo thành công!';
+                toastSuccess(successMessage);
             })
             .addCase(createNewUnitLessonAndVideoLectureContent.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload ? action.payload.toString() : 'Unknown error';
-                toastError('Có lỗi xảy ra. Vui lòng thử lại!');
+                toastError(action.payload ? action.payload.toString() : 'Có lỗi xảy ra. Vui lòng thử lại!');
             });
     },
 });

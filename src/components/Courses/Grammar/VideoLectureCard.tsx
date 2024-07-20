@@ -5,10 +5,9 @@ import ReactPlayer from 'react-player';
 import parse from 'html-react-parser';
 import { Fragment } from 'react/jsx-runtime';
 import { Empty } from 'antd';
-import { useRef, useState } from 'react';
+import { useMemo, useRef } from 'react';
 import { useParams, useSearchParams } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import axios from 'axios';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -17,42 +16,66 @@ import {
     useGetAllLessonsByCourseIdQuery,
     useGetAllUnitLessonsByCourseIdQuery,
     useGetUnitLessonByIdQuery,
+    useGetUserProcessStatusesQuery,
     useGetVideoLectureContentQuery,
+    useLazyGetUnitLessonIdByUserProcessQuery,
 } from '@store/api/courseApi';
 import { AppDispatch } from '@store/store';
-import { createNewUserProcessStatus, updateUserProcessStatus } from '@store/reducer/courseReducer';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import { LessonType, UnitLessonType } from 'types/api-types';
-import { toastError } from '@components/Toast/Toasts';
+import { UnitLessonStatus } from 'types/api-types';
+import { unlockUnitLesson } from '@utils/unlockUnitLesson';
 
-const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () => void }> = ({ unitLessonId, userProcessRefetch }) => {
+const VideoLectureCard: React.FC<{ unitLessonId: string }> = ({ unitLessonId }) => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
     const [searchParams] = useSearchParams();
     const id = searchParams.get('id'); // ?id=.....
     const { id: courseId } = useParams<{ id: string }>();
 
-    /* -------------------------------------------------------------------------- */
-    /*                                # API RTK query                             */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+    const currentTimeRef = useRef<number>(0);
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
     const { data: videoLectureContentData } = useGetVideoLectureContentQuery(unitLessonId, {
         skip: !unitLessonId,
     });
-    const { data: userDetailsData, isLoading: userDetailsLoading } = useUserDetailsQuery();
-    const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
-    const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
-    const { data: unitLessons, isLoading: getUnitLessonsByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId, {
+    const { data: lessons } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { data: unitLesson } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const { data: unitLessons } = useGetAllUnitLessonsByCourseIdQuery(courseId, {
         skip: !courseId,
     });
+    const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
-    /* -------------------------------------------------------------------------- */
-    /*                              STATE MANAGEMENT                              */
-    /* -------------------------------------------------------------------------- */
-    const [apiCalled, setApiCalled] = useState<boolean>(false);
-    const currentTimeRef = useRef<number>(0);
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+    const isCompleted = useMemo(() => {
+        if (userProcessStatusData?.success) {
+            const currentUnitLesson = userProcessStatusData?.unitLessonStatus?.find(
+                (status: UnitLessonStatus) => status?.unitLessonId?._id === id
+            );
+            return currentUnitLesson?.status === 'completed';
+        }
+        return false;
+    }, [userProcessStatusData, id]);
 
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const handleProgress = async (progress: { playedSeconds: number }) => {
         currentTimeRef.current = progress.playedSeconds;
 
@@ -61,67 +84,29 @@ const VideoLectureCard: React.FC<{ unitLessonId: string; userProcessRefetch: () 
         const [hours, minutes, seconds] = timeStr.split(':').map(Number);
         const totalSeconds = hours * 3600 + minutes * 60 + seconds;
 
-        if (currentTimeRef.current >= totalSeconds - 100 && !apiCalled /* chỉ cho phép chạy api get 1 lần */) {
-            if (!getAllLessonsLoading && lessons?.success && !getUnitLessonByIdLoading && unitLesson?.success) {
-                if (unitLessons?.success && !getUnitLessonsByCourseIdLoading && !userDetailsLoading && userDetailsData?.user) {
-                    // # Lấy vị trí của unitLesson hiện tại (bại đang học hiện tại)
-                    const currentUnitLessonIndex = unitLessons.unitLessons.findIndex((unitLesson: UnitLessonType) => {
-                        return unitLesson._id === id;
-                    });
-
-                    // id của unitLesson hiện tại
-                    const currentUnitLessonId = unitLessons?.unitLessons[currentUnitLessonIndex]?._id;
-
-                    // # Lấy id của unitLesson tiếp theo (bài học tiếp theo) dựa vào vị trí của bài học trước + 1
-                    let nextUnitLessonId = unitLessons.unitLessons[currentUnitLessonIndex + 1]?._id;
-
-                    try {
-                        // # Nếu không phải bài cuối thì mở khóa bài tiếp theo
-                        if (nextUnitLessonId) {
-                            const userId = userDetailsData.user._id as string;
-
-                            // kiểm tra xem bài tiếp theo đã completed hay unlock chưa
-                            const { data }: any = await axios.get(
-                                `/api/v1/unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${nextUnitLessonId}`
-                            );
-
-                            if (data.success === false) {
-                                await dispatch(createNewUserProcessStatus({ userId, unitLessonId: nextUnitLessonId }));
-                                await dispatch(updateUserProcessStatus({ userId, unitLessonId: currentUnitLessonId }));
-                                userProcessRefetch();
-                            }
-                        } else {
-                            // # Nếu là bài cuối cùng
-                            // # Lấy vị trí của lesson dựa vào unitLesson bài hiện tại . id của lesson
-                            const currentLessonIndex = lessons.lessons.findIndex((lesson: LessonType) => {
-                                return lesson._id === unitLesson.unitLesson.lesson;
-                            });
-
-                            // # Lấy ra id của lesson tiếp theo dựa vào vị trí của lesson trước + 1
-                            const nextLessonId = lessons.lessons[currentLessonIndex + 1]?._id;
-
-                            // # Nếu là lesson cuối cùng thi thông báo đã là bài cuối cùng
-                            if (!nextLessonId) {
-                                return toastError('Bạn đã học đến bài cuối cùng!');
-                            }
-
-                            // # Lấy ra tất cả unitLesson của bài tiếp theo dựa vào id lesson mới
-                            const allUnitLessonWithNextLessonId = unitLessons.unitLessons.filter((unitLesson: UnitLessonType) => {
-                                return unitLesson.lesson === nextLessonId;
-                            });
-
-                            // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
-                            nextUnitLessonId = allUnitLessonWithNextLessonId[0]._id;
-                        }
-
-                        setApiCalled(true); // Flag này dùng để tránh api bị call liên tục khi chạy video. Chỉ chạy một lần duy nhất
-                    } catch (error) {
-                        toastError('có lỗi xảy ra!');
-                    }
-                }
+        if (currentTimeRef.current >= totalSeconds - 100) {
+            if (!isCompleted) {
+                await unlockUnitLesson({
+                    id,
+                    userId,
+                    unitLesson,
+                    allUnitLessonData: unitLessons,
+                    lessons,
+                    dispatch,
+                    userProcessRefetch,
+                    unitLessonByUserProcess,
+                });
             }
         }
     };
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
         <div className="rounded-lg pb-2">

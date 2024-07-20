@@ -13,21 +13,24 @@ import { useDispatch } from 'react-redux';
 // ##########################################################################
 import {
     useGetAllLessonsByCourseIdQuery,
-    useGetFillBlankExerciseQuery,
     useGetUnitLessonByIdQuery,
     useGetAllUnitLessonsByCourseIdQuery,
     useLazyGetUnitLessonIdByUserProcessQuery,
+    useGetUserProcessStatusesQuery,
 } from '@store/api/courseApi';
-import { LessonType, QuestionType, UnitLessonStatus, UnitLessonType, UserProcessStatusResponse } from 'types/api-types';
+import { GrammarExerciseResponseTypes, LessonType, QuestionType, UnitLessonStatus, UnitLessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { AppDispatch } from '@store/store';
 import { unlockUnitLesson } from '@utils/unlockUnitLesson';
+import { useUserDetailsQuery } from '@store/api/userApi';
 
-const FillBlankExerciseCard: React.FC<{
-    userProcessStatusData: UserProcessStatusResponse | undefined;
-    userProcessRefetch: () => void;
-    userId: string;
-}> = ({ userId, userProcessStatusData, userProcessRefetch }) => {
+interface FillBlankExerciseProps {
+    GrammarExerciseData: GrammarExerciseResponseTypes | undefined;
+}
+
+const FillBlankExercise: React.FC<FillBlankExerciseProps> = ({ GrammarExerciseData }) => {
+    const { type: fillBlankContent } = GrammarExerciseData?.grammarExercise || {};
+
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
@@ -50,12 +53,15 @@ const FillBlankExerciseCard: React.FC<{
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
-    const { data: fillBlankExerciseData, isLoading: fillBlankExerciseLoading } = useGetFillBlankExerciseQuery(id, { skip: !id });
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
     const { data: lessons, isLoading: getAllLessonsLoading } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
     const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(id, { skip: !id });
     const { data: unitLessons, isLoading: getUnitLessonsByCourseIdLoading } = useGetAllUnitLessonsByCourseIdQuery(courseId, {
         skip: !courseId,
     });
+    const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
     const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
     /* ########################################################################## */
@@ -96,7 +102,7 @@ const FillBlankExerciseCard: React.FC<{
     const handleChecking: () => void = async () => {
         setResults(true);
 
-        const allCorrect = fillBlankExerciseData?.fillBlankExercise?.questions?.every(
+        const allCorrect = fillBlankContent?.questions?.every(
             // Lấy data từ api lọc qua từng question
             (question: QuestionType, questionIndex: number) => {
                 // Nhận được từng object là question
@@ -196,7 +202,7 @@ const FillBlankExerciseCard: React.FC<{
             </p>
 
             <div className="mt-3">
-                {fillBlankExerciseData?.fillBlankExercise?.questions?.map((question: QuestionType, questionIndex: number) => (
+                {fillBlankContent?.questions?.map((question: QuestionType, questionIndex: number) => (
                     <div className="mb-2 flex flex-wrap justify-start gap-2" key={question._id}>
                         {question.sentence.split('______').map((part: string, index: number) => (
                             <div key={index} className="flex items-center gap-2">
@@ -227,7 +233,7 @@ const FillBlankExerciseCard: React.FC<{
                 ))}
             </div>
 
-            {!fillBlankExerciseLoading && fillBlankExerciseData?.success ? (
+            {GrammarExerciseData?.success ? (
                 <div className="mt-4 flex items-center justify-center gap-2">
                     <button onClick={handleChecking} className="btn-primary font-body font-medium">
                         Kiểm tra
@@ -248,4 +254,4 @@ const FillBlankExerciseCard: React.FC<{
     );
 };
 
-export default FillBlankExerciseCard;
+export default FillBlankExercise;

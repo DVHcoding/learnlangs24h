@@ -98,12 +98,7 @@ const Grammar: React.FC = () => {
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
                 {/* Content */}
                 <div className="scrollbar-mess relative h-full w-full overflow-auto rounded-lg ">
-                    <RenderContent
-                        unitLesson={unitLessonData?.unitLesson}
-                        userProcessRefetch={userProcessRefetch}
-                        userId={userId}
-                        userProcessStatusData={userProcessStatusData}
-                    />
+                    <RenderContent unitLesson={unitLessonData?.unitLesson} />
 
                     {/* Hỏi đáp */}
                     <HelpComments userDetailsData={userDetailsData} />

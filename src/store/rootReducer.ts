@@ -26,6 +26,7 @@ import {
     deleteLessonAndUnitLessonReducer,
 } from './reducer/courseReducer';
 import { miscReducer } from './reducer/miscReducer';
+import { adminUnitLessonReducer } from './reducer/adminUnitLessonReducer';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -49,6 +50,7 @@ const rootReducer = combineReducers({
     deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
 
     misc: miscReducer,
+    adminUnitLesson: adminUnitLessonReducer,
 });
 
 export default rootReducer;

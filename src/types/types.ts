@@ -95,3 +95,15 @@ export interface SeenMessageSocketResponse {
 }
 
 export type FileType = 'file' | 'image' | 'video' | 'audio';
+
+export enum LectureType {
+    videoLecture = 'videoLecture',
+    grammarExercise = 'grammarExercise',
+    vocaExercise = 'vocaExercise',
+    listenExercise = 'listenExercise',
+}
+
+export enum GrammarExerciseTypes {
+    FillBlankExercise = 'FillBlankExercise',
+    MultipleChoice = 'MultipleChoice',
+}

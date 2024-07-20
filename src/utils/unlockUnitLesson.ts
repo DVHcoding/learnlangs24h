@@ -75,6 +75,19 @@ const unlockUnitLesson = async ({
 
             // # Gán cho nextUnitLessonId là id của unitLesson vị trí thứ 0 với lesson Id mới
             nextUnitLessonId = allUnitLessonWithNextLessonId?.[0]?._id;
+
+            if (nextUnitLessonId) {
+                await dispatch(updateUserProcessStatus({ userId, unitLessonId: id }));
+                userProcessRefetch();
+                // kiểm tra xem bài tiếp theo đã completed hay unlock chưa
+                const { data } = await unitLessonByUserProcess({ userId, unitLessonId: nextUnitLessonId });
+
+                if (data?.success === false) {
+                    await dispatch(createNewUserProcessStatus({ userId, unitLessonId: nextUnitLessonId }));
+                    await dispatch(updateUserProcessStatus({ userId, unitLessonId: currentUnitLessonId }));
+                    userProcessRefetch();
+                }
+            }
         }
     } catch (error) {
         toastError('Có lỗi xảy ra!');
