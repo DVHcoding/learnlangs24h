@@ -40,22 +40,22 @@ export const courseApi = createApi({
             providesTags: ['Courses'],
         }),
         // get All Lessons By Course Id
-        getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | undefined>({
+        getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | null | undefined>({
             query: (id: string) => `lessons/${id}`,
             providesTags: ['Courses'],
         }),
         // get All Unit Lesson By Course Id
-        getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string | undefined>({
+        getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string | null | undefined>({
             query: (id) => `unitLessons/${id}`,
             providesTags: ['Courses'],
         }),
         // get All Unit Lesson By Lessons Id
-        getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string | undefined>({
+        getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string | null | undefined>({
             query: (id) => `unitLessonsByLessonId/${id}`,
             providesTags: ['Courses'],
         }),
         // get Unit Lesson By Id
-        getUnitLessonById: builder.query<UnitLessonResponseType, string | undefined>({
+        getUnitLessonById: builder.query<UnitLessonResponseType, string | null | undefined>({
             query: (id) => `unitLesson/${id}`,
             providesTags: ['Courses'],
         }),
@@ -65,16 +65,16 @@ export const courseApi = createApi({
             providesTags: ['Courses'],
         }),
         // get Fill Blank Exercise
-        getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string | undefined>({
+        getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string | null | undefined>({
             query: (id) => `fillBlankExercise/${id}`,
             providesTags: ['Courses'],
         }),
-        getVocaExercise: builder.query<VocaExerciseResponseTypes, string | null>({
+        getVocaExercise: builder.query<VocaExerciseResponseTypes, string | null | undefined>({
             query: (id) => `course/unitlesson/vocaexercise/${id}`,
             providesTags: ['Courses'],
         }),
         // get User Process Status + populate unitLessonStatus
-        getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined>({
+        getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined | undefined>({
             query: (userId) => `userProcessStatuses/${userId}`,
             providesTags: ['Courses'],
         }),
@@ -86,7 +86,7 @@ export const courseApi = createApi({
             query: (id) => `course/unitlesson/grammarexercise/${id}`,
             providesTags: ['Courses'],
         }),
-        getListenExercise: builder.query<ListenExerciseResponseTypes, string | null>({
+        getListenExercise: builder.query<ListenExerciseResponseTypes, string | null | undefined>({
             query: (id) => `course/unitlesson/listenexercise/${id}`,
             providesTags: ['Courses'],
         }),
