@@ -1,12 +1,12 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { ComponentType } from 'react';
 import loadable from '@loadable/component';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 const Home = loadable(() => import('@components/Home/Home'));
 const Grammar = loadable(() => import('@components/Courses/Grammar/Grammar'));
 const Listening = loadable(() => import('@components/Courses/Listening/Listening'));
@@ -16,9 +16,9 @@ const Profile = loadable(() => import('@components/Profile/Profile'));
 /*                               ADMIN COMPONENT                              */
 /* -------------------------------------------------------------------------- */
 const Dashboard = loadable(() => import('@admin/components/Dashboard'));
-const CoursesList = loadable(() => import('@admin/components/CoursesManager/CoursesList'));
-const LessonTable = loadable(() => import('@admin/components/CoursesManager/LessonTable'));
-const UnitLesson = loadable(() => import('@admin/components/CoursesManager/UnitLesson'));
+const CoursesList = loadable(() => import('@admin/components/Courses/CoursesList'));
+const LessonTable = loadable(() => import('@admin/components/Courses/LessonTable'));
+const UnitLesson = loadable(() => import('@admin/components/Courses/UnitLesson'));
 const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 const WriteVocaExercise = loadable(() => import('@components/Courses/Listening/WriteVocaExercise/WriteVocaExercise'));
 const WriteSentenceExercise = loadable(() => import('@components/Courses/Listening/WriteSentenceExercise/WriteSentenceExercise'));

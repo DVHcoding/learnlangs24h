@@ -1,20 +1,18 @@
-// ##################################
-// #       IMPORT Components
-// ##################################
-import GrammarData from '@components/Courses/Grammar/Grammar.json';
-import { LessonsType } from 'types/types';
-
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Accordion } from 'rsuite';
 import { DndContext, closestCenter, KeyboardSensor, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove, SortableContext, sortableKeyboardCoordinates, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useState } from 'react';
 
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+// @ts-ignore
+import { LessonsType } from '@types/types';
+import GrammarData from '@components/Courses/Grammar/Grammar.json';
 import SortableItem from './SortableItem';
-
-// #################################
 
 const GrammarLessonCard: React.FC = () => {
     const [items, setItems] = useState(GrammarData.lessons.map((lesson: LessonsType) => lesson));

@@ -1,15 +1,15 @@
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { Space, Table, Popconfirm, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 import type { TableProps } from 'antd';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import CreateUnit from '@admin/components/Courses/CreateUnit';
 import {
     useDeleteUnitLessonAndGrammarExerciseMutation,
@@ -19,11 +19,9 @@ import {
 import { UnitLessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
-import { LectureType } from '../../../types/types';
+//@ts-ignore
+import { LectureType } from '@types/types';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
 interface DataType {
     _id: string;
     courseId: string;

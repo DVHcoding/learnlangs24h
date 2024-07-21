@@ -8,10 +8,11 @@ import { useDispatch, useSelector } from 'react-redux';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+//@ts-ignore
+import { LectureType } from '@types/types';
 import UnitForms from './UnitForms';
 import RenderLectures from '@admin/components/Shared/RenderLectures';
 import { AppDispatch, RootState } from '@store/store';
-import { LectureType } from '../../../types/types';
 import { toastError } from '@components/Toast/Toasts';
 import { resetForm } from '@store/reducer/adminUnitLessonReducer';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';

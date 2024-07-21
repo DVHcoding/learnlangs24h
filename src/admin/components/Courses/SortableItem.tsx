@@ -1,11 +1,6 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
-import { LessonItemsType, LessonsType } from 'types/types';
-
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 import { Accordion } from 'rsuite';
@@ -13,15 +8,17 @@ import { useSearchParams } from 'react-router-dom';
 import CreateIcon from '@mui/icons-material/Create';
 import PlayCircleFilledIcon from '@mui/icons-material/PlayCircleFilled';
 
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+//@ts-ignore
+import { LessonItemsType, LessonsType } from '@types/types';
+
 interface SortableItemProps {
     lesson: LessonsType;
 }
 
-const headerSidebar: React.FC<{ title: string; process: string; totalTime: string }> = ({
-    title,
-    process,
-    totalTime,
-}) => {
+const headerSidebar: React.FC<{ title: string; process: string; totalTime: string }> = ({ title, process, totalTime }) => {
     return (
         <div>
             <h4 className="font-body text-base font-bold text-textCustom">{title}</h4>
@@ -67,39 +64,29 @@ const SortableItem: React.FC<SortableItemProps> = (props) => {
                 className="flex-1"
             >
                 <ul className="flex flex-col gap-2">
-                    {props.lesson.lessonItems.map(
-                        (lessonItem: LessonItemsType, lessonItemIndex: number) => (
-                            <li
-                                className={`${lessonItem.id === id ? 'bg-bgHoverGrayDark' : ''} 
+                    {props.lesson.lessonItems.map((lessonItem: LessonItemsType, lessonItemIndex: number) => (
+                        <li
+                            className={`${lessonItem.id === id ? 'bg-bgHoverGrayDark' : ''} 
                                     cursor-pointer rounded-lg p-2 transition-all duration-300 hover:bg-bgHoverGrayDark`}
-                                key={lessonItemIndex}
-                            >
-                                <div>
-                                    <h4 className="mb-2 select-none text-sm font-semibold text-textCustom">
-                                        {lessonItem.title}
-                                    </h4>
-                                    <div className="flex items-center gap-2">
-                                        {lessonItem.icon === 'PlayCircleFilledIcon' ? (
-                                            <PlayCircleFilledIcon className="text-xs text-orange-400" />
-                                        ) : (
-                                            <CreateIcon className="text-xs text-orange-400" />
-                                        )}
-                                        <p className="select-none text-xs text-textCustom">
-                                            {lessonItem.time}
-                                        </p>
-                                    </div>
+                            key={lessonItemIndex}
+                        >
+                            <div>
+                                <h4 className="mb-2 select-none text-sm font-semibold text-textCustom">{lessonItem.title}</h4>
+                                <div className="flex items-center gap-2">
+                                    {lessonItem.icon === 'PlayCircleFilledIcon' ? (
+                                        <PlayCircleFilledIcon className="text-xs text-orange-400" />
+                                    ) : (
+                                        <CreateIcon className="text-xs text-orange-400" />
+                                    )}
+                                    <p className="select-none text-xs text-textCustom">{lessonItem.time}</p>
                                 </div>
-                            </li>
-                        )
-                    )}
+                            </div>
+                        </li>
+                    ))}
                 </ul>
             </Accordion.Panel>
 
-            <button
-                {...listeners}
-                {...attributes}
-                className="mt-3 rounded-md bg-[#f1f5f9] px-2 py-4"
-            >
+            <button {...listeners} {...attributes} className="mt-3 rounded-md bg-[#f1f5f9] px-2 py-4">
                 ⣿
             </button>
         </div>

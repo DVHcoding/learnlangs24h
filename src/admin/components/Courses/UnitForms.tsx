@@ -6,7 +6,8 @@ import { useDispatch, useSelector } from 'react-redux';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { LectureType } from '../../../types/types';
+//@ts-ignore
+import { LectureType } from '@types/types';
 import { CourseType, LessonType } from '../../../types/api-types';
 import { AppDispatch, RootState } from '@store/store';
 import { changeUnitForms } from '@store/reducer/adminUnitLessonReducer';

@@ -1,6 +1,6 @@
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Space, Table, Select, Input, Popconfirm, Popover, Button, Breadcrumb } from 'antd';
 import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
@@ -9,9 +9,9 @@ import dayjs from 'dayjs';
 import { useDispatch, useSelector } from 'react-redux';
 import { Loader } from 'rsuite';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import { useGetAllCoursesQuery } from '@store/api/courseApi';
 import { CourseType, LessonType } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
