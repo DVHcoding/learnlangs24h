@@ -19,7 +19,6 @@ const Dashboard = loadable(() => import('@admin/components/Dashboard'));
 const CoursesList = loadable(() => import('@admin/components/CoursesManager/CoursesList'));
 const LessonTable = loadable(() => import('@admin/components/CoursesManager/LessonTable'));
 const UnitLesson = loadable(() => import('@admin/components/CoursesManager/UnitLesson'));
-const GrammarManagement = loadable(() => import('@admin/components/CoursesManager/Grammar/Update/Grammar'));
 const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 const WriteVocaExercise = loadable(() => import('@components/Courses/Listening/WriteVocaExercise/WriteVocaExercise'));
 const WriteSentenceExercise = loadable(() => import('@components/Courses/Listening/WriteSentenceExercise/WriteSentenceExercise'));
