@@ -23,3 +23,9 @@ export function removeNonLetters(inputString: string | null | undefined): string
     result = result.trim();
     return result;
 }
+
+// Hàm kiểm tra các trường trống
+export const hasEmptyFields = (fields: string[]) => {
+    // Trả về true nếu có bất kỳ trường nào trống
+    return fields.some((field) => field === '');
+};

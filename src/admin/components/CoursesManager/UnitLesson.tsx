@@ -13,7 +13,7 @@ import type { TableProps } from 'antd';
 import CreateUnit from '@admin/components/Courses/CreateUnit';
 import {
     useDeleteUnitLessonAndGrammarExerciseMutation,
-    useDeleteUnitLessonAndVideoLectureContentSliceMutation,
+    useDeleteUnitLessonAndVideoLectureContentMutation,
     useGetAllUnitLessonsByLessonIdQuery,
 } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
@@ -51,7 +51,6 @@ const UnitLesson: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-
     const [selectedRowKeys, setSelectedRowKeys] = useState<React.Key[]>([]);
 
     /* ########################################################################## */
@@ -60,7 +59,7 @@ const UnitLesson: React.FC = () => {
 
     const { data } = useGetAllUnitLessonsByLessonIdQuery(id, { skip: !id });
     const [deleteUnitLessonAndVideoLectureContent, deleteUnitLessonAndVideoLectureContentLoading] = useAsyncMutation(
-        useDeleteUnitLessonAndVideoLectureContentSliceMutation
+        useDeleteUnitLessonAndVideoLectureContentMutation
     );
     const [deleteUnitLessonAndGrammarExercise, deleteUnitLessonAndGrammarExerciseLoading] = useAsyncMutation(
         useDeleteUnitLessonAndGrammarExerciseMutation

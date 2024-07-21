@@ -25,6 +25,8 @@ const WriteVocaExercise = loadable(() => import('@components/Courses/Listening/W
 const WriteSentenceExercise = loadable(() => import('@components/Courses/Listening/WriteSentenceExercise/WriteSentenceExercise'));
 const Quiz = loadable(() => import('@components/Courses/Listening/Quiz/Quiz'));
 
+const CoursesEditable = loadable(() => import('@admin/components/Courses/CoursesEditable/CoursesEditable'));
+
 interface PublicRouteType {
     path: string;
     component: ComponentType;
@@ -108,7 +110,7 @@ const adminRoute: ProtectedRouteType[] = [
     },
     {
         path: '/admin/course/:id/edit/:unitId',
-        component: GrammarManagement,
+        component: CoursesEditable,
         layout: null,
     },
 ];

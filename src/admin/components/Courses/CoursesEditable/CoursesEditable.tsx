@@ -1,27 +1,19 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Avatar } from 'antd';
 import { AlignLeft } from 'lucide-react';
-import { Fragment, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useState } from 'react';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+
 import Logo from '@assets/logo.png';
-import Sidebar from './Sidebar';
-import VideoLecture from './VideoLecture';
-import ExerciseLecture from './ExerciseLecture';
-import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
+import CoursesEditableSidebar from './CoursesEditableSidebar';
+import RenderEditableForms from '@admin/components/Shared/RenderEditableForms';
 
 const Grammar: React.FC = () => {
-    // React Router Dom
-    const { unitId } = useParams<string>();
-
-    // RTK query data
-    const { data: unitLesson, isLoading: getUnitLessonByIdLoading } = useGetUnitLessonByIdQuery(unitId || 'undefined');
-
     /* -------------------------------------------------------------------------- */
     /*                              STATE MANAGEMENT                              */
     /* -------------------------------------------------------------------------- */
@@ -61,17 +53,12 @@ const Grammar: React.FC = () => {
 
             <div className="flex" style={{ height: 'calc(100% - 3.2rem)' }}>
                 {/*sidebar  */}
-                <Sidebar open={open} />
+                <CoursesEditableSidebar open={open} />
 
                 {/* content */}
                 <div className="h-full flex-1 overflow-auto px-3">
                     <div className="pb-2">
-                        {!getUnitLessonByIdLoading && unitLesson?.success && (
-                            <Fragment>
-                                {unitLesson.unitLesson.lectureType === 'videoLecture' && <VideoLecture />}
-                                {unitLesson.unitLesson.lectureType === 'exercise' && <ExerciseLecture />}
-                            </Fragment>
-                        )}
+                        <RenderEditableForms />
                     </div>
                 </div>
             </div>

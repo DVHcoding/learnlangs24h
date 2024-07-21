@@ -17,8 +17,6 @@ import {
     newUnitLessonAndFillBlankExerciseReducer,
     // ######################################
     updateUserProcessStatusReducer,
-    updateUnitLessonAndVideoLectureContentReducer,
-    updateUnitLessonAndFillBlankExerciseReducer,
     updateLessonReducer,
     // ######################################
     deleteLessonAndUnitLessonReducer,
@@ -38,8 +36,6 @@ const rootReducer = combineReducers({
     newUnitLessonAndFillBlankExercise: newUnitLessonAndFillBlankExerciseReducer,
     newUserProcessStatus: newUserProcessStatusReducer,
 
-    updateUnitLessonAndVideoLectureContent: updateUnitLessonAndVideoLectureContentReducer,
-    updateUnitLessonAndFillBlankExercise: updateUnitLessonAndFillBlankExerciseReducer,
     updateUserProcessStatus: updateUserProcessStatusReducer,
     updateLesson: updateLessonReducer,
 

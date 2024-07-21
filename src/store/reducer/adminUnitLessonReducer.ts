@@ -2,11 +2,11 @@
 /*                                 IMPORT NPM                                 */
 /* ########################################################################## */
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { QuestionType } from 'types/api-types';
 
 /* ########################################################################## */
 /*                              IMPORT COMPONENTS                             */
 /* ########################################################################## */
+import { QuestionType } from 'types/api-types';
 
 export interface UnitFormsState {
     title: string;
@@ -15,6 +15,7 @@ export interface UnitFormsState {
     course: string;
     lesson: string;
     lectureType: string;
+    date: string;
 }
 
 export interface VideoLectureState {
@@ -42,6 +43,7 @@ const initialState: AdminUnitLessonState = {
         course: '',
         lesson: '',
         lectureType: '',
+        date: '',
     },
     videoLecture: {
         videoUrl: '',
@@ -62,6 +64,21 @@ export const adminUnitLessonSlice = createSlice({
             const { name, value } = action.payload;
             state.unitForms[name] = value;
         },
+        changeEditableForms: (state, action: PayloadAction<Partial<UnitFormsState>>) => {
+            // Cập nhật từng trường trong unitForms mà không cần gửi từng cái riêng biệt
+            // var obj = { a: 1 };
+            // var copy = Object.assign({}, obj);
+            // console.log(copy); // { a: 1 }
+            Object.assign(state.unitForms, action.payload);
+        },
+        changeVideoEditForms: (state, action: PayloadAction<Partial<VideoLectureState>>) => {
+            // Cập nhật từng trường trong unitForms mà không cần gửi từng cái riêng biệt
+            // var obj = { a: 1 };
+            // var copy = Object.assign({}, obj);
+            // console.log(copy); // { a: 1 }
+            Object.assign(state.videoLecture, action.payload);
+        },
+
         changeVideoLecture: (state, action: PayloadAction<{ name: keyof VideoLectureState; value: string }>) => {
             const { name, value } = action.payload;
             state.videoLecture[name] = value;
@@ -84,6 +101,15 @@ export const adminUnitLessonSlice = createSlice({
     },
 });
 
-export const { changeUnitForms, changeVideoLecture, changeExerciseType, addQuestion, deleteQuestion, updateQuestion, resetForm } =
-    adminUnitLessonSlice.actions;
+export const {
+    changeUnitForms,
+    changeEditableForms,
+    changeVideoEditForms,
+    changeVideoLecture,
+    changeExerciseType,
+    addQuestion,
+    deleteQuestion,
+    updateQuestion,
+    resetForm,
+} = adminUnitLessonSlice.actions;
 export const adminUnitLessonReducer = adminUnitLessonSlice.reducer;

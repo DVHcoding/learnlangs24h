@@ -345,14 +345,14 @@ export interface GrammarExerciseResponseTypes {
 
 export interface GrammarExercise {
     _id: string;
-    type: Type;
+    type: GrammarExerciseType;
     exerciseType: string;
     unitLesson: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
-export interface Type {
+export interface GrammarExerciseType {
     _id: string;
     questions: Question[];
 }
