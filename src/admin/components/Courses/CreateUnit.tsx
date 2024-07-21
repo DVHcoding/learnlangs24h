@@ -123,7 +123,7 @@ const CreateUnit: React.FC = () => {
 
     return (
         <Fragment>
-            <form className="flex flex-col gap-4 pb-4" onSubmit={handleCreateNewUnitLesson}>
+            <form className="flex flex-col gap-4 pb-20" onSubmit={handleCreateNewUnitLesson}>
                 <div className="flex items-center gap-4">
                     <button
                         className={`${isLoading || newUnitLessonAndGrammarLoading ? 'btn-disabled' : 'btn-primary'} max-w-max`}
