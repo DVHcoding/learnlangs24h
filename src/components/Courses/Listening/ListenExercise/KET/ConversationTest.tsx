@@ -3,17 +3,29 @@
 // ##########################################################################
 import parse from 'html-react-parser';
 import { Button, Radio, Space } from 'antd';
-import { Fragment, useState } from 'react';
+import { Fragment, useMemo, useState } from 'react';
 import { Collapse } from 'antd';
 import Lottie from 'lottie-react';
+import { useDispatch } from 'react-redux';
+import { useParams, useSearchParams } from 'react-router-dom';
 import type { CollapseProps } from 'antd';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { ListenExerciseResponseTypes, Question } from 'types/api-types';
+import { ListenExerciseResponseTypes, Question, UnitLessonStatus } from 'types/api-types';
 import { toastInfo } from '@components/Toast/Toasts';
 import { removeNonLetters } from '@utils/Helpers';
 import Congratulations from '@assets/animations/Congratulations.json';
+import {
+    useGetAllLessonsByCourseIdQuery,
+    useGetAllUnitLessonsByCourseIdQuery,
+    useGetUnitLessonByIdQuery,
+    useGetUserProcessStatusesQuery,
+    useLazyGetUnitLessonIdByUserProcessQuery,
+} from '@store/api/courseApi';
+import { useUserDetailsQuery } from '@store/api/userApi';
+import { unlockUnitLesson } from '@utils/unlockUnitLesson';
+import { AppDispatch } from '@store/store';
 
 interface ConversationTestProps {
     ListenExerciseData: ListenExerciseResponseTypes | undefined;
@@ -23,10 +35,13 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
-
+    const dispatch: AppDispatch = useDispatch();
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const [searchParams] = useSearchParams();
+    const id = searchParams.get('id'); // ?id=.....
+    const { id: courseId } = useParams<string>();
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -40,6 +55,16 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
+    const { data: lessons } = useGetAllLessonsByCourseIdQuery(courseId, { skip: !courseId });
+    const { data: unitLesson } = useGetUnitLessonByIdQuery(id, { skip: !id });
+    const { data: unitLessons } = useGetAllUnitLessonsByCourseIdQuery(courseId, {
+        skip: !courseId,
+    });
+    const { data: userProcessStatusData, refetch: userProcessRefetch } = useGetUserProcessStatusesQuery(userId, { skip: !userId });
+    const [unitLessonByUserProcess] = useLazyGetUnitLessonIdByUserProcessQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -62,6 +87,16 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
             ),
         },
     ];
+
+    const isCompleted = useMemo(() => {
+        if (userProcessStatusData?.success) {
+            const currentUnitLesson = userProcessStatusData?.unitLessonStatus?.find(
+                (status: UnitLessonStatus) => status?.unitLessonId?._id === id
+            );
+            return currentUnitLesson?.status === 'completed';
+        }
+        return false;
+    }, [userProcessStatusData, id]);
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
@@ -72,7 +107,7 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
         setIsChecked((preState) => ({ ...preState, [questionId]: false }));
     };
 
-    const handleCheck = (): void => {
+    const handleCheck = async () => {
         const validAllFields = isFormValid();
 
         if (!validAllFields) {
@@ -99,6 +134,19 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
         if (correctAllFields) {
             setShowAnimation(true);
             setDisplayTrans(true);
+
+            if (!isCompleted) {
+                await unlockUnitLesson({
+                    id,
+                    userId,
+                    unitLesson,
+                    allUnitLessonData: unitLessons,
+                    lessons,
+                    dispatch,
+                    userProcessRefetch,
+                    unitLessonByUserProcess,
+                });
+            }
         }
     };
 
