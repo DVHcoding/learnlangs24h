@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 //@ts-ignore
 import { LectureType } from '@types/types';
 import UnitForms from './UnitForms';
-import RenderLectures from '@admin/components/Shared/RenderLectures';
+import RenderLecturesForms from '@admin/components/Shared/RenderLecturesForms';
 import { AppDispatch, RootState } from '@store/store';
 import { toastError } from '@components/Toast/Toasts';
 import { resetForm } from '@store/reducer/adminUnitLessonReducer';
@@ -138,7 +138,7 @@ const CreateUnit: React.FC = () => {
                 <UnitForms />
 
                 {/* Render Lectures */}
-                <RenderLectures />
+                <RenderLecturesForms />
             </form>
         </Fragment>
     );

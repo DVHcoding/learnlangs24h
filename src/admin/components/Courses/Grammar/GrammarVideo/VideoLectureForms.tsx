@@ -11,7 +11,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeVideoLecture, VideoLectureState } from '@store/reducer/adminUnitLessonReducer';
 import { AppDispatch, RootState } from '@store/store';
 
-const VideoLectureContent = () => {
+const VideoLectureForms = () => {
     const dispatch = useDispatch<AppDispatch>();
     const { videoLecture } = useSelector((state: RootState) => state.adminUnitLesson);
 
@@ -108,4 +108,4 @@ const VideoLectureContent = () => {
     );
 };
 
-export default VideoLectureContent;
+export default VideoLectureForms;

@@ -13,7 +13,7 @@ import { RootState } from '@store/store';
 import { changeExerciseType } from '@store/reducer/adminUnitLessonReducer';
 import FillBlankExercise from '@admin/components/Courses/Grammar/GrammarExercise/FillBlank/FillBlankExercise';
 
-const GrammarExercise: React.FC = () => {
+const GrammarExerciseForms: React.FC = () => {
     const dispatch = useDispatch();
     const { exerciseType } = useSelector((state: RootState) => state.adminUnitLesson);
 
@@ -55,4 +55,4 @@ const GrammarExercise: React.FC = () => {
     );
 };
 
-export default GrammarExercise;
+export default GrammarExerciseForms;
