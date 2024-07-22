@@ -2,22 +2,22 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { Button, Drawer, Radio, Space, Tabs } from 'antd';
-import { Fragment, useState } from 'react';
+import { Fragment, useCallback, useState } from 'react';
 import { Trash2 } from 'lucide-react';
 import { useDispatch, useSelector } from 'react-redux';
-import { AppDispatch, RootState } from '@store/store';
-import { addCard, Card, removeCard, updateCard } from '@store/reducer/vocaReducer';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { AppDispatch, RootState } from '@store/store';
+import { addCard, Card, importPreviewsToVocabularies, removeCard, updateCard, updateVocaPreviews } from '@store/reducer/vocaReducer';
 
 const VocaExerciseForms: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
-    const { vocabularies } = useSelector((state: RootState) => state.vocabularies);
+    const { vocabularies, vocaPreviews } = useSelector((state: RootState) => state.vocabularies);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -27,6 +27,9 @@ const VocaExerciseForms: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [open, setOpen] = useState<boolean>(false);
+    const [inputText, setInputText] = useState('');
+    const [separator, setSeparator] = useState('tab');
+    const [cardSeparator, setCardSeparator] = useState('newline');
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -50,6 +53,7 @@ const VocaExerciseForms: React.FC = () => {
         setOpen(false);
     };
 
+    //================================================================================\\
     const handleAddCard = (): void => {
         dispatch(addCard());
     };
@@ -61,6 +65,56 @@ const VocaExerciseForms: React.FC = () => {
     const handleRemoveCard = (index: number): void => {
         dispatch(removeCard(index));
     };
+    //================================================================================\\
+
+    // Hàm xử lý khi nhập text ở modal import files
+    const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+        const text = e.target.value;
+        setInputText(text);
+        updatePreview(text);
+    };
+
+    // Hàm xử lý khi người dùng nhấp tab trong ô textarea
+    const handleKeyDown = useCallback(
+        (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
+            if (e.key === 'Tab') {
+                e.preventDefault();
+                const target = e.target as HTMLTextAreaElement;
+                const start = target.selectionStart;
+                const end = target.selectionEnd;
+
+                const newText = inputText.substring(0, start) + '\t' + inputText.substring(end);
+                setInputText(newText);
+                updatePreview(newText);
+
+                // Đặt lại vị trí con trỏ
+                setTimeout(() => {
+                    target.selectionStart = target.selectionEnd = start + 1;
+                }, 0);
+            }
+        },
+        [inputText]
+    );
+
+    // Hàm render ra card trong preview
+    const updatePreview = (text: string) => {
+        const lines = text.split(cardSeparator === 'newline' ? '\n' : ',');
+        const newPreviews = lines
+            .map((line: string) => {
+                const [english, vietnamese] = line.split(separator === 'tab' ? '\t' : ',');
+                return { english: english?.trim() || '', vietnamese: vietnamese?.trim() || '' };
+            })
+            .filter((card) => card.english || card.vietnamese);
+
+        dispatch(updateVocaPreviews(newPreviews));
+    };
+
+    // Hàm import tất cả preview vào card chính
+    const handleImport = () => {
+        dispatch(importPreviewsToVocabularies());
+        setInputText(''); // Xóa nội dung trong textarea
+        onClose();
+    };
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -69,7 +123,6 @@ const VocaExerciseForms: React.FC = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
-    console.log(vocabularies);
     return (
         <Fragment>
             <Tabs
@@ -175,7 +228,10 @@ const VocaExerciseForms: React.FC = () => {
                                             className="mt-2 h-[245px] w-full border-2 border-bdCustom bg-bgCustom 
                                             p-4 font-sans text-lg font-normal text-textCustom focus:border-transparent 
                                             focus:outline-none focus:ring-4 focus:ring-yellow-400 focus:transition-all"
-                                            placeholder={`Từ 1 Định nghĩa 1\nTừ 2 Định nghĩa 2\nTừ 3 Định nghĩa 3`}
+                                            placeholder={'Từ 1 Định nghĩa 1\nTừ 2 Định nghĩa 2\nTừ 3 Định nghĩa 3'}
+                                            value={inputText}
+                                            onChange={handleInputChange}
+                                            onKeyDown={handleKeyDown}
                                         />
 
                                         <div className="mt-5 flex justify-between">
@@ -186,12 +242,17 @@ const VocaExerciseForms: React.FC = () => {
                                                         Giữa thuật ngữ và định nghĩa
                                                     </h3>
                                                     <Space direction="horizontal">
-                                                        <Radio.Group name="radio-group-left" defaultValue={1} className="mt-[22px]">
-                                                            <Radio value={1} className="font-sans text-lg font-normal text-textCustom">
+                                                        <Radio.Group
+                                                            name="radio-group-left"
+                                                            value={separator}
+                                                            onChange={(e) => setSeparator(e.target.value)}
+                                                            className="mt-[22px]"
+                                                        >
+                                                            <Radio value="tab" className="font-sans text-lg font-normal text-textCustom">
                                                                 Tab
                                                             </Radio>
-                                                            <Radio value={2} className="font-sans text-lg font-normal text-textCustom">
-                                                                Phẩy
+                                                            <Radio value="comma" className="font-sans text-lg font-normal text-textCustom">
+                                                                Phẩy
                                                             </Radio>
                                                         </Radio.Group>
                                                     </Space>
@@ -200,12 +261,20 @@ const VocaExerciseForms: React.FC = () => {
                                                 <div>
                                                     <h3 className="font-sans leading-tight text-textCustom">Giữa các thẻ</h3>
                                                     <Space direction="horizontal">
-                                                        <Radio.Group name="radio-group-right" defaultValue={1} className="mt-[22px]">
-                                                            <Radio value={1} className="font-sans text-lg font-normal text-textCustom">
-                                                                Dòng mới
+                                                        <Radio.Group
+                                                            name="radio-group-right"
+                                                            value={cardSeparator}
+                                                            onChange={(e) => setCardSeparator(e.target.value)}
+                                                            className="mt-[22px]"
+                                                        >
+                                                            <Radio
+                                                                value="newline"
+                                                                className="font-sans text-lg font-normal text-textCustom"
+                                                            >
+                                                                Dòng mới
                                                             </Radio>
-                                                            <Radio value={2} className="font-sans text-lg font-normal text-textCustom">
-                                                                Dấu phẩy
+                                                            <Radio value="comma" className="font-sans text-lg font-normal text-textCustom">
+                                                                Dấu Chấm phẩy
                                                             </Radio>
                                                         </Radio.Group>
                                                     </Space>
@@ -216,6 +285,7 @@ const VocaExerciseForms: React.FC = () => {
                                             <button
                                                 className="rounded-md bg-blue-600 px-20 py-4 font-sans
                                                 text-lg text-white"
+                                                onClick={handleImport}
                                             >
                                                 Nhập
                                             </button>
@@ -225,12 +295,54 @@ const VocaExerciseForms: React.FC = () => {
                                     {/* Review Card */}
                                     <div className="mt-[25px] min-h-[23rem] bg-bgCustomCard">
                                         <div className="mx-auto w-[85%] p-4">
-                                            <h2 className="font-body font-bold leading-tight text-textCustom">Xem trước</h2>
+                                            <h2 className="font-body font-bold leading-tight text-textCustom">
+                                                Xem trước {vocaPreviews.length <= 0 ? '' : `${vocaPreviews.length} thẻ`}
+                                            </h2>
 
-                                            <p className="mt-1 text-base text-textCustom">Không có nội dung để xem trước</p>
-                                            <ul>
-                                                <li></li>
-                                            </ul>
+                                            {vocaPreviews.length > 0 ? (
+                                                <ul
+                                                    className="pointer-events-none mt-4 flex select-none 
+                                                    flex-col gap-5 pb-[10rem] opacity-80"
+                                                >
+                                                    {vocaPreviews.map((card, index) => (
+                                                        <li key={index} className="rounded-md bg-bgCustomCardItem p-4">
+                                                            <div className="flex items-center justify-between border-b-2">
+                                                                <h3 className="font-sans text-textCustom">{index + 1}</h3>
+                                                            </div>
+
+                                                            <div className="flex items-center justify-between gap-10">
+                                                                {/* Left */}
+                                                                <div className="w-full">
+                                                                    <div
+                                                                        className="mt-10 w-full resize-none border-b-4 border-b-green-200 
+                                                                        bg-transparent p-1 text-justify text-lg text-textCustom outline-none"
+                                                                    >
+                                                                        {card.english}
+                                                                    </div>
+                                                                    <p className="mt-2 font-sans uppercase text-textCustomGray">
+                                                                        Thuật ngữ
+                                                                    </p>
+                                                                </div>
+
+                                                                {/* Right */}
+                                                                <div className="w-full">
+                                                                    <div
+                                                                        className="mt-10 w-full resize-none border-b-4 border-b-green-200 
+                                                                        bg-transparent p-1 text-justify text-lg text-textCustom outline-none"
+                                                                    >
+                                                                        {card.vietnamese}
+                                                                    </div>
+                                                                    <p className="mt-2 font-sans uppercase text-textCustomGray">
+                                                                        Định nghĩa
+                                                                    </p>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            ) : (
+                                                <p className="mt-1 text-base text-textCustom">Không có nội dung để xem trước</p>
+                                            )}
                                         </div>
                                     </div>
                                 </Drawer>

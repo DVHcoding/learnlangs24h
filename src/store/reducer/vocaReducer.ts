@@ -10,6 +10,7 @@ export interface Card {
 
 interface VocabState {
     vocabularies: Card[];
+    vocaPreviews: Card[];
 }
 
 const initialState: VocabState = {
@@ -19,6 +20,7 @@ const initialState: VocabState = {
             vietnamese: '',
         },
     ],
+    vocaPreviews: [],
 };
 
 const vocaSlice = createSlice({
@@ -38,8 +40,16 @@ const vocaSlice = createSlice({
             const index = action.payload;
             state.vocabularies.splice(index, 1);
         },
+        updateVocaPreviews: (state, action: PayloadAction<Card[]>) => {
+            state.vocaPreviews = action.payload;
+        },
+
+        importPreviewsToVocabularies: (state) => {
+            state.vocabularies = [...state.vocabularies, ...state.vocaPreviews];
+            state.vocaPreviews = []; // Xóa previews sau khi nhập
+        },
     },
 });
 
-export const { addCard, updateCard, removeCard } = vocaSlice.actions;
+export const { addCard, updateCard, removeCard, updateVocaPreviews, importPreviewsToVocabularies } = vocaSlice.actions;
 export const vocaReducer = vocaSlice.reducer;
