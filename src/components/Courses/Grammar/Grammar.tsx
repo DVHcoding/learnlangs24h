@@ -97,7 +97,10 @@ const Grammar: React.FC = () => {
             {/* Body */}
             <div className="mt-2 flex justify-between" style={{ height: 'calc(100% - 1.8rem' }}>
                 {/* Content */}
-                <div className="scrollbar-mess relative h-full w-full overflow-auto rounded-lg ">
+                <div
+                    className="scrollbar-mess relative h-full w-full overflow-auto rounded-tl 
+                border-b border-l border-t border-bdCustom"
+                >
                     <RenderContent unitLesson={unitLessonData?.unitLesson} />
 
                     {/* Hỏi đáp */}

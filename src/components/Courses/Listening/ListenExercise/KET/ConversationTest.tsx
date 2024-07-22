@@ -248,7 +248,7 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
                                         return (
                                             <Radio
                                                 value={option}
-                                                className={`text-base ${isChecked[question._id] ? radioClass : ''}`}
+                                                className={`text-base ${isChecked[question._id] ? radioClass : 'text-textCustom'}`}
                                                 key={index}
                                             >
                                                 {option as string}

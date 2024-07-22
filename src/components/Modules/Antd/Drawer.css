@@ -1,5 +1,9 @@
+@import '../../../index.css';
+
 .ant-drawer-body {
-    padding-top: 0px !important;
+    background-color: var(--bg-custom);
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 .ant-drawer-header-title .ant-drawer-close svg {
