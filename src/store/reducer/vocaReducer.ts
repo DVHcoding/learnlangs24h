@@ -51,5 +51,7 @@ const vocaSlice = createSlice({
     },
 });
 
-export const { addCard, updateCard, removeCard, updateVocaPreviews, importPreviewsToVocabularies } = vocaSlice.actions;
-export const vocaReducer = vocaSlice.reducer;
+const { addCard, updateCard, removeCard, updateVocaPreviews, importPreviewsToVocabularies } = vocaSlice.actions;
+const vocaReducer = vocaSlice.reducer;
+
+export { addCard, updateCard, removeCard, updateVocaPreviews, importPreviewsToVocabularies, vocaReducer };
