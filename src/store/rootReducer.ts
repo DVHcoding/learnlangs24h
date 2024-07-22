@@ -23,6 +23,7 @@ import {
 } from './reducer/courseReducer';
 import { miscReducer } from './reducer/miscReducer';
 import { adminUnitLessonReducer } from './reducer/adminUnitLessonReducer';
+import { vocaReducer } from './reducer/vocaReducer';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -43,6 +44,7 @@ const rootReducer = combineReducers({
 
     misc: miscReducer,
     adminUnitLesson: adminUnitLessonReducer,
+    vocabularies: vocaReducer,
 });
 
 export default rootReducer;
