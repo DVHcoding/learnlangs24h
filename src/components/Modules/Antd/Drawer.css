@@ -6,6 +6,14 @@
     margin: 0 !important;
 }
 
+.anticon.anticon-close svg path {
+    color: var(--text-custom);
+}
+
+.ant-drawer-header.ant-drawer-header-close-only {
+    background-color: var(--bg-custom);
+}
+
 .ant-drawer-header-title .ant-drawer-close svg {
     color: #000 !important;
 }

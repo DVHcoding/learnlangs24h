@@ -9,6 +9,8 @@ import { Fragment, useState } from 'react';
 // ##########################################################################
 import ListCard from '@admin/components/Courses/Listening/ListeningVocabulary/SingleWord/ListCard';
 import ImportCard from '@admin/components/Courses/Listening/ListeningVocabulary/SingleWord/ImportCard';
+import ListSentenceCard from './Sentence/ListSentenceCard';
+import ImportSentenceCard from './Sentence/ImportSentenceCard';
 
 const VocaExerciseForms: React.FC = () => {
     /* ########################################################################## */
@@ -73,7 +75,18 @@ const VocaExerciseForms: React.FC = () => {
                     {
                         label: 'Sentence',
                         key: '2',
-                        children: <div>tab2</div>,
+                        children: (
+                            <div className="rounded-md bg-bgCustomCard p-4">
+                                <Button type="dashed" onClick={showDrawer}>
+                                    + Nhập
+                                </Button>
+
+                                <ListSentenceCard />
+
+                                {/* Import List words with files */}
+                                <ImportSentenceCard onClose={onClose} open={open} />
+                            </div>
+                        ),
                     },
                     {
                         label: 'Quiz',
