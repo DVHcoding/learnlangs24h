@@ -2,7 +2,7 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { Trash2 } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { Fragment, useContext } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // ##########################################################################
@@ -10,24 +10,40 @@ import { useDispatch, useSelector } from 'react-redux';
 // ##########################################################################
 import { addAudio, IAudio, removeAudio, updateAudio } from '@store/reducer/vocaReducer';
 import { AppDispatch, RootState } from '@store/store';
+import { AudioFileContext } from '@admin/components/Courses/CreateUnit';
 
 const ListQuiz: React.FC = () => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+    const context = useContext(AudioFileContext);
     const dispatch: AppDispatch = useDispatch();
     const { audio: audioList } = useSelector((state: RootState) => state.vocabularies);
 
-    const [fileInputs, setFileInputs] = useState<File[]>([]);
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
 
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            setFileInputs((prev) => {
-                const newFileInputs = [...prev];
-                newFileInputs[index] = file;
-                return newFileInputs;
-            });
-            dispatch(
-                updateAudio({ index, fileName: file.name, answer: audioList[index].answer, otherAnswer: audioList[index].otherAnswer })
-            );
+            context(file, index);
+            dispatch(updateAudio({ index, answer: audioList[index].answer, otherAnswer: audioList[index].otherAnswer }));
         }
     };
 
@@ -35,7 +51,6 @@ const ListQuiz: React.FC = () => {
         dispatch(
             updateAudio({
                 index,
-                fileName: audioList[index].fileName,
                 answer: event.target.value,
                 otherAnswer: audioList[index].otherAnswer,
             })
@@ -43,20 +58,24 @@ const ListQuiz: React.FC = () => {
     };
 
     const handleOtherAnswerChange = (index: number, event: React.ChangeEvent<HTMLTextAreaElement>) => {
-        dispatch(
-            updateAudio({ index, fileName: audioList[index].fileName, answer: audioList[index].answer, otherAnswer: event.target.value })
-        );
+        dispatch(updateAudio({ index, answer: audioList[index].answer, otherAnswer: event.target.value }));
     };
 
     const handleAddAudio = () => {
-        dispatch(addAudio({ fileName: '', answer: '', otherAnswer: '' }));
+        dispatch(addAudio({ answer: '', otherAnswer: '' }));
     };
 
     const handleRemoveAudio = (index: number) => {
         dispatch(removeAudio(index));
     };
 
-    console.log(fileInputs);
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
         <Fragment>
@@ -68,7 +87,7 @@ const ListQuiz: React.FC = () => {
 
                             <Trash2
                                 size={18}
-                                className="cursor-pointer text-textCustom transition-all hover:text-yellow-400"
+                                className="cursor-pointer select-none text-textCustom transition-all hover:text-yellow-400"
                                 onClick={() => handleRemoveAudio(index)}
                             />
                         </div>
@@ -85,7 +104,7 @@ const ListQuiz: React.FC = () => {
                                         value={audio.answer}
                                         onChange={(event) => handleAnswerChange(index, event)}
                                     />
-                                    <p className="font-sans uppercase text-textCustomGray">Đáp án</p>
+                                    <p className="font-sans font-medium uppercase text-textCustomGray">Đáp án</p>
                                 </div>
 
                                 {/* Right */}
@@ -97,7 +116,7 @@ const ListQuiz: React.FC = () => {
                                         value={audio.otherAnswer}
                                         onChange={(event) => handleOtherAnswerChange(index, event)}
                                     />
-                                    <p className="font-sans uppercase text-textCustomGray">Đáp án khác</p>
+                                    <p className="font-sans font-medium uppercase text-textCustomGray">Đáp án khác</p>
                                 </div>
                             </div>
                         </div>
@@ -108,10 +127,16 @@ const ListQuiz: React.FC = () => {
             {/* Thêm the */}
             <div className="mt-4 rounded-md bg-bgCustomCardItem p-4">
                 <div
-                    className="group mx-auto max-w-max cursor-pointer border-b-4 border-b-green-200 transition-all hover:border-b-yellow-400"
+                    className="group mx-auto max-w-max cursor-pointer select-none border-b-4 
+                    border-b-green-200 transition-all hover:border-b-yellow-400"
                     onClick={handleAddAudio}
                 >
-                    <h3 className="font-sans uppercase text-textCustom transition-all group-hover:text-yellow-400">+ Thêm thẻ</h3>
+                    <h3
+                        className="font-sans font-medium uppercase text-textCustom transition-all
+                      group-hover:text-yellow-400"
+                    >
+                        + Thêm thẻ
+                    </h3>
                 </div>
             </div>
         </Fragment>

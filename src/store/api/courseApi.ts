@@ -28,9 +28,6 @@ export const courseApi = createApi({
     reducerPath: 'courseApi',
     baseQuery: fetchBaseQuery({
         baseUrl: '/api/v1/',
-        headers: {
-            'Content-type': 'application/json',
-        },
     }),
     tagTypes: ['Courses'],
     endpoints: (builder) => ({
@@ -110,6 +107,30 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        newUnitLessonAndVocaExercise: builder.mutation<MessageResponse, any>({
+            query: ({ title, time, icon, lectureType, exerciseType, lesson, course, vocabularies, sentences, audio, audioFile }) => {
+                const myForm = new FormData();
+                myForm.append('title', title);
+                myForm.append('time', time);
+                myForm.append('icon', icon);
+                myForm.append('lectureType', lectureType);
+                myForm.append('exerciseType', exerciseType);
+                myForm.append('lesson', lesson);
+                myForm.append('course', course);
+                myForm.append('vocabularies', JSON.stringify(vocabularies));
+                myForm.append('sentences', JSON.stringify(sentences));
+                myForm.append('audio', JSON.stringify(audio));
+                audioFile.forEach((file: any) => myForm.append('audio', file));
+
+                return {
+                    url: 'course/unitlesson/vocaexercise',
+                    method: 'POST',
+                    body: myForm,
+                    formData: true,
+                };
+            },
+            invalidatesTags: ['Courses'],
+        }),
         /* -------------------------------------------------------------------------- */
         /*                                   UPDATE                                   */
         /* -------------------------------------------------------------------------- */
@@ -167,6 +188,7 @@ export const {
 
     useNewUnitLessonAndVideoLectureContentMutation,
     useNewUnitLessonAndGrammarExerciseMutation,
+    useNewUnitLessonAndVocaExerciseMutation,
 
     useUpdateUnitLessonAndVideoLectureMutation,
     useUpdateUnitLessonAndGrammarExerciseMutation,

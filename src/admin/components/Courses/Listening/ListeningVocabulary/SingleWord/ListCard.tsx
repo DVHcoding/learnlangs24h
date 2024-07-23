@@ -53,7 +53,7 @@ const ListCard = () => {
                                     value={card.english}
                                     onChange={(e) => handleUpdateCard(index, e.target.value, card.vietnamese)}
                                 />
-                                <p className="font-sans uppercase text-textCustomGray">Thuật ngữ</p>
+                                <p className="font-sans font-medium uppercase text-textCustomGray">Thuật ngữ</p>
                             </div>
 
                             {/* Right */}
@@ -66,7 +66,7 @@ const ListCard = () => {
                                     value={card.vietnamese}
                                     onChange={(e) => handleUpdateCard(index, card.english, e.target.value)}
                                 />
-                                <p className="font-sans uppercase text-textCustomGray">Định nghĩa</p>
+                                <p className="font-sans font-medium uppercase text-textCustomGray">Định nghĩa</p>
                             </div>
                         </div>
                     </li>
@@ -81,8 +81,8 @@ const ListCard = () => {
                     onClick={handleAddCard}
                 >
                     <h3
-                        className="font-sans uppercase text-textCustom transition-all 
-                      group-hover:text-yellow-400"
+                        className="font-sans font-medium uppercase text-textCustom 
+                      transition-all group-hover:text-yellow-400"
                     >
                         + Thêm thẻ
                     </h3>

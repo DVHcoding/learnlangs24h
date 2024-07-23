@@ -17,3 +17,7 @@
 .ant-drawer-header-title .ant-drawer-close svg {
     color: #000 !important;
 }
+
+.ant-tabs-tab-btn {
+    user-select: none;
+}

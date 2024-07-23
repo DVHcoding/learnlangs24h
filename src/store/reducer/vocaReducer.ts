@@ -9,7 +9,6 @@ export interface Card {
 }
 
 export interface IAudio {
-    fileName: string;
     answer: string;
     otherAnswer: string;
 }
@@ -86,17 +85,17 @@ const vocaSlice = createSlice({
             state.audio.push(action.payload);
         },
 
-        updateAudio: (state, action: PayloadAction<{ index: number; fileName: string; answer: string; otherAnswer: string }>) => {
-            const { index, fileName, answer, otherAnswer } = action.payload;
+        updateAudio: (state, action: PayloadAction<{ index: number; answer: string; otherAnswer: string }>) => {
+            const { index, answer, otherAnswer } = action.payload;
             if (state.audio[index]) {
-                state.audio[index] = { fileName, answer, otherAnswer };
+                state.audio[index] = { answer, otherAnswer };
             }
         },
-
         removeAudio: (state, action: PayloadAction<number>) => {
             const index = action.payload;
             state.audio.splice(index, 1);
         },
+        resetVocaForm: () => initialState,
     },
 });
 
@@ -113,5 +112,6 @@ export const {
     addAudio,
     removeAudio,
     updateAudio,
+    resetVocaForm,
 } = vocaSlice.actions;
 export const vocaReducer = vocaSlice.reducer;

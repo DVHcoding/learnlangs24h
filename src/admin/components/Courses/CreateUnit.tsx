@@ -1,7 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React, { Fragment } from 'react';
+import React, { Fragment, createContext, useState } from 'react';
 import { Loader } from 'rsuite';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -16,7 +16,14 @@ import { AppDispatch, RootState } from '@store/store';
 import { toastError } from '@components/Toast/Toasts';
 import { resetForm } from '@store/reducer/adminUnitLessonReducer';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
-import { useNewUnitLessonAndGrammarExerciseMutation, useNewUnitLessonAndVideoLectureContentMutation } from '@store/api/courseApi';
+import {
+    useNewUnitLessonAndGrammarExerciseMutation,
+    useNewUnitLessonAndVideoLectureContentMutation,
+    useNewUnitLessonAndVocaExerciseMutation,
+} from '@store/api/courseApi';
+import { resetVocaForm } from '@store/reducer/vocaReducer';
+
+export const AudioFileContext = createContext<any>(null);
 
 const CreateUnit: React.FC = () => {
     /* ########################################################################## */
@@ -24,6 +31,7 @@ const CreateUnit: React.FC = () => {
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
     const { unitForms, videoLecture, exerciseType, fillBlankExercise } = useSelector((state: RootState) => state.adminUnitLesson);
+    const { vocabularies, sentences, audio } = useSelector((state: RootState) => state.vocabularies);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -32,12 +40,14 @@ const CreateUnit: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    const [fileInputs, setFileInputs] = useState<File[]>([]);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
     const [newUnitLessonAndVideoLectureContent, isLoading] = useAsyncMutation(useNewUnitLessonAndVideoLectureContentMutation);
     const [newUnitLessonAndGrammarExercise, newUnitLessonAndGrammarLoading] = useAsyncMutation(useNewUnitLessonAndGrammarExerciseMutation);
+    const [newUnitLessonAndVocaExercise, newUnitLessonAndVocaExerciseLoading] = useAsyncMutation(useNewUnitLessonAndVocaExerciseMutation);
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -102,6 +112,24 @@ const CreateUnit: React.FC = () => {
 
                 dispatch(resetForm());
                 break;
+            case LectureType.vocaExercise:
+                await newUnitLessonAndVocaExercise({
+                    title: unitForms.title,
+                    time: unitForms.time,
+                    icon: unitForms.icon,
+                    lectureType: unitForms.lectureType,
+                    exerciseType,
+                    lesson: unitForms.lesson,
+                    course: unitForms.course,
+                    vocabularies: vocabularies,
+                    sentences: sentences,
+                    audio: audio,
+                    audioFile: fileInputs,
+                });
+                dispatch(resetForm());
+                dispatch(resetVocaForm());
+
+                break;
             default:
                 break;
         }
@@ -111,6 +139,14 @@ const CreateUnit: React.FC = () => {
     const hasEmptyFields = (fields: string[]) => {
         // Trả về true nếu có bất kỳ trường nào trống
         return fields.some((field) => field === '');
+    };
+
+    const handleSetAudioFile = (file: File, index: number) => {
+        setFileInputs((prev) => {
+            const newFileInputs = [...prev];
+            newFileInputs[index] = file;
+            return newFileInputs;
+        });
     };
 
     /* ########################################################################## */
@@ -126,19 +162,27 @@ const CreateUnit: React.FC = () => {
             <form className="flex flex-col gap-4 pb-20" onSubmit={handleCreateNewUnitLesson}>
                 <div className="flex items-center gap-4">
                     <button
-                        className={`${isLoading || newUnitLessonAndGrammarLoading ? 'btn-disabled' : 'btn-primary'} max-w-max`}
-                        disabled={isLoading || newUnitLessonAndGrammarLoading}
+                        className={`${
+                            isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading
+                                ? 'btn-disabled'
+                                : 'btn-primary'
+                        } max-w-max`}
+                        disabled={isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading}
                     >
                         Tạo Unit
                     </button>
-                    {(isLoading || newUnitLessonAndGrammarLoading) && <Loader content="Loading..." />}
+                    {(isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading) && (
+                        <Loader content="Loading..." />
+                    )}
                 </div>
 
                 {/* UnitForms */}
                 <UnitForms />
 
                 {/* Render Lectures */}
-                <RenderLecturesForms />
+                <AudioFileContext.Provider value={handleSetAudioFile}>
+                    <RenderLecturesForms />
+                </AudioFileContext.Provider>
             </form>
         </Fragment>
     );

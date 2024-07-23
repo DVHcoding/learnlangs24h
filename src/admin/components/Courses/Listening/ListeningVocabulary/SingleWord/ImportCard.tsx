@@ -227,7 +227,7 @@ const ImportCard: React.FC<ImportCardProps> = ({ open, onClose }) => {
                                                 >
                                                     {card.english}
                                                 </div>
-                                                <p className="mt-2 font-sans uppercase text-textCustomGray">Thuật ngữ</p>
+                                                <p className="mt-2 font-sans font-medium uppercase text-textCustomGray">Thuật ngữ</p>
                                             </div>
 
                                             {/* Right */}
@@ -238,7 +238,7 @@ const ImportCard: React.FC<ImportCardProps> = ({ open, onClose }) => {
                                                 >
                                                     {card.vietnamese}
                                                 </div>
-                                                <p className="mt-2 font-sans uppercase text-textCustomGray">Định nghĩa</p>
+                                                <p className="mt-2 font-sans font-medium uppercase text-textCustomGray">Định nghĩa</p>
                                             </div>
                                         </div>
                                     </li>

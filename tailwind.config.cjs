@@ -22,6 +22,7 @@ module.exports = {
                     'Segoe UI Symbol',
                     'Noto Color Emoji',
                 ],
+                be: ['Be Vietnam Pro', 'sans-serif'],
             },
             screens: {
                 sm: { max: '768px' },

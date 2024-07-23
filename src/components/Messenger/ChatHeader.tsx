@@ -24,7 +24,7 @@ const ChatHeader: React.FC<ChatHeaderContentProps> = ({ receiver, online, lastOn
             </div>
 
             <div className="flex-1 select-none py-2">
-                <h3 className="font-semibold leading-tight text-textCustom">{receiver?.username}</h3>
+                <h3 className="font-medium leading-tight text-textCustom">{receiver?.username}</h3>
                 {online ? (
                     <p className="text-[0.8rem] font-normal text-textBlackGray">Đang hoạt động</p>
                 ) : (
