@@ -8,9 +8,16 @@ export interface Card {
     vietnamese: string;
 }
 
+export interface IAudio {
+    fileName: string;
+    answer: string;
+    otherAnswer: string;
+}
+
 interface VocabState {
     vocabularies: Card[];
     sentences: Card[];
+    audio: IAudio[];
     vocaPreviews: Card[];
 }
 
@@ -27,6 +34,7 @@ const initialState: VocabState = {
             vietnamese: '',
         },
     ],
+    audio: [],
     vocaPreviews: [],
 };
 
@@ -73,10 +81,26 @@ const vocaSlice = createSlice({
             state.sentences = [...state.sentences, ...state.vocaPreviews];
             state.vocaPreviews = []; // Xóa previews sau khi nhập
         },
+
+        addAudio: (state, action: PayloadAction<IAudio>) => {
+            state.audio.push(action.payload);
+        },
+
+        updateAudio: (state, action: PayloadAction<{ index: number; fileName: string; answer: string; otherAnswer: string }>) => {
+            const { index, fileName, answer, otherAnswer } = action.payload;
+            if (state.audio[index]) {
+                state.audio[index] = { fileName, answer, otherAnswer };
+            }
+        },
+
+        removeAudio: (state, action: PayloadAction<number>) => {
+            const index = action.payload;
+            state.audio.splice(index, 1);
+        },
     },
 });
 
-const {
+export const {
     addCard,
     updateCard,
     removeCard,
@@ -86,18 +110,8 @@ const {
     updateVocaPreviews,
     importPreviewsToVocabularies,
     importPreviewsToSentences,
+    addAudio,
+    removeAudio,
+    updateAudio,
 } = vocaSlice.actions;
-const vocaReducer = vocaSlice.reducer;
-
-export {
-    addCard,
-    updateCard,
-    removeCard,
-    addSentenceCard,
-    updateSentenceCard,
-    removeSentenceCard,
-    updateVocaPreviews,
-    importPreviewsToVocabularies,
-    importPreviewsToSentences,
-    vocaReducer,
-};
+export const vocaReducer = vocaSlice.reducer;

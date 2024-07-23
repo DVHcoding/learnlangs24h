@@ -11,6 +11,7 @@ import ListCard from '@admin/components/Courses/Listening/ListeningVocabulary/Si
 import ImportCard from '@admin/components/Courses/Listening/ListeningVocabulary/SingleWord/ImportCard';
 import ListSentenceCard from './Sentence/ListSentenceCard';
 import ImportSentenceCard from './Sentence/ImportSentenceCard';
+import ListQuiz from './Quiz/ListQuiz';
 
 const VocaExerciseForms: React.FC = () => {
     /* ########################################################################## */
@@ -91,7 +92,11 @@ const VocaExerciseForms: React.FC = () => {
                     {
                         label: 'Quiz',
                         key: '3',
-                        children: 'Tab 3',
+                        children: (
+                            <div className="rounded-md bg-bgCustomCard p-4">
+                                <ListQuiz />
+                            </div>
+                        ),
                     },
                 ]}
             />
