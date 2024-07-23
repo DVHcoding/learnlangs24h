@@ -65,11 +65,15 @@ const ImportCard: React.FC<ImportCardProps> = ({ open, onClose }) => {
                 const start: number = target.selectionStart;
                 const end: number = target.selectionEnd;
 
+                // inputText.substring(0, start): Lấy phần văn bản từ đầu đến ngay trước vị trí con trỏ.
+                // '\t': Ký tự tab mà bạn muốn chèn vào văn bản.
+                // inputText.substring(end): Lấy phần văn bản từ vị trí con trỏ đến cuối văn bản.
                 const newText: string = inputText.substring(0, start) + '\t' + inputText.substring(end);
                 setInputText(newText);
                 updatePreview(newText);
 
-                // Đặt lại vị trí con trỏ
+                // Sau khi bạn chèn ký tự tab vào văn bản, bạn cần di chuyển con trỏ tới ngay sau ký tự tab.
+                // setTimeout với thời gian 0 đảm bảo rằng cập nhật vị trí con trỏ xảy ra sau khi cập nhật văn bản.
                 setTimeout(() => {
                     target.selectionStart = target.selectionEnd = start + 1;
                 }, 0);
@@ -80,6 +84,7 @@ const ImportCard: React.FC<ImportCardProps> = ({ open, onClose }) => {
 
     // Hàm render ra card trong preview
     const updatePreview = (text: string) => {
+        // Dựa vào cardSeparator để dùng split cắt thành mảng
         const lines: string[] = text.split(cardSeparator === 'newline' ? '\n' : ';');
 
         const newPreviews: Card[] = lines
@@ -87,6 +92,9 @@ const ImportCard: React.FC<ImportCardProps> = ({ open, onClose }) => {
                 const [english, vietnamese] = line.split(separator === 'tab' ? '\t' : ',');
                 return { english: english?.trim() || '', vietnamese: vietnamese?.trim() || '' };
             })
+
+            // Chức năng: Loại bỏ các đối tượng Card không có nội dung trong cả hai trường english và vietnamese.
+            // card.english || card.vietnamese: Điều kiện lọc để đảm bảo rằng ít nhất một trong các trường english hoặc vietnamese có giá trị.
             .filter((card: Card) => card.english || card.vietnamese);
 
         dispatch(updateVocaPreviews(newPreviews));
