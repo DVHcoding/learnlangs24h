@@ -121,7 +121,7 @@ export const courseApi = createApi({
                 myForm.append('vocabularies', JSON.stringify(vocabularies));
                 myForm.append('sentences', JSON.stringify(sentences));
                 myForm.append('audio', JSON.stringify(audio));
-                audioFile.forEach((file: any) => myForm.append('audio', file));
+                audioFile.forEach((file: File) => myForm.append('audio', file));
 
                 return {
                     url: 'course/unitlesson/vocaexercise',
@@ -187,6 +187,13 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        deleteUnitLessonAndVocaExercise: builder.mutation<MessageResponse, string>({
+            query: (unitId) => ({
+                url: `course/unitlesson/vocaexercise?unitId=${unitId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Courses'],
+        }),
         deleteUnitLessonAndListenExercise: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
                 url: `course/unitlesson/listenexercise?unitId=${unitId}`,
@@ -227,8 +234,9 @@ export const {
     useUpdateUnitLessonAndGrammarExerciseMutation,
 
     useDeleteUnitLessonAndVideoLectureContentMutation,
-    useDeleteUnitLessonAndListenExerciseMutation,
     useDeleteUnitLessonAndGrammarExerciseMutation,
+    useDeleteUnitLessonAndVocaExerciseMutation,
+    useDeleteUnitLessonAndListenExerciseMutation,
 } = courseApi;
 
 // providesTags: ['UnitLesson']

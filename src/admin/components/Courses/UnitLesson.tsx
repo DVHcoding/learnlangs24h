@@ -15,6 +15,7 @@ import {
     useDeleteUnitLessonAndGrammarExerciseMutation,
     useDeleteUnitLessonAndListenExerciseMutation,
     useDeleteUnitLessonAndVideoLectureContentMutation,
+    useDeleteUnitLessonAndVocaExerciseMutation,
     useGetAllUnitLessonsByLessonIdQuery,
 } from '@store/api/courseApi';
 import { UnitLessonType } from 'types/api-types';
@@ -63,6 +64,9 @@ const UnitLesson: React.FC = () => {
     );
     const [deleteUnitLessonAndGrammarExercise, deleteUnitLessonAndGrammarExerciseLoading] = useAsyncMutation(
         useDeleteUnitLessonAndGrammarExerciseMutation
+    );
+    const [deleteUnitLessonAndVocaExercise, deleteUnitLessonAndVocaExerciseLoading] = useAsyncMutation(
+        useDeleteUnitLessonAndVocaExerciseMutation
     );
     const [deleteUnitLessonAndListenExercise, deleteUnitLessonAndListenExerciseLoading] = useAsyncMutation(
         useDeleteUnitLessonAndListenExerciseMutation
@@ -145,6 +149,7 @@ const UnitLesson: React.FC = () => {
         deleteUnitLessonAndVideoLectureContentLoading,
         deleteUnitLessonAndGrammarExerciseLoading,
         deleteUnitLessonAndListenExerciseLoading,
+        deleteUnitLessonAndVocaExerciseLoading,
     ]);
 
     /* ########################################################################## */
@@ -164,6 +169,7 @@ const UnitLesson: React.FC = () => {
                     await deleteUnitLessonAndGrammarExercise(unitId);
                     break;
                 case LectureType.vocaExercise:
+                    await deleteUnitLessonAndVocaExercise(unitId);
                     break;
                 case LectureType.listenExercise:
                     await deleteUnitLessonAndListenExercise(unitId);
