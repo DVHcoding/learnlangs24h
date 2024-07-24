@@ -1,22 +1,36 @@
-// ##################################
-// #       IMPORT Npm
-// ##################################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
+import { Breadcrumb } from 'antd';
+import { Link } from 'react-router-dom';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
-import AdminBreadcrumbs from './AdminBreadcrumbs/AdminBreadcrumbs';
-
-// ##################################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 const DashBoard: React.FC = () => {
     return (
         <div className="h-full px-4">
             {/* BreadCrumbs */}
             <div>
-                <AdminBreadcrumbs pathNext="Admin" pathEnd="Dashboard" />
+                <Breadcrumb
+                    items={[
+                        {
+                            title: <Link to="/admin">Home</Link>,
+                        },
+                        {
+                            title: 'Admin',
+                        },
+                        {
+                            title: 'Dashboard',
+                        },
+                    ]}
+                />
             </div>
 
-            <div className="grid auto-rows-[200px] gap-4 xl:grid-cols-3 tablet:grid-cols-2 ">
+            <div
+                className="mt-4 grid auto-rows-[200px] gap-4 xl:grid-cols-3 
+                tablet:grid-cols-2"
+            >
                 <div
                     className="mx-auto w-full bg-slate-400 md:col-span-2 xl:col-span-2 xl:row-span-2 
                     tablet:col-span-2 tablet:row-span-2"
