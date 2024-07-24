@@ -141,7 +141,6 @@ const UnitLesson: React.FC = () => {
     /* ########################################################################## */
     const handleDeleteUnitLesson: (lectureType: string, unitId: string) => void = async (lectureType, unitId) => {
         try {
-            // Nếu không có lectureType hoặc rỗng thì thông báo lỗi
             if (!lectureType || lectureType === '') {
                 toastError('Có lỗi xảy ra!');
             }
@@ -153,19 +152,15 @@ const UnitLesson: React.FC = () => {
                 case LectureType.grammarExercise:
                     await deleteUnitLessonAndGrammarExercise(unitId);
                     break;
+                case LectureType.vocaExercise:
+                    break;
+                case LectureType.listenExercise:
+                    break;
                 default:
                     break;
             }
-
-            // Nếu lectureType === 'videoLecture' thì call api deleteUnitLessonAndVideoLectureContent
-            if (lectureType === 'videoLecture') {
-            }
-
-            // Nếu lectureType === 'exercise' thì call api deleteUnitLessonAndFillBLankExercise
-            if (lectureType === 'exercise') {
-            }
         } catch (error) {
-            toastError('Có lỗi xảy ra!');
+            toastError(`Có lỗi xảy ra!: ${error}`);
         }
     };
 

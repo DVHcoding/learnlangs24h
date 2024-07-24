@@ -13,8 +13,9 @@ const PicturesTest = loadable(() => import('@components/Courses/Listening/Listen
 const MatchingTest = loadable(() => import('@components/Courses/Listening/ListenExercise/KET/MatchingTest'));
 const GapFill = loadable(() => import('@components/Courses/Listening/ListenExercise/KET/GapFill'));
 
+//@ts-ignore
+import { ListenExerciseTypes } from '@types/types';
 import { useGetListenExerciseQuery } from '@store/api/courseApi';
-import { ExerciseType } from './ListenExercise.types';
 
 const ListenExercise: React.FC = () => {
     // React Route Dom
@@ -25,25 +26,25 @@ const ListenExercise: React.FC = () => {
     const { data: ListenExerciseData } = useGetListenExerciseQuery(id, { skip: !id });
 
     switch (ListenExerciseData?.listeningExercise?.exerciseType) {
-        case ExerciseType.Conversation:
+        case ListenExerciseTypes.Conversation:
             return (
                 <div className="p-2">
                     <ConversationTest ListenExerciseData={ListenExerciseData} />
                 </div>
             );
-        case ExerciseType.PicturesTest:
+        case ListenExerciseTypes.PicturesTest:
             return (
                 <div className="p-2">
                     <PicturesTest />
                 </div>
             );
-        case ExerciseType.MatchingTest:
+        case ListenExerciseTypes.MatchingTest:
             return (
                 <div className="p-2">
                     <MatchingTest />
                 </div>
             );
-        case ExerciseType.GapFill:
+        case ListenExerciseTypes.GapFill:
             return (
                 <div className="p-2">
                     <GapFill />

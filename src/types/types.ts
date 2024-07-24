@@ -107,3 +107,10 @@ export enum GrammarExerciseTypes {
     FillBlankExercise = 'FillBlankExercise',
     MultipleChoice = 'MultipleChoice',
 }
+
+export enum ListenExerciseTypes {
+    Conversation = 'Conversation',
+    PicturesTest = 'PicturesTest',
+    MatchingTest = 'MatchingTest',
+    GapFill = 'GapFill',
+}

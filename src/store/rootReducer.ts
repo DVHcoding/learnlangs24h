@@ -24,6 +24,7 @@ import {
 import { miscReducer } from './reducer/miscReducer';
 import { adminUnitLessonReducer } from './reducer/adminUnitLessonReducer';
 import { vocaReducer } from './reducer/vocaReducer';
+import { listenReducer } from './reducer/listenReducer';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -45,6 +46,7 @@ const rootReducer = combineReducers({
     misc: miscReducer,
     adminUnitLesson: adminUnitLessonReducer,
     vocabularies: vocaReducer,
+    listenExercise: listenReducer,
 });
 
 export default rootReducer;

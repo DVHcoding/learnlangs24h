@@ -12,6 +12,7 @@ import VideoLectureForms from '@admin/components/Courses/Grammar/GrammarVideo/Vi
 import GrammarExerciseForms from '@admin/components/Courses/Grammar/GrammarExercise/GrammarExerciseForms';
 import { RootState } from '@store/store';
 import VocaExerciseForms from '@admin/components/Courses/Listening/ListeningVocabulary/VocaExerciseForms';
+import ListenExerciseForms from '../Courses/Listening/ListeningExercise/ListenExerciseForms';
 
 const RenderLecturesForms: React.FC = () => {
     const { unitForms } = useSelector((state: RootState) => state.adminUnitLesson);
@@ -23,6 +24,8 @@ const RenderLecturesForms: React.FC = () => {
             return <GrammarExerciseForms />;
         case LectureType.vocaExercise:
             return <VocaExerciseForms />;
+        case LectureType.listenExercise:
+            return <ListenExerciseForms />;
         default:
             break;
     }

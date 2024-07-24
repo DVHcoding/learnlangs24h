@@ -128,7 +128,8 @@ const CreateUnit: React.FC = () => {
                 });
                 dispatch(resetForm());
                 dispatch(resetVocaForm());
-
+                break;
+            case LectureType.listenExercise:
                 break;
             default:
                 break;
