@@ -1,4 +1,11 @@
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 
 interface Question {
     questionTitle: string;
@@ -7,17 +14,27 @@ interface Question {
 }
 
 interface State {
+    title: string;
     questions: Question[];
+    transcript: string;
 }
 
 const initialState: State = {
+    title: '',
     questions: [],
+    transcript: '',
 };
 
 const listenSlice = createSlice({
     name: 'listenExercise',
     initialState,
     reducers: {
+        addTitle: (state, action: PayloadAction<string>) => {
+            state.title = action.payload;
+        },
+        addTranscript: (state, action: PayloadAction<string>) => {
+            state.transcript = action.payload;
+        },
         addQuestion: (state, action: PayloadAction<string>) => {
             state.questions.push({
                 questionTitle: action.payload,
@@ -41,5 +58,5 @@ const listenSlice = createSlice({
     },
 });
 
-export const { addQuestion, addOption, removeQuestion, removeOption, setAnswer } = listenSlice.actions;
+export const { addTitle, addTranscript, addQuestion, addOption, removeQuestion, removeOption, setAnswer } = listenSlice.actions;
 export const listenReducer = listenSlice.reducer;

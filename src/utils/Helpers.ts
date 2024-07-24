@@ -29,3 +29,8 @@ export const hasEmptyFields = (fields: string[]) => {
     // Trả về true nếu có bất kỳ trường nào trống
     return fields.some((field) => field === '');
 };
+
+export const hasEmptyArrays = (arrays: any[]) => {
+    // Sử dụng some để kiểm tra xem có mảng nào rỗng không
+    return arrays.some((arr) => arr.length === 0);
+};

@@ -114,3 +114,9 @@ export enum ListenExerciseTypes {
     MatchingTest = 'MatchingTest',
     GapFill = 'GapFill',
 }
+export enum IconType {
+    VideoLecture = 'videoLecture',
+    Exercise = 'exercise',
+    ListenExercise = 'listenExercise',
+    Test = 'test',
+}

@@ -42,7 +42,7 @@ const ListQuiz: React.FC = () => {
     const handleFileChange = (index: number, event: React.ChangeEvent<HTMLInputElement>) => {
         if (event.target.files && event.target.files[0]) {
             const file = event.target.files[0];
-            context(file, index);
+            context?.handleSetAudioFile(file, index);
             dispatch(updateAudio({ index, answer: audioList[index].answer, otherAnswer: audioList[index].otherAnswer }));
         }
     };

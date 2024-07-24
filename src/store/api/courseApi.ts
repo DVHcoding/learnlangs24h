@@ -2,6 +2,7 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { NewUnitLessonAndListenExercisePayload, NewUnitLessonAndVocaExercisePayload } from 'types/create.coursesApi.types';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -107,7 +108,7 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
-        newUnitLessonAndVocaExercise: builder.mutation<MessageResponse, any>({
+        newUnitLessonAndVocaExercise: builder.mutation<MessageResponse, NewUnitLessonAndVocaExercisePayload>({
             query: ({ title, time, icon, lectureType, exerciseType, lesson, course, vocabularies, sentences, audio, audioFile }) => {
                 const myForm = new FormData();
                 myForm.append('title', title);
@@ -124,6 +125,30 @@ export const courseApi = createApi({
 
                 return {
                     url: 'course/unitlesson/vocaexercise',
+                    method: 'POST',
+                    body: myForm,
+                    formData: true,
+                };
+            },
+            invalidatesTags: ['Courses'],
+        }),
+        newUnitLessonAndListenExercise: builder.mutation<MessageResponse, NewUnitLessonAndListenExercisePayload>({
+            query: ({ title, time, icon, lectureType, exerciseType, lesson, course, questionLabel, questions, transcript, audioFile }) => {
+                const myForm = new FormData();
+                myForm.append('title', title);
+                myForm.append('time', time);
+                myForm.append('icon', icon);
+                myForm.append('lectureType', lectureType);
+                myForm.append('exerciseType', exerciseType);
+                myForm.append('lesson', lesson);
+                myForm.append('course', course);
+                myForm.append('questionLabel', questionLabel);
+                myForm.append('questions', JSON.stringify(questions));
+                myForm.append('transcript', transcript);
+                myForm.append('audio', audioFile);
+
+                return {
+                    url: 'course/unitlesson/listenexercise',
                     method: 'POST',
                     body: myForm,
                     formData: true,
@@ -189,6 +214,7 @@ export const {
     useNewUnitLessonAndVideoLectureContentMutation,
     useNewUnitLessonAndGrammarExerciseMutation,
     useNewUnitLessonAndVocaExerciseMutation,
+    useNewUnitLessonAndListenExerciseMutation,
 
     useUpdateUnitLessonAndVideoLectureMutation,
     useUpdateUnitLessonAndGrammarExerciseMutation,

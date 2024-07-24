@@ -18,12 +18,18 @@ import { resetForm } from '@store/reducer/adminUnitLessonReducer';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import {
     useNewUnitLessonAndGrammarExerciseMutation,
+    useNewUnitLessonAndListenExerciseMutation,
     useNewUnitLessonAndVideoLectureContentMutation,
     useNewUnitLessonAndVocaExerciseMutation,
 } from '@store/api/courseApi';
 import { resetVocaForm } from '@store/reducer/vocaReducer';
+import { hasEmptyArrays, hasEmptyFields } from '@utils/Helpers';
 
-export const AudioFileContext = createContext<any>(null);
+interface AudioFileContextType {
+    handleSetAudioFile: (file: File, index: number) => void;
+    handleSetConversationFile: (file: File) => void;
+}
+export const AudioFileContext = createContext<AudioFileContextType | null>(null);
 
 const CreateUnit: React.FC = () => {
     /* ########################################################################## */
@@ -32,6 +38,7 @@ const CreateUnit: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const { unitForms, videoLecture, exerciseType, fillBlankExercise } = useSelector((state: RootState) => state.adminUnitLesson);
     const { vocabularies, sentences, audio } = useSelector((state: RootState) => state.vocabularies);
+    const { questions, title: questionLabel, transcript } = useSelector((state: RootState) => state.listenExercise);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -41,6 +48,7 @@ const CreateUnit: React.FC = () => {
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
     const [fileInputs, setFileInputs] = useState<File[]>([]);
+    const [conversationFile, setConversationFile] = useState<File>();
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -48,10 +56,25 @@ const CreateUnit: React.FC = () => {
     const [newUnitLessonAndVideoLectureContent, isLoading] = useAsyncMutation(useNewUnitLessonAndVideoLectureContentMutation);
     const [newUnitLessonAndGrammarExercise, newUnitLessonAndGrammarLoading] = useAsyncMutation(useNewUnitLessonAndGrammarExerciseMutation);
     const [newUnitLessonAndVocaExercise, newUnitLessonAndVocaExerciseLoading] = useAsyncMutation(useNewUnitLessonAndVocaExerciseMutation);
+    const [newUnitLessonAndListenExercise, newUnitLessonAndListenExerciseLoading] = useAsyncMutation(
+        useNewUnitLessonAndListenExerciseMutation
+    );
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
+    const contextValue = {
+        handleSetAudioFile: (file: File, index: number) => {
+            setFileInputs((prev) => {
+                const newFileInputs = [...prev];
+                newFileInputs[index] = file;
+                return newFileInputs;
+            });
+        },
+        handleSetConversationFile: (file: File) => {
+            setConversationFile(file);
+        },
+    };
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -94,7 +117,7 @@ const CreateUnit: React.FC = () => {
                 break;
             case LectureType.grammarExercise:
                 // Kiểm tra nếu có bất kỳ trường nào trống hoặc không có câu hỏi
-                if (hasEmptyFields([...commonFields, exerciseType]) || fillBlankExercise.questions.length === 0) {
+                if (hasEmptyFields([...commonFields, exerciseType]) || hasEmptyArrays([fillBlankExercise])) {
                     // Hiển thị thông báo lỗi nếu trống
                     return toastError('Các trường không được bỏ trống!');
                 }
@@ -112,7 +135,13 @@ const CreateUnit: React.FC = () => {
 
                 dispatch(resetForm());
                 break;
+
             case LectureType.vocaExercise:
+                if (hasEmptyFields([...commonFields]) || hasEmptyArrays([vocabularies, sentences, audio]) || !fileInputs) {
+                    // Hiển thị thông báo lỗi nếu trống
+                    return toastError('Các trường không được bỏ trống!');
+                }
+
                 await newUnitLessonAndVocaExercise({
                     title: unitForms.title,
                     time: unitForms.time,
@@ -129,25 +158,35 @@ const CreateUnit: React.FC = () => {
                 dispatch(resetForm());
                 dispatch(resetVocaForm());
                 break;
+
             case LectureType.listenExercise:
+                const commonListenFields = [questionLabel, transcript];
+
+                if (hasEmptyFields([...commonFields, ...commonListenFields]) || hasEmptyArrays([questions]) || !conversationFile) {
+                    // Hiển thị thông báo lỗi nếu trống
+                    return toastError('Các trường không được bỏ trống!');
+                }
+
+                await newUnitLessonAndListenExercise({
+                    title: unitForms.title,
+                    time: unitForms.time,
+                    icon: unitForms.icon,
+                    lectureType: unitForms.lectureType,
+                    exerciseType,
+                    lesson: unitForms.lesson,
+                    course: unitForms.course,
+                    questionLabel,
+                    questions,
+                    transcript,
+                    audioFile: conversationFile,
+                });
+                dispatch(resetForm());
+                dispatch(resetVocaForm());
+
                 break;
             default:
                 break;
         }
-    };
-
-    // Hàm kiểm tra các trường trống
-    const hasEmptyFields = (fields: string[]) => {
-        // Trả về true nếu có bất kỳ trường nào trống
-        return fields.some((field) => field === '');
-    };
-
-    const handleSetAudioFile = (file: File, index: number) => {
-        setFileInputs((prev) => {
-            const newFileInputs = [...prev];
-            newFileInputs[index] = file;
-            return newFileInputs;
-        });
     };
 
     /* ########################################################################## */
@@ -164,24 +203,33 @@ const CreateUnit: React.FC = () => {
                 <div className="flex items-center gap-4">
                     <button
                         className={`${
-                            isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading
+                            isLoading ||
+                            newUnitLessonAndGrammarLoading ||
+                            newUnitLessonAndVocaExerciseLoading ||
+                            newUnitLessonAndListenExerciseLoading
                                 ? 'btn-disabled'
                                 : 'btn-primary'
                         } max-w-max`}
-                        disabled={isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading}
+                        disabled={
+                            isLoading ||
+                            newUnitLessonAndGrammarLoading ||
+                            newUnitLessonAndVocaExerciseLoading ||
+                            newUnitLessonAndListenExerciseLoading
+                        }
                     >
                         Tạo Unit
                     </button>
-                    {(isLoading || newUnitLessonAndGrammarLoading || newUnitLessonAndVocaExerciseLoading) && (
-                        <Loader content="Loading..." />
-                    )}
+                    {(isLoading ||
+                        newUnitLessonAndGrammarLoading ||
+                        newUnitLessonAndVocaExerciseLoading ||
+                        newUnitLessonAndListenExerciseLoading) && <Loader content="Loading..." />}
                 </div>
 
                 {/* UnitForms */}
                 <UnitForms />
 
                 {/* Render Lectures */}
-                <AudioFileContext.Provider value={handleSetAudioFile}>
+                <AudioFileContext.Provider value={contextValue}>
                     <RenderLecturesForms />
                 </AudioFileContext.Provider>
             </form>

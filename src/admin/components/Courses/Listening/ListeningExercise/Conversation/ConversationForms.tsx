@@ -1,22 +1,24 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { addOption, addQuestion, removeOption, removeQuestion, setAnswer } from '@store/reducer/listenReducer';
-import { AppDispatch, RootState } from '@store/store';
 import { Button, Input, Modal, Radio } from 'antd';
 import { Trash2 } from 'lucide-react';
-import { Fragment, useState } from 'react';
+import { Fragment, useContext, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { addOption, addQuestion, addTitle, addTranscript, removeOption, removeQuestion, setAnswer } from '@store/reducer/listenReducer';
+import { AppDispatch, RootState } from '@store/store';
+import { AudioFileContext } from '@admin/components/Courses/CreateUnit';
 
 const ConversationForms: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
+    const context = useContext(AudioFileContext);
     const { questions } = useSelector((state: RootState) => state.listenExercise);
 
     /* ########################################################################## */
@@ -28,7 +30,7 @@ const ConversationForms: React.FC = () => {
     /* ########################################################################## */
     const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
     const [newQuestionTitle, setNewQuestionTitle] = useState<string>('');
-    const [newOptionText, setNewOptionText] = useState<Record<number, string>>('');
+    const [newOptionText, setNewOptionText] = useState<Record<number, string>>({});
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -55,8 +57,15 @@ const ConversationForms: React.FC = () => {
         setIsModalOpen(false);
     };
 
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            context?.handleSetConversationFile(file);
+        }
+    };
+
     const handleAddOption = (questionIndex: number) => {
-        if (newOptionText[questionIndex]) {
+        if (newOptionText[questionIndex]?.trim() !== '') {
             dispatch(addOption({ questionIndex, optionText: newOptionText[questionIndex] }));
             setNewOptionText((preState) => ({ ...preState, [questionIndex]: '' }));
         }
@@ -82,7 +91,6 @@ const ConversationForms: React.FC = () => {
     /*                                  useEffect                                 */
     /* ########################################################################## */
 
-    console.log(questions);
     return (
         <Fragment>
             <Button type="dashed" onClick={showModal}>
@@ -96,17 +104,34 @@ const ConversationForms: React.FC = () => {
                     placeholder="Nhập câu hỏi..."
                     value={newQuestionTitle}
                     onChange={(e) => setNewQuestionTitle(e.target.value)}
+                    required
                 />
             </Modal>
+
+            <input type="file" className="mt-4 block" onChange={handleFileChange} />
 
             <input
                 type="text"
                 className="mt-4 block w-full rounded-md border border-bdCustom bg-bgCustom p-2
                 font-be text-textCustom"
                 placeholder="Nhập tiêu đề..."
+                onChange={(e) => dispatch(addTitle(e.target.value))}
+                required
             />
 
-            <input type="file" className="mt-2" />
+            <textarea
+                className="mt-4 h-[200px] w-full resize-none p-2 text-justify leading-7
+                text-textCustom outline-none"
+                rows={1}
+                spellCheck={false}
+                placeholder="Nhập Transcript..."
+                onChange={(e) => {
+                    // Replace newline characters with <br> tags
+                    const transcript = e.target.value.replace(/\n/g, '<br/>');
+                    dispatch(addTranscript(transcript));
+                }}
+                required
+            />
 
             <ul className="mt-4 flex flex-col gap-5">
                 {questions.map((question, questionIndex) => (
@@ -144,7 +169,7 @@ const ConversationForms: React.FC = () => {
                         </Radio.Group>
 
                         <div className="mt-4 flex items-center gap-4">
-                            <input
+                            <Input
                                 className="w-[20rem] rounded-md border border-bdCustom bg-bgCustom p-[0.3rem]
                                 font-be text-textCustom"
                                 placeholder="Nhập giá trị..."

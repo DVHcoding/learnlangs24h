@@ -213,10 +213,7 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
                 {/* Audio */}
                 <li>
                     <audio controls className="w-full" controlsList="nodownload noplaybackrate">
-                        <source
-                            src="https://res.cloudinary.com/dvwdfsdkp/video/upload/v1720942162/listening_attachments/jzzwamf9iq62whryccmp.mp3"
-                            type="audio/mpeg"
-                        />
+                        <source src={conversationTestContent?.audio.url} type="audio/mpeg" />
                     </audio>
                 </li>
 
