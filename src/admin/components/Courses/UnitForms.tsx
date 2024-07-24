@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // #                           IMPORT Components                            #
 // ##########################################################################
 //@ts-ignore
-import { LectureType } from '@types/types';
+import { IconType, LectureType } from '@types/types';
 import { CourseType, LessonType } from '../../../types/api-types';
 import { AppDispatch, RootState } from '@store/store';
 import { changeUnitForms } from '@store/reducer/adminUnitLessonReducer';
@@ -72,9 +72,10 @@ const UnitForms: React.FC = () => {
                     <option className="hidden" value="">
                         --- Chọn icon ---
                     </option>
-                    <option value={LectureType.videoLecture}>Video Icon</option>
-                    <option value={'exercise'}>Exercise Icon</option>
-                    <option value={LectureType.listenExercise}>Listening Icon</option>
+                    <option value={IconType.VideoLecture}>Video Icon</option>
+                    <option value={IconType.Exercise}>Exercise Icon</option>
+                    <option value={IconType.ListenExercise}>Listening Icon</option>
+                    <option value={IconType.Test}>Test Icon</option>
                 </select>
             </div>
 

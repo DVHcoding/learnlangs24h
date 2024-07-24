@@ -23,7 +23,7 @@ import {
     useNewUnitLessonAndVocaExerciseMutation,
 } from '@store/api/courseApi';
 import { resetVocaForm } from '@store/reducer/vocaReducer';
-import { hasEmptyArrays, hasEmptyFields } from '@utils/Helpers';
+import { hasEmptyArrays, hasEmptyFields, hasLoadingApis } from '@utils/Helpers';
 
 interface AudioFileContextType {
     handleSetAudioFile: (file: File, index: number) => void;
@@ -75,6 +75,13 @@ const CreateUnit: React.FC = () => {
             setConversationFile(file);
         },
     };
+
+    const isLoadingApis = hasLoadingApis([
+        isLoading,
+        newUnitLessonAndGrammarLoading,
+        newUnitLessonAndVocaExerciseLoading,
+        newUnitLessonAndListenExerciseLoading,
+    ]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -201,28 +208,10 @@ const CreateUnit: React.FC = () => {
         <Fragment>
             <form className="flex flex-col gap-4 pb-20" onSubmit={handleCreateNewUnitLesson}>
                 <div className="flex items-center gap-4">
-                    <button
-                        className={`${
-                            isLoading ||
-                            newUnitLessonAndGrammarLoading ||
-                            newUnitLessonAndVocaExerciseLoading ||
-                            newUnitLessonAndListenExerciseLoading
-                                ? 'btn-disabled'
-                                : 'btn-primary'
-                        } max-w-max`}
-                        disabled={
-                            isLoading ||
-                            newUnitLessonAndGrammarLoading ||
-                            newUnitLessonAndVocaExerciseLoading ||
-                            newUnitLessonAndListenExerciseLoading
-                        }
-                    >
+                    <button className={`${isLoadingApis ? 'btn-disabled' : 'btn-primary'} max-w-max`} disabled={isLoadingApis}>
                         Tạo Unit
                     </button>
-                    {(isLoading ||
-                        newUnitLessonAndGrammarLoading ||
-                        newUnitLessonAndVocaExerciseLoading ||
-                        newUnitLessonAndListenExerciseLoading) && <Loader content="Loading..." />}
+                    {isLoadingApis && <Loader content="Loading..." />}
                 </div>
 
                 {/* UnitForms */}

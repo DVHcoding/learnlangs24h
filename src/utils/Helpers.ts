@@ -24,13 +24,17 @@ export function removeNonLetters(inputString: string | null | undefined): string
     return result;
 }
 
-// Hàm kiểm tra các trường trống
-export const hasEmptyFields = (fields: string[]) => {
-    // Trả về true nếu có bất kỳ trường nào trống
+// Hàm kiểm tra xem phần tử trong mảng có rỗng không
+export const hasEmptyFields = (fields: string[]): boolean => {
     return fields.some((field) => field === '');
 };
 
-export const hasEmptyArrays = (arrays: any[]) => {
-    // Sử dụng some để kiểm tra xem có mảng nào rỗng không
+// Hàm kiểm tra xem phần tử trong mảng có length === 0 hay không
+export const hasEmptyArrays = (arrays: any[]): boolean => {
     return arrays.some((arr) => arr.length === 0);
+};
+
+// Hàm kiểm tra xem phần tử trong mảng có trả về true hay không
+export const hasLoadingApis = (arrays: boolean[]): boolean => {
+    return arrays.some((arr) => arr === true);
 };
