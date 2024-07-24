@@ -187,6 +187,13 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        deleteUnitLessonAndListenExercise: builder.mutation<MessageResponse, string>({
+            query: (unitId) => ({
+                url: `course/unitlesson/listenexercise?unitId=${unitId}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Courses'],
+        }),
         deleteUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
                 url: `course/unitlesson/grammarexercise?unitId=${unitId}`,
@@ -220,6 +227,7 @@ export const {
     useUpdateUnitLessonAndGrammarExerciseMutation,
 
     useDeleteUnitLessonAndVideoLectureContentMutation,
+    useDeleteUnitLessonAndListenExerciseMutation,
     useDeleteUnitLessonAndGrammarExerciseMutation,
 } = courseApi;
 

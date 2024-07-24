@@ -13,6 +13,7 @@ import type { TableProps } from 'antd';
 import CreateUnit from '@admin/components/Courses/CreateUnit';
 import {
     useDeleteUnitLessonAndGrammarExerciseMutation,
+    useDeleteUnitLessonAndListenExerciseMutation,
     useDeleteUnitLessonAndVideoLectureContentMutation,
     useGetAllUnitLessonsByLessonIdQuery,
 } from '@store/api/courseApi';
@@ -21,6 +22,7 @@ import { toastError } from '@components/Toast/Toasts';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 //@ts-ignore
 import { LectureType } from '@types/types';
+import { hasLoadingApis } from '@utils/Helpers';
 
 interface DataType {
     _id: string;
@@ -61,6 +63,9 @@ const UnitLesson: React.FC = () => {
     );
     const [deleteUnitLessonAndGrammarExercise, deleteUnitLessonAndGrammarExerciseLoading] = useAsyncMutation(
         useDeleteUnitLessonAndGrammarExerciseMutation
+    );
+    const [deleteUnitLessonAndListenExercise, deleteUnitLessonAndListenExerciseLoading] = useAsyncMutation(
+        useDeleteUnitLessonAndListenExerciseMutation
     );
 
     /* ########################################################################## */
@@ -111,7 +116,7 @@ const UnitLesson: React.FC = () => {
                     </Link>
                     <Popconfirm
                         title="Sure to delete?"
-                        disabled={deleteUnitLessonAndVideoLectureContentLoading || deleteUnitLessonAndGrammarExerciseLoading}
+                        disabled={isLoadingApis}
                         onConfirm={() => handleDeleteUnitLesson(record?.lectureType, record?._id)}
                     >
                         <p className="cursor-pointer transition-all hover:text-red-600 hover:underline">Delete</p>
@@ -136,6 +141,12 @@ const UnitLesson: React.FC = () => {
         }));
     }
 
+    const isLoadingApis = hasLoadingApis([
+        deleteUnitLessonAndVideoLectureContentLoading,
+        deleteUnitLessonAndGrammarExerciseLoading,
+        deleteUnitLessonAndListenExerciseLoading,
+    ]);
+
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
@@ -155,6 +166,7 @@ const UnitLesson: React.FC = () => {
                 case LectureType.vocaExercise:
                     break;
                 case LectureType.listenExercise:
+                    await deleteUnitLessonAndListenExercise(unitId);
                     break;
                 default:
                     break;
