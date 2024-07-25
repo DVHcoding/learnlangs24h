@@ -1,4 +1,31 @@
 /* -------------------------------------------------------------------------- */
+/*                                   SHARED                                   */
+/* -------------------------------------------------------------------------- */
+interface UnitLessonTypes {
+    _id: string;
+    title: string;
+    time: string;
+    icon: string;
+    course: string;
+    lesson: string;
+    lectureType: string;
+}
+
+export interface Question {
+    questionTitle: string;
+    options: Option[] | string[];
+    answer: string;
+}
+
+export interface Option {
+    image: {
+        public_id: string;
+        url: string;
+    };
+    text: string;
+}
+
+/* -------------------------------------------------------------------------- */
 /*                 update unitlesson and videolecture content                 */
 /* -------------------------------------------------------------------------- */
 export interface UpdateUnitLessonAndVideoLecturePayloadType {
@@ -55,4 +82,13 @@ interface IAudio {
     url?: string;
     answer: string;
     otherAnswer: string;
+}
+
+/* -------------------------------------------------------------------------- */
+/*                     update unitLesson and listenExercise                   */
+/* -------------------------------------------------------------------------- */
+export interface UpdateUnitLessonAndListenExercisePayloadTypes extends UnitLessonTypes {
+    questions: Question;
+    questionLabel: string;
+    transcript: string;
 }

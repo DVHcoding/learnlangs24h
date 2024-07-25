@@ -11,22 +11,24 @@ import { Loader } from 'rsuite';
 // #                           IMPORT Components                            #
 // ##########################################################################
 import UnitForms from '../../UnitForms';
-import { useGetUnitLessonByIdQuery, useGetVocaExerciseQuery, useUpdateUnitLessonAndVocaExerciseMutation } from '@store/api/courseApi';
+import { useGetListenExerciseQuery, useGetUnitLessonByIdQuery, useUpdateUnitLessonAndListenExerciseMutation } from '@store/api/courseApi';
 import { AppDispatch, RootState } from '@store/store';
 import { changeEditableForms } from '@store/reducer/adminUnitLessonReducer';
-import VocaExerciseForms from './VocaExerciseForms';
-import { Card, IAudio, setAudios, setSentences, setVocabularies } from '@store/reducer/vocaReducer';
-import { hasEmptyArrays, hasEmptyFields } from '@utils/Helpers';
+import { hasEmptyFields } from '@utils/Helpers';
 import { toastError } from '@components/Toast/Toasts';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import ConversationForms from './Conversation/ConversationForms';
+//@ts-ignore
+import { ListenExerciseTypes } from '@types/types';
+import { addTitle, addTranscript, setQuestions } from '@store/reducer/listenReducer';
 
-const VocaEditableForms: React.FC = () => {
+const ListenEditableForms: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
     const { unitForms } = useSelector((state: RootState) => state.adminUnitLesson);
-    const { vocabularies, sentences, audio } = useSelector((state: RootState) => state.vocabularies);
+    const { title: questionLabel, questions, transcript } = useSelector((state: RootState) => state.listenExercise);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -41,13 +43,14 @@ const VocaEditableForms: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: unitLessonData } = useGetUnitLessonByIdQuery(unitId, { skip: !unitId });
-    const { data: vocaExerciseData } = useGetVocaExerciseQuery(unitId, { skip: !unitId });
+    const { data: listenExerciseData } = useGetListenExerciseQuery(unitId, { skip: !unitId });
 
-    const [updateUnitLessonAndVocaExercise, isLoading] = useAsyncMutation(useUpdateUnitLessonAndVocaExerciseMutation);
+    const [updateUnitLessonAndListenExercise, isLoading] = useAsyncMutation(useUpdateUnitLessonAndListenExerciseMutation);
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
 
+    console.log(listenExerciseData);
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
@@ -59,15 +62,24 @@ const VocaEditableForms: React.FC = () => {
         }
 
         if (
-            hasEmptyFields([unitForms.title, unitForms.time, unitForms.icon, unitForms.course, unitForms.lesson, unitForms.lectureType]) ||
-            hasEmptyArrays([vocabularies, sentences, audio])
+            hasEmptyFields([
+                unitForms.title,
+                unitForms.time,
+                unitForms.icon,
+                unitForms.course,
+                unitForms.lesson,
+                unitForms.lectureType,
+                questionLabel,
+                transcript,
+            ]) ||
+            hasEmptyFields([questions])
         ) {
             toastError('Please Enter All Fields');
             return;
         }
 
         try {
-            await updateUnitLessonAndVocaExercise({
+            await updateUnitLessonAndListenExercise({
                 _id: unitId,
                 title: unitForms.title,
                 time: unitForms.time,
@@ -75,13 +87,12 @@ const VocaEditableForms: React.FC = () => {
                 course: unitForms.course,
                 lesson: unitForms.lesson,
                 lectureType: unitForms.lectureType,
-                // Lọc ra (chỉ giữ lại thẻ có nội dung)
-                vocabularies: vocabularies.filter((vocabulary: Card) => vocabulary.english && vocabulary.vietnamese),
-                sentences: sentences.filter((sentence: Card) => sentence.english && sentence.vietnamese),
-                audio: audio.filter((item: IAudio) => item.answer && item.otherAnswer),
+                questionLabel,
+                questions,
+                transcript,
             });
         } catch (error) {
-            toastError('Có lỗi xảy ra!');
+            toastError(`Có lỗi xảy ra!: ${error}`);
         }
     };
 
@@ -94,7 +105,7 @@ const VocaEditableForms: React.FC = () => {
     /* ########################################################################## */
 
     useEffect(() => {
-        if (!unitId || !courseId || !vocaExerciseData?.success) {
+        if (!unitId || !courseId || !listenExerciseData?.success) {
             return;
         }
 
@@ -109,10 +120,10 @@ const VocaEditableForms: React.FC = () => {
             })
         );
 
-        dispatch(setVocabularies(vocaExerciseData?.vocaExercise.vocabularies));
-        dispatch(setSentences(vocaExerciseData?.vocaExercise.sentences));
-        dispatch(setAudios(vocaExerciseData?.vocaExercise.quiz.audio));
-    }, [dispatch, unitId, unitLessonData, vocaExerciseData]);
+        dispatch(addTitle(listenExerciseData.listeningExercise.type.title));
+        dispatch(addTranscript(listenExerciseData.listeningExercise.type.transcript));
+        dispatch(setQuestions(listenExerciseData.listeningExercise.type.questions));
+    }, [dispatch, unitId, unitLessonData, listenExerciseData]);
 
     return (
         <div>
@@ -140,7 +151,14 @@ const VocaEditableForms: React.FC = () => {
                         key: '2',
                         children: (
                             <div>
-                                <VocaExerciseForms />
+                                {(() => {
+                                    switch (listenExerciseData?.listeningExercise.exerciseType) {
+                                        case ListenExerciseTypes.Conversation:
+                                            return <ConversationForms />;
+                                        default:
+                                            return null;
+                                    }
+                                })()}
                             </div>
                         ),
                     },
@@ -155,4 +173,4 @@ const VocaEditableForms: React.FC = () => {
     );
 };
 
-export default VocaEditableForms;
+export default ListenEditableForms;

@@ -25,7 +25,7 @@ export function removeNonLetters(inputString: string | null | undefined): string
 }
 
 // Hàm kiểm tra xem phần tử trong mảng có rỗng không
-export const hasEmptyFields = (fields: string[]): boolean => {
+export const hasEmptyFields = (fields: any[]): boolean => {
     return fields.some((field) => field === '');
 };
 

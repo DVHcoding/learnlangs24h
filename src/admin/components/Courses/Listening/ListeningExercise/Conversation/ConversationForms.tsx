@@ -19,7 +19,7 @@ const ConversationForms: React.FC = () => {
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
     const context = useContext(AudioFileContext);
-    const { questions } = useSelector((state: RootState) => state.listenExercise);
+    const { questions, title, transcript } = useSelector((state: RootState) => state.listenExercise);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -111,6 +111,7 @@ const ConversationForms: React.FC = () => {
             <input type="file" className="mt-4 block" onChange={handleFileChange} />
 
             <input
+                value={title || ''}
                 type="text"
                 className="mt-4 block w-full rounded-md border border-bdCustom bg-bgCustom p-2
                 font-be text-textCustom"
@@ -122,6 +123,7 @@ const ConversationForms: React.FC = () => {
             <textarea
                 className="mt-4 h-[200px] w-full resize-none p-2 text-justify leading-7
                 text-textCustom outline-none"
+                value={transcript.replace(/<br\s*\/?>/g, '\n') || ''}
                 rows={1}
                 spellCheck={false}
                 placeholder="Nhập Transcript..."

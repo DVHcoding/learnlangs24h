@@ -25,6 +25,7 @@ import {
 import { GetUnitLessonIdByUserProcessPayload, GetUnitLessonIdByUserProcessResponseType } from 'types/types';
 import {
     UpdateUnitLessonAndGrammarExercisePayloadTypes,
+    UpdateUnitLessonAndListenExercisePayloadTypes,
     UpdateUnitLessonAndVideoLecturePayloadType,
     UpdateUnitLessonAndVocaExercisePayloadTypes,
 } from 'types/update.coursesApi.types';
@@ -188,6 +189,14 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        updateUnitLessonAndListenExercise: builder.mutation<MessageResponse, UpdateUnitLessonAndListenExercisePayloadTypes>({
+            query: (payload) => ({
+                url: 'course/unitlesson/listenexercise',
+                method: 'PATCH',
+                body: payload,
+            }),
+            invalidatesTags: ['Courses'],
+        }),
 
         /* -------------------------------------------------------------------------- */
         /*                                   DELETE                                   */
@@ -245,6 +254,7 @@ export const {
     useUpdateUnitLessonAndVideoLectureMutation,
     useUpdateUnitLessonAndGrammarExerciseMutation,
     useUpdateUnitLessonAndVocaExerciseMutation,
+    useUpdateUnitLessonAndListenExerciseMutation,
 
     useDeleteUnitLessonAndVideoLectureContentMutation,
     useDeleteUnitLessonAndGrammarExerciseMutation,

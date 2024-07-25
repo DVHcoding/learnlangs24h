@@ -29,6 +29,9 @@ const listenSlice = createSlice({
     name: 'listenExercise',
     initialState,
     reducers: {
+        setQuestions: (state, action: PayloadAction<any>) => {
+            state.questions = action.payload;
+        },
         addTitle: (state, action: PayloadAction<string>) => {
             state.title = action.payload;
         },
@@ -58,5 +61,6 @@ const listenSlice = createSlice({
     },
 });
 
-export const { addTitle, addTranscript, addQuestion, addOption, removeQuestion, removeOption, setAnswer } = listenSlice.actions;
+export const { setQuestions, addTitle, addTranscript, addQuestion, addOption, removeQuestion, removeOption, setAnswer } =
+    listenSlice.actions;
 export const listenReducer = listenSlice.reducer;
