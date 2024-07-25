@@ -4,11 +4,14 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 export interface Card {
+    _id?: string;
     english: string;
     vietnamese: string;
 }
 
 export interface IAudio {
+    public_id?: string;
+    url?: string;
     answer: string;
     otherAnswer: string;
 }
@@ -41,6 +44,16 @@ const vocaSlice = createSlice({
     name: 'vocabularies',
     initialState,
     reducers: {
+        setVocabularies: (state, action: PayloadAction<Card[]>) => {
+            state.vocabularies = action.payload;
+        },
+        setSentences: (state, action: PayloadAction<Card[]>) => {
+            state.sentences = action.payload;
+        },
+        setAudios: (state, action: PayloadAction<IAudio[]>) => {
+            state.audio = action.payload;
+        },
+
         addCard: (state) => {
             state.vocabularies.push({ english: '', vietnamese: '' });
         },
@@ -100,6 +113,9 @@ const vocaSlice = createSlice({
 });
 
 export const {
+    setVocabularies,
+    setSentences,
+    setAudios,
     addCard,
     updateCard,
     removeCard,

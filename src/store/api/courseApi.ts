@@ -2,11 +2,11 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { NewUnitLessonAndListenExercisePayload, NewUnitLessonAndVocaExercisePayload } from 'types/create.coursesApi.types';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { NewUnitLessonAndListenExercisePayload, NewUnitLessonAndVocaExercisePayload } from 'types/create.coursesApi.types';
 import {
     AllCoursesResponseType,
     AllLessonsResponseType,
@@ -23,7 +23,11 @@ import {
     VocaExerciseResponseTypes,
 } from 'types/api-types';
 import { GetUnitLessonIdByUserProcessPayload, GetUnitLessonIdByUserProcessResponseType } from 'types/types';
-import { UpdateUnitLessonAndGrammarExercisePayloadTypes, UpdateUnitLessonAndVideoLecturePayloadType } from 'types/update.coursesApi.types';
+import {
+    UpdateUnitLessonAndGrammarExercisePayloadTypes,
+    UpdateUnitLessonAndVideoLecturePayloadType,
+    UpdateUnitLessonAndVocaExercisePayloadTypes,
+} from 'types/update.coursesApi.types';
 
 export const courseApi = createApi({
     reducerPath: 'courseApi',
@@ -176,6 +180,14 @@ export const courseApi = createApi({
             }),
             invalidatesTags: ['Courses'],
         }),
+        updateUnitLessonAndVocaExercise: builder.mutation<MessageResponse, UpdateUnitLessonAndVocaExercisePayloadTypes>({
+            query: (payload) => ({
+                url: 'course/unitlesson/vocaexercise',
+                method: 'PATCH',
+                body: payload,
+            }),
+            invalidatesTags: ['Courses'],
+        }),
 
         /* -------------------------------------------------------------------------- */
         /*                                   DELETE                                   */
@@ -232,6 +244,7 @@ export const {
 
     useUpdateUnitLessonAndVideoLectureMutation,
     useUpdateUnitLessonAndGrammarExerciseMutation,
+    useUpdateUnitLessonAndVocaExerciseMutation,
 
     useDeleteUnitLessonAndVideoLectureContentMutation,
     useDeleteUnitLessonAndGrammarExerciseMutation,

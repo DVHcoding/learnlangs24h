@@ -11,6 +11,7 @@ import { useGetUnitLessonByIdQuery } from '@store/api/courseApi';
 import { LectureType } from '@types/types';
 import RenderExerciseForms from '../Courses/Grammar/GrammarExercise/RenderExerciseForms';
 import VideoLectureEditable from '../Courses/Grammar/GrammarVideo/VideoLectureEditable';
+import VocaEditableForms from '../Courses/Listening/ListeningVocabulary/VocaEditableForms';
 
 const RenderEditableForms: React.FC = () => {
     const { unitId } = useParams<string>();
@@ -22,9 +23,9 @@ const RenderEditableForms: React.FC = () => {
             return <RenderExerciseForms />;
         case LectureType.videoLecture:
             return <VideoLectureEditable />;
-        case LectureType.listenExercise:
-            break;
         case LectureType.vocaExercise:
+            return <VocaEditableForms />;
+        case LectureType.listenExercise:
             break;
         default:
             break;

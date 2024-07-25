@@ -27,3 +27,32 @@ interface QuestionType {
     correctAnswer: string[];
     otherAnswer: string[];
 }
+
+/* -------------------------------------------------------------------------- */
+/*                     update unitLesson and vocaExercise                     */
+/* -------------------------------------------------------------------------- */
+export interface UpdateUnitLessonAndVocaExercisePayloadTypes {
+    _id: string;
+    title: string;
+    time: string;
+    icon: string;
+    course: string;
+    lesson: string;
+    lectureType: string;
+    vocabularies: Card[];
+    sentences: Card[];
+    audio: IAudio[];
+}
+
+interface Card {
+    _id?: string;
+    english: string;
+    vietnamese: string;
+}
+
+interface IAudio {
+    public_id?: string;
+    url?: string;
+    answer: string;
+    otherAnswer: string;
+}
