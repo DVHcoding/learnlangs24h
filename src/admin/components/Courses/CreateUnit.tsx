@@ -22,7 +22,7 @@ import {
     useNewUnitLessonAndVideoLectureContentMutation,
     useNewUnitLessonAndVocaExerciseMutation,
 } from '@store/api/courseApi';
-import { resetVocaForm } from '@store/reducer/vocaReducer';
+import { Card, IAudio, resetVocaForm } from '@store/reducer/vocaReducer';
 import { hasEmptyArrays, hasEmptyFields, hasLoadingApis } from '@utils/Helpers';
 
 interface AudioFileContextType {
@@ -157,9 +157,9 @@ const CreateUnit: React.FC = () => {
                     exerciseType,
                     lesson: unitForms.lesson,
                     course: unitForms.course,
-                    vocabularies: vocabularies,
-                    sentences: sentences,
-                    audio: audio,
+                    vocabularies: vocabularies.filter((vocabulary: Card) => vocabulary.english && vocabulary.vietnamese),
+                    sentences: sentences.filter((sentence: Card) => sentence.english && sentence.vietnamese),
+                    audio: audio.filter((item: IAudio) => item.answer && item.otherAnswer),
                     audioFile: fileInputs,
                 });
                 dispatch(resetForm());
