@@ -12,6 +12,7 @@ import { ListenExerciseTypes } from '@types/types';
 import { RootState } from '@store/store';
 import { changeExerciseType } from '@store/reducer/adminUnitLessonReducer';
 import ConversationForms from './Conversation/ConversationForms';
+import PictureTestForms from './PicturesTest/PictureTestForms';
 
 const ListenExerciseForms: React.FC = () => {
     const dispatch = useDispatch();
@@ -52,7 +53,12 @@ const ListenExerciseForms: React.FC = () => {
                                 <ConversationForms />
                             </div>
                         );
-
+                    case ListenExerciseTypes.PicturesTest:
+                        return (
+                            <div className="rounded-md bg-bgCustomCard p-4">
+                                <PictureTestForms />
+                            </div>
+                        );
                     default:
                         return null;
                 }

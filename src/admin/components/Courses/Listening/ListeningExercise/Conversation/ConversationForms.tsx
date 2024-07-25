@@ -121,8 +121,8 @@ const ConversationForms: React.FC = () => {
             />
 
             <textarea
-                className="mt-4 h-[200px] w-full resize-none p-2 text-justify leading-7
-                text-textCustom outline-none"
+                className="mt-4 h-[200px] w-full resize-none border border-bdCustom bg-bgCustom
+                p-2 text-justify leading-7 text-textCustom outline-none"
                 value={transcript.replace(/<br\s*\/?>/g, '\n') || ''}
                 rows={1}
                 spellCheck={false}

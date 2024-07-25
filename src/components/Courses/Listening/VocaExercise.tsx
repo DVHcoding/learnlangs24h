@@ -1,6 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
+import loadable from '@loadable/component';
 import { Fragment, useState } from 'react';
 import { Alert } from 'antd';
 import { ArrowLeft, ArrowRight } from 'lucide-react';
@@ -13,7 +14,7 @@ import { useLocation, useNavigate, useSearchParams } from 'react-router-dom';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import Flashcard from '@components/Courses/Listening/FlashCard';
+const Flashcard = loadable(() => import('@components/Courses/Listening/FlashCard'));
 import { useGetVocaExerciseQuery } from '@store/api/courseApi';
 
 interface VocabularyType {

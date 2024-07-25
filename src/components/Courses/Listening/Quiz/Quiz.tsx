@@ -15,6 +15,7 @@ import { useDispatch } from 'react-redux';
 // ##########################################################################
 const HelpComments = loadable(() => import('@components/Shared/HelpComments'));
 const LessonCard = loadable(() => import('@components/Courses/LessonCard/LessonCard'));
+const AudioWaveform = loadable(() => import('./AudioWaveform'));
 
 import {
     useGetAllLessonsByCourseIdQuery,
@@ -25,7 +26,6 @@ import {
     useLazyGetUnitLessonIdByUserProcessQuery,
 } from '@store/api/courseApi';
 import { useUserDetailsQuery } from '@store/api/userApi';
-import AudioWaveform from './AudioWaveform';
 import Congratulations from '@assets/animations/Congratulations.json';
 import { removeNonLetters } from '@utils/Helpers';
 import { useUnitLessonProcess } from '@hooks/useUnitLessonProcess';
