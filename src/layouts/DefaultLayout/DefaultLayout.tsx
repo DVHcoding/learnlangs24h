@@ -2,7 +2,7 @@
 // #       IMPORT Npm
 // ##################################
 import loadable from '@loadable/component';
-import { Spin } from 'antd';
+import DotLoader from '@pages/Loader/DotLoader';
 import { ReactNode } from 'react';
 
 // ##################################
@@ -10,7 +10,11 @@ import { ReactNode } from 'react';
 // ##################################
 const Navbar = loadable(() => import('@pages/Header/Navbar'));
 const Sidebar = loadable(() => import('@pages/Sidebar/Sidebar'), {
-    fallback: <Spin className="max-w-max translate-x-[50%] translate-y-[50%]" />,
+    fallback: (
+        <div className="fixed left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform">
+            <DotLoader />
+        </div>
+    ),
 });
 
 // ##################################

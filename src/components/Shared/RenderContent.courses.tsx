@@ -1,7 +1,6 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { Spin } from 'antd';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -13,6 +12,7 @@ import ListenExercise from '@components/Courses/Listening/ListenExercise/ListenE
 import GrammarExercise from '@components/Courses/Grammar/GrammarExercise/GrammarExercise';
 //@ts-ignore
 import { LectureType } from '@types/types';
+import DotLoader from '@pages/Loader/DotLoader';
 
 interface RenderContentProps {
     unitLesson: UnitLessonType | undefined;
@@ -31,7 +31,7 @@ const RenderContent: React.FC<RenderContentProps> = ({ unitLesson }) => {
         default:
             return (
                 <div className="fixed left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transform">
-                    <Spin />
+                    <DotLoader />
                 </div>
             );
     }
