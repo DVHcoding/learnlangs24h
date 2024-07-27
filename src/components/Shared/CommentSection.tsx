@@ -128,7 +128,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
 
     return (
         <div className="rounded-md bg-bgCustomCard p-2">
-            {comments.map((comment) => (
+            {comments.map((comment: CommentType) => (
                 <Comment key={comment._id} comment={comment} replies={comment.replies || []} addReply={addReply} />
             ))}
         </div>

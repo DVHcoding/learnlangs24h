@@ -49,7 +49,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const handleReply = ():void => {
+    const handleReply = (): void => {
         if (replyText.trim()) {
             addReply(comment._id, replyText);
             setReplyText('');
@@ -58,7 +58,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
         }
     };
 
-    const toggleReplies = ():void => {
+    const toggleReplies = (): void => {
         setShowReplies(!showReplies);
     };
 
@@ -120,6 +120,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
                             >
                                 Hủy
                             </button>
+
                             <button onClick={handleReply} className="rounded bg-blue-500 px-3 py-1 text-white hover:bg-blue-600">
                                 Gửi
                             </button>
