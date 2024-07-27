@@ -9,7 +9,7 @@ import { useDispatch, useSelector } from 'react-redux';
 // #                           IMPORT Components                            #
 // ##########################################################################
 //@ts-ignore
-import { LectureType } from '@types/types';
+import { LectureType, ListenExerciseTypes } from '@types/types';
 import UnitForms from './UnitForms';
 import RenderLecturesForms from '@admin/components/Shared/RenderLecturesForms';
 import { AppDispatch, RootState } from '@store/store';
@@ -38,7 +38,7 @@ const CreateUnit: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const { unitForms, videoLecture, exerciseType, fillBlankExercise } = useSelector((state: RootState) => state.adminUnitLesson);
     const { vocabularies, sentences, audio } = useSelector((state: RootState) => state.vocabularies);
-    const { questions, title: questionLabel, transcript } = useSelector((state: RootState) => state.listenExercise);
+    const { questions, title: questionLabel, transcript, questionsPictures } = useSelector((state: RootState) => state.listenExercise);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -169,24 +169,56 @@ const CreateUnit: React.FC = () => {
             case LectureType.listenExercise:
                 const commonListenFields = [questionLabel, transcript];
 
-                if (hasEmptyFields([...commonFields, ...commonListenFields]) || hasEmptyArrays([questions]) || !conversationFile) {
-                    // Hiển thị thông báo lỗi nếu trống
-                    return toastError('Các trường không được bỏ trống!');
+                switch (exerciseType) {
+                    case ListenExerciseTypes.Conversation:
+                        if (hasEmptyFields([...commonFields, ...commonListenFields]) || hasEmptyArrays([questions]) || !conversationFile) {
+                            // Hiển thị thông báo lỗi nếu trống
+                            return toastError('Các trường không được bỏ trống!');
+                        }
+
+                        await newUnitLessonAndListenExercise({
+                            title: unitForms.title,
+                            time: unitForms.time,
+                            icon: unitForms.icon,
+                            lectureType: unitForms.lectureType,
+                            exerciseType,
+                            lesson: unitForms.lesson,
+                            course: unitForms.course,
+                            questionLabel,
+                            questions,
+                            transcript,
+                            audioFile: conversationFile,
+                        });
+                        break;
+
+                    case ListenExerciseTypes.PicturesTest:
+                        if (
+                            hasEmptyFields([...commonFields, ...commonListenFields]) ||
+                            hasEmptyArrays([questionsPictures]) ||
+                            !conversationFile
+                        ) {
+                            // Hiển thị thông báo lỗi nếu trống
+                            return toastError('Các trường không được bỏ trống!');
+                        }
+
+                        await newUnitLessonAndListenExercise({
+                            title: unitForms.title,
+                            time: unitForms.time,
+                            icon: unitForms.icon,
+                            lectureType: unitForms.lectureType,
+                            exerciseType,
+                            lesson: unitForms.lesson,
+                            course: unitForms.course,
+                            questionLabel,
+                            questions: questionsPictures,
+                            transcript,
+                            audioFile: conversationFile,
+                        });
+                        break;
+                    default:
+                        break;
                 }
 
-                await newUnitLessonAndListenExercise({
-                    title: unitForms.title,
-                    time: unitForms.time,
-                    icon: unitForms.icon,
-                    lectureType: unitForms.lectureType,
-                    exerciseType,
-                    lesson: unitForms.lesson,
-                    course: unitForms.course,
-                    questionLabel,
-                    questions,
-                    transcript,
-                    audioFile: conversationFile,
-                });
                 dispatch(resetForm());
                 dispatch(resetVocaForm());
 

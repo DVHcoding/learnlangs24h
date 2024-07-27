@@ -256,67 +256,6 @@ const ConversationTest: React.FC<ConversationTestProps> = ({ ListenExerciseData 
                             </Radio.Group>
                         </div>
                     ))}
-
-                    {/* 
-                    <div>
-                        <h3 className="font-sans font-medium leading-tight text-textCustomName">
-                            Why is Mark not going to buy a new car right now?
-                        </h3>
-
-                        <Radio.Group className="mt-2">
-                            <Space direction="vertical">
-                                <Radio value={1} className="text-base text-textCustom">
-                                    Because their family car is very old
-                                </Radio>
-                                <Radio value={2} className="text-base text-textCustom">
-                                    Because their family car is very new
-                                </Radio>
-                                <Radio value={3} className="text-base text-textCustom">
-                                    Because he wants to save money
-                                </Radio>
-                            </Space>
-                        </Radio.Group>
-                    </div>
-
-                    <div>
-                        <h3 className="font-sans font-medium leading-tight text-textCustomName">
-                            What is Mark going to buy for his son, Richy?
-                        </h3>
-
-                        <Radio.Group className="mt-2">
-                            <Space direction="vertical">
-                                <Radio value={1} className="text-base text-textCustom">
-                                    A new bike
-                                </Radio>
-                                <Radio value={2} className="text-base text-textCustom">
-                                    A new car
-                                </Radio>
-                                <Radio value={3} className="text-base text-textCustom">
-                                    New furniture for his room
-                                </Radio>
-                            </Space>
-                        </Radio.Group>
-                    </div>
-
-                    <div>
-                        <h3 className="font-sans font-medium leading-tight text-textCustomName">
-                            What is Mark going to do for his daughter?
-                        </h3>
-
-                        <Radio.Group className="mt-2">
-                            <Space direction="vertical">
-                                <Radio value={1} className="text-base text-textCustom">
-                                    Buy a new bike
-                                </Radio>
-                                <Radio value={2} className="text-base text-textCustom">
-                                    Plan a family vacation
-                                </Radio>
-                                <Radio value={3} className="text-base text-textCustom">
-                                    Buy new furniture for her room
-                                </Radio>
-                            </Space>
-                        </Radio.Group>
-                    </div> */}
                 </li>
             </ul>
 

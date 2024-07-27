@@ -72,8 +72,8 @@ const Sidebar: React.FC = () => {
 
     return (
         <div
-            className={`scrollbar z-20 h-full w-[240px] overflow-auto overflow-x-hidden 
-            border-r-2 border-bdCustom transition-all duration-200 ease-cubic-out 
+            className={`scrollbar z-20 h-full w-[240px] overflow-auto overflow-x-hidden
+            border-r-2 border-bdCustom transition-all duration-200 ease-cubic-out
             ${expanded ? 'phone:fixed phone:z-20 pm:fixed' : 'w-[3.8rem]'}`}
         >
             <Sidenav defaultOpenKeys={['3', '4']} expanded={expanded} className="h-full bg-bgCustom">
@@ -86,7 +86,7 @@ const Sidebar: React.FC = () => {
                                     height={16}
                                     src={Logo}
                                     alt="logo"
-                                    className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''} 
+                                    className={`mb-8 ml-4 mt-6 w-16 select-none ${!expanded ? 'sm:ml-1 sm:w-12 md:ml-1 md:w-12' : ''}
                                     sm:mb-4 phone:mb-2 phone:ml-2 phone:w-10`}
                                 />
                             </Link>
@@ -108,7 +108,7 @@ const Sidebar: React.FC = () => {
                         <Nav.Item
                             onClick={() => redirect('/')}
                             eventKey="2"
-                            className={`bg-bgCustom before:absolute ${activePage === '/' ? 'before:h-8' : 'before:h-0'} before:bottom-2 
+                            className={`bg-bgCustom before:absolute ${activePage === '/' ? 'before:h-8' : 'before:h-0'} before:bottom-2
                             before:left-0 before:w-[3px] before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             icon={<DashboardIcon />}
                         >
@@ -197,7 +197,7 @@ const Sidebar: React.FC = () => {
 
                             <Nav.Item
                                 eventKey="7-2"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                               before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
                                 <span className="text-textCustom transition-all hover:text-[#8bbf64]">TOEIC</span>
@@ -229,7 +229,7 @@ const Sidebar: React.FC = () => {
 
                             <Nav.Item
                                 eventKey="8-2"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
+                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
                               before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
                                 <span className="text-textCustom transition-all hover:text-[#8bbf64]">Type & Music</span>

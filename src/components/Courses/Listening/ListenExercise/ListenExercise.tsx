@@ -35,7 +35,7 @@ const ListenExercise: React.FC = () => {
         case ListenExerciseTypes.PicturesTest:
             return (
                 <div className="p-2">
-                    <PicturesTest />
+                    <PicturesTest ListenExerciseData={ListenExerciseData} />
                 </div>
             );
         case ListenExerciseTypes.MatchingTest:
