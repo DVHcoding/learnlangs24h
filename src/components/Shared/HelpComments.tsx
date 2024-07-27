@@ -9,6 +9,22 @@ import { Avatar, Drawer } from 'antd';
 // #                           IMPORT Components                            #
 // ##########################################################################
 import { APIResponse } from 'types/api-types';
+import commentsData from './Comments.json';
+import CommentSection from './CommentSection';
+
+interface CommentType {
+    _id: string;
+    message: string;
+    parentId: string | null;
+    createAt: string;
+    user: User;
+    replies?: CommentType[];
+}
+
+interface User {
+    _id: string;
+    name: string;
+}
 
 const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ userDetailsData }) => {
     /* ########################################################################## */
@@ -62,9 +78,22 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
             </div>
 
             <Drawer onClose={onClose} open={open} width={600} styles={headerDrawerStyles}>
-                <div className="flex items-center gap-2">
-                    <Avatar src={userDetailsData?.user?.photo?.url} className="min-h-10 min-w-10 object-cover" />
-                    <input type="text" className="w-full rounded-md bg-[#f6f7fb] p-2" placeholder="Nhập bình luận tại đây" />
+                <div className="px-2">
+                    <div className="flex items-center gap-2">
+                        <Avatar src={userDetailsData?.user?.photo?.url} className="min-h-10 min-w-10 object-cover" />
+                        <input type="text" className="w-full rounded-md bg-[#f6f7fb] p-2" placeholder="Nhập bình luận tại đây" />
+                    </div>
+
+                    <div className="flex items-center justify-between">
+                        <h3 className="font-be font-medium text-textCustom">21 bình luận</h3>
+
+                        <p className="font-be text-xs font-normal text-textCustomGray">
+                            Nếu thấy bình luận spam, các bạn bấm report giúp admin nhé
+                        </p>
+                    </div>
+                    <div className="mt-2">
+                        <CommentSection initialComments={commentsData.comments as CommentType[]} />
+                    </div>
                 </div>
             </Drawer>
         </Fragment>

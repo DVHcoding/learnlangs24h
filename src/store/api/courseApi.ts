@@ -35,7 +35,7 @@ export const courseApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: '/api/v1/',
     }),
-    tagTypes: ['Courses'],
+    tagTypes: ['Courses', 'Lesson', 'UnitLesson', 'VideoLecture', 'VocabularyLecture', 'Exercise', 'UserProcess'],
     endpoints: (builder) => ({
         // getAllCourses
         getAllCourses: builder.query<AllCoursesResponseType, void>({
@@ -45,53 +45,53 @@ export const courseApi = createApi({
         // get All Lessons By Course Id
         getAllLessonsByCourseId: builder.query<AllLessonsResponseType, string | null | undefined>({
             query: (id: string) => `lessons/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['Lesson'],
         }),
         // get All Unit Lesson By Course Id
         getAllUnitLessonsByCourseId: builder.query<AllUnitLessonsResponseType, string | null | undefined>({
             query: (id) => `unitLessons/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['UnitLesson'],
         }),
         // get All Unit Lesson By Lessons Id
         getAllUnitLessonsByLessonId: builder.query<AllUnitLessonsResponseType, string | null | undefined>({
             query: (id) => `unitLessonsByLessonId/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['UnitLesson'],
         }),
         // get Unit Lesson By Id
         getUnitLessonById: builder.query<UnitLessonResponseType, string | null | undefined>({
             query: (id) => `unitLesson/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['UnitLesson'],
         }),
         // get Video Lecture Content
         getVideoLectureContent: builder.query<VideoLectureContentResponseType, string | null | undefined>({
             query: (id) => `videoLectureContent/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['VideoLecture'],
         }),
         // get Fill Blank Exercise
         getFillBlankExercise: builder.query<FillBlankExerciseResponseType, string | null | undefined>({
             query: (id) => `fillBlankExercise/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['Exercise'],
         }),
         getVocaExercise: builder.query<VocaExerciseResponseTypes, string | null | undefined>({
             query: (id) => `course/unitlesson/vocaexercise/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['VocabularyLecture'],
         }),
         // get User Process Status + populate unitLessonStatus
         getUserProcessStatuses: builder.query<UserProcessStatusResponse, string | undefined | undefined>({
             query: (userId) => `userProcessStatuses/${userId}`,
-            providesTags: ['Courses'],
+            providesTags: ['UserProcess'],
         }),
         getUnitLessonIdByUserProcess: builder.query<GetUnitLessonIdByUserProcessResponseType, GetUnitLessonIdByUserProcessPayload>({
             query: ({ userId, unitLessonId }) => `unitLessonIdByUserProcess?userId=${userId}&unitLessonId=${unitLessonId}`,
-            providesTags: ['Courses'],
+            providesTags: ['UnitLesson'],
         }),
         getGrammarExercise: builder.query<GrammarExerciseResponseTypes, string | null | undefined>({
             query: (id) => `course/unitlesson/grammarexercise/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['Exercise'],
         }),
         getListenExercise: builder.query<ListenExerciseResponseTypes, string | null | undefined>({
             query: (id) => `course/unitlesson/listenexercise/${id}`,
-            providesTags: ['Courses'],
+            providesTags: ['Exercise'],
         }),
 
         /* -------------------------------------------------------------------------- */
@@ -103,7 +103,7 @@ export const courseApi = createApi({
                 method: 'POST',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VideoLecture'],
         }),
         newUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, NewUnitLessonAndGrammarExerciseTypes>({
             query: (payload) => ({
@@ -111,7 +111,7 @@ export const courseApi = createApi({
                 method: 'POST',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
         newUnitLessonAndVocaExercise: builder.mutation<MessageResponse, NewUnitLessonAndVocaExercisePayload>({
             query: ({ title, time, icon, lectureType, exerciseType, lesson, course, vocabularies, sentences, audio, audioFile }) => {
@@ -135,7 +135,7 @@ export const courseApi = createApi({
                     formData: true,
                 };
             },
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VocabularyLecture'],
         }),
         newUnitLessonAndListenExercise: builder.mutation<MessageResponse, NewUnitLessonAndListenExercisePayload>({
             query: ({ title, time, icon, lectureType, exerciseType, lesson, course, questionLabel, questions, transcript, audioFile }) => {
@@ -159,7 +159,7 @@ export const courseApi = createApi({
                     formData: true,
                 };
             },
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
         /* -------------------------------------------------------------------------- */
         /*                                   UPDATE                                   */
@@ -170,7 +170,7 @@ export const courseApi = createApi({
                 method: 'PUT',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VideoLecture'],
         }),
 
         updateUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, UpdateUnitLessonAndGrammarExercisePayloadTypes>({
@@ -179,7 +179,7 @@ export const courseApi = createApi({
                 method: 'PUT',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
         updateUnitLessonAndVocaExercise: builder.mutation<MessageResponse, UpdateUnitLessonAndVocaExercisePayloadTypes>({
             query: (payload) => ({
@@ -187,7 +187,7 @@ export const courseApi = createApi({
                 method: 'PATCH',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VocabularyLecture'],
         }),
         updateUnitLessonAndListenExercise: builder.mutation<MessageResponse, UpdateUnitLessonAndListenExercisePayloadTypes>({
             query: (payload) => ({
@@ -195,7 +195,7 @@ export const courseApi = createApi({
                 method: 'PATCH',
                 body: payload,
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
 
         /* -------------------------------------------------------------------------- */
@@ -206,28 +206,28 @@ export const courseApi = createApi({
                 url: `course/unitlesson/videolecture?unitId=${unitId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VideoLecture'],
         }),
         deleteUnitLessonAndVocaExercise: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
                 url: `course/unitlesson/vocaexercise?unitId=${unitId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'VocabularyLecture'],
         }),
         deleteUnitLessonAndListenExercise: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
                 url: `course/unitlesson/listenexercise?unitId=${unitId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
         deleteUnitLessonAndGrammarExercise: builder.mutation<MessageResponse, string>({
             query: (unitId) => ({
                 url: `course/unitlesson/grammarexercise?unitId=${unitId}`,
                 method: 'DELETE',
             }),
-            invalidatesTags: ['Courses'],
+            invalidatesTags: ['UnitLesson', 'Exercise'],
         }),
     }),
 });
