@@ -34,9 +34,9 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [replyText, setReplyText] = useState('');
-    const [isReplying, setIsReplying] = useState(false);
-    const [showReplies, setShowReplies] = useState(false);
+    const [replyText, setReplyText] = useState<string>('');
+    const [isReplying, setIsReplying] = useState<boolean>(false);
+    const [showReplies, setShowReplies] = useState<boolean>(false);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -49,7 +49,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const handleReply = () => {
+    const handleReply = ():void => {
         if (replyText.trim()) {
             addReply(comment._id, replyText);
             setReplyText('');
@@ -58,7 +58,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
         }
     };
 
-    const toggleReplies = () => {
+    const toggleReplies = ():void => {
         setShowReplies(!showReplies);
     };
 

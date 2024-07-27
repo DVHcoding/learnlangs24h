@@ -55,19 +55,28 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
         };
 
         setComments((prevComments) => {
+            // Tạo một bản sao của mảng comments cũ
             const updatedComments = [...prevComments];
-            const parent = updatedComments.find((c) => c._id === parentId);
+
+            // Tìm comment cha
+            const parent = updatedComments.find((comment: CommentType) => comment._id === parentId);
+
             if (parent && parent.replies) {
-                parent.replies.push(newComment);
+                // Nếu tìm thấy comment cha và có mảng replies
+                parent.replies.push(newComment); // Thêm comment mới vào mảng replies
             } else {
+                // Nếu không tìm thấy comment cha trực tiếp
                 for (let comment of updatedComments) {
-                    const nestedParent = comment.replies?.find((r) => r._id === parentId);
+                    // Duyệt qua từng comment để tìm comment cha trong các comment con
+                    const nestedParent = comment.replies?.find((reply: CommentType) => reply._id === parentId);
                     if (nestedParent) {
+                        // Thêm comment mới vào mảng replies của comment cha
                         comment.replies?.push(newComment);
                         break;
                     }
                 }
             }
+            // Trả về mảng comments đã cập nhật
             return updatedComments;
         });
     };
@@ -80,24 +89,37 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /*                                  useEffect                                 */
     /* ########################################################################## */
     useEffect(() => {
-        const nestedComments = initialComments.reduce<CommentType[]>((acc, comment) => {
+        const nestedComments = initialComments.reduce<CommentType[]>((acc, comment: CommentType) => {
+            // Nếu comment không có cha
             if (!comment.parentId) {
+                // Thêm comment vào mảng acc và khởi tạo mảng replies trống
                 acc.push({ ...comment, replies: [] });
             } else {
+                // Nếu comment có cha
                 const parent =
+                    // Tìm comment cha trong mảng acc
                     acc.find((c) => c._id === comment.parentId) ||
+                    // Tìm comment cha trong mảng replies của các comment
                     acc.flatMap((c) => c.replies || []).find((c) => c._id === comment.parentId);
                 if (parent) {
+                    // Nếu comment cha cũng có cha (comment ông bà)
                     if (parent.parentId) {
+                        // Tìm comment ông bà
                         const grandParent = acc.find((c) => c._id === parent.parentId);
+
                         if (grandParent && grandParent.replies) {
+                            // Thêm comment vào mảng replies của comment ông bà
                             grandParent.replies.push(comment);
                         }
+                        // Nếu chỉ có comment cha
                     } else if (parent.replies) {
+                        // Thêm comment vào mảng replies của comment cha
                         parent.replies.push(comment);
                     }
                 }
             }
+
+            // Trả về mảng acc đã cập nhật
             return acc;
         }, []);
 
