@@ -109,7 +109,8 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
 
                         <input
                             type="text"
-                            className="w-full rounded-md bg-[#f6f7fb] p-2"
+                            className="w-full rounded-md border border-bdCustom bg-bgCustom p-2
+                            font-be text-textCustom"
                             placeholder="Nhập bình luận tại đây"
                             value={commentValue}
                             onChange={(e) => setCommentValue(e.target.value)}

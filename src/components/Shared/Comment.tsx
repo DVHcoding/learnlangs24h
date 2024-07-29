@@ -1,11 +1,17 @@
-// Comment.tsx
-import { CommentType } from 'types/comment.types';
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import React, { useEffect, useRef, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { Avatar } from 'antd';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
+import { CommentType } from 'types/comment.types';
 import { useLazyGetRepliesByIdQuery } from '@store/api/comment.api';
 import { AppDispatch, RootState } from '@store/store';
-import { useDispatch, useSelector } from 'react-redux';
 import { addComments } from '@store/reducer/comment.reducer';
-import { Avatar } from 'antd';
 import { formatTimeAgo } from '@utils/formatTimeAgo';
 
 interface CommentProps {
@@ -21,7 +27,6 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
-
     const textareaRef = useRef<HTMLTextAreaElement>(null);
 
     /* ########################################################################## */
@@ -97,7 +102,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
                         <span className="font-be font-normal text-textCustom">{comment.user.username}</span>
                     </div>
 
-                    <p className="tex-textCustom font-be text-xs">{formatTimeAgo(comment.createdAt)}</p>
+                    <p className="font-be text-xs text-textCustom">{formatTimeAgo(comment.createdAt)}</p>
                 </div>
 
                 {/* Comment */}
@@ -123,9 +128,11 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
                             value={replyText}
                             onChange={(e) => setReplyText(e.target.value)}
                             placeholder="Viết trả lời..."
-                            className="mb-2 w-full rounded-md border p-2"
+                            className="mb-2 w-full rounded-md border border-bdCustom bg-bgCustom p-2 font-be
+                            text-textCustom outline-none"
                             rows={3}
                             ref={textareaRef}
+                            spellCheck={false}
                         />
                         <div className="flex justify-end space-x-2">
                             <button
