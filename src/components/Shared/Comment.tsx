@@ -128,7 +128,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
                             value={replyText}
                             onChange={(e) => setReplyText(e.target.value)}
                             placeholder="Viết trả lời..."
-                            className="mb-2 w-full rounded-md border border-bdCustom bg-bgCustom p-2 font-be
+                            className="mb-2 w-full rounded-md border border-bdCustom2 bg-bgCustom p-2 font-be
                             text-textCustom outline-none"
                             rows={3}
                             ref={textareaRef}
