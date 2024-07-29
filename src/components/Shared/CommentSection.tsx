@@ -1,23 +1,13 @@
 // CommentSection.tsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import Comment from './Comment';
+import { CommentType } from 'types/comment.types';
+import { useNewCommentMutation } from '@store/api/comment.api';
+import { useUserDetailsQuery } from '@store/api/userApi';
+import { toastError } from '@components/Toast/Toasts';
 
 interface CommentSectionProps {
     initialComments: CommentType[];
-}
-
-interface CommentType {
-    _id: string;
-    message: string;
-    parentId: string | null;
-    createAt: string;
-    user: User;
-    replies?: CommentType[];
-}
-
-interface User {
-    _id: string;
-    name: string;
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
@@ -37,6 +27,9 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+    const [newRepliesQuery] = useNewCommentMutation();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -45,21 +38,27 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const addReply = (parentId: string, message: string) => {
-        const newComment: CommentType = {
-            _id: Date.now().toString(),
-            message,
-            parentId,
-            createAt: new Date().toISOString(),
-            user: { _id: 'current_user_id', name: 'Current User' },
-        };
+    const addReply = async (parentId: string, message: string) => {
+        if (!parentId || !userId || !message) {
+            return;
+        }
+
+        const { data }: any = await newRepliesQuery({ message, parentId, userId });
+
+        let newComment: CommentType;
+
+        if (data.success === false) {
+            toastError(`có lỗi xảy ra!`);
+        } else {
+            newComment = data.newComment;
+        }
 
         setComments((prevComments) => {
             // Tạo một bản sao của mảng comments cũ
             const updatedComments = [...prevComments];
 
             // Tìm comment cha
-            const parent = updatedComments.find((comment: CommentType) => comment._id === parentId);
+            const parent = updatedComments.find((comment) => comment._id === parentId);
 
             if (parent && parent.replies) {
                 // Nếu tìm thấy comment cha và có mảng replies
@@ -68,7 +67,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
                 // Nếu không tìm thấy comment cha trực tiếp
                 for (let comment of updatedComments) {
                     // Duyệt qua từng comment để tìm comment cha trong các comment con
-                    const nestedParent = comment.replies?.find((reply: CommentType) => reply._id === parentId);
+                    const nestedParent = comment.replies?.find((reply) => reply._id === parentId);
                     if (nestedParent) {
                         // Thêm comment mới vào mảng replies của comment cha
                         comment.replies?.push(newComment);
@@ -128,7 +127,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
 
     return (
         <div className="rounded-md bg-bgCustomCard p-2">
-            {comments.map((comment: CommentType) => (
+            {comments.map((comment) => (
                 <Comment key={comment._id} comment={comment} replies={comment.replies || []} addReply={addReply} />
             ))}
         </div>

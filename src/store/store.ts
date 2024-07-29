@@ -12,6 +12,7 @@ import rootReducer from '@store/rootReducer';
 import { userApi } from '@store/api/userApi';
 import { courseApi } from '@store/api/courseApi';
 import { chatApi } from '@store/api/chatApi';
+import { commentApi } from './api/comment.api';
 
 const persistConfig = {
     key: 'root',
@@ -19,7 +20,7 @@ const persistConfig = {
     whitelist: [courseApi.reducerPath, userApi.reducerPath],
 };
 
-const middlewares = [userApi.middleware, courseApi.middleware, chatApi.middleware] as Middleware[];
+const middlewares = [userApi.middleware, courseApi.middleware, chatApi.middleware, commentApi.middleware] as Middleware[];
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({

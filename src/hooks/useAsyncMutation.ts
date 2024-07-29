@@ -10,7 +10,7 @@ import { toastError, toastSuccess } from '@components/Toast/Toasts';
 
 const useAsyncMutation = <TData, TVariables>(mutationHook: any) => {
     const [isLoading, setIsLoading] = useState<boolean>(false);
-    const [data, setData] = useState<TData | null>(null);
+    const [data, setData] = useState<TData | null | any>(null);
 
     const [mutate] = mutationHook();
 
@@ -26,6 +26,7 @@ const useAsyncMutation = <TData, TVariables>(mutationHook: any) => {
                 if (response.data.message) {
                     toastSuccess(response.data?.message || 'Success');
                 }
+
                 setData(response.data);
             }
         } catch (error) {

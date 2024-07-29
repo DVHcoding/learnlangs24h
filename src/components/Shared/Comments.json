@@ -4,40 +4,60 @@
             "_id": "lajfsiwqur",
             "message": "example comment",
             "parentId": null,
-            "createAt": "2024-07-21T16:18:42.908Z",
+            "createdAt": "2024-07-21T16:18:42.908Z",
             "user": {
+                "photo": {
+                    "public_id": "default_id",
+                    "url": "default_url"
+                },
                 "_id": "29347_29147_124",
-                "name": "Quocdung"
+                "username": "Quocdung",
+                "nickname": "Quocdung"
             }
         },
         {
             "_id": "abyeus_ushfa",
             "message": "nested level 1",
             "parentId": "lajfsiwqur",
-            "createAt": "2024-07-21T16:18:42.908Z",
+            "createdAt": "2024-07-21T16:18:42.908Z",
             "user": {
+                "photo": {
+                    "public_id": "default_id",
+                    "url": "default_url"
+                },
                 "_id": "018245_912348",
-                "name": "DoHung"
+                "username": "DoHung",
+                "nickname": "DoHung"
             }
         },
         {
             "_id": "alsdghsk_29sdjfk",
             "message": "nested level 2",
             "parentId": "abyeus_ushfa",
-            "createAt": "2024-07-21T16:18:42.908Z",
+            "createdAt": "2024-07-21T16:18:42.908Z",
             "user": {
+                "photo": {
+                    "public_id": "default_id",
+                    "url": "default_url"
+                },
                 "_id": "ksaghask_2834",
-                "name": "VanLong"
+                "username": "VanLong",
+                "nickname": "VanLong"
             }
         },
         {
             "_id": "skdjfksldf_ksldjflsdjf",
             "message": "Hello every one",
             "parentId": null,
-            "createAt": "2024-07-21T16:18:42.908Z",
+            "createdAt": "2024-07-21T16:18:42.908Z",
             "user": {
+                "photo": {
+                    "public_id": "default_id",
+                    "url": "default_url"
+                },
                 "_id": "sdlasdf",
-                "name": "HaLinh"
+                "username": "HaLinh",
+                "nickname": "HaLinh"
             }
         }
     ]
