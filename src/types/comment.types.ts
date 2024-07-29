@@ -35,6 +35,7 @@ export interface NewCommentPayloadTypes {
     message: string;
     parentId: string | null;
     userId: string;
+    unitLesson: string;
 }
 
 export interface NewCommentResponseTypes {

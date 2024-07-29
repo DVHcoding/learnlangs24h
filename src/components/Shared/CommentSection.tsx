@@ -11,6 +11,7 @@ import { CommentType } from 'types/comment.types';
 import { useNewCommentMutation } from '@store/api/comment.api';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
+import { useSearchParams } from 'react-router-dom';
 interface CommentSectionProps {
     initialComments: CommentType[];
 }
@@ -23,6 +24,8 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const [searchParams] = useSearchParams();
+    let unitId = searchParams.get('id');
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -44,11 +47,11 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
     const addReply = async (parentId: string, message: string) => {
-        if (!parentId || !userId || !message) {
+        if (!parentId || !userId || !message || !unitId) {
             return;
         }
 
-        const { data }: any = await newRepliesQuery({ message, parentId, userId });
+        const { data }: any = await newRepliesQuery({ message, parentId, userId, unitLesson: unitId });
 
         let newComment: CommentType;
 

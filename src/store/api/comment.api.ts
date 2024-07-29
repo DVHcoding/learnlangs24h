@@ -23,8 +23,8 @@ export const commentApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                    QUERY                                   */
         /* -------------------------------------------------------------------------- */
-        getParentComments: builder.query<GetParentCommentsResponse, void>({
-            query: () => '/comments',
+        getParentComments: builder.query<GetParentCommentsResponse, string>({
+            query: (unitId) => `/comments?unitId=${unitId}`,
             providesTags: ['Comments'],
         }),
         getRepliesById: builder.query<GetRepliesByIdResponse, string>({
@@ -36,10 +36,10 @@ export const commentApi = createApi({
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
         newComment: builder.mutation<NewCommentResponseTypes, NewCommentPayloadTypes>({
-            query: ({ message, parentId, userId }) => ({
+            query: ({ message, parentId, userId, unitLesson }) => ({
                 url: 'comments',
                 method: 'POST',
-                body: { message, parentId, userId },
+                body: { message, parentId, userId, unitLesson },
             }),
             invalidatesTags: ['Comments'],
         }),

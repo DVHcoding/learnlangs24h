@@ -16,6 +16,7 @@ import DotLoader from '@pages/Loader/DotLoader';
 import { AppDispatch, RootState } from '@store/store';
 import { addComments } from '@store/reducer/comment.reducer';
 import { toastError } from '@components/Toast/Toasts';
+import { useSearchParams } from 'react-router-dom';
 
 const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ userDetailsData }) => {
     const dispatch: AppDispatch = useDispatch();
@@ -24,6 +25,8 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const [searchParams] = useSearchParams();
+    let unitId = searchParams.get('id');
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -52,9 +55,9 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     const showDrawer = () => {
         setOpen(true);
 
-        if (comments.length === 0 && !fetching) {
+        if (comments.length === 0 && !fetching && unitId) {
             setFetching(true);
-            getAllComments().then(({ data }) => {
+            getAllComments(unitId).then(({ data }) => {
                 if (data?.success) {
                     const { comments } = data;
                     dispatch(addComments(comments));
@@ -69,11 +72,11 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     };
 
     const handleNewComment = async () => {
-        if (commentValue.trim() === '' || !userId) {
+        if (commentValue.trim() === '' || !userId || !unitId) {
             return;
         }
 
-        const { data }: any = await newCommentQuery({ message: commentValue, parentId: null, userId });
+        const { data }: any = await newCommentQuery({ message: commentValue, parentId: null, userId, unitLesson: unitId });
 
         if (data.success === false) {
             toastError(`có lỗi xảy ra!`);
@@ -114,6 +117,7 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
                             placeholder="Nhập bình luận tại đây"
                             value={commentValue}
                             onChange={(e) => setCommentValue(e.target.value)}
+                            spellCheck={false}
                         />
 
                         <Button type="primary" onClick={handleNewComment}>
