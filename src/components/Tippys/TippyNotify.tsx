@@ -1,20 +1,59 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
-import { useState } from 'react';
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Avatar, Badge } from 'rsuite';
 import { BellRing } from 'lucide-react';
+import parse from 'html-react-parser';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import TippyProvider from '@components/Tippys/TippyProvider';
+import { useGetAllNotificationQuery } from '@store/api/notification.api';
+import { useUserDetailsQuery } from '@store/api/userApi';
+import { Notification } from 'types/notification.types';
+import { formatTimeAgo } from '@utils/formatTimeAgo';
 
 const TippyNotify: React.FC = () => {
-    // Open & Close Tippy
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
     const [visible, setVisible] = useState<boolean>(false);
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user._id, [userDetailsData?.user]);
+
+    const { data: notificationsData } = useGetAllNotificationQuery(userId, { skip: !userId });
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     const hide = () => setVisible(false);
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
         <TippyProvider
@@ -28,26 +67,26 @@ const TippyNotify: React.FC = () => {
 
                         <button
                             className="rounded-md p-1 font-body font-semibold text-orange-600
-                                        transition-all duration-200 hover:bg-bgHoverGrayDark"
+                            transition-all duration-200 hover:bg-bgHoverGrayDark"
                         >
                             Đánh dấu đã đọc
                         </button>
                     </div>
 
                     <ul className="scrollbar flex h-96 flex-col gap-4 overflow-auto px-2">
-                        {Array.from(new Array(7)).map((_, index) => (
-                            <Link to={`/${index}`} key={index} style={{ textDecoration: 'none' }}>
+                        {notificationsData?.notification.map((notification: Notification) => (
+                            <Link to={`/${notification.relatedId}`} key={notification._id} style={{ textDecoration: 'none' }}>
                                 <li
-                                    className="flex cursor-pointer items-center justify-between gap-2 rounded-lg
-                                                p-2 transition-all duration-100 hover:bg-bgHoverGrayDark"
+                                    className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg
+                                    p-2 transition-all duration-100 hover:bg-bgHoverGrayDark ${
+                                        notification.isRead ? '' : 'bg-bgHoverGrayDark'
+                                    }`}
                                 >
-                                    <Avatar size="md" circle src="https://avatars.githubusercontent.com/u/12592949" alt="@superman66" />
+                                    <Avatar size="md" circle src={notification?.sender?.photo?.url} alt={notification.sender.nickname} />
 
                                     <div>
-                                        <h4 className="font-body leading-6 text-textCustom">
-                                            <span className="font-semibold">Hoang anh</span> đã thích bình luận của bạn
-                                        </h4>
-                                        <p className="font-body font-semibold text-lime-600">4 tháng trước</p>
+                                        <h4 className="font-be leading-6 text-textCustom">{parse(notification.content)}</h4>
+                                        <p className="font-body font-semibold text-lime-600">{formatTimeAgo(notification.createdAt)}</p>
                                     </div>
                                 </li>
                             </Link>

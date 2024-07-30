@@ -27,6 +27,8 @@ import { vocaReducer } from './reducer/vocaReducer';
 import { listenReducer } from './reducer/listenReducer';
 import { commentApi } from './api/comment.api';
 import { commentReducer } from './reducer/comment.reducer';
+import { notificationReducer } from './reducer/notification.reducer';
+import { notificationApi } from './api/notification.api';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -34,6 +36,7 @@ const rootReducer = combineReducers({
     [courseApi.reducerPath]: courseApi.reducer,
     [chatApi.reducerPath]: chatApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,
+    [notificationApi.reducerPath]: notificationApi.reducer,
 
     newCourse: newCourseReducer,
     newLesson: newLessonReducer,
@@ -48,9 +51,13 @@ const rootReducer = combineReducers({
 
     misc: miscReducer,
     adminUnitLesson: adminUnitLessonReducer,
+
     vocabularies: vocaReducer,
     listenExercise: listenReducer,
+
     comments: commentReducer,
+
+    notification: notificationReducer,
 });
 
 export default rootReducer;
