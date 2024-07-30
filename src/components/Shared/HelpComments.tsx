@@ -1,10 +1,11 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { Fragment, useMemo, useState } from 'react';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { IoIosHelpCircle } from 'react-icons/io';
 import { Avatar, Button, Drawer } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
+import { useSearchParams } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -16,7 +17,6 @@ import DotLoader from '@pages/Loader/DotLoader';
 import { AppDispatch, RootState } from '@store/store';
 import { addComments } from '@store/reducer/comment.reducer';
 import { toastError } from '@components/Toast/Toasts';
-import { useSearchParams } from 'react-router-dom';
 
 const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ userDetailsData }) => {
     const dispatch: AppDispatch = useDispatch();
@@ -54,17 +54,6 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     /* ########################################################################## */
     const showDrawer = () => {
         setOpen(true);
-
-        if (comments.length === 0 && !fetching && unitId) {
-            setFetching(true);
-            getAllComments(unitId).then(({ data }) => {
-                if (data?.success) {
-                    const { comments } = data;
-                    dispatch(addComments(comments));
-                }
-                setFetching(false);
-            });
-        }
     };
 
     const onClose = () => {
@@ -93,6 +82,17 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+    useEffect(() => {
+        if (unitId && !fetching) {
+            setFetching(true);
+            getAllComments(unitId).then(({ data }) => {
+                if (data?.success) {
+                    dispatch(addComments(data.comments));
+                }
+                setFetching(false);
+            });
+        }
+    }, [unitId, getAllComments, dispatch]);
 
     return (
         <Fragment>
