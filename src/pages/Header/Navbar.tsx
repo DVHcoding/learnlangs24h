@@ -19,10 +19,11 @@ import { useGetMyChatsQuery } from '@store/api/chatApi';
 import { AppDispatch, RootState } from '@store/store';
 import { useSocket } from '@utils/socket';
 import useSocketEvents from '@hooks/useSocketEvents';
-import { NEW_MESSAGE } from '@constants/events';
+import { ADD_USER, NEW_MESSAGE, NOTIFICATION } from '@constants/events';
 import { NewMessageSocketResponse } from 'types/types';
 import { increaseNotification } from '@store/reducer/miscReducer';
 import { useUserDetailsQuery } from '@store/api/userApi';
+import { NotificationResponse } from 'types/socket.types';
 
 // ##################################
 const Navbar: React.FC = () => {
@@ -129,11 +130,16 @@ const Navbar: React.FC = () => {
         [chatIdParams, chatId]
     );
 
+    const notificationListener = useCallback((data: NotificationResponse) => {
+        console.log(data);
+    }, []);
+
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
     const eventHandler = {
         [NEW_MESSAGE]: newMessageListener,
+        [NOTIFICATION]: notificationListener,
     };
     useSocketEvents(socket, eventHandler);
 
@@ -147,6 +153,12 @@ const Navbar: React.FC = () => {
             document.body.classList.remove(theme);
         };
     }, [theme]);
+
+    useEffect(() => {
+        if (userId) {
+            socket.emit(ADD_USER, { userId: userId });
+        }
+    }, [userId]);
 
     return (
         <div

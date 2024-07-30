@@ -322,10 +322,6 @@ const Messenger: React.FC = () => {
     const addUserListener = useCallback((data: AddMemberSocketResponse[]) => {
         console.log('ADD_USER:', data);
         setOnlineUsers(data);
-
-        return () => {
-            socket.off(ADD_USER);
-        };
     }, []);
 
     const newMessageListener = useCallback(

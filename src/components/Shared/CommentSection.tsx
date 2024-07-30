@@ -11,12 +11,15 @@ import { CommentType } from 'types/comment.types';
 import { useNewCommentMutation } from '@store/api/comment.api';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import { toastError } from '@components/Toast/Toasts';
-import { useSearchParams } from 'react-router-dom';
+import { useLocation, useSearchParams } from 'react-router-dom';
+import { useSocket } from '@utils/socket';
+import { NOTIFICATION } from '@constants/events';
 interface CommentSectionProps {
     initialComments: CommentType[];
 }
 
 const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
+    const socket = useSocket();
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
@@ -24,6 +27,7 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const location = useLocation();
     const [searchParams] = useSearchParams();
     let unitId = searchParams.get('id');
 
@@ -43,11 +47,12 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
 
+    console.log(comments);
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
-    const addReply = async (parentId: string, message: string) => {
-        if (!parentId || !userId || !message || !unitId) {
+    const addReply = async (parentId: string, message: string, receiverId: string) => {
+        if (!parentId || !userId || !message || !unitId || !receiverId) {
             return;
         }
 
@@ -59,6 +64,15 @@ const CommentSection: React.FC<CommentSectionProps> = ({ initialComments }) => {
             toastError(`có lỗi xảy ra!`);
         } else {
             newComment = data.newComment;
+
+            const relatedId = `${location.pathname}?id=${unitId}`;
+            socket.emit(NOTIFICATION, {
+                senderId: newComment?.user._id,
+                receiverId,
+                content: `<b>${newComment.user.username}</b> đã trả lời bình luận của bạn!`,
+                type: 'new_reply',
+                relatedId,
+            });
         }
 
         setComments((prevComments) => {

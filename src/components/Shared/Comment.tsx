@@ -17,7 +17,7 @@ import { formatTimeAgo } from '@utils/formatTimeAgo';
 interface CommentProps {
     comment: CommentType;
     replies: CommentType[];
-    addReply: (parentId: string, message: string) => Promise<void>;
+    addReply: (parentId: string, message: string, receiverId: string) => Promise<void>;
 }
 
 const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
@@ -55,7 +55,7 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
     /* ########################################################################## */
     const handleReply = (): void => {
         if (replyText.trim()) {
-            addReply(comment._id, replyText);
+            addReply(comment._id, replyText, comment.user._id);
             setReplyText('');
             setIsReplying(false);
             setShowReplies(true);

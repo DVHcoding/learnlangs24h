@@ -120,7 +120,7 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
                             spellCheck={false}
                         />
 
-                        <Button type="primary" onClick={handleNewComment}>
+                        <Button type="primary" onClick={handleNewComment} disabled={isLoading}>
                             Gửi
                         </Button>
                     </div>
