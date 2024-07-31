@@ -12,7 +12,6 @@ export interface Notification {
     relatedId: string;
     isRead: boolean;
     createdAt: Date;
-    updatedAt: Date;
 }
 
 export interface Sender {

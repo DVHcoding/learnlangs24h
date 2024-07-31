@@ -24,11 +24,17 @@ import { NewMessageSocketResponse } from 'types/types';
 import { increaseNotification } from '@store/reducer/miscReducer';
 import { useUserDetailsQuery } from '@store/api/userApi';
 import { NotificationResponse } from 'types/socket.types';
+import { addNotification } from '@store/reducer/notification.reducer';
 
 // ##################################
 const Navbar: React.FC = () => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
     const socket = useSocket();
     const dispatch: AppDispatch = useDispatch();
+    const { notification } = useSelector((state: RootState) => state.notification);
+
     const { chatId: chatIdParams } = useParams<string>();
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -119,6 +125,10 @@ const Navbar: React.FC = () => {
         setTheme((prevTheme) => (prevTheme === 'light' ? 'dark' : 'light'));
     };
 
+    const addUserListener = useCallback((data: any) => {
+        console.log('ADD_USER:', data);
+    }, []);
+
     const newMessageListener = useCallback(
         (data: NewMessageSocketResponse) => {
             // Nếu người nhận đang ở trong đoạn chat thì không được thêm thông báo
@@ -131,13 +141,14 @@ const Navbar: React.FC = () => {
     );
 
     const notificationListener = useCallback((data: NotificationResponse) => {
-        console.log(data);
+        dispatch(addNotification([data, ...notification]));
     }, []);
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
     /* ########################################################################## */
     const eventHandler = {
+        [ADD_USER]: addUserListener,
         [NEW_MESSAGE]: newMessageListener,
         [NOTIFICATION]: notificationListener,
     };

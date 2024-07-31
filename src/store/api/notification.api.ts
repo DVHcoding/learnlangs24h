@@ -24,14 +24,21 @@ export const notificationApi = createApi({
         /*                                    QUERY                                   */
         /* -------------------------------------------------------------------------- */
         getAllNotification: builder.query<NotificationResponseTypes, string | undefined>({
-            query: (userId) => `/notification?userId=${userId}`,
+            query: (userId) => `notification?userId=${userId}`,
             providesTags: ['Notification'],
         }),
 
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
+        markedNotification: builder.mutation<NotificationResponseTypes, string>({
+            query: (id) => ({
+                url: `notification/${id}`,
+                method: 'PATCH',
+            }),
+            invalidatesTags: ['Notification'],
+        }),
     }),
 });
 
-export const { useGetAllNotificationQuery } = notificationApi;
+export const { useGetAllNotificationQuery, useMarkedNotificationMutation } = notificationApi;
