@@ -200,6 +200,7 @@ const Messenger: React.FC = () => {
     /////////////////////////////////////////////////////////////////
     const handleFileUpload = async () => {
         try {
+            console.log(files);
             dispatch(setUploadingLoader(true));
             const myForm = new FormData();
             myForm.append('chatId', chatId || '');

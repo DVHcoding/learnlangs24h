@@ -152,7 +152,7 @@ const ListenEditableForms: React.FC = () => {
                         children: (
                             <div>
                                 {(() => {
-                                    switch (listenExerciseData?.listeningExercise.exerciseType) {
+                                    switch (listenExerciseData?.listeningExercise?.exerciseType) {
                                         case ListenExerciseTypes.Conversation:
                                             return (
                                                 <div className="rounded-md bg-bgCustomCard p-4">

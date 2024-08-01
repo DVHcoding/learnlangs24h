@@ -42,7 +42,7 @@ const TippyNotify: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: userDetailsData } = useUserDetailsQuery();
-    const userId = useMemo(() => userDetailsData?.user._id, [userDetailsData?.user]);
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
 
     const { data: notificationsData } = useGetAllNotificationQuery(userId, { skip: !userId });
     const [markedNotification] = useAsyncMutation(useMarkedNotificationMutation);
