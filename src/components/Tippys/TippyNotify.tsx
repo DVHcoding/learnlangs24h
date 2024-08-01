@@ -107,7 +107,7 @@ const TippyNotify: React.FC = () => {
                     <ul className="scrollbar flex max-h-96 min-w-[20.5rem] flex-col gap-2 overflow-auto px-2">
                         {notification.map((notification: Notification) => (
                             <li
-                                className={`flex cursor-pointer items-center justify-between gap-2 rounded-lg
+                                className={`flex cursor-pointer items-center gap-2 rounded-lg
                                     p-2 transition-all duration-100 hover:bg-bgHoverGrayDark ${
                                         notification.isRead ? '' : 'bg-bgHoverGrayDark'
                                     }`}
