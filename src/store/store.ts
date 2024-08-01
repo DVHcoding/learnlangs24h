@@ -14,6 +14,7 @@ import { courseApi } from '@store/api/courseApi';
 import { chatApi } from '@store/api/chatApi';
 import { commentApi } from './api/comment.api';
 import { notificationApi } from './api/notification.api';
+import { studyTimeApi } from './api/studyTime.api';
 
 const persistConfig = {
     key: 'root',
@@ -27,6 +28,7 @@ const middlewares = [
     chatApi.middleware,
     commentApi.middleware,
     notificationApi.middleware,
+    studyTimeApi.middleware,
 ] as Middleware[];
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 

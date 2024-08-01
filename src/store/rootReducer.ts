@@ -29,6 +29,7 @@ import { commentApi } from './api/comment.api';
 import { commentReducer } from './reducer/comment.reducer';
 import { notificationReducer } from './reducer/notification.reducer';
 import { notificationApi } from './api/notification.api';
+import { studyTimeApi } from './api/studyTime.api';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -37,6 +38,7 @@ const rootReducer = combineReducers({
     [chatApi.reducerPath]: chatApi.reducer,
     [commentApi.reducerPath]: commentApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
+    [studyTimeApi.reducerPath]: studyTimeApi.reducer,
 
     newCourse: newCourseReducer,
     newLesson: newLessonReducer,
