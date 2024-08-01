@@ -1,16 +1,52 @@
-// ##########################
-// #      IMPORT NPM        #
-// ##########################
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { MoveRight } from 'lucide-react';
 import { Fragment } from 'react/jsx-runtime';
+import { useSelector } from 'react-redux';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import Plant from '@assets/backgrounds/Plant.png';
 import ProcessSkeleton from '@components/Skeleton/ProcessSkeleton';
+import { RootState } from '@store/store';
+import { formatTime } from '@utils/formatTime';
 
 const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+    const { stats } = useSelector((state: RootState) => state.studyTime);
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
+
     return (
         <Fragment>
             {!loading ? (
@@ -18,30 +54,24 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
                     className="relative shrink basis-80 rounded-xl bg-bgCustomProcess px-4 py-6
                     md:overflow-hidden lg:overflow-visible"
                 >
-                    <h1 className="mb-3 font-title text-xl font-bold text-textCustom phone:text-lg">
-                        My Process
-                    </h1>
+                    <h1 className="mb-3 font-title text-xl font-bold text-textCustom phone:text-lg">My Process</h1>
 
                     <div className="flex items-center gap-4">
                         <div>
                             <p className="font-title text-base text-textCustom">Today</p>
-                            <span className="font-body text-sm font-bold text-textCustomProcess">
-                                4 hours
-                            </span>
+                            <span className="font-body text-sm font-bold text-textCustomProcess">{formatTime(stats.daily / 1000)}</span>
                         </div>
 
                         <div>
                             <p className="font-title text-base text-textCustom">This Month</p>
-                            <span className="font-body text-sm font-bold text-textCustomProcess">
-                                72 hours
-                            </span>
+                            <span className="font-body text-sm font-bold text-textCustomProcess">72 hours</span>
                         </div>
                     </div>
 
                     <div className="mt-8 flex max-w-max cursor-pointer items-center gap-4">
                         <p
                             className="select-none font-body text-base  font-semibold
-                    text-textCustom transition-all hover:text-textCustomProcess phone:text-sm"
+                            text-textCustom transition-all hover:text-textCustomProcess phone:text-sm"
                         >
                             View Details
                         </p>

@@ -4,7 +4,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { Fragment, useEffect, useMemo } from 'react';
 import loadable from '@loadable/component';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -24,11 +24,10 @@ import '@components/Modules/Antd/Drawer.css';
 import '@components/Modules/Antd/Progress.css';
 import '@components/Modules/Antd/Collapse.css';
 import DesktopNotification from '@components/Shared/DesktopNotification';
-import { formatTime } from '@utils/formatTime';
 import { useGetStudyTimeStatsQuery, useUpdateStudyTimeMutation } from '@store/api/studyTime.api';
 import { toastError } from '@components/Toast/Toasts';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
-import { AppDispatch, RootState } from '@store/store';
+import { AppDispatch } from '@store/store';
 import { addStats } from '@store/reducer/studyTime.reducer';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +50,6 @@ function App() {
     /*                                    HOOKS                                   */
     /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
-    const { stats } = useSelector((state: RootState) => state.studyTime);
 
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
@@ -111,13 +109,11 @@ function App() {
     }, [theme]);
 
     useEffect(() => {
-        if (getStudyTimeStartsData?.success) {
-            dispatch(
-                addStats({
-                    daily: getStudyTimeStartsData?.stats.daily,
-                })
-            );
-        }
+        dispatch(
+            addStats({
+                daily: getStudyTimeStartsData?.stats?.daily ?? 0,
+            })
+        );
 
         window.addEventListener('beforeunload', handleBeforeUnload);
 
@@ -236,11 +232,6 @@ function App() {
                             );
                         })}
                     </Routes>
-
-                    <div>
-                        <h2>My Study Time</h2>
-                        {formatTime(stats?.daily / 1000)}
-                    </div>
                 </div>
             </SocketProvider>
         </Router>
