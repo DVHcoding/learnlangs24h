@@ -15,8 +15,6 @@ interface StudyTimeState {
 const initialState: StudyTimeState = {
     stats: {
         daily: 0,
-        monthly: 0,
-        yearly: 0,
     },
 };
 

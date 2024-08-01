@@ -5,8 +5,6 @@ export interface GetStudyTimeStatsResponse {
 
 export interface Stats {
     daily: number;
-    monthly: number;
-    yearly: number;
 }
 
 export interface UpdateStudyTimeResponse {
@@ -21,7 +19,5 @@ export interface StudyTime {
     month: number;
     year: number;
     dailyDuration: number;
-    monthlyDuration: number;
-    yearlyDuration: number;
     user: string;
 }

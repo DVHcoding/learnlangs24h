@@ -115,8 +115,6 @@ function App() {
             dispatch(
                 addStats({
                     daily: getStudyTimeStartsData?.stats.daily,
-                    monthly: getStudyTimeStartsData?.stats.daily,
-                    yearly: getStudyTimeStartsData?.stats.daily,
                 })
             );
         }
