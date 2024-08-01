@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { GetStudyTimeStatsResponse } from 'types/studyTime.types';
+import { GetStudyTimeStatsResponse, UpdateStudyTimeResponse } from 'types/studyTime.types';
 
 export const studyTimeApi = createApi({
     reducerPath: 'studyTimeApi',
@@ -31,7 +31,15 @@ export const studyTimeApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
+        updateStudyTime: builder.mutation<UpdateStudyTimeResponse, { userId: string; duration: number }>({
+            query: ({ userId, duration }) => ({
+                url: 'studytime',
+                method: 'PATCH',
+                body: { userId, duration },
+            }),
+            invalidatesTags: ['Stats'],
+        }),
     }),
 });
 
-export const { useGetStudyTimeStatsQuery } = studyTimeApi;
+export const { useGetStudyTimeStatsQuery, useUpdateStudyTimeMutation } = studyTimeApi;
