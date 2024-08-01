@@ -2,8 +2,9 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { Fragment, useEffect, useState } from 'react';
+import { Fragment, useEffect, useMemo } from 'react';
 import loadable from '@loadable/component';
+import { useDispatch, useSelector } from 'react-redux';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -23,8 +24,12 @@ import '@components/Modules/Antd/Drawer.css';
 import '@components/Modules/Antd/Progress.css';
 import '@components/Modules/Antd/Collapse.css';
 import DesktopNotification from '@components/Shared/DesktopNotification';
-import axios from 'axios';
 import { formatTime } from '@utils/formatTime';
+import { useGetStudyTimeStatsQuery, useUpdateStudyTimeMutation } from '@store/api/studyTime.api';
+import { toastError } from '@components/Toast/Toasts';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { AppDispatch, RootState } from '@store/store';
+import { addStats } from '@store/reducer/studyTime.reducer';
 
 ////////////////////////////////////////////////////////////////////////////////
 const NotFound = loadable(() => import('@pages/NotFound/NotFound'));
@@ -41,13 +46,13 @@ const ForgotPassword = loadable(() => import('./features/Authentication/ForgotPa
 
 // ##################################
 
-interface StudyTimeStats {
-    daily: number;
-    monthly: number;
-    yearly: number;
-}
-
 function App() {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+    const dispatch: AppDispatch = useDispatch();
+    const { stats } = useSelector((state: RootState) => state.studyTime);
+
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
@@ -60,6 +65,9 @@ function App() {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data, isLoading } = useUserDetailsQuery();
+    const userId = useMemo(() => data?.user?._id, [data?.user]);
+    const { data: getStudyTimeStartsData } = useGetStudyTimeStatsQuery(userId, { skip: !userId });
+    const [updateStudyTime] = useAsyncMutation(useUpdateStudyTimeMutation);
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -71,30 +79,20 @@ function App() {
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
     const startTime = Date.now();
-    const [stats, setStats] = useState<StudyTimeStats>({ daily: 0, monthly: 0, yearly: 0 });
-
-    const fetchTimeStats = async () => {
-        try {
-            const response = await axios.get(`/api/v1/studytime/${data?.user?._id}`);
-            setStats(response.data.stats);
-        } catch (error) {
-            console.error('Error fetching time stats:', error);
-        }
-    };
 
     const saveTimeData = async () => {
         const currentTime = Date.now();
         const duration = Math.round(currentTime - startTime); // milliseconds
+
         try {
-            await axios.patch('/api/v1/studytime', { userId: data?.user?._id, duration });
-            fetchTimeStats(); // Cập nhật stats sau khi lưu
+            await updateStudyTime({ userId, duration });
         } catch (error) {
-            console.error('Error saving time data:', error);
+            toastError(`Error saving time data: ${error}`);
         }
     };
 
     const handleBeforeUnload = () => {
-        saveTimeData(); // Lưu thời gian khi người dùng đóng tab
+        saveTimeData();
     };
 
     /* ########################################################################## */
@@ -113,7 +111,16 @@ function App() {
     }, [theme]);
 
     useEffect(() => {
-        fetchTimeStats();
+        if (getStudyTimeStartsData?.success) {
+            dispatch(
+                addStats({
+                    daily: getStudyTimeStartsData?.stats.daily,
+                    monthly: getStudyTimeStartsData?.stats.daily,
+                    yearly: getStudyTimeStartsData?.stats.daily,
+                })
+            );
+        }
+
         window.addEventListener('beforeunload', handleBeforeUnload);
 
         return () => {
@@ -234,7 +241,7 @@ function App() {
 
                     <div>
                         <h2>My Study Time</h2>
-                        {formatTime(stats.daily / 1000)}
+                        {formatTime(stats?.daily / 1000)}
                     </div>
                 </div>
             </SocketProvider>

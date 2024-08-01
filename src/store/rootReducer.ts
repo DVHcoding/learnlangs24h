@@ -30,6 +30,7 @@ import { commentReducer } from './reducer/comment.reducer';
 import { notificationReducer } from './reducer/notification.reducer';
 import { notificationApi } from './api/notification.api';
 import { studyTimeApi } from './api/studyTime.api';
+import { studyTimeReducer } from './reducer/studyTime.reducer';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -48,7 +49,6 @@ const rootReducer = combineReducers({
 
     updateUserProcessStatus: updateUserProcessStatusReducer,
     updateLesson: updateLessonReducer,
-
     deleteLessonAndUnitLesson: deleteLessonAndUnitLessonReducer,
 
     misc: miscReducer,
@@ -58,8 +58,8 @@ const rootReducer = combineReducers({
     listenExercise: listenReducer,
 
     comments: commentReducer,
-
     notification: notificationReducer,
+    studyTime: studyTimeReducer,
 });
 
 export default rootReducer;
