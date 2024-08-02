@@ -68,16 +68,16 @@ const Process: React.FC = () => {
                     className="relative shrink basis-80 rounded-xl bg-bgCustomProcess px-4 py-6
                     md:overflow-hidden lg:overflow-visible"
                 >
-                    <h1 className="mb-3 font-title text-xl font-bold text-textCustom phone:text-lg">My Process</h1>
+                    <h1 className="mb-3 font-be text-xl font-bold text-textCustom phone:text-lg">My Process</h1>
 
                     <div className="flex items-center gap-4">
                         <div>
-                            <p className="font-title text-base text-textCustom">Today</p>
+                            <p className="font-be text-base text-textCustom">Today</p>
                             <span className="font-body text-sm font-bold text-textCustomProcess">{formatTime(stats.daily / 1000)}</span>
                         </div>
 
                         <div>
-                            <p className="font-title text-base text-textCustom">This Month</p>
+                            <p className="font-be text-base text-textCustom">This Month</p>
                             <span className="font-body text-sm font-bold text-textCustomProcess">{formatTime(statsByMonth / 1000)}</span>
                         </div>
                     </div>

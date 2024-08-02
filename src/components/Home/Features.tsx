@@ -30,9 +30,7 @@ function Media(props: MediaProps) {
             <div className="mb-6">
                 {/* top */}
                 <div className="mb-4 flex items-center justify-between">
-                    <h1 className="font-title text-xl font-bold text-textCustom md:text-lg phone:text-base">
-                        Top Features
-                    </h1>
+                    <h1 className="font-be text-xl font-bold text-textCustom md:text-lg phone:text-base">Top Features</h1>
 
                     <div className="flex items-center gap-1">
                         <p
@@ -42,11 +40,7 @@ function Media(props: MediaProps) {
                         >
                             See All
                         </p>
-                        <ArrowRight
-                            strokeWidth={2}
-                            size={18}
-                            className="text-textCustom phone:w-[15px]"
-                        />
+                        <ArrowRight strokeWidth={2} size={18} className="text-textCustom phone:w-[15px]" />
                     </div>
                 </div>
 
@@ -57,15 +51,9 @@ function Media(props: MediaProps) {
                             <li
                                 key={course?._id}
                                 className="w-[7.9rem] cursor-pointer rounded-lg bg-[#9aabab47] p-2 phone:grow"
-                                onClick={() =>
-                                    handleRedirect(`/${course?.name.toLowerCase()}/${course._id}`)
-                                }
+                                onClick={() => handleRedirect(`/${course?.name.toLowerCase()}/${course._id}`)}
                             >
-                                <img
-                                    src={course?.image?.url}
-                                    alt={course?.name}
-                                    className="mx-auto w-40"
-                                />
+                                <img src={course?.image?.url} alt={course?.name} className="mx-auto w-40" />
                                 <h2
                                     className="select-none text-center font-body text-sm font-semibold
                                          text-textCustomFeatures phone:text-base"
@@ -77,10 +65,7 @@ function Media(props: MediaProps) {
                     ) : (
                         <>
                             {Array.from(new Array(4)).map((_, index) => (
-                                <li
-                                    className="w-[7.9rem] rounded-lg bg-[#9aabab47] p-2 phone:grow"
-                                    key={index}
-                                >
+                                <li className="w-[7.9rem] rounded-lg bg-[#9aabab47] p-2 phone:grow" key={index}>
                                     <Skeleton variant="rectangular" height={120} />
                                     <Skeleton width="70%" height={10} />
                                 </li>

@@ -15,7 +15,7 @@ const Certificates = () => {
         <div>
             {/* top */}
             <div className="mb-4 flex items-center justify-between">
-                <h1 className="font-title text-xl font-bold text-textCustom md:text-lg phone:text-base">Certificates</h1>
+                <h1 className="font-be text-xl font-bold text-textCustom md:text-lg phone:text-base">Certificates</h1>
 
                 <div className="flex items-center gap-1">
                     <p

@@ -175,9 +175,7 @@ function Media(props: MediaProps) {
                                     </div>
 
                                     <div>
-                                        <p className="font-title font-medium text-textCustom">
-                                            {item.nameGroup}
-                                        </p>
+                                        <p className="font-title font-medium text-textCustom">{item.nameGroup}</p>
                                     </div>
                                 </>
                             ) : (
