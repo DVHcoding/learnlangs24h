@@ -42,13 +42,13 @@ export const userApi = createApi({
         }),
 
         // UserDetails By NickName
-        userDetailsByNickName: builder.query<APIResponse, string>({
+        userDetailsByNickName: builder.query<APIResponse, string | null | undefined>({
             query: (nickname) => `profile/${nickname}`,
             providesTags: ['User'],
         }),
 
         // UserDetailsPopulate
-        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, string>({
+        userDetailsPopulate: builder.query<UserDetailsPopulateResponseType, string | null | undefined>({
             query: (nickname) => `userDetailsPopulate/${nickname}`,
             providesTags: ['User'],
         }),

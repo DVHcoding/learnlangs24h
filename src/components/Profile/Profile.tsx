@@ -1,23 +1,18 @@
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import React, { Fragment, useState } from 'react';
-// ##################################
-// #       IMPORT Npm
-// ##################################
 import { useParams } from 'react-router-dom';
-import { Progress, Empty } from 'antd';
+import { Empty } from 'antd';
 import { Breadcrumb, Tabs, Avatar, Button } from 'antd';
 import { Link } from 'react-router-dom';
-import CalendarHeatmap from 'react-calendar-heatmap';
 import dayjs from 'dayjs';
-import 'react-calendar-heatmap/dist/styles.css';
 
-// ##################################
-// #       IMPORT Components
-// ##################################
-
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import AvatarFrame from '@assets/profiles/avatarFrame.png';
 import BannerIcon from '@assets/profiles/persional-header.svg';
-import Achievement from '@assets/profiles/achievement.svg';
-import AchievementActive from '@assets/profiles/achievement-active.svg';
 import {
     useAddFriendMutation,
     useFollowUserMutation,
@@ -30,66 +25,48 @@ import {
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import { APIResponse, Follow } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
+import Achievement from './Achievement';
+import Exam from './Exam';
+import Calendar from './Calendar';
 
 // #########################################################################
 const Profile: React.FC = () => {
     const { nickname } = useParams<string>();
 
-    // use RTK query to get userDetailsByNickName && userDetails && userDetailsPopulate
-    const { data: dataUserByNickName, isLoading } = useUserDetailsByNickNameQuery(nickname || 'undefined');
-    const { data: dataUserDetails, isLoading: dataUserDetailsLoading, refetch: refetchUserDetails } = useUserDetailsQuery();
-    const {
-        data: dataUserDetailsPopulate,
-        isLoading: dataUserDetailsPopulateLoading,
-        refetch: refetchUserDetailsPopulate,
-    } = useUserDetailsPopulateQuery(nickname || 'undefined');
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+    const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const { data: dataUserByNickName } = useUserDetailsByNickNameQuery(nickname, { skip: !nickname });
+    const { data: dataUserDetails, refetch: refetchUserDetails } = useUserDetailsQuery();
+    const { data: dataUserDetailsPopulate, refetch: refetchUserDetailsPopulate } = useUserDetailsPopulateQuery(nickname, {
+        skip: !nickname,
+    });
 
     const [followUser, followUserLoading] = useAsyncMutation(useFollowUserMutation);
     const [unFollow, unFollowLoading] = useAsyncMutation(useUnFollowMutation);
     const [addFriend, addFriendLoading] = useAsyncMutation(useAddFriendMutation);
     const [unFriend, unFriendLoading] = useAsyncMutation(useUnFriendMutation);
 
-    const values = [
-        { date: '2024-05-08', count: 0 },
-        { date: '2024-05-09', count: 2 },
-        { date: '2024-05-10', count: 4 },
-        { date: '2024-05-11', count: 6 },
-        { date: '2024-05-12', count: 8 },
-        { date: '2024-06-01', count: 5 },
-        { date: '2024-06-02', count: 3 },
-        { date: '2024-06-03', count: 1 },
-        { date: '2024-06-04', count: 0 },
-        { date: '2024-06-05', count: 2 },
-        { date: '2024-06-06', count: 4 },
-        { date: '2024-06-07', count: 6 },
-        { date: '2024-06-08', count: 7 },
-        { date: '2024-06-09', count: 3 },
-        { date: '2024-06-10', count: 2 },
-        { date: '2024-06-11', count: 1 },
-        { date: '2024-06-12', count: 4 },
-        { date: '2024-06-13', count: 5 },
-        { date: '2024-06-14', count: 6 },
-        { date: '2024-06-15', count: 7 },
-        { date: '2024-06-16', count: 8 },
-        { date: '2024-06-17', count: 0 },
-        { date: '2024-06-18', count: 1 },
-        { date: '2024-06-19', count: 2 },
-        { date: '2024-06-20', count: 3 },
-        { date: '2024-06-21', count: 4 },
-        { date: '2024-06-22', count: 5 },
-        { date: '2024-06-23', count: 6 },
-        { date: '2024-06-24', count: 7 },
-        { date: '2024-06-25', count: 8 },
-    ];
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
 
-    /* -------------------------------------------------------------------------- */
-    /*                              STATE MANAGEMENT                              */
-    /* -------------------------------------------------------------------------- */
-    const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
-
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
-    /* -------------------------------------------------------------------------- */
+    /* ########################################################################## */
     const handleUserAction: (currentUserData: APIResponse, targetUserData: APIResponse) => void = (currentUserData, targetUserData) => {
         const { _id: currentUserId, following, friends } = currentUserData.user;
         const { _id: targetUserId, following: targetUserFollowing } = targetUserData.user;
@@ -215,6 +192,14 @@ const Profile: React.FC = () => {
         }
     };
 
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
+
     return (
         <div className="h-full px-4 phone:p-1 ">
             {/* BreadCrumbs */}
@@ -234,7 +219,7 @@ const Profile: React.FC = () => {
                 />
             </div>
 
-            {dataUserByNickName?.success && dataUserByNickName.user && dataUserDetails?.user && !isLoading && !dataUserDetailsLoading ? (
+            {dataUserByNickName?.user && dataUserDetails?.user ? (
                 <div className="mt-2 h-full justify-between">
                     {/* Banner */}
                     <div
@@ -279,12 +264,12 @@ const Profile: React.FC = () => {
                                         </h2>
                                     </li>
                                     <li>
-                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">
+                                        <h3 className="my-0.5 font-be leading-tight text-textCustom">
                                             Follower: {dataUserByNickName?.user?.followers?.length}
                                         </h3>
                                     </li>
                                     <li>
-                                        <span className="font-segoe text-base text-textCustom">
+                                        <span className="font-be  text-textCustom">
                                             Join At: {dayjs(dataUserByNickName?.user?.createdAt).format('DD/MM/YYYY')}
                                         </span>
                                     </li>
@@ -292,9 +277,7 @@ const Profile: React.FC = () => {
 
                                 <div className="col-span-1 space-y-2">
                                     <li className="flex items-center gap-2">
-                                        <h2 className="text-nowrap font-segoe font-bold leading-tight text-textCustom phone:text-base">
-                                            Cấp bậc:
-                                        </h2>
+                                        <h3 className="text-nowrap font-be leading-tight text-textCustom phone:text-base">Cấp bậc:</h3>
 
                                         <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
                                             level {dataUserByNickName?.user?.level}
@@ -302,11 +285,11 @@ const Profile: React.FC = () => {
                                     </li>
 
                                     <li>
-                                        <h3 className="my-0.5 font-segoe leading-tight text-textCustom">Bài viết: 12</h3>
+                                        <h3 className="my-0.5 font-be leading-tight text-textCustom">Bài viết: 12</h3>
                                     </li>
 
                                     <li>
-                                        <span className="text-nowrap font-body text-base text-textCustom">
+                                        <span className="text-nowrap font-be text-textCustom">
                                             Id: {dataUserByNickName?.user?.nickname}
                                         </span>
                                     </li>
@@ -320,117 +303,18 @@ const Profile: React.FC = () => {
                     {/* Bottom */}
                     <div className="mt-4 grid grid-cols-12 gap-4">
                         {/* Achievement */}
-                        <div className="flex rounded-lg bg-bgHoverGrayDark sm:col-span-12 md:col-span-12 xl:col-span-7">
-                            <div className="flex w-full gap-2">
-                                <div className="min-w-[9rem] self-start py-4 phone:min-w-[6rem]">
-                                    <img src={Achievement} alt="achievement" className="ml-auto w-[90%]" />
-                                </div>
-
-                                <div className="grow p-4">
-                                    <h4 className="mb-2 max-w-max rounded-md bg-white px-3 py-1 uppercase leading-tight">level 1</h4>
-
-                                    <div className="flex items-center justify-between phone:flex-wrap">
-                                        <h2
-                                            className=" max-w-max rounded-lg font-body font-bold leading-tight text-textCustom 
-                                                sm:text-lg phone:text-base"
-                                        >
-                                            Hội ma mới
-                                        </h2>
-                                        <h3
-                                            className="max-w-max rounded-lg font-body font-bold leading-tight text-textCustom
-                                                phone:text-base"
-                                        >
-                                            0 / 50 hours
-                                        </h3>
-                                    </div>
-
-                                    <div className="mb-2 flex items-center">
-                                        <Progress percent={80} size={['100%', 15]} trailColor="white" showInfo={false} />
-                                        <img src={AchievementActive} alt="Achievement Active" />
-                                    </div>
-
-                                    <p className="text-justify text-base text-textCustom phone:line-clamp-4 pm:line-clamp-4">
-                                        Hoàn thành 50 giờ học để đạt cấp độ tiếp theo. Khi đạt cấp độ mới sẽ nhận được các phần quà khác
-                                        nhau.
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
+                        <Achievement />
 
                         {/* Quantity exam completed */}
-                        <ul
-                            className="grid auto-rows-[7rem] grid-cols-2 gap-2 rounded-lg sm:col-span-12 
-                                    md:col-span-6 xl:col-span-5"
-                        >
-                            {[...Array(4)].map((_, index) => (
-                                <li key={index} className="grid content-center justify-items-center gap-2 rounded-lg bg-bgHoverGrayDark">
-                                    <h3 className="max-w-max rounded-lg font-segoe text-lg leading-tight text-textCustom">Số đề đã làm</h3>
-                                    <h3 className="max-w-max rounded-lg font-segoe leading-tight text-textCustom">12</h3>
-                                    <h3 className="max-w-max rounded-lg font-segoe leading-tight text-textCustom">Đề thi</h3>
-                                </li>
-                            ))}
-                        </ul>
+                        <Exam />
 
                         {/* Calendar */}
-                        <div
-                            className="scrollbar overflow-auto rounded-lg sm:col-span-12 
-                                    md:col-span-12 xl:col-span-8"
-                        >
-                            <CalendarHeatmap
-                                startDate={new Date('2024-01-01')}
-                                endDate={new Date('2024-12-31')}
-                                values={values}
-                                onClick={(value) => {
-                                    alert(`Bạn đã học ${value?.count ?? '0'} giờ ngày ${value?.date ?? '....'}`);
-                                }}
-                                classForValue={(value) => {
-                                    if (!value) {
-                                        return 'color-empty';
-                                    }
-
-                                    if (value.count >= 8) {
-                                        return `color-scale-8`;
-                                    }
-
-                                    if (value.count >= 6) {
-                                        return 'color-scale-6';
-                                    }
-
-                                    if (value.count >= 4) {
-                                        return 'color-scale-4';
-                                    }
-
-                                    if (value.count >= 2) {
-                                        return 'color-scale-2';
-                                    }
-
-                                    return `color-scale-${value.count}`;
-                                }}
-                            />
-
-                            <div className="mb-2 mt-1 flex items-center justify-between">
-                                <h3 className="max-w-max rounded-lg font-segoe leading-tight text-textCustom phone:hidden phone:text-base">
-                                    Biểu đồ số giờ học theo ngày
-                                </h3>
-
-                                <div className="ml-auto flex items-center gap-2">
-                                    <p className="text-textCustom">Less</p>
-                                    <div className="flex items-center gap-1">
-                                        <div className="h-3 w-3 bg-bgHoverGrayDark"></div>
-                                        <div className="h-3 w-3 bg-[#0e4429]"></div>
-                                        <div className="h-3 w-3 bg-[#006d32]"></div>
-                                        <div className="h-3 w-3 bg-[#26a641]"></div>
-                                        <div className="h-3 w-3 bg-[#39d353]"></div>
-                                    </div>
-                                    <p className="text-textCustom">More</p>
-                                </div>
-                            </div>
-                        </div>
+                        <Calendar />
 
                         {/* Follower */}
                         <div
                             className="tab-profile overflow-auto rounded-lg bg-bgHoverGrayDark p-2 sm:col-span-12 sm:h-[18rem] md:col-span-6 
-                                    md:row-start-2 md:h-[14.6rem] xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
+                            md:row-start-2 md:h-[14.6rem] xl:col-span-4 xl:col-start-9 xl:row-start-2 xl:h-[20rem]"
                             style={{ scrollbarWidth: 'none' }}
                         >
                             <Tabs
@@ -441,45 +325,41 @@ const Profile: React.FC = () => {
                                         label: 'Đang theo dõi',
                                         children: (
                                             <ul className="flex flex-col items-center gap-2">
-                                                {!dataUserDetailsPopulateLoading &&
-                                                    dataUserDetailsPopulate?.user &&
-                                                    dataUserDetailsPopulate.user.following.map((user: Follow) => (
-                                                        <li
-                                                            className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2"
-                                                            key={user._id}
-                                                        >
-                                                            <div className="flex items-center gap-2">
-                                                                <Avatar
-                                                                    size={'large'}
-                                                                    style={{ backgroundColor: '#87d068' }}
-                                                                    src={user?.photo?.url}
-                                                                />
-                                                                <div>
-                                                                    <p className="font-segoe leading-tight text-textCustom">
-                                                                        {user.username}
-                                                                    </p>
-                                                                    <p className="mt-1 font-segoe leading-tight text-textCustom">
-                                                                        {user.nickname}
-                                                                    </p>
-                                                                </div>
+                                                {dataUserDetailsPopulate?.user?.following?.map((user: Follow) => (
+                                                    <li
+                                                        className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2"
+                                                        key={user._id}
+                                                    >
+                                                        <div className="flex items-center gap-2">
+                                                            <Avatar
+                                                                size={'large'}
+                                                                style={{ backgroundColor: '#87d068' }}
+                                                                src={user?.photo?.url}
+                                                            />
+                                                            <div>
+                                                                <p className="font-segoe leading-tight text-textCustom">{user.username}</p>
+                                                                <p className="mt-1 font-segoe leading-tight text-textCustom">
+                                                                    {user.nickname}
+                                                                </p>
                                                             </div>
-                                                            {dataUserDetails.user._id === dataUserDetailsPopulate.user._id && (
-                                                                <Button
-                                                                    className={`${getButtonStyleTab(dataUserDetails, user)}`}
-                                                                    onClick={() => handleTabUserAction(dataUserDetails, user)}
-                                                                    loading={loadingStates[user._id]}
-                                                                    disabled={
-                                                                        followUserLoading ||
-                                                                        unFollowLoading ||
-                                                                        addFriendLoading ||
-                                                                        unFriendLoading
-                                                                    }
-                                                                >
-                                                                    {getButtonLabelTab(dataUserDetails, user)}
-                                                                </Button>
-                                                            )}
-                                                        </li>
-                                                    ))}
+                                                        </div>
+                                                        {dataUserDetails.user._id === dataUserDetailsPopulate.user._id && (
+                                                            <Button
+                                                                className={`${getButtonStyleTab(dataUserDetails, user)}`}
+                                                                onClick={() => handleTabUserAction(dataUserDetails, user)}
+                                                                loading={loadingStates[user._id]}
+                                                                disabled={
+                                                                    followUserLoading ||
+                                                                    unFollowLoading ||
+                                                                    addFriendLoading ||
+                                                                    unFriendLoading
+                                                                }
+                                                            >
+                                                                {getButtonLabelTab(dataUserDetails, user)}
+                                                            </Button>
+                                                        )}
+                                                    </li>
+                                                ))}
 
                                                 <li className="font-segoe text-textCustom">loading...</li>
                                             </ul>
@@ -490,8 +370,7 @@ const Profile: React.FC = () => {
                                         label: 'Người theo dõi',
                                         children: (
                                             <ul className="flex flex-col items-center gap-2">
-                                                {!dataUserDetailsPopulateLoading &&
-                                                    dataUserDetailsPopulate?.user &&
+                                                {dataUserDetailsPopulate?.user &&
                                                     (() => {
                                                         // Chuyển đổi danh sách following thành một tập hợp các _id
                                                         const followingSet = new Set(
