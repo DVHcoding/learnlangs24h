@@ -8,6 +8,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################################################################
 import {
     GetStudyTimeByMonthResponse,
+    GetStudyTimeCalendarResponse,
     GetStudyTimeStatsResponse,
     GetTopUserByStudyTimeResponse,
     UpdateStudyTimeResponse,
@@ -42,6 +43,10 @@ export const studyTimeApi = createApi({
             query: ({ month, year }) => `studytime/month/top?&month=${month}&year=${year}`,
             providesTags: ['TopUser'],
         }),
+        getStudyTimeCalendar: builder.query<GetStudyTimeCalendarResponse, { userId: string | null | undefined; year: number }>({
+            query: ({ userId, year }) => `studytime/calendar/stats?userId=${userId}&year=${year}`,
+            providesTags: ['Stats'],
+        }),
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
@@ -56,5 +61,10 @@ export const studyTimeApi = createApi({
     }),
 });
 
-export const { useGetStudyTimeStatsQuery, useGetTopUserByStudyTimeQuery, useGetStudyTimeByMonthQuery, useUpdateStudyTimeMutation } =
-    studyTimeApi;
+export const {
+    useGetStudyTimeStatsQuery,
+    useGetTopUserByStudyTimeQuery,
+    useGetStudyTimeByMonthQuery,
+    useGetStudyTimeCalendarQuery,
+    useUpdateStudyTimeMutation,
+} = studyTimeApi;

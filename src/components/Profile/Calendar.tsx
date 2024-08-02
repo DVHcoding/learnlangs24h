@@ -1,58 +1,93 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
+import { useMemo } from 'react';
+import dayjs from 'dayjs';
 import CalendarHeatmap from 'react-calendar-heatmap';
-import 'react-calendar-heatmap/dist/styles.css';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { toastInfo } from '@components/Toast/Toasts';
+import { useGetStudyTimeCalendarQuery } from '@store/api/studyTime.api';
+import 'react-calendar-heatmap/dist/styles.css';
+import { APIResponse } from 'types/api-types';
 
-const Calendar: React.FC = () => {
-    const values = [
-        { date: '2024-05-08', count: 0 },
-        { date: '2024-05-09', count: 2 },
-        { date: '2024-05-10', count: 4 },
-        { date: '2024-05-11', count: 6 },
-        { date: '2024-05-12', count: 8 },
-        { date: '2024-06-01', count: 5 },
-        { date: '2024-06-02', count: 3 },
-        { date: '2024-06-03', count: 1 },
-        { date: '2024-06-04', count: 0 },
-        { date: '2024-06-05', count: 2 },
-        { date: '2024-06-06', count: 4 },
-        { date: '2024-06-07', count: 6 },
-        { date: '2024-06-08', count: 7 },
-        { date: '2024-06-09', count: 3 },
-        { date: '2024-06-10', count: 2 },
-        { date: '2024-06-11', count: 1 },
-        { date: '2024-06-12', count: 4 },
-        { date: '2024-06-13', count: 5 },
-        { date: '2024-06-14', count: 6 },
-        { date: '2024-06-15', count: 7 },
-        { date: '2024-06-16', count: 8 },
-        { date: '2024-06-17', count: 0 },
-        { date: '2024-06-18', count: 1 },
-        { date: '2024-06-19', count: 2 },
-        { date: '2024-06-20', count: 3 },
-        { date: '2024-06-21', count: 4 },
-        { date: '2024-06-22', count: 5 },
-        { date: '2024-06-23', count: 6 },
-        { date: '2024-06-24', count: 7 },
-        { date: '2024-06-25', count: 8 },
-    ];
+const Calendar: React.FC<{ dataUserByNickName: APIResponse | undefined }> = ({ dataUserByNickName }) => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
+    const now = new Date();
+    const year = now.getFullYear();
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const userId = useMemo(() => dataUserByNickName?.user?._id, [dataUserByNickName?.user]);
+
+    const { data: studyTimeCalendarData } = useGetStudyTimeCalendarQuery({ userId, year }, { skip: !userId || !year });
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+    const values = useMemo(() => {
+        return (studyTimeCalendarData?.calendar || []).map((item) => {
+            // Chuyển đổi ngày tháng thành định dạng 'YYYY-MM-DD'
+            const formattedDate = dayjs(item.date).format('YYYY-MM-DD');
+
+            // Chuyển đổi dailyDuration từ milliseconds thành giờ
+            const hours = (item.dailyDuration / (1000 * 60 * 60)).toFixed(2); // Sử dụng số thực
+
+            return {
+                date: formattedDate,
+                count: +hours,
+            };
+        });
+    }, [studyTimeCalendarData]);
+
+    // Tính toán startDate và endDate của năm hiện tại
+    const startDate = useMemo(() => {
+        return dayjs().startOf('year').toDate(); // Ngày đầu năm hiện tại
+    }, []);
+
+    const endDate = useMemo(() => {
+        return dayjs().endOf('year').toDate(); // Ngày cuối năm hiện tại
+    }, []);
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
-        <div
-            className="scrollbar overflow-auto rounded-lg sm:col-span-12 
-                            md:col-span-12 xl:col-span-8"
-        >
+        <div className="scrollbar overflow-auto rounded-lg sm:col-span-12 md:col-span-12 xl:col-span-8">
             <CalendarHeatmap
-                startDate={new Date('2024-01-01')}
-                endDate={new Date('2024-12-31')}
+                startDate={startDate}
+                endDate={endDate}
                 values={values}
                 onClick={(value) => {
-                    alert(`Bạn đã học ${value?.count ?? '0'} giờ ngày ${value?.date ?? '....'}`);
+                    toastInfo(
+                        `${
+                            value?.count
+                                ? `Bạn đã học ${value.count} giờ ngày ${dayjs(value.date).format('DD/MM/YYYY')}`
+                                : 'Chưa có dữ liệu'
+                        }`
+                    );
                 }}
                 classForValue={(value) => {
                     if (!value) {
@@ -71,11 +106,7 @@ const Calendar: React.FC = () => {
                         return 'color-scale-4';
                     }
 
-                    if (value.count >= 2) {
-                        return 'color-scale-2';
-                    }
-
-                    return `color-scale-${value.count}`;
+                    return `color-scale-2`;
                 }}
             />
 

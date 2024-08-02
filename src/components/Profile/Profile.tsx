@@ -309,7 +309,7 @@ const Profile: React.FC = () => {
                         <Exam />
 
                         {/* Calendar */}
-                        <Calendar />
+                        <Calendar dataUserByNickName={dataUserByNickName} />
 
                         {/* Follower */}
                         <div

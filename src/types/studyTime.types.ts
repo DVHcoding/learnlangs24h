@@ -50,3 +50,18 @@ export interface Photo {
     public_id: string;
     url: string;
 }
+
+export interface GetStudyTimeCalendarResponse {
+    success: boolean;
+    calendar: Calendar[];
+}
+
+export interface Calendar {
+    _id: string;
+    date: Date;
+    day: number;
+    month: number;
+    year: number;
+    dailyDuration: number;
+    user: string;
+}
