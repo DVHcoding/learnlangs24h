@@ -1,18 +1,16 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React, { Fragment, useState } from 'react';
+import React, { useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { Empty } from 'antd';
-import { Breadcrumb, Tabs, Avatar, Button } from 'antd';
+import { Breadcrumb, Tabs } from 'antd';
 import { Link } from 'react-router-dom';
-import dayjs from 'dayjs';
+import loadable from '@loadable/component';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import AvatarFrame from '@assets/profiles/avatarFrame.png';
-import BannerIcon from '@assets/profiles/persional-header.svg';
 import {
     useAddFriendMutation,
     useFollowUserMutation,
@@ -25,9 +23,14 @@ import {
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import { APIResponse, Follow } from 'types/api-types';
 import { toastError } from '@components/Toast/Toasts';
-import Achievement from './Achievement';
-import Exam from './Exam';
-import Calendar from './Calendar';
+import { hasLoadingApis } from '@utils/Helpers';
+
+const Achievement = loadable(() => import('./Achievement'));
+const Exam = loadable(() => import('./Exam'));
+const Calendar = loadable(() => import('./Calendar'));
+const Banner = loadable(() => import('./Banner'));
+const IsFollowingTab = loadable(() => import('./IsFollowingTab'));
+const FollowerTab = loadable(() => import('./FollowerTab'));
 
 // #########################################################################
 const Profile: React.FC = () => {
@@ -63,6 +66,7 @@ const Profile: React.FC = () => {
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
+    const isLoadingApis = hasLoadingApis([followUserLoading, unFollowLoading, addFriendLoading, unFriendLoading]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -210,7 +214,7 @@ const Profile: React.FC = () => {
                             title: <Link to="/">Home</Link>,
                         },
                         {
-                            title: 'Profile',
+                            title: <Link to={`/profile/${dataUserDetails?.user.nickname}`}>Profile</Link>,
                         },
                         {
                             title: nickname,
@@ -222,93 +226,19 @@ const Profile: React.FC = () => {
             {dataUserByNickName?.user && dataUserDetails?.user ? (
                 <div className="mt-2 h-full justify-between">
                     {/* Banner */}
-                    <div
-                        className="relative flex h-[13rem] w-full items-center overflow-x-auto rounded-lg phone:h-[20rem]"
-                        style={{ backgroundColor: 'rgb(52 109 226 / 47%)' }}
-                    >
-                        <div className="ml-4 flex gap-4 phone:flex-col">
-                            <div
-                                className="relative flex select-none flex-col gap-2 rounded-full 
-                                phone:flex-row phone:items-center phone:gap-4"
-                            >
-                                <div className="h-24 w-24 overflow-hidden">
-                                    <img
-                                        src={AvatarFrame}
-                                        alt="Khung avatar"
-                                        className="pointer-events-none absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]"
-                                    />
-                                    <img
-                                        src={dataUserByNickName?.user?.photo?.url}
-                                        alt="Avatar"
-                                        className="h-full w-full rounded-full object-cover"
-                                    />
-                                </div>
-
-                                {dataUserDetails.user._id !== dataUserByNickName.user._id && (
-                                    <Button
-                                        className={getActionButtonStyle(dataUserDetails, dataUserByNickName)}
-                                        loading={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
-                                        disabled={followUserLoading || unFollowLoading || addFriendLoading || unFriendLoading}
-                                        onClick={() => handleUserAction(dataUserDetails, dataUserByNickName)}
-                                    >
-                                        {getActionButtonLabel(dataUserDetails, dataUserByNickName)}
-                                    </Button>
-                                )}
-                            </div>
-
-                            <ul className="mt-2 grid grid-cols-3 gap-4">
-                                <div className="col-span-1 space-y-2">
-                                    <li>
-                                        <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
-                                            {dataUserByNickName?.user?.username}
-                                        </h2>
-                                    </li>
-                                    <li>
-                                        <h3 className="my-0.5 font-be leading-tight text-textCustom">
-                                            Follower: {dataUserByNickName?.user?.followers?.length}
-                                        </h3>
-                                    </li>
-                                    <li>
-                                        <span className="font-be  text-textCustom">
-                                            Join At: {dayjs(dataUserByNickName?.user?.createdAt).format('DD/MM/YYYY')}
-                                        </span>
-                                    </li>
-                                </div>
-
-                                <div className="col-span-1 space-y-2">
-                                    <li className="flex items-center gap-2">
-                                        <h3 className="text-nowrap font-be leading-tight text-textCustom phone:text-base">Cấp bậc:</h3>
-
-                                        <h4 className="min-w-max select-none rounded-md bg-white px-3 py-1 uppercase leading-tight">
-                                            level {dataUserByNickName?.user?.level}
-                                        </h4>
-                                    </li>
-
-                                    <li>
-                                        <h3 className="my-0.5 font-be leading-tight text-textCustom">Bài viết: 12</h3>
-                                    </li>
-
-                                    <li>
-                                        <span className="text-nowrap font-be text-textCustom">
-                                            Id: {dataUserByNickName?.user?.nickname}
-                                        </span>
-                                    </li>
-                                </div>
-                            </ul>
-                        </div>
-
-                        <img src={BannerIcon} alt="banner icon" className="absolute right-0 hidden xl:block" />
-                    </div>
+                    <Banner
+                        dataUserByNickName={dataUserByNickName}
+                        dataUserDetails={dataUserDetails}
+                        getActionButtonLabel={getActionButtonLabel}
+                        getActionButtonStyle={getActionButtonStyle}
+                        handleUserAction={handleUserAction}
+                        isLoadingApis={isLoadingApis}
+                    />
 
                     {/* Bottom */}
                     <div className="mt-4 grid grid-cols-12 gap-4">
-                        {/* Achievement */}
                         <Achievement />
-
-                        {/* Quantity exam completed */}
                         <Exam />
-
-                        {/* Calendar */}
                         <Calendar dataUserByNickName={dataUserByNickName} />
 
                         {/* Follower */}
@@ -324,115 +254,30 @@ const Profile: React.FC = () => {
                                         key: '1',
                                         label: 'Đang theo dõi',
                                         children: (
-                                            <ul className="flex flex-col items-center gap-2">
-                                                {dataUserDetailsPopulate?.user?.following?.map((user: Follow) => (
-                                                    <li
-                                                        className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2"
-                                                        key={user._id}
-                                                    >
-                                                        <div className="flex items-center gap-2">
-                                                            <Avatar
-                                                                size={'large'}
-                                                                style={{ backgroundColor: '#87d068' }}
-                                                                src={user?.photo?.url}
-                                                            />
-                                                            <div>
-                                                                <p className="font-segoe leading-tight text-textCustom">{user.username}</p>
-                                                                <p className="mt-1 font-segoe leading-tight text-textCustom">
-                                                                    {user.nickname}
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                        {dataUserDetails.user._id === dataUserDetailsPopulate.user._id && (
-                                                            <Button
-                                                                className={`${getButtonStyleTab(dataUserDetails, user)}`}
-                                                                onClick={() => handleTabUserAction(dataUserDetails, user)}
-                                                                loading={loadingStates[user._id]}
-                                                                disabled={
-                                                                    followUserLoading ||
-                                                                    unFollowLoading ||
-                                                                    addFriendLoading ||
-                                                                    unFriendLoading
-                                                                }
-                                                            >
-                                                                {getButtonLabelTab(dataUserDetails, user)}
-                                                            </Button>
-                                                        )}
-                                                    </li>
-                                                ))}
-
-                                                <li className="font-segoe text-textCustom">loading...</li>
-                                            </ul>
+                                            <IsFollowingTab
+                                                isLoadingApis={isLoadingApis}
+                                                loadingStates={loadingStates}
+                                                dataUserDetails={dataUserDetails}
+                                                dataUserDetailsPopulate={dataUserDetailsPopulate}
+                                                handleTabUserAction={handleTabUserAction}
+                                                getButtonLabelTab={getButtonLabelTab}
+                                                getButtonStyleTab={getButtonStyleTab}
+                                            />
                                         ),
                                     },
                                     {
                                         key: '2',
                                         label: 'Người theo dõi',
                                         children: (
-                                            <ul className="flex flex-col items-center gap-2">
-                                                {dataUserDetailsPopulate?.user &&
-                                                    (() => {
-                                                        // Chuyển đổi danh sách following thành một tập hợp các _id
-                                                        const followingSet = new Set(
-                                                            dataUserDetailsPopulate.user.following.map(
-                                                                (followingUser: Follow) => followingUser._id
-                                                            )
-                                                        );
-
-                                                        return dataUserDetailsPopulate.user.followers.map((follower: Follow) => {
-                                                            // Kiểm tra nếu follower không có trong tập hợp following
-                                                            const isFollowing = followingSet.has(follower._id);
-
-                                                            return (
-                                                                !isFollowing && (
-                                                                    <Fragment key={follower._id}>
-                                                                        <li className="flex w-[90%] items-center justify-between rounded-lg bg-bgCustom p-2">
-                                                                            <div className="flex items-center gap-2">
-                                                                                <Avatar
-                                                                                    size={'large'}
-                                                                                    style={{ backgroundColor: '#87d068' }}
-                                                                                    src={follower.photo?.url}
-                                                                                />
-                                                                                <div>
-                                                                                    <p className="font-segoe leading-tight text-textCustom">
-                                                                                        {follower.username}
-                                                                                    </p>
-                                                                                    <p className="mt-1 font-segoe leading-tight text-textCustom">
-                                                                                        {follower.nickname}
-                                                                                    </p>
-                                                                                </div>
-                                                                            </div>
-
-                                                                            {dataUserDetails.user._id ===
-                                                                                dataUserDetailsPopulate.user._id && (
-                                                                                <Button
-                                                                                    className={`${getButtonStyleTab(
-                                                                                        dataUserDetails,
-                                                                                        follower
-                                                                                    )}`}
-                                                                                    onClick={() =>
-                                                                                        handleTabUserAction(dataUserDetails, follower)
-                                                                                    }
-                                                                                    loading={loadingStates[follower._id]}
-                                                                                    disabled={
-                                                                                        followUserLoading ||
-                                                                                        unFollowLoading ||
-                                                                                        addFriendLoading ||
-                                                                                        unFriendLoading
-                                                                                    }
-                                                                                >
-                                                                                    {getButtonLabelTab(dataUserDetails, follower)}
-                                                                                </Button>
-                                                                            )}
-                                                                        </li>
-                                                                    </Fragment>
-                                                                )
-                                                            );
-                                                        });
-                                                    })()}
-
-                                                <li className="font-segoe text-textCustom">loading...</li>
-                                            </ul>
+                                            <FollowerTab
+                                                dataUserDetails={dataUserDetails}
+                                                dataUserDetailsPopulate={dataUserDetailsPopulate}
+                                                isLoadingApis={isLoadingApis}
+                                                loadingStates={loadingStates}
+                                                getButtonLabelTab={getButtonLabelTab}
+                                                getButtonStyleTab={getButtonStyleTab}
+                                                handleTabUserAction={handleTabUserAction}
+                                            />
                                         ),
                                     },
                                 ]}
