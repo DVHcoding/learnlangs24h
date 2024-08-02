@@ -1,6 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
+import { useMemo } from 'react';
 import { MoveRight } from 'lucide-react';
 import { Fragment } from 'react/jsx-runtime';
 import { useSelector } from 'react-redux';
@@ -12,6 +13,8 @@ import Plant from '@assets/backgrounds/Plant.png';
 import ProcessSkeleton from '@components/Skeleton/ProcessSkeleton';
 import { RootState } from '@store/store';
 import { formatTime } from '@utils/formatTime';
+import { useGetStudyTimeByMonthQuery } from '@store/api/studyTime.api';
+import { useUserDetailsQuery } from '@store/api/userApi';
 
 const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
     /* ########################################################################## */
@@ -26,14 +29,22 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    const now = new Date();
+    const month = now.getMonth() + 1;
+    const year = now.getFullYear();
 
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: userDetailsData } = useUserDetailsQuery();
+    const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
+
+    const { data: getStudyTimeByMonthData } = useGetStudyTimeByMonthQuery({ userId, month, year }, { skip: !userId || !month || !year });
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
+    const statsByMonth = useMemo(() => getStudyTimeByMonthData?.monthlyDuration ?? 0, [getStudyTimeByMonthData?.monthlyDuration]);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -64,7 +75,7 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
 
                         <div>
                             <p className="font-title text-base text-textCustom">This Month</p>
-                            <span className="font-body text-sm font-bold text-textCustomProcess">72 hours</span>
+                            <span className="font-body text-sm font-bold text-textCustomProcess">{formatTime(statsByMonth / 1000)}</span>
                         </div>
                     </div>
 
@@ -82,7 +93,7 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
                         src={Plant}
                         alt="Plant"
                         className="absolute bottom-0 right-[-4rem] w-44 md:right-[-2rem]
-                md:w-36 phone:right-[-1rem] phone:w-24 pm:right-[-1rem] pm:w-24"
+                        md:w-36 phone:right-[-1rem] phone:w-24 pm:right-[-1rem] pm:w-24"
                     />
                 </div>
             ) : (

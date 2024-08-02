@@ -6,7 +6,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { GetStudyTimeStatsResponse, UpdateStudyTimeResponse } from 'types/studyTime.types';
+import { GetStudyTimeByMonthResponse, GetStudyTimeStatsResponse, UpdateStudyTimeResponse } from 'types/studyTime.types';
 
 export const studyTimeApi = createApi({
     reducerPath: 'studyTimeApi',
@@ -27,6 +27,12 @@ export const studyTimeApi = createApi({
             query: (userId) => `studytime/${userId}`,
             providesTags: ['Stats'],
         }),
+        getStudyTimeByMonth: builder.query<GetStudyTimeByMonthResponse, { userId: string | null | undefined; month: number; year: number }>(
+            {
+                query: ({ userId, month, year }) => `studytime/month/time?userId=${userId}&month=${month}&year=${year}`,
+                providesTags: ['Stats'],
+            }
+        ),
 
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
@@ -42,4 +48,4 @@ export const studyTimeApi = createApi({
     }),
 });
 
-export const { useGetStudyTimeStatsQuery, useUpdateStudyTimeMutation } = studyTimeApi;
+export const { useGetStudyTimeStatsQuery, useGetStudyTimeByMonthQuery, useUpdateStudyTimeMutation } = studyTimeApi;

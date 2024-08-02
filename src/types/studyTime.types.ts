@@ -21,3 +21,8 @@ export interface StudyTime {
     dailyDuration: number;
     user: string;
 }
+
+export interface GetStudyTimeByMonthResponse {
+    success: boolean;
+    monthlyDuration: number;
+}

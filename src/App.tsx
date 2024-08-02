@@ -109,12 +109,6 @@ function App() {
     }, [theme]);
 
     useEffect(() => {
-        dispatch(
-            addStats({
-                daily: getStudyTimeStartsData?.stats?.daily ?? 0,
-            })
-        );
-
         window.addEventListener('beforeunload', handleBeforeUnload);
 
         return () => {
@@ -122,6 +116,18 @@ function App() {
             saveTimeData();
         };
     }, []);
+
+    useEffect(() => {
+        if (!getStudyTimeStartsData) {
+            return;
+        }
+
+        dispatch(
+            addStats({
+                daily: getStudyTimeStartsData?.stats?.daily,
+            })
+        );
+    }, [getStudyTimeStartsData]);
 
     return (
         <Router>
