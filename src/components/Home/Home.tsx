@@ -43,7 +43,7 @@ const Home: React.FC = () => {
                 {!loadingBanner ? (
                     <div
                         className="relative h-52 shrink-0 basis-[50%] overflow-hidden rounded-xl bg-bgHoverGrayDark 
-                                    sm:grow phone:w-full"
+                        sm:grow phone:w-full"
                     >
                         <video src={Video} autoPlay muted loop className="absolute h-full w-full object-cover">
                             <track kind="captions" srcLang="en" label="English Captions" />
@@ -51,11 +51,11 @@ const Home: React.FC = () => {
 
                         <div
                             className="absolute left-[50%] top-[50%] w-full translate-x-[-50%] translate-y-[-50%] px-2
-                                        text-center text-white"
+                            text-center text-white"
                         >
                             <h1
                                 className="mb-2 text-nowrap font-body text-2xl font-bold sm:text-wrap md:text-wrap 
-                                        md:text-lg lg:text-3xl phone:text-wrap phone:text-lg"
+                                md:text-lg lg:text-3xl phone:text-wrap phone:text-lg"
                             >
                                 Explore many exciting courses
                             </h1>
@@ -70,7 +70,7 @@ const Home: React.FC = () => {
                 )}
 
                 {/* My process */}
-                <Process loading={loading} />
+                <Process />
             </div>
 
             {/* BODY CENTER */}
@@ -85,14 +85,14 @@ const Home: React.FC = () => {
 
                 <div
                     className="flex items-start justify-between gap-4 sm:flex-wrap sm:justify-center 
-                                md:flex-wrap lg:ml-2 lg:flex-nowrap phone:ml-0"
+                    md:flex-wrap lg:ml-2 lg:flex-nowrap phone:ml-0"
                 >
                     {/* Group & New books */}
                     <TeamGroup loading={loading} />
 
                     {/* Top users */}
                     <div className="sm:grow md:grow">
-                        <TopUsers loading={loading} />
+                        <TopUsers />
                     </div>
                 </div>
             </div>

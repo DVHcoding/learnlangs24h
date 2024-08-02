@@ -16,7 +16,7 @@ import { formatTime } from '@utils/formatTime';
 import { useGetStudyTimeByMonthQuery } from '@store/api/studyTime.api';
 import { useUserDetailsQuery } from '@store/api/userApi';
 
-const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
+const Process: React.FC = () => {
     /* ########################################################################## */
     /*                                    HOOKS                                   */
     /* ########################################################################## */
@@ -39,7 +39,10 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
     const { data: userDetailsData } = useUserDetailsQuery();
     const userId = useMemo(() => userDetailsData?.user?._id, [userDetailsData?.user]);
 
-    const { data: getStudyTimeByMonthData } = useGetStudyTimeByMonthQuery({ userId, month, year }, { skip: !userId || !month || !year });
+    const { data: getStudyTimeByMonthData, isLoading } = useGetStudyTimeByMonthQuery(
+        { userId, month, year },
+        { skip: !userId || !month || !year }
+    );
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -60,7 +63,7 @@ const Process: React.FC<{ loading: boolean }> = ({ loading }) => {
 
     return (
         <Fragment>
-            {!loading ? (
+            {!isLoading ? (
                 <div
                     className="relative shrink basis-80 rounded-xl bg-bgCustomProcess px-4 py-6
                     md:overflow-hidden lg:overflow-visible"
