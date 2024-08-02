@@ -8,7 +8,7 @@ const formatTime = (seconds: number): string => {
     } else if (minutes > 0) {
         return `${minutes} minutes`;
     } else {
-        return `${seconds} seconds`;
+        return '0 minutes';
     }
 };
 
