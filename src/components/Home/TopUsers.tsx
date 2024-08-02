@@ -104,7 +104,7 @@ const TopUser: React.FC = () => {
                                   </div>
                               </li>
                           ))
-                        : topUserData?.data.map((item) => (
+                        : topUserData?.data?.map((item) => (
                               <li className="flex items-start justify-between sm:gap-2 lg:gap-2 phone:gap-2" key={item.user}>
                                   <div className="flex items-center gap-2">
                                       <Avatar
