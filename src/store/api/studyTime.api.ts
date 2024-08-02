@@ -6,7 +6,12 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { GetStudyTimeByMonthResponse, GetStudyTimeStatsResponse, UpdateStudyTimeResponse } from 'types/studyTime.types';
+import {
+    GetStudyTimeByMonthResponse,
+    GetStudyTimeStatsResponse,
+    GetTopUserByStudyTimeResponse,
+    UpdateStudyTimeResponse,
+} from 'types/studyTime.types';
 
 export const studyTimeApi = createApi({
     reducerPath: 'studyTimeApi',
@@ -17,7 +22,7 @@ export const studyTimeApi = createApi({
         },
         credentials: 'include',
     }),
-    tagTypes: ['Stats'],
+    tagTypes: ['Stats', 'TopUser'],
 
     endpoints: (builder) => ({
         /* -------------------------------------------------------------------------- */
@@ -33,7 +38,10 @@ export const studyTimeApi = createApi({
                 providesTags: ['Stats'],
             }
         ),
-
+        getTopUserByStudyTime: builder.query<GetTopUserByStudyTimeResponse, { month: number; year: number }>({
+            query: ({ month, year }) => `studytime/month/top?&month=${month}&year=${year}`,
+            providesTags: ['TopUser'],
+        }),
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
@@ -48,4 +56,5 @@ export const studyTimeApi = createApi({
     }),
 });
 
-export const { useGetStudyTimeStatsQuery, useGetStudyTimeByMonthQuery, useUpdateStudyTimeMutation } = studyTimeApi;
+export const { useGetStudyTimeStatsQuery, useGetTopUserByStudyTimeQuery, useGetStudyTimeByMonthQuery, useUpdateStudyTimeMutation } =
+    studyTimeApi;

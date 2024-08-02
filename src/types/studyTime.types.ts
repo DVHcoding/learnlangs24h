@@ -26,3 +26,27 @@ export interface GetStudyTimeByMonthResponse {
     success: boolean;
     monthlyDuration: number;
 }
+
+export interface GetTopUserByStudyTimeResponse {
+    success: boolean;
+    data: Datum[];
+}
+
+export interface Datum {
+    totalDuration: number;
+    userDetails: UserDetails;
+    user: string;
+}
+
+export interface UserDetails {
+    _id: string;
+    username: string;
+    photo: Photo;
+    nickname: string;
+    level: number;
+}
+
+export interface Photo {
+    public_id: string;
+    url: string;
+}
