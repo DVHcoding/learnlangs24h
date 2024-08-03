@@ -1,7 +1,13 @@
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { useMemo } from 'react';
 import { Progress } from 'antd';
 import 'react-calendar-heatmap/dist/styles.css';
 
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import AchievementActive from '@assets/profiles/achievement-active.svg';
 import { useGetStudyTimeByMonthQuery } from '@store/api/studyTime.api';
 import { APIResponse } from 'types/api-types';
