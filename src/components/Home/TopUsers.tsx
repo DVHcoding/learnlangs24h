@@ -5,13 +5,13 @@ import { Avatar } from 'antd';
 import Skeleton from '@mui/material/Skeleton';
 import { ArrowRight } from 'lucide-react';
 import { Fragment } from 'react';
+import { Link } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
 import { useGetTopUserByStudyTimeQuery } from '@store/api/studyTime.api';
 import { formatHour } from '@utils/formatTime';
-import { Link } from 'react-router-dom';
 
 type DataType = {
     avatar: string;
