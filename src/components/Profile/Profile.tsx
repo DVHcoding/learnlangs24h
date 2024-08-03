@@ -237,7 +237,7 @@ const Profile: React.FC = () => {
 
                     {/* Bottom */}
                     <div className="mt-4 grid grid-cols-12 gap-4">
-                        <Achievement />
+                        <Achievement  dataUserByNickName={dataUserByNickName}/>
                         <Exam />
                         <Calendar dataUserByNickName={dataUserByNickName} />
 

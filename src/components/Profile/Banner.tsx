@@ -48,7 +48,7 @@ const Banner: React.FC<BannerProps> = ({
                         <img
                             src={AvatarFrame}
                             alt="Khung avatar"
-                            className="pointer-events-none absolute left-[-1.5rem] top-[-0.5rem] min-w-[9rem]"
+                            className="pointer-events-none absolute left-[-1.5rem] top-[-0.5rem] max-w-[9rem]"
                         />
                         <img src={dataUserByNickName?.user?.photo?.url} alt="Avatar" className="h-full w-full rounded-full object-cover" />
                     </div>

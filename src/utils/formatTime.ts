@@ -23,4 +23,10 @@ const formatHour = (seconds: number): string => {
     }
 };
 
-export { formatTime, formatHour };
+function getHoursFromMilliseconds(ms: number) {
+    // Chuyển milliseconds thành giờ
+    const hours = Math.floor(ms / 3600000); // 1 giờ = 3600000 milliseconds
+    return hours;
+}
+
+export { formatTime, formatHour, getHoursFromMilliseconds };
