@@ -11,6 +11,7 @@ import { Fragment } from 'react';
 // ##########################################################################
 import { useGetTopUserByStudyTimeQuery } from '@store/api/studyTime.api';
 import { formatHour } from '@utils/formatTime';
+import { Link } from 'react-router-dom';
 
 type DataType = {
     avatar: string;
@@ -84,7 +85,7 @@ const TopUser: React.FC = () => {
             {/* bottom */}
             <div className="relative">
                 <ul
-                    className="scrollbar flex h-80 flex-col gap-4 overflow-auto sm:h-auto 
+                    className="scrollbar flex h-80 flex-col gap-2 overflow-auto sm:h-auto 
                     sm:pr-0 md:pr-2 xl:h-[22rem] phone:h-auto phone:pr-0"
                     style={{ scrollbarWidth: 'none' }}
                 >
@@ -105,7 +106,13 @@ const TopUser: React.FC = () => {
                               </li>
                           ))
                         : topUserData?.data?.map((item) => (
-                              <li className="flex items-start justify-between sm:gap-2 lg:gap-2 phone:gap-2" key={item.user}>
+                              <Link
+                                  to={`/profile/${item.userDetails.nickname}`}
+                                  className="flex items-start justify-between rounded-md p-1 
+                                  transition-all hover:bg-bgHoverGrayDark hover:no-underline sm:gap-2 
+                                  lg:gap-2 phone:gap-2"
+                                  key={item.user}
+                              >
                                   <div className="flex items-center gap-2">
                                       <Avatar
                                           size="default"
@@ -123,7 +130,7 @@ const TopUser: React.FC = () => {
                                   <p className="whitespace-nowrap font-be text-xs font-semibold text-textCustomGray">
                                       Level {item.userDetails.level}
                                   </p>
-                              </li>
+                              </Link>
                           ))}
                 </ul>
                 <div className="absolute inset-x-0 bottom-0 h-8 bg-gradient-to-t from-bgCustom"></div>
