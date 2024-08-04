@@ -63,8 +63,7 @@ const TippyProfile: React.FC = () => {
                             <div>
                                 <Link
                                     to={`/profile/${data?.user?.nickname}`}
-                                    className="text-textCustom transition-all 
-                                        duration-200 hover:text-orange-400 hover:text-textCustom"
+                                    className="text-textCustom transition-all duration-200 hover:text-orange-400"
                                     style={{ textDecoration: 'none' }}
                                 >
                                     <button aria-label="btn_profile" className="font-body">
@@ -76,8 +75,7 @@ const TippyProfile: React.FC = () => {
 
                                 <Link
                                     to="/blog"
-                                    className="text-textCustom transition-all 
-                                        duration-200 hover:text-orange-400 hover:text-textCustom"
+                                    className="text-textCustom transition-all duration-200 hover:text-orange-400"
                                     style={{ textDecoration: 'none' }}
                                 >
                                     <button aria-label="btn_writeBlog" className="font-body">
@@ -85,14 +83,39 @@ const TippyProfile: React.FC = () => {
                                     </button>
                                 </Link>
 
+                                <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+
                                 <Link
                                     to="/myPost"
-                                    className="text-textCustom transition-all 
-                                        duration-200 hover:text-orange-400 hover:text-textCustom"
+                                    className="text-textCustom transition-all duration-200 hover:text-orange-400"
                                     style={{ textDecoration: 'none' }}
                                 >
                                     <button aria-label="btn_myBlog" className="mt-2 font-body">
                                         Bài viết của tôi
+                                    </button>
+                                </Link>
+
+                                <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+
+                                <Link
+                                    to="/gift"
+                                    className="text-textCustom transition-all duration-200 hover:text-orange-400"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <button aria-label="btn_gift" className="mt-2 font-body">
+                                        Quà tặng
+                                    </button>
+                                </Link>
+
+                                <div className="my-2 h-[0.5px] w-full bg-slate-200"></div>
+
+                                <Link
+                                    to="/settings"
+                                    className="text-textCustom transition-all duration-200 hover:text-orange-400"
+                                    style={{ textDecoration: 'none' }}
+                                >
+                                    <button aria-label="btn_settings" className="mt-2 font-body">
+                                        Settings
                                     </button>
                                 </Link>
 
@@ -105,16 +128,14 @@ const TippyProfile: React.FC = () => {
                                 disabled={isLoading}
                                 onClick={logoutHandler}
                                 aria-label="btn_logout"
-                                className="font-body font-normal text-textCustom 
-                                        transition-all duration-200 hover:text-red-500"
+                                className="font-body font-normal text-textCustom transition-all duration-200 hover:text-red-500"
                             >
                                 Đăng xuất
                             </button>
                         ) : (
                             <Link
                                 to="/login"
-                                className="font-body font-normal text-textCustom 
-                                        transition-all duration-200 hover:text-green-500"
+                                className="font-body font-normal text-textCustom transition-all duration-200 hover:text-green-500"
                                 style={{ textDecoration: 'none' }}
                             >
                                 Đăng nhập
