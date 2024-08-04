@@ -1,0 +1,7 @@
+.levelText {
+    background-size: auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    background-position: center;
+    color: transparent;
+}

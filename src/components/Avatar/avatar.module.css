@@ -1,0 +1,35 @@
+/* avatar.module.css */
+.avatarList {
+    display: flex;
+    max-width: max-content;
+}
+
+.avatar {
+    box-sizing: border-box;
+    position: relative;
+    border-radius: 50%;
+    padding: 4px;
+}
+
+.avatarImage {
+    max-width: 100%;
+    vertical-align: middle;
+    border-radius: 50%;
+}
+
+.avatarFrame {
+    position: absolute;
+    pointer-events: none;
+}
+
+.avatarLarge .avatarFrame {
+    top: -10%;
+    left: -10%;
+    max-width: 120%;
+}
+
+.avatarXLarge .avatarFrame {
+    top: -12.5%;
+    left: -12.5%;
+    max-width: 125%;
+}

@@ -2,7 +2,7 @@
 /*                                 IMPORT NPM                                 */
 /* ########################################################################## */
 import { Fragment, useEffect } from 'react';
-import { Avatar, Spin, Skeleton } from 'antd';
+import { Spin, Skeleton } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import Lottie from 'lottie-react';
 import { useSelector } from 'react-redux';
@@ -18,6 +18,7 @@ import { useGetMessagesQuery } from '@store/api/chatApi';
 import { fileFormat } from '@utils/fileFormat';
 import RenderAttachment from '@components/Shared/RenderAttachment';
 import { RootState } from '@store/store';
+import Avatar from '@components/Avatar/Avatar';
 
 interface ChatContentProps {
     userId: string | undefined;
@@ -53,7 +54,7 @@ const ChatContent: React.FC<ChatContentProps> = ({
     return (
         <Fragment>
             <ul
-                className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto pb-4 pt-2"
+                className="scrollbar-mess mb-14 flex flex-col gap-2 overflow-auto px-2 pb-4 pt-2"
                 ref={bottomRef}
                 style={{ height: 'calc(100vh - 11.5rem)' }}
             >
@@ -63,7 +64,9 @@ const ChatContent: React.FC<ChatContentProps> = ({
                 {/* All Messages */}
                 {allMessages.map((message: Message) => (
                     <li className="mr-2 flex gap-2" key={message._id}>
-                        {userDetails?.user._id !== message.sender._id && <Avatar src={receiver?.photo.url} className="min-w-8" />}
+                        {userDetails?.user._id !== message.sender._id && (
+                            <Avatar image={receiver!.photo?.url} width={2.7} height={2.7} frame="https://i.imgur.com/cuaCwYj.png" />
+                        )}
 
                         <div
                             className={`max-w-[33rem] ${

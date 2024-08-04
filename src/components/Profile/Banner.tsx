@@ -7,9 +7,10 @@ import dayjs from 'dayjs';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import AvatarFrame from '@assets/profiles/avatarFrame.png';
 import BannerIcon from '@assets/profiles/persional-header.svg';
 import { APIResponse } from 'types/api-types';
+import Avatar from '@components/Avatar/Avatar';
+import LevelDisplay from '@components/Level/LevelStyles';
 
 interface BannerProps {
     dataUserByNickName: APIResponse;
@@ -41,16 +42,11 @@ const Banner: React.FC<BannerProps> = ({
         >
             <div className="ml-4 flex gap-4 phone:flex-col">
                 <div
-                    className="relative flex select-none flex-col gap-2 rounded-full 
-                  phone:flex-row phone:items-center phone:gap-4"
+                    className="flex select-none flex-col gap-2 rounded-full 
+                    phone:flex-row phone:items-center phone:gap-4"
                 >
-                    <div className="h-24 w-24 overflow-hidden">
-                        <img
-                            src={AvatarFrame}
-                            alt="Khung avatar"
-                            className="pointer-events-none absolute left-[-1.5rem] top-[-0.5rem] max-w-[9rem]"
-                        />
-                        <img src={dataUserByNickName?.user?.photo?.url} alt="Avatar" className="h-full w-full rounded-full object-cover" />
+                    <div className="mt-2">
+                        <Avatar width={5} height={5} image={dataUserByNickName?.user?.photo?.url} frame="https://i.imgur.com/cuaCwYj.png" />
                     </div>
 
                     {dataUserDetails.user._id !== dataUserByNickName.user._id && (
@@ -68,9 +64,12 @@ const Banner: React.FC<BannerProps> = ({
                 <ul className="mt-2 grid grid-cols-3 gap-4">
                     <div className="col-span-1 space-y-2">
                         <li>
-                            <h2 className="font-body font-bold leading-tight text-textCustom phone:text-lg">
+                            <LevelDisplay
+                                level={dataUserByNickName.user.level}
+                                customStyles="font-be font-bold leading-tight text-textCustom text-lg"
+                            >
                                 {dataUserByNickName?.user?.username}
-                            </h2>
+                            </LevelDisplay>
                         </li>
                         <li>
                             <h3 className="my-0.5 font-be leading-tight text-textCustom">

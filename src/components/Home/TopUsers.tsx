@@ -1,7 +1,6 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { Avatar } from 'antd';
 import Skeleton from '@mui/material/Skeleton';
 import { ArrowRight } from 'lucide-react';
 import { Fragment } from 'react';
@@ -10,8 +9,10 @@ import { Link } from 'react-router-dom';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import Avatar from '@components/Avatar/Avatar';
 import { useGetTopUserByStudyTimeQuery } from '@store/api/studyTime.api';
 import { formatHour } from '@utils/formatTime';
+import LevelDisplay from '@components/Level/LevelStyles';
 
 type DataType = {
     avatar: string;
@@ -112,24 +113,43 @@ const TopUser: React.FC = () => {
                                   transition-all hover:bg-bgHoverGrayDark hover:no-underline sm:gap-2 
                                   lg:gap-2 phone:gap-2"
                                   key={item.user}
+                                  style={{ textDecoration: 'none' }}
                               >
                                   <div className="flex items-center gap-2">
                                       <Avatar
-                                          size="default"
-                                          className="min-h-9 min-w-9 cursor-pointer "
-                                          src={item?.userDetails?.photo?.url}
-                                          alt={item.userDetails.nickname}
+                                          image={item?.userDetails?.photo.url}
+                                          width={2.7}
+                                          height={2.7}
+                                          frame="https://i.imgur.com/cuaCwYj.png"
                                       />
+
                                       <div>
-                                          <h5 className="font-be text-sm font-semibold text-textCustomName">{item.userDetails.nickname}</h5>
-                                          <p className="font-be text-[12px] text-textCustom phone:text-xs">
-                                              {`Got ${formatHour(item.totalDuration / 1000)} on this month`}
+                                          <LevelDisplay
+                                              customStyles="font-be text-sm font-semibold text-textCustomName"
+                                              level={item.userDetails.level}
+                                          >
+                                              {item?.userDetails.username}
+                                          </LevelDisplay>
+
+                                          <p className="space-x-1 font-be text-[12px] text-textCustom phone:text-xs">
+                                              <span>Got</span>
+                                              <LevelDisplay
+                                                  customStyles="font-be text-[12px] font-semibold text-textCustomName"
+                                                  level={item.userDetails.level}
+                                              >
+                                                  {formatHour(item.totalDuration / 1000)}
+                                              </LevelDisplay>
+                                              <span>on this month</span>
                                           </p>
                                       </div>
                                   </div>
-                                  <p className="whitespace-nowrap font-be text-xs font-semibold text-textCustomGray">
-                                      Level {item.userDetails.level}
-                                  </p>
+
+                                  <LevelDisplay
+                                      customStyles="whitespace-nowrap font-be text-xs font-medium text-textCustom"
+                                      level={item?.userDetails.level}
+                                  >
+                                      level {item?.userDetails.level}
+                                  </LevelDisplay>
                               </Link>
                           ))}
                 </ul>
