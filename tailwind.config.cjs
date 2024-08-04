@@ -36,6 +36,7 @@ module.exports = {
                 bgCustomGroup: 'var(--bg-custom-group)',
                 bgCustomCard: 'var(--bg-custom-card)',
                 bgCustomCardItem: 'var(--bg-custom-card-item)',
+                bgCustomGift: 'var(--bg-custom-gift)',
                 bgHoverGrayDark: 'var(--bgHover-gray-dark)',
                 textCustom: 'var(--text-custom)',
                 textSidebar: 'var(--text-sidebar)',

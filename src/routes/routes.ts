@@ -11,6 +11,7 @@ const Home = loadable(() => import('@components/Home/Home'));
 const Grammar = loadable(() => import('@components/Courses/Grammar/Grammar'));
 const Listening = loadable(() => import('@components/Courses/Listening/Listening'));
 const Profile = loadable(() => import('@components/Profile/Profile'));
+const Gift = loadable(() => import('@components/Gift/Gift'));
 
 /* -------------------------------------------------------------------------- */
 /*                               ADMIN COMPONENT                              */
@@ -75,6 +76,10 @@ const protectedRoute: ProtectedRouteType[] = [
     {
         path: '/profile/:nickname',
         component: Profile,
+    },
+    {
+        path: '/gift',
+        component: Gift,
     },
     {
         path: '/messages/:chatId',

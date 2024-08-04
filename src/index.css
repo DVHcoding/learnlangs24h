@@ -137,6 +137,7 @@ audio {}
     --bg-custom-group: #fff;
     --bg-custom-card: #f6f7fb;
     --bg-custom-card-item: #fff;
+    --bg-custom-gift: #f6f7fb;
     --bgHover-gray-dark: rgb(241 245 249);
     --bg-sidebar: #e5e5ea;
     --bg-btnPrimary: #0d73d4;
@@ -179,6 +180,7 @@ audio {}
     --bg-custom-group: #9aabab47;
     --bg-custom-card: #1e293b;
     --bg-custom-card-item: #2e3856;
+    --bg-custom-gift: #2e3856;
     --bgHover-gray-dark: #3e42647d;
     --bg-sidebar: #2f3c55;
     --bg-btnPrimary: rgb(144, 202, 249);
