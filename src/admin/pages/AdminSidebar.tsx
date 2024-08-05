@@ -1,45 +1,62 @@
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { useState, useEffect } from 'react';
-// ##################################
-// #       IMPORT Components
-// ##################################
+import { Link } from 'react-router-dom';
+import { Sidenav, Nav, Modal, Button, Input, Loader } from 'rsuite';
+import { Home, FolderKanban, Blocks, MessageCirclePlus, Layers, SquareLibrary, Gift } from 'lucide-react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import Logo from '@assets/logo.png';
 import { createNewCourse } from '@store/reducer/courseReducer';
 import { RootState, AppDispatch } from '@store/store';
 import { toastError } from '@components/Toast/Toasts';
 
 // ##################################
-// #       IMPORT Npm
-// ##################################
-import { Link } from 'react-router-dom';
-import { Sidenav, Nav, Modal, Button, Input, Loader } from 'rsuite';
-import { Home, FolderKanban, Blocks, MessageCirclePlus, Layers, SquareLibrary } from 'lucide-react';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
-
-// ##################################
 const AdminSidebar = () => {
-    // Redirect with React Router Dom v6
-    const navigate = useNavigate();
-    const location = useLocation();
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
     const dispatch: AppDispatch = useDispatch();
-
-    // ##########################
-    // #      STATE MANAGER     #
-    // ##########################
     const { loading } = useSelector((state: RootState) => state.newCourse);
 
-    // fixed when screen smaller 470px
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    /* ########################################################################## */
+    /*                              STATE MANAGEMENT                              */
+    /* ########################################################################## */
     const [expanded, setExpanded] = useState<boolean>(() => window.innerWidth > 1000);
-    // Set active page
     const [activePage, setActivePage] = useState<string>('');
     const [open, setOpen] = useState<boolean>(false);
     const [unitName, setUnitName] = useState<string>('');
     const [courseImage, setCourseImage] = useState<File | null>(null);
 
-    // ##########################
-    // #    FUNCTION MANAGER    #
-    // ##########################
-    // Navigation when clicking on link
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
+    // Style sidebar
+    const panelStyles: React.CSSProperties = {
+        textTransform: 'uppercase',
+        fontWeight: 'bold',
+        marginLeft: '20px',
+        marginTop: '20px',
+    };
+
+    /* ########################################################################## */
+    /*                             FUNCTION MANAGEMENT                            */
+    /* ########################################################################## */
     const redirect = (path: string) => {
         navigate(path);
     };
@@ -47,7 +64,6 @@ const AdminSidebar = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    // Hàm tạo khóa học mới
     const handleSubmitNewCourse = async () => {
         if (unitName === '') {
             return toastError('Vui Lòng Nhập Unit Name!');
@@ -66,7 +82,6 @@ const AdminSidebar = () => {
         }
     };
 
-    // Hàm thay đổi hình ảnh
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         const fileName = e.target.files?.[0]?.name;
@@ -84,10 +99,13 @@ const AdminSidebar = () => {
         }
     };
 
-    // ##########################
-    // #    HOOKS MANAGER    #
-    // ##########################
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
 
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
     useEffect(() => {
         // Set active page based on pathname
         const pathname = location.pathname;
@@ -104,19 +122,11 @@ const AdminSidebar = () => {
         };
     }, [location.pathname]);
 
-    // Style sidebar
-    const panelStyles: React.CSSProperties = {
-        textTransform: 'uppercase',
-        fontWeight: 'bold',
-        marginLeft: '20px',
-        marginTop: '20px',
-    };
-
     return (
         <div
-            className={`scrollbar duration-50 h-full w-[240px]  
+            className={`scrollbar duration-350 h-full w-[260px]  
             overflow-auto overflow-x-hidden border-r-2 border-bdCustom transition-all phone:transition-none
-            ${expanded ? 'phone:fixed phone:z-10 ' : 'w-[3.8rem]'}`}
+            ${expanded ? 'phone:fixed phone:z-10' : 'max-w-max'}`}
         >
             <Sidenav defaultOpenKeys={['3', '4']} expanded={expanded} className="h-full bg-bgCustom">
                 <Sidenav.Body>
@@ -311,6 +321,26 @@ const AdminSidebar = () => {
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
                             >
                                 <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Books</span>
+                            </Nav.Item>
+                        </Nav.Menu>
+
+                        {/*=========================================*/}
+                        <Nav.Menu
+                            className="bg-bgCustom"
+                            onClick={() => setExpanded(true)}
+                            eventKey="8"
+                            title="Gift"
+                            icon={<Gift className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
+                        >
+                            <Nav.Item
+                                onClick={() => redirect('/admin/gift')}
+                                eventKey="8-1"
+                                className={`before:absolute ${
+                                    activePage === '/admin/gift' ? 'before:h-8' : 'before:h-0'
+                                } before:bottom-2 before:left-0 before:w-[3px]
+                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
+                            >
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Tặng Quà</span>
                             </Nav.Item>
                         </Nav.Menu>
 
