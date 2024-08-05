@@ -36,6 +36,7 @@ export interface Datum {
     totalDuration: number;
     userDetails: UserDetails;
     user: string;
+    avatarFrameDetails: IAvatarFrame;
 }
 
 export interface UserDetails {
@@ -44,6 +45,20 @@ export interface UserDetails {
     photo: Photo;
     nickname: string;
     level: number;
+    avatarFrame: string | null;
+}
+
+interface IAvatarFrame {
+    _id: string;
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    name: string;
+    expiryType: string;
+    expiryDate: Date;
+    owner: string;
+    createdAt: Date;
 }
 
 export interface Photo {

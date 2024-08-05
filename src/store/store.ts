@@ -20,7 +20,7 @@ import { giftApi } from './api/gift.api';
 const persistConfig = {
     key: 'root',
     storage,
-    whitelist: [courseApi.reducerPath, userApi.reducerPath],
+    whitelist: [courseApi.reducerPath],
 };
 
 const middlewares = [

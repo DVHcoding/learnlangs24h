@@ -120,7 +120,7 @@ const TopUser: React.FC = () => {
                                           image={item?.userDetails?.photo.url}
                                           width={2.7}
                                           height={2.7}
-                                          frame="https://i.imgur.com/cuaCwYj.png"
+                                          frame={item?.userDetails.avatarFrame ? item?.avatarFrameDetails?.photo?.url : ''}
                                       />
 
                                       <div>

@@ -46,7 +46,12 @@ const Banner: React.FC<BannerProps> = ({
                     phone:flex-row phone:items-center phone:gap-4"
                 >
                     <div className="mt-2">
-                        <Avatar width={5} height={5} image={dataUserByNickName?.user?.photo?.url} frame="https://i.imgur.com/cuaCwYj.png" />
+                        <Avatar
+                            width={5}
+                            height={5}
+                            image={dataUserByNickName?.user?.photo?.url}
+                            frame={dataUserByNickName?.user?.avatarFrame?.photo?.url}
+                        />
                     </div>
 
                     {dataUserDetails.user._id !== dataUserByNickName.user._id && (
