@@ -31,6 +31,7 @@ import { notificationReducer } from './reducer/notification.reducer';
 import { notificationApi } from './api/notification.api';
 import { studyTimeApi } from './api/studyTime.api';
 import { studyTimeReducer } from './reducer/studyTime.reducer';
+import { giftApi } from './api/gift.api';
 
 // ##########################
 const rootReducer = combineReducers({
@@ -40,6 +41,7 @@ const rootReducer = combineReducers({
     [commentApi.reducerPath]: commentApi.reducer,
     [notificationApi.reducerPath]: notificationApi.reducer,
     [studyTimeApi.reducerPath]: studyTimeApi.reducer,
+    [giftApi.reducerPath]: giftApi.reducer,
 
     newCourse: newCourseReducer,
     newLesson: newLessonReducer,
