@@ -24,8 +24,8 @@ const Messenger = loadable(() => import('@components/Messenger/Messenger'));
 const WriteVocaExercise = loadable(() => import('@components/Courses/Listening/WriteVocaExercise/WriteVocaExercise'));
 const WriteSentenceExercise = loadable(() => import('@components/Courses/Listening/WriteSentenceExercise/WriteSentenceExercise'));
 const Quiz = loadable(() => import('@components/Courses/Listening/Quiz/Quiz'));
-
 const CoursesEditable = loadable(() => import('@admin/components/Courses/CoursesEditable/CoursesEditable'));
+const AdminGift = loadable(() => import('@admin/components/Gift/Gift'));
 
 interface PublicRouteType {
     path: string;
@@ -116,6 +116,10 @@ const adminRoute: ProtectedRouteType[] = [
         path: '/admin/course/:id/edit/:unitId',
         component: CoursesEditable,
         layout: null,
+    },
+    {
+        path: '/admin/gift',
+        component: AdminGift,
     },
 ];
 
