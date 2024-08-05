@@ -2,11 +2,12 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { APIResponse } from 'types/api-types';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { GetAllGiftByUserIDResponseTypes } from 'types/gift.types';
+import { APIResponse } from 'types/api-types';
 
 export const giftApi = createApi({
     reducerPath: 'giftApi',
@@ -20,6 +21,10 @@ export const giftApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                    QUERY                                   */
         /* -------------------------------------------------------------------------- */
+        getAllGiftByUserId: builder.query<GetAllGiftByUserIDResponseTypes, string | null | undefined>({
+            query: (userId) => `gift/${userId}`,
+            providesTags: ['Gift'],
+        }),
 
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
@@ -36,4 +41,4 @@ export const giftApi = createApi({
     }),
 });
 
-export const { useNewGiftForUserMutation } = giftApi;
+export const { useGetAllGiftByUserIdQuery, useNewGiftForUserMutation } = giftApi;
