@@ -12,9 +12,6 @@ export const giftApi = createApi({
     reducerPath: 'giftApi',
     baseQuery: fetchBaseQuery({
         baseUrl: '/api/v1/',
-        headers: {
-            'Content-type': 'application/json',
-        },
         credentials: 'include',
     }),
     tagTypes: ['Gift'],
@@ -32,6 +29,7 @@ export const giftApi = createApi({
                 url: 'gift/new',
                 method: 'POST',
                 body: FormData,
+                formData: true,
             }),
             invalidatesTags: ['Gift'],
         }),

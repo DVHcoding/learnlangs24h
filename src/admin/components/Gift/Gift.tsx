@@ -10,8 +10,18 @@ import { DatePickerProps } from 'antd';
 // #                           IMPORT Components                            #
 // ##########################################################################
 import { hasEmptyFields } from '@utils/Helpers';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { useNewGiftForUserMutation } from '@store/api/gift.api';
 
 const Gift: React.FC = () => {
+    /* ########################################################################## */
+    /*                                    HOOKS                                   */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                               REACT ROUTE DOM                              */
+    /* ########################################################################## */
+
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
@@ -20,6 +30,15 @@ const Gift: React.FC = () => {
     const [expiryType, setExpiryType] = useState<'permanent' | 'temporary'>('permanent');
     const [expiryDate, setExpiryDate] = useState<string | null>(null);
     const [ownerId, setOwnerId] = useState<string>('');
+
+    /* ########################################################################## */
+    /*                                     RTK                                    */
+    /* ########################################################################## */
+    const [newGiftForUser, isLoading] = useAsyncMutation(useNewGiftForUserMutation);
+
+    /* ########################################################################## */
+    /*                                  VARIABLES                                 */
+    /* ########################################################################## */
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
@@ -47,10 +66,18 @@ const Gift: React.FC = () => {
         if (expiryDate && expiryType === 'temporary') formData.append('expiryDate', expiryDate);
         formData.append('userId', ownerId);
 
+        await newGiftForUser(formData);
+
         window.location.reload();
     };
 
-    console.log(expiryDate);
+    /* ########################################################################## */
+    /*                                CUSTOM HOOKS                                */
+    /* ########################################################################## */
+
+    /* ########################################################################## */
+    /*                                  useEffect                                 */
+    /* ########################################################################## */
 
     return (
         <div className="h-full px-4">
@@ -59,7 +86,7 @@ const Gift: React.FC = () => {
             </div>
 
             <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-                <Button type="primary" className="max-w-max" htmlType="submit">
+                <Button type="primary" className="max-w-max" htmlType="submit" loading={isLoading}>
                     Tặng quà
                 </Button>
 
