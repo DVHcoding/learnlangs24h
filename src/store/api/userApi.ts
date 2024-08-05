@@ -139,6 +139,15 @@ export const userApi = createApi({
             }),
             invalidatesTags: ['User'],
         }),
+
+        equipAvatarFrame: builder.mutation<APIResponse, { userId: string; avatarFrame: string }>({
+            query: ({ userId, avatarFrame }) => ({
+                url: 'gift/user',
+                method: 'PATCH',
+                body: { userId, avatarFrame },
+            }),
+            invalidatesTags: ['User'],
+        }),
     }),
 });
 
@@ -157,4 +166,5 @@ export const {
     useUnFollowMutation,
     useAddFriendMutation,
     useUnFriendMutation,
+    useEquipAvatarFrameMutation,
 } = userApi;
