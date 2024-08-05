@@ -122,6 +122,7 @@ export interface UserDetailsType {
     following: string[];
     friends: string[];
     level: number;
+    avatarFrame?: IAvatarFrame | null;
 }
 
 export interface LoginUserType {

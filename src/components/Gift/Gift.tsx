@@ -3,14 +3,16 @@
 // ##########################################################################
 import { Breadcrumb, Button, Empty } from 'antd';
 import dayjs from 'dayjs';
-import { useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
 import { useGetAllGiftByUserIdQuery } from '@store/api/gift.api';
-import { useUserDetailsQuery } from '@store/api/userApi';
+import { useEquipAvatarFrameMutation, useUserDetailsQuery } from '@store/api/userApi';
+import { useAsyncMutation } from '@hooks/useAsyncMutation';
+import { toastError } from '@components/Toast/Toasts';
 
 const Gift: React.FC = () => {
     /* ########################################################################## */
@@ -24,6 +26,7 @@ const Gift: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    const [processingGiftId, setProcessingGiftId] = useState<string | null>(null);
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -32,15 +35,40 @@ const Gift: React.FC = () => {
     const userId = useMemo(() => userDetails?.user?._id, [userDetails?.user]);
 
     const { data: allGiftData } = useGetAllGiftByUserIdQuery(userId, { skip: !userId });
+    const [equipAvatarFrame] = useAsyncMutation(useEquipAvatarFrameMutation);
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
-    console.log(allGiftData);
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
+    const handleEquipAvatarFrame = async (id: string): Promise<void> => {
+        if (!userId || !id) {
+            toastError('Có lỗi xảy ra!');
+        }
+
+        setProcessingGiftId(id);
+        try {
+            await equipAvatarFrame({ userId, avatarFrame: id });
+        } finally {
+            setProcessingGiftId(null);
+        }
+    };
+
+    const handleUnequipAvatarFrame = async (id: string): Promise<void> => {
+        if (!userId) {
+            toastError('Có lỗi xảy ra!');
+        }
+
+        setProcessingGiftId(id);
+        try {
+            await equipAvatarFrame({ userId, avatarFrame: null });
+        } finally {
+            setProcessingGiftId(null);
+        }
+    };
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -84,10 +112,40 @@ const Gift: React.FC = () => {
                                     </p>
 
                                     <div className="space-x-2">
-                                        <Button type="primary">Sử dụng</Button>
+                                        {(() => {
+                                            const isAvatarFrameEquipped = userDetails?.user?.avatarFrame;
+                                            const isCurrentFrameEquipped =
+                                                isAvatarFrameEquipped && userDetails?.user?.avatarFrame?._id === gift._id;
 
-                                        <Button type="primary" danger>
-                                            Xóa
+                                            const isProcessing = processingGiftId === gift._id;
+                                            const isAnyProcessing = processingGiftId !== null;
+                                            if (isCurrentFrameEquipped) {
+                                                return (
+                                                    <Button
+                                                        type="dashed"
+                                                        onClick={() => handleUnequipAvatarFrame(gift._id)}
+                                                        loading={isProcessing}
+                                                        disabled={isAnyProcessing && !isProcessing}
+                                                    >
+                                                        Hủy bỏ
+                                                    </Button>
+                                                );
+                                            }
+
+                                            return (
+                                                <Button
+                                                    type="primary"
+                                                    onClick={() => handleEquipAvatarFrame(gift._id)}
+                                                    loading={isProcessing}
+                                                    disabled={isAnyProcessing && !isProcessing}
+                                                >
+                                                    Sử dụng
+                                                </Button>
+                                            );
+                                        })()}
+
+                                        <Button type="primary" danger disabled={processingGiftId !== null}>
+                                            Xóa
                                         </Button>
                                     </div>
                                 </div>
