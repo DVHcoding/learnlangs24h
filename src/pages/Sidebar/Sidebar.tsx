@@ -164,9 +164,12 @@ const Sidebar: React.FC = () => {
 
                         {/*=========================================*/}
                         <Nav.Item
-                            className="bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
-                            before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                            className={`${
+                                activePage === '/book' ? 'before:h-8' : 'before:h-0'
+                            } bg-bgCustom before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px]
+                          before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             eventKey="6"
+                            onClick={() => redirect('/book')}
                             icon={<SquareLibrary className="absolute left-5" strokeWidth={1.5} size={19} />}
                         >
                             <span className="transition-all hover:text-[#8bbf64]">Books</span>

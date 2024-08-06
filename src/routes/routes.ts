@@ -12,6 +12,7 @@ const Grammar = loadable(() => import('@components/Courses/Grammar/Grammar'));
 const Listening = loadable(() => import('@components/Courses/Listening/Listening'));
 const Profile = loadable(() => import('@components/Profile/Profile'));
 const Gift = loadable(() => import('@components/Gift/Gift'));
+const Book = loadable(() => import('@components/Books/Book'));
 
 /* -------------------------------------------------------------------------- */
 /*                               ADMIN COMPONENT                              */
@@ -84,6 +85,10 @@ const protectedRoute: ProtectedRouteType[] = [
     {
         path: '/messages/:chatId',
         component: Messenger,
+    },
+    {
+        path: '/book',
+        component: Book,
     },
 ];
 
