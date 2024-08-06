@@ -1,7 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import { Breadcrumb, Button, Empty } from 'antd';
+import { Breadcrumb, Button, Empty, Popconfirm } from 'antd';
 import dayjs from 'dayjs';
 import { useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
@@ -9,7 +9,7 @@ import { Link } from 'react-router-dom';
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { useGetAllGiftByUserIdQuery } from '@store/api/gift.api';
+import { useDeleteGiftByIdMutation, useGetAllGiftByUserIdQuery } from '@store/api/gift.api';
 import { useEquipAvatarFrameMutation, useUserDetailsQuery } from '@store/api/userApi';
 import { useAsyncMutation } from '@hooks/useAsyncMutation';
 import { toastError } from '@components/Toast/Toasts';
@@ -36,6 +36,7 @@ const Gift: React.FC = () => {
 
     const { data: allGiftData } = useGetAllGiftByUserIdQuery(userId, { skip: !userId });
     const [equipAvatarFrame] = useAsyncMutation(useEquipAvatarFrameMutation);
+    const [deleteGiftById, deleteLoading] = useAsyncMutation(useDeleteGiftByIdMutation);
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -67,6 +68,18 @@ const Gift: React.FC = () => {
             await equipAvatarFrame({ userId, avatarFrame: null });
         } finally {
             setProcessingGiftId(null);
+        }
+    };
+
+    const handleDeleteGift = async (id: string): Promise<void> => {
+        if (!id) {
+            toastError('Có lỗi xảy ra!');
+        }
+
+        try {
+            await deleteGiftById(id);
+        } catch (error) {
+            toastError(`Có lỗi xảy ra: ${error}`);
         }
     };
 
@@ -144,9 +157,15 @@ const Gift: React.FC = () => {
                                             );
                                         })()}
 
-                                        <Button type="primary" danger disabled={processingGiftId !== null}>
-                                            Xóa
-                                        </Button>
+                                        <Popconfirm
+                                            title="Bạn chắc chắn muốn xóa?"
+                                            onConfirm={() => handleDeleteGift(gift._id)}
+                                            disabled={deleteLoading}
+                                        >
+                                            <Button type="primary" danger disabled={processingGiftId !== null} loading={deleteLoading}>
+                                                Xóa
+                                            </Button>
+                                        </Popconfirm>
                                     </div>
                                 </div>
                             </div>
