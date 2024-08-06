@@ -26,6 +26,21 @@ export interface User {
     _id: string;
     username: string;
     nickname: string;
+    level: number;
+    avatarFrame: IAvatarFrame | null;
+}
+
+interface IAvatarFrame {
+    photo: {
+        public_id: string;
+        url: string;
+    };
+    _id: string;
+    name: string;
+    expiryType: 'permanent' | 'temporary';
+    expiryDate: Date | null;
+    owner: string;
+    createdAt: Date;
 }
 
 /* -------------------------------------------------------------------------- */

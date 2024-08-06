@@ -3,7 +3,7 @@
 // ##########################################################################
 import { Fragment, useEffect, useMemo, useState } from 'react';
 import { IoIosHelpCircle } from 'react-icons/io';
-import { Avatar, Button, Drawer } from 'antd';
+import { Button, Drawer } from 'antd';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSearchParams } from 'react-router-dom';
 
@@ -17,6 +17,7 @@ import DotLoader from '@pages/Loader/DotLoader';
 import { AppDispatch, RootState } from '@store/store';
 import { addComments } from '@store/reducer/comment.reducer';
 import { toastError } from '@components/Toast/Toasts';
+import Avatar from '@components/Avatar/Avatar';
 
 const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ userDetailsData }) => {
     const dispatch: AppDispatch = useDispatch();
@@ -106,9 +107,14 @@ const HelpComments: React.FC<{ userDetailsData: APIResponse | undefined }> = ({ 
             </div>
 
             <Drawer onClose={onClose} open={open} width={600} styles={headerDrawerStyles}>
-                <div className="px-2">
+                <div className="mt-1 px-2">
                     <div className="flex items-center gap-2">
-                        <Avatar src={userDetailsData?.user?.photo?.url} className="min-h-10 min-w-10 object-cover" />
+                        <Avatar
+                            width={2.7}
+                            height={2.7}
+                            image={userDetailsData?.user?.photo?.url ?? ''}
+                            frame={userDetailsData?.user?.avatarFrame?.photo?.url}
+                        />
 
                         <input
                             type="text"

@@ -3,7 +3,6 @@
 // ##########################################################################
 import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Avatar } from 'antd';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
@@ -13,6 +12,8 @@ import { useLazyGetRepliesByIdQuery } from '@store/api/comment.api';
 import { AppDispatch, RootState } from '@store/store';
 import { addComments } from '@store/reducer/comment.reducer';
 import { formatTimeAgo } from '@utils/formatTimeAgo';
+import Avatar from '@components/Avatar/Avatar';
+import LevelDisplay from '@components/Level/LevelStyles';
 
 interface CommentProps {
     comment: CommentType;
@@ -97,9 +98,12 @@ const Comment: React.FC<CommentProps> = ({ comment, replies, addReply }) => {
                 {/* Avatar */}
                 <div className="flex items-center justify-between">
                     <div className="mb-2 flex items-center gap-2">
-                        <Avatar src={comment?.user?.photo?.url} className="min-h-8 min-w-8 object-cover" />
+                        {/* <Avatar src={comment?.user?.photo?.url} className="min-h-8 min-w-8 object-cover" /> */}
+                        <Avatar width={2.7} height={2.7} image={comment?.user?.photo?.url} frame={comment?.user?.avatarFrame?.photo?.url} />
 
-                        <span className="font-be font-normal text-textCustom">{comment.user.username}</span>
+                        <LevelDisplay level={comment?.user?.level} customStyles="font-be font-medium text-textCustom">
+                            {comment.user.username}
+                        </LevelDisplay>
                     </div>
 
                     <p className="font-be text-xs text-textCustom">{formatTimeAgo(comment.createdAt)}</p>
