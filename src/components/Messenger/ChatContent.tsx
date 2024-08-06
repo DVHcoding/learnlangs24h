@@ -65,7 +65,7 @@ const ChatContent: React.FC<ChatContentProps> = ({
                 {allMessages.map((message: Message) => (
                     <li className="mr-2 flex gap-2" key={message._id}>
                         {userDetails?.user._id !== message.sender._id && (
-                            <Avatar image={receiver!.photo?.url} width={2.7} height={2.7} frame="https://i.imgur.com/cuaCwYj.png" />
+                            <Avatar image={receiver?.photo?.url ?? ''} width={2.7} height={2.7} />
                         )}
 
                         <div

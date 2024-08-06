@@ -19,7 +19,7 @@ const ChatHeader: React.FC<ChatHeaderContentProps> = ({ receiver, online, lastOn
     return (
         <div className="flex items-center gap-2 border-t border-bdCustom2 px-2 shadow">
             <div className="relative">
-                <Avatar image={receiver?.photo?.url ?? ''} width={2.7} height={2.7} frame="https://i.imgur.com/cuaCwYj.png" />
+                <Avatar image={receiver?.photo?.url ?? ''} width={2.8} height={2.8} />
                 {online && <div className="absolute bottom-0.5 right-0 h-3 w-3 rounded-full bg-green-400 outline outline-white"></div>}
             </div>
 
