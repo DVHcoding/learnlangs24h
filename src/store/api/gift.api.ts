@@ -38,7 +38,14 @@ export const giftApi = createApi({
             }),
             invalidatesTags: ['Gift'],
         }),
+        deleteGiftById: builder.mutation<APIResponse, { id: string }>({
+            query: (id) => ({
+                url: `gift/${id}`,
+                method: 'DELETE',
+            }),
+            invalidatesTags: ['Gift'],
+        }),
     }),
 });
 
-export const { useGetAllGiftByUserIdQuery, useNewGiftForUserMutation } = giftApi;
+export const { useGetAllGiftByUserIdQuery, useNewGiftForUserMutation, useDeleteGiftByIdMutation } = giftApi;
