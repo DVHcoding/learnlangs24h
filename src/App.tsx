@@ -24,6 +24,8 @@ import { SocketProvider } from '@utils/socket';
 import '@components/Modules/Antd/Drawer.css';
 import '@components/Modules/Antd/Progress.css';
 import '@components/Modules/Antd/Collapse.css';
+import '@components/Modules/Antd/Select.css';
+
 import DesktopNotification from '@components/Shared/DesktopNotification';
 import { useGetStudyTimeStatsQuery, useUpdateStudyTimeMutation } from '@store/api/studyTime.api';
 import { toastError } from '@components/Toast/Toasts';
