@@ -1,8 +1,8 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React from 'react';
-import { Breadcrumb, Button, Select } from 'antd';
+import React, { useState } from 'react';
+import { Breadcrumb, Button, Pagination, Select } from 'antd';
 import { Link } from 'react-router-dom';
 const { Option } = Select;
 
@@ -23,6 +23,9 @@ const Book: React.FC = () => {
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const totalItems = 37; // Tổng số items
+    const itemsPerPage = 10;
 
     /* ########################################################################## */
     /*                                     RTK                                    */
@@ -35,6 +38,10 @@ const Book: React.FC = () => {
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
+    const handlePageChange = (page: number) => {
+        setCurrentPage(page);
+        // Thêm logic để load dữ liệu tương ứng với trang mới
+    };
 
     /* ########################################################################## */
     /*                                CUSTOM HOOKS                                */
@@ -72,34 +79,40 @@ const Book: React.FC = () => {
                 </div>
 
                 {/* Books */}
-                <ul
-                    className="grid gap-2 bg-bgCustomCard p-2 sm:grid-cols-2 
+                <div className="bg-bgCustomCard p-2 pb-10">
+                    <ul
+                        className="grid gap-2 sm:grid-cols-2 
                     md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 phone:grid-cols-1"
-                >
-                    {[...Array(8)].map((_, index) => (
-                        <li
-                            key={index}
-                            className="flex flex-col items-center rounded-md
+                    >
+                        {[...Array(8)].map((_, index) => (
+                            <li
+                                key={index}
+                                className="flex flex-col items-center rounded-md
                             bg-bgCustomCardItem p-4"
-                        >
-                            <img src={bookLink} alt="book" className="select-none rounded-md" />
-                            <p
-                                className="mt-2 cursor-default font-be text-base font-medium text-textCustomProcess 
-                                transition-all hover:text-textCustomProcess"
                             >
-                                Làm chủ kiến thức tiếng anh
-                            </p>
+                                <img src={bookLink} alt="book" className="select-none rounded-md" />
+                                <p
+                                    className="mt-2 cursor-default font-be text-base font-medium text-textCustomProcess 
+                                transition-all hover:text-textCustomProcess"
+                                >
+                                    Làm chủ kiến thức tiếng anh
+                                </p>
 
-                            <div className="mt-2 flex max-w-max flex-wrap justify-center gap-2">
-                                <Button type="primary">Read</Button>
-                                <Button type="primary">View PDF</Button>
-                                <Button disabled type="primary">
-                                    Download
-                                </Button>
-                            </div>
-                        </li>
-                    ))}
-                </ul>
+                                <div className="mt-2 flex max-w-max flex-wrap justify-center gap-2">
+                                    <Button type="primary">Read</Button>
+                                    <Button type="primary">View PDF</Button>
+                                    <Button disabled type="primary">
+                                        Download
+                                    </Button>
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+
+                    <div className="mx-auto mt-4 max-w-max">
+                        <Pagination current={currentPage} total={totalItems} pageSize={itemsPerPage} onChange={handlePageChange} />
+                    </div>
+                </div>
             </div>
         </div>
     );
