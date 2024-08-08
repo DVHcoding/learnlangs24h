@@ -1,8 +1,8 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React, { useState } from 'react';
-import { Breadcrumb, Button, Pagination, Select } from 'antd';
+import React, { Fragment, useState } from 'react';
+import { Badge, Breadcrumb, Button, Pagination, Select } from 'antd';
 import { Link } from 'react-router-dom';
 const { Option } = Select;
 
@@ -85,27 +85,30 @@ const Book: React.FC = () => {
                     md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 phone:grid-cols-1"
                     >
                         {[...Array(8)].map((_, index) => (
-                            <li
-                                key={index}
-                                className="flex flex-col items-center rounded-md
-                            bg-bgCustomCardItem p-4"
-                            >
-                                <img src={bookLink} alt="book" className="select-none rounded-md" />
-                                <p
-                                    className="mt-2 cursor-default font-be text-base font-medium text-textCustomProcess 
-                                transition-all hover:text-textCustomProcess"
-                                >
-                                    Làm chủ kiến thức tiếng anh
-                                </p>
+                            <Fragment key={index}>
+                                <Badge.Ribbon text="Premium" color="orange">
+                                    <li
+                                        className="flex flex-col items-center rounded-md
+                                        bg-bgCustomCardItem p-4"
+                                    >
+                                        <img src={bookLink} alt="book" className="select-none rounded-md" />
+                                        <p
+                                            className="mt-2 cursor-default font-be text-base font-medium text-textCustomProcess 
+                                        transition-all hover:text-textCustomProcess"
+                                        >
+                                            Làm chủ kiến thức tiếng anh
+                                        </p>
 
-                                <div className="mt-2 flex max-w-max flex-wrap justify-center gap-2">
-                                    <Button type="primary">Read</Button>
-                                    <Button type="primary">View PDF</Button>
-                                    <Button disabled type="primary">
-                                        Download
-                                    </Button>
-                                </div>
-                            </li>
+                                        <div className="mt-2 flex max-w-max flex-wrap justify-center gap-2">
+                                            <Button type="primary">Read</Button>
+                                            <Button type="primary">View PDF</Button>
+                                            <Button disabled type="primary">
+                                                Download
+                                            </Button>
+                                        </div>
+                                    </li>
+                                </Badge.Ribbon>
+                            </Fragment>
                         ))}
                     </ul>
 
