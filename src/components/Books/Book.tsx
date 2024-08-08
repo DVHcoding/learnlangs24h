@@ -9,8 +9,8 @@ const { Option } = Select;
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import { useGetBooksQuery } from '@store/api/book.api';
-import { Book as BookTypes } from 'types/book.types';
+import { useGetAllBookCategoriesQuery, useGetBooksQuery } from '@store/api/book.api';
+import { BookCategory, Book as BookTypes } from 'types/book.types';
 
 const Book: React.FC = () => {
     /* ########################################################################## */
@@ -22,6 +22,7 @@ const Book: React.FC = () => {
     /* ########################################################################## */
     const [currentPage, setCurrentPage] = useState<number>(1);
     const [itemsPerPage, setItemsPerPage] = useState<number>(12);
+    const [bookCategory, setBookCategory] = useState<string>('all');
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
@@ -31,9 +32,10 @@ const Book: React.FC = () => {
     /*                                     RTK                                    */
     /* ########################################################################## */
     const { data: booksData, refetch } = useGetBooksQuery(
-        { page: currentPage, limit: itemsPerPage, bookCategory: 'all' },
-        { skip: !currentPage || !itemsPerPage }
+        { page: currentPage, limit: itemsPerPage, bookCategory },
+        { skip: !currentPage || !itemsPerPage || !bookCategory }
     );
+    const { data: bookCategoriesData } = useGetAllBookCategoriesQuery();
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
@@ -74,10 +76,18 @@ const Book: React.FC = () => {
                 <div className="mb-4 flex flex-wrap items-center gap-4">
                     <div className="flex items-center gap-2">
                         <p className="text-textCustom">Sắp xếp theo:</p>
-                        <Select defaultValue="all" style={{ width: 150 }} className="text-textCustom">
+                        <Select
+                            defaultValue="all"
+                            style={{ width: 150 }}
+                            className="text-textCustom"
+                            onChange={(value: string) => setBookCategory(value)}
+                        >
                             <Option value="all">All Categories</Option>
-                            <Option value="travel">Travel</Option>
-                            <Option value="grammar">Sách grammar</Option>
+                            {bookCategoriesData?.bookCategories?.map((bookCategory: BookCategory) => (
+                                <Option value={bookCategory._id} key={bookCategory._id}>
+                                    {bookCategory.name}
+                                </Option>
+                            ))}
                         </Select>
                     </div>
 

@@ -4,6 +4,16 @@ export interface IGetBooksResponse {
     pagination: Pagination;
 }
 
+export interface IGetAllBookCategoriesResponse {
+    success: boolean;
+    bookCategories: BookCategory[];
+}
+
+export interface BookCategory {
+    _id: string;
+    name: string;
+}
+
 export interface IGetBooksPayload {
     page: number;
     limit: number;
