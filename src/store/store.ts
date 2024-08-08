@@ -16,6 +16,7 @@ import { commentApi } from './api/comment.api';
 import { notificationApi } from './api/notification.api';
 import { studyTimeApi } from './api/studyTime.api';
 import { giftApi } from './api/gift.api';
+import { bookApi } from './api/book.api';
 
 const persistConfig = {
     key: 'root',
@@ -31,6 +32,7 @@ const middlewares = [
     notificationApi.middleware,
     studyTimeApi.middleware,
     giftApi.middleware,
+    bookApi.middleware,
 ] as Middleware[];
 const persistedReducer = persistReducer(persistConfig, rootReducer);
 
