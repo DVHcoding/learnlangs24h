@@ -1,7 +1,7 @@
 // ##########################################################################
 // #                                 IMPORT NPM                             #
 // ##########################################################################
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { Badge, Breadcrumb, Button, Pagination, Select } from 'antd';
 import { Link } from 'react-router-dom';
 const { Option } = Select;
@@ -9,7 +9,8 @@ const { Option } = Select;
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
-import bookLink from '@assets/books/LamChuTiengAnh.jpg';
+import { useGetBooksQuery } from '@store/api/book.api';
+import { Book as BookTypes } from 'types/book.types';
 
 const Book: React.FC = () => {
     /* ########################################################################## */
@@ -19,28 +20,36 @@ const Book: React.FC = () => {
     /* ########################################################################## */
     /*                               REACT ROUTE DOM                              */
     /* ########################################################################## */
+    const [currentPage, setCurrentPage] = useState<number>(1);
+    const [itemsPerPage, setItemsPerPage] = useState<number>(12);
 
     /* ########################################################################## */
     /*                              STATE MANAGEMENT                              */
     /* ########################################################################## */
-    const [currentPage, setCurrentPage] = useState<number>(1);
-    const totalItems = 37; // Tổng số items
-    const itemsPerPage = 10;
 
     /* ########################################################################## */
     /*                                     RTK                                    */
     /* ########################################################################## */
+    const { data: booksData, refetch } = useGetBooksQuery(
+        { page: currentPage, limit: itemsPerPage, bookCategory: 'all' },
+        { skip: !currentPage || !itemsPerPage }
+    );
 
     /* ########################################################################## */
     /*                                  VARIABLES                                 */
     /* ########################################################################## */
+    const totalItems = booksData?.pagination?.totalBooks || 0;
 
     /* ########################################################################## */
     /*                             FUNCTION MANAGEMENT                            */
     /* ########################################################################## */
     const handlePageChange = (page: number) => {
         setCurrentPage(page);
-        // Thêm logic để load dữ liệu tương ứng với trang mới
+    };
+
+    const handleItemsPerPageChange = (value: string) => {
+        setItemsPerPage(parseInt(value));
+        setCurrentPage(1);
     };
 
     /* ########################################################################## */
@@ -50,6 +59,9 @@ const Book: React.FC = () => {
     /* ########################################################################## */
     /*                                  useEffect                                 */
     /* ########################################################################## */
+    useEffect(() => {
+        refetch();
+    }, [currentPage, itemsPerPage]);
 
     return (
         <div className="h-full px-4 phone:p-1">
@@ -71,9 +83,9 @@ const Book: React.FC = () => {
 
                     <div className="flex items-center gap-2">
                         <p className="text-textCustom">Hiển thị:</p>
-                        <Select defaultValue="10" style={{ width: 70 }} className="text-textCustom">
-                            <Option value="10">10</Option>
-                            <Option value="16">16</Option>
+                        <Select defaultValue="12" style={{ width: 70 }} className="text-textCustom" onChange={handleItemsPerPageChange}>
+                            <Option value="12">12</Option>
+                            <Option value="24">24</Option>
                         </Select>
                     </div>
                 </div>
@@ -81,28 +93,32 @@ const Book: React.FC = () => {
                 {/* Books */}
                 <div className="bg-bgCustomCard p-2 pb-10">
                     <ul
-                        className="grid gap-2 sm:grid-cols-2 
-                    md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 phone:grid-cols-1"
+                        className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 
+                        phone:grid-cols-1"
                     >
-                        {[...Array(8)].map((_, index) => (
-                            <Fragment key={index}>
-                                <Badge.Ribbon text="Premium" color="orange">
+                        {booksData?.books?.map((book: BookTypes) => (
+                            <Fragment key={book._id}>
+                                <Badge.Ribbon text="Premium" color="orange" className={`${book.premium ? 'block' : 'hidden'}`}>
                                     <li
-                                        className="flex flex-col items-center rounded-md
-                                        bg-bgCustomCardItem p-4"
+                                        className="flex min-h-[26.688rem] flex-col items-center
+                                        rounded-md bg-bgCustomCardItem p-4"
                                     >
-                                        <img src={bookLink} alt="book" className="select-none rounded-md" />
+                                        <img
+                                            src={book?.photo?.url}
+                                            alt="book"
+                                            className="max-h-[300px] min-w-full select-none rounded-md object-cover"
+                                        />
                                         <p
-                                            className="mt-2 cursor-default font-be text-base font-medium text-textCustomProcess 
-                                        transition-all hover:text-textCustomProcess"
+                                            className="mt-2 line-clamp-2 cursor-default font-be text-base font-medium 
+                                            text-textCustomProcess transition-all hover:text-textCustomProcess"
                                         >
-                                            Làm chủ kiến thức tiếng anh
+                                            {book.name}
                                         </p>
 
-                                        <div className="mt-2 flex max-w-max flex-wrap justify-center gap-2">
+                                        <div className="mt-auto flex max-w-max flex-wrap justify-center gap-2">
                                             <Button type="primary">Read</Button>
                                             <Button type="primary">View PDF</Button>
-                                            <Button disabled type="primary">
+                                            <Button disabled={book.premium} type="dashed">
                                                 Download
                                             </Button>
                                         </div>
