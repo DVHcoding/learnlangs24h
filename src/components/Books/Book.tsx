@@ -96,7 +96,7 @@ const Book: React.FC = () => {
                 </div>
             </div>
 
-            <div className="scrollbar overflow-auto" style={{ height: 'calc(100% - 4.8rem' }}>
+            <div className="scrollbar h-[29rem] overflow-auto phone:h-[28rem]">
                 {/* Books */}
                 <div className="min-h-full bg-bgCustomCard p-2 pb-4">
                     {booksData?.books.length ? (
@@ -138,11 +138,11 @@ const Book: React.FC = () => {
                     ) : (
                         <Empty description="No books found" />
                     )}
-
-                    <div className={`mx-auto mt-4 max-w-max ${booksData?.books.length ? 'block' : 'hidden'}`}>
-                        <Pagination current={currentPage} total={totalItems} pageSize={itemsPerPage} onChange={handlePageChange} />
-                    </div>
                 </div>
+            </div>
+
+            <div className={`mx-auto mt-4 max-w-max ${booksData?.books.length ? 'block' : 'hidden'}`}>
+                <Pagination current={currentPage} total={totalItems} pageSize={itemsPerPage} onChange={handlePageChange} />
             </div>
         </div>
     );
