@@ -1,16 +1,16 @@
-// ##########################
-// #      IMPORT NPM        #
-// #########################
-import { Avatar } from 'antd';
+// ##########################################################################
+// #                                 IMPORT NPM                             #
+// ##########################################################################
 import { Link } from 'react-router-dom';
 
-// ##########################
-// #    IMPORT Components   #
-// ##########################
+// ##########################################################################
+// #                           IMPORT Components                            #
+// ##########################################################################
 import TippyProvider from '@components/Tippys/TippyProvider';
 import DefaultAvatar from '@assets/profiles/defautlAvatar.png';
 import { useUserDetailsQuery, useLogoutUserMutation } from '@store/api/userApi';
 import { toastError, toastSuccess } from '@components/Toast/Toasts';
+import Avatar from '@components/Avatar/Avatar';
 
 // ##########################
 const TippyProfile: React.FC = () => {
@@ -46,7 +46,12 @@ const TippyProfile: React.FC = () => {
                 content={
                     <div className="min-w-44 rounded-md border border-bdCustom bg-bgCustom p-4 shadow">
                         <div className="flex items-center gap-2">
-                            <Avatar src={<img src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar} alt="avatar" />} />
+                            <Avatar
+                                height={2.7}
+                                width={2.7}
+                                image={data?.user?.photo?.url ?? DefaultAvatar}
+                                frame={data?.user?.avatarFrame?.photo?.url}
+                            />
                             <div>
                                 <p className="font-body font-bold text-textCustom">
                                     {data?.user?.username}
@@ -144,7 +149,14 @@ const TippyProfile: React.FC = () => {
                     </div>
                 }
             >
-                <Avatar size={35} src={<img src={data?.success ? `${data.user?.photo?.url}` : DefaultAvatar} alt="avatar" />} />
+                <div>
+                    <Avatar
+                        height={2.7}
+                        width={2.7}
+                        image={data?.user?.photo?.url ?? DefaultAvatar}
+                        frame={data?.user?.avatarFrame?.photo?.url}
+                    />
+                </div>
             </TippyProvider>
         </div>
     );
