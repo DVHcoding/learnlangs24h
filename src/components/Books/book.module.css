@@ -1,0 +1,9 @@
+.book {
+    height: calc(100% - 8rem);
+}
+
+@media(max-width: 470px) {
+    .book {
+        height: calc(100% - 12rem);
+    }
+}

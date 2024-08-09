@@ -11,6 +11,7 @@ const { Option } = Select;
 // ##########################################################################
 import { useGetAllBookCategoriesQuery, useGetBooksQuery } from '@store/api/book.api';
 import { BookCategory, Book as BookTypes } from 'types/book.types';
+import styles from './book.module.css';
 
 const Book: React.FC = () => {
     /* ########################################################################## */
@@ -63,12 +64,13 @@ const Book: React.FC = () => {
     /* ########################################################################## */
 
     return (
-        <div className="overflow-hidden pl-4 phone:p-1" style={{ height: 'calc(100% - 3.8rem)' }}>
+        <div className="overflow-hidden pl-4 phone:p-1" style={{ height: 'calc(100% - 4.5rem)' }}>
             {/* Breadcrumbs */}
             <div className="mb-2 flex justify-between">
                 <Breadcrumb items={[{ title: <Link to="/">Home</Link> }, { title: 'Books' }]} />
             </div>
 
+            {/* Filter */}
             <div className="mb-4 flex flex-wrap items-center gap-4">
                 <div className="flex items-center gap-2">
                     <p className="text-textCustom">Sắp xếp theo:</p>
@@ -96,9 +98,9 @@ const Book: React.FC = () => {
                 </div>
             </div>
 
-            <div className="scrollbar h-[29rem] overflow-auto phone:h-[28rem]">
-                {/* Books */}
-                <div className="min-h-full bg-bgCustomCard p-2 pb-4">
+            {/* Book */}
+            <div className={`scrollbar-mess overflow-auto ${styles.book}`}>
+                <div className="min-h-full bg-bgCustomCard p-2">
                     {booksData?.books.length ? (
                         <ul
                             className="grid gap-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 
@@ -141,6 +143,7 @@ const Book: React.FC = () => {
                 </div>
             </div>
 
+            {/* Pagination */}
             <div className={`mx-auto mt-4 max-w-max ${booksData?.books.length ? 'block' : 'hidden'}`}>
                 <Pagination current={currentPage} total={totalItems} pageSize={itemsPerPage} onChange={handlePageChange} />
             </div>
