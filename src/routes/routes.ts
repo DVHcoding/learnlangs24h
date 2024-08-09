@@ -27,6 +27,7 @@ const WriteSentenceExercise = loadable(() => import('@components/Courses/Listeni
 const Quiz = loadable(() => import('@components/Courses/Listening/Quiz/Quiz'));
 const CoursesEditable = loadable(() => import('@admin/components/Courses/CoursesEditable/CoursesEditable'));
 const AdminGift = loadable(() => import('@admin/components/Gift/Gift'));
+const AdminBook = loadable(() => import('@admin/components/Books/Book'));
 
 interface PublicRouteType {
     path: string;
@@ -125,6 +126,10 @@ const adminRoute: ProtectedRouteType[] = [
     {
         path: '/admin/gift',
         component: AdminGift,
+    },
+    {
+        path: '/admin/book',
+        component: AdminBook,
     },
 ];
 

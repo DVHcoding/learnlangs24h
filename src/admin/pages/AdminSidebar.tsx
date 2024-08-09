@@ -305,22 +305,25 @@ const AdminSidebar = () => {
                             icon={<SquareLibrary className="absolute left-5 text-textSidebar" strokeWidth={1.5} size={17} />}
                         >
                             <Nav.Item
-                                onClick={() => redirect('/admin/courses')}
+                                onClick={() => redirect('/admin/book')}
                                 eventKey="7-1"
                                 className={`before:absolute ${
-                                    activePage === '/admin/courses' ? 'before:h-8' : 'before:h-0'
+                                    activePage === '/admin/book' ? 'before:h-8' : 'before:h-0'
                                 } before:bottom-2 before:left-0 before:w-[3px]
                                 before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">Books List</span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Book</span>
                             </Nav.Item>
 
                             <Nav.Item
+                                onClick={() => redirect('/admin/book/category')}
                                 eventKey="7-2"
-                                className="before:absolute before:bottom-2 before:left-0 before:h-0 before:w-[3px] 
-                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200"
+                                className={`before:absolute ${
+                                    activePage === '/admin/book/category' ? 'before:h-8' : 'before:h-0'
+                                } before:bottom-2 before:left-0 before:w-[3px]
+                                before:bg-[#8bbf64] hover:before:h-8 hover:before:transition-all hover:before:duration-200`}
                             >
-                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Books</span>
+                                <span className="text-textSidebar transition-all hover:text-[#8bbf64]">New Book Category</span>
                             </Nav.Item>
                         </Nav.Menu>
 

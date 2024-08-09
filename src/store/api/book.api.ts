@@ -2,19 +2,17 @@
 // #                                 IMPORT NPM                             #
 // ##########################################################################
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { IGetAllBookCategoriesResponse, IGetBooksPayload, IGetBooksResponse } from 'types/book.types';
+import { IGetAllBookCategoriesResponse, IGetBooksPayload, IGetBooksResponse, INewBookPayload } from 'types/book.types';
 
 // ##########################################################################
 // #                           IMPORT Components                            #
 // ##########################################################################
+import { APIResponse } from 'types/api-types';
 
 export const bookApi = createApi({
     reducerPath: 'bookApi',
     baseQuery: fetchBaseQuery({
         baseUrl: '/api/v1/',
-        headers: {
-            'Content-type': 'application/json',
-        },
         credentials: 'include',
     }),
     tagTypes: ['Books'],
@@ -35,7 +33,28 @@ export const bookApi = createApi({
         /* -------------------------------------------------------------------------- */
         /*                                  MUTATION                                  */
         /* -------------------------------------------------------------------------- */
+        newBook: builder.mutation<APIResponse, INewBookPayload>({
+            query: ({ name, photo, premium, previews, pdf, bookCategory }) => {
+                const formDataToSend = new FormData();
+                formDataToSend.append('name', name);
+                formDataToSend.append('premium', premium);
+                formDataToSend.append('bookCategory', bookCategory);
+                formDataToSend.append('photo', photo);
+                formDataToSend.append('pdf', pdf);
+                previews.forEach((file) => {
+                    formDataToSend.append('previews', file);
+                });
+
+                return {
+                    url: 'book/new',
+                    method: 'POST',
+                    body: formDataToSend,
+                    formData: true,
+                };
+            },
+            invalidatesTags: ['Books'],
+        }),
     }),
 });
 
-export const { useGetBooksQuery, useGetAllBookCategoriesQuery } = bookApi;
+export const { useGetBooksQuery, useGetAllBookCategoriesQuery, useNewBookMutation } = bookApi;

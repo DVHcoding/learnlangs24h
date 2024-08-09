@@ -48,3 +48,12 @@ export interface Pagination {
     currentPage: number;
     limit: number;
 }
+
+export interface INewBookPayload {
+    name: string;
+    photo: File;
+    premium: string;
+    previews: File[];
+    pdf: File;
+    bookCategory: string;
+}
